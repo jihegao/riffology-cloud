@@ -1,0 +1,75 @@
+async () => {
+ const E={"schema":"jhg46-gateway-hash-only-witness-scope/v1","accountId":"8b0d70250211aa10d89e20605a1c7e5e","worker":"riffology-m1-gateway-staging","requestId":"f953bc1e-3ea1-4786-821c-26ecf68916a0","phases":["before-worker-put","after-worker-put"],"projectViewApplicationId":"a031ae38-f967-483f-ae2e-3dbed3d35268","expectedLists":{"domains":3,"routes":5,"registries":1,"namespaces":50,"apps":16,"instances":0,"schedules":1},"appVersionCountsById":{"a03156a6-9bf5-43fb-8b7f-a1f5b8d1a650":2,"a031ae38-f967-483f-ae2e-3dbed3d35268":1,"a0321718-f17e-4ccf-974a-fd447dde5920":1,"a03313e4-fa9d-4de2-ac2c-d2cc69efd875":1,"a0332851-f795-46df-9f8e-ee0ddc220095":1,"a035c941-2207-406e-97aa-a42ab6e9d249":2,"a03628c4-f032-461f-a65b-612ccac11a06":2,"a03693b8-f5be-4247-9280-f0c38435d911":1,"a036b418-dcce-4d2f-bd3d-6debf982ea6f":1,"a03836ca-d275-4f7d-898f-bc16d0875089":2,"a039ed42-159d-43db-be13-69315bce5189":1,"a03a6e91-25cb-4a8d-89a8-be522368dde4":1,"a03c0a4c-7533-4190-ba2b-ff4fecaabb48":1,"a03c0d4b-d529-4d81-a2b6-bfb901222a18":1,"a03ddc7e-1c6e-4cea-93ec-ac03d7b0073a":1,"a03ea65b-b039-4f56-8422-36c719b87b72":1},"beforeWorkerVersionId":"b62db92d-693a-4043-9ad1-f126e3a70c64","beforeModule":{"mainModule":"index.js","bytes":5775036,"sha256":"0475703a4ccda6d695709f6045b321431dc60b0e5369bc308bf08cee8279bd85"},"afterModule":{"mainModule":"index.js","bytes":5771650,"sha256":"9c8e4b6b763e9887d1624f00ed3a8efb2a8a24d984d96bc68fdb289cb4d362c3"},"resourceCounts":{"bindings":106,"secrets":11,"exports":25,"containerAssociations":6,"namespaces":50,"apps":16,"appVersionLists":16},"rawConfigurationReturned":false,"baselineExportSupported":false},ACCOUNT=E.accountId,W=E.worker,requestId=E.requestId,phase="before-worker-put",startedAt=new Date().toISOString();
+ const MAX_RESPONSE=16000;
+ const B='/accounts/'+ACCOUNT,S=B+'/workers/scripts/'+W,Z='/zones/c97b548800561fada1a912c234696db1/workers/routes',AP=B+'/containers/applications',trace=[],responseTrace=new WeakMap(),own=(x,k)=>Object.prototype.hasOwnProperty.call(x,k),uuid=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/;
+ const canonical=x=>Array.isArray(x)?x.map(canonical):x&&typeof x==='object'?Object.fromEntries(Object.keys(x).sort().map(k=>[k,canonical(x[k])])):x;
+ const hash=async x=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(typeof x==='string'?x:JSON.stringify(canonical(x))))),n=>n.toString(16).padStart(2,'0')).join('');
+ function check(v,code){if(!v)throw Object.assign(Error('SAFE_WITNESS_STOP'),{safeCode:code});}
+ const object=x=>x!==null&&typeof x==='object'&&!Array.isArray(x),integer=x=>Number.isSafeInteger(x)&&x>=0;
+ const controlPaths={settings:[S+'/settings'],deployments:[S+'/deployments',{per_page:1,page:1}],schedules:[S+'/schedules'],subdomain:[S+'/subdomain'],domains:[B+'/workers/domains',{service:W}],routes:[Z],namespaces:[B+'/workers/durable_objects/namespaces',{per_page:1000,page:1}],registries:[B+'/containers/registries']};
+ const fixedAppIds=Object.keys(E.appVersionCountsById).sort();
+ async function get(path,query){
+  const begin=Date.now();let r;const requestPath=path+(query?'?'+Object.entries(query).sort(([a],[b])=>a.localeCompare(b)).map(([k,v])=>encodeURIComponent(k)+'='+encodeURIComponent(String(v))).join('&'):'');
+  try{r=await cloudflare.request({method:'GET',path,...(query?{query}:{})});}catch{trace.push({p:requestPath,s:null,ok:false,t:begin,ms:Date.now()-begin,pg:null});check(false,'CONNECTOR_REQUEST_FAILED');}
+  const item={p:requestPath,s:Number.isInteger(r?.status)?r.status:null,ok:r?.success===true,t:begin,ms:Date.now()-begin,pg:null};trace.push(item);
+  check(object(r)&&r.status===200&&r.success===true,'GET_STATUS');responseTrace.set(r,item);return r;
+ }
+ // Complete exact fixed lists only. A nonterminal or malformed cursor always stops;
+ // no pagination retry or expansion is performed. Deployment is an explicit latest1 slice.
+ function complete(r,list,expectedCount,kind='complete-list'){
+  check(Array.isArray(list)&&list.length===expectedCount,'LIST_ARRAY_OR_EXACT_COUNT');
+  const i=r.result_info;check(i===undefined||i===null||object(i),'PAGINATION_INFO_SHAPE');
+  const p=i??{},known=['page','per_page','count','total_count','total_pages','next_page_token','next_cursor','cursor','page_token','cursors'];
+  check(Object.keys(p).every(k=>known.includes(k)),'PAGINATION_UNKNOWN_FIELD');
+  const terminal=x=>x===undefined||x===null||x==='';
+  for(const k of ['next_page_token','next_cursor','cursor','page_token'])if(own(p,k))check(terminal(p[k]),'PAGINATION_CURSOR_NOT_TERMINAL');
+  if(own(p,'cursors')){check(p.cursors===null||object(p.cursors),'PAGINATION_CURSORS_SHAPE');if(p.cursors!==null){check(Object.keys(p.cursors).every(k=>['before','after'].includes(k)),'PAGINATION_CURSOR_FIELD');for(const v of Object.values(p.cursors))check(terminal(v),'PAGINATION_CURSOR_NOT_TERMINAL');}}
+  if(own(p,'page'))check(p.page===1,'PAGINATION_PAGE');
+  if(own(p,'per_page'))check(Number.isSafeInteger(p.per_page)&&p.per_page>0&&list.length<=p.per_page,'PAGINATION_PER_PAGE');
+  if(own(p,'count'))check(integer(p.count)&&p.count===list.length,'PAGINATION_COUNT');
+  if(own(p,'total_count'))check(integer(p.total_count)&&(kind==='latest-deployment-slice'?p.total_count>=list.length:p.total_count===list.length),'PAGINATION_TOTAL_COUNT');
+  if(own(p,'total_pages')){
+   check(integer(p.total_pages)&&(kind==='latest-deployment-slice'?p.total_pages>=1:list.length===0?p.total_pages===0||p.total_pages===1:p.total_pages===1),'PAGINATION_TOTAL_PAGES');
+   if(own(p,'total_count')&&own(p,'per_page'))check(p.total_pages===Math.max(1,Math.ceil(p.total_count/p.per_page))||p.total_count===0&&p.total_pages===0,'PAGINATION_TOTALS_INCONSISTENT');
+  }
+  const summary={k:kind==='complete-list'?'full':'latest1',n:list.length};for(const [key,alias]of [['page','p'],['per_page','pp'],['total_count','tc'],['total_pages','tp']])if(own(p,key))summary[alias]=p[key];const item=responseTrace.get(r);if(item)item.pg=summary;return list;
+ }
+ async function controls(){return Object.fromEntries(await Promise.all(Object.entries(controlPaths).map(async([k,a])=>[k,await get(...a)])));}
+ function wrapperPagination(r,list,n,wrapper){
+  if(!object(wrapper))return;const keys=['page','per_page','count','total_count','total_pages','next_page_token','next_cursor','cursor','page_token','cursors'];const selected=Object.fromEntries(keys.filter(k=>own(wrapper,k)).map(k=>[k,wrapper[k]]));
+  for(const [label,info]of [['w',Object.keys(selected).length?selected:undefined],['wi',wrapper.result_info]])if(info!==undefined){const nested={result_info:info},item={pg:null};responseTrace.set(nested,item);complete(nested,list,n);responseTrace.get(r).pg[label]=item.pg;}
+ }
+ function validateControls(c){complete(c.schedules,c.schedules.result?.schedules,E.expectedLists.schedules);wrapperPagination(c.schedules,c.schedules.result.schedules,E.expectedLists.schedules,c.schedules.result);for(const k of ['namespaces','domains','routes','registries'])complete(c[k],c[k].result,E.expectedLists[k]);complete(c.deployments,c.deployments.result?.deployments,1,'latest-deployment-slice');}
+ function apps(r){const a=complete(r,r.result,E.expectedLists.apps),ids=a.map(x=>x?.id);check(new Set(ids).size===16&&JSON.stringify([...ids].sort())===JSON.stringify(fixedAppIds),'FIXED16_APP_IDS');return a;}
+ function instances(r){const a=Array.isArray(r.result)?r.result:r.result?.instances;complete(r,a,0);wrapperPagination(r,a,0,r.result);return a;}
+ async function moduleRead(){const r=await get(S+'/content/v2'),s=r.result;check(typeof s==='string'&&s.length<=9*1024*1024,'MODULE_TYPE_OR_BOUND');const boundary=s.slice(0,s.indexOf('\r\n')),parts=s.split(boundary);check(boundary.startsWith('--')&&parts.length===3&&parts[1].includes('name="index.js"; filename="index.js"')&&parts[1].endsWith('\r\n'),'MODULE_EXACT_ONE_PART');const k=parts[1].indexOf('\r\n\r\n');check(k>=0,'MODULE_BODY');const text=parts[1].slice(k+4,-2),bytes=new TextEncoder().encode(text).length;check(bytes>0&&bytes<=8*1024*1024,'MODULE_BODY_BOUND');return {text,bytes};}
+ function noCredentials(c1,c2,vr,a1,a2,versions){
+  let containerEnvironmentValueFields=0,workerSecretValueFields=0;
+  function app(a){const env=a?.configuration?.environment_variables;check(env===undefined||env===null||Array.isArray(env),'ENV_ARRAY_SHAPE');for(const e of env??[]){check(object(e),'ENV_ENTRY_SHAPE');if(own(e,'value')&&e.value!==''&&e.value!==null&&e.value!==undefined)containerEnvironmentValueFields++;}}
+  for(const a of [...a1,...a2])app(a);for(const r of versions)for(const a of r.result)app(a);
+  for(const bindings of [c1.settings.result?.bindings,c2.settings.result?.bindings,vr.result?.resources?.bindings]){
+   check(Array.isArray(bindings),'BINDINGS_ARRAY_SHAPE');for(const b of bindings){check(object(b),'BINDING_ENTRY_SHAPE');const keys=b.type==='secret_text'?['text','value']:b.type==='secret_key'?['key_base64','key_jwk','value']:[];for(const k of keys)if(own(b,k))workerSecretValueFields++;}
+  }
+  // Presence of a Worker secret-value field is held even when empty; environment
+  // value fields are held when nonempty. No config or module hash precedes this guard.
+  check(containerEnvironmentValueFields===0&&workerSecretValueFields===0,'ACTUAL_CREDENTIAL_VALUE_FIELDS_PRESENT');
+  return {settingsReads:2,workerVersionBindings:1,applicationListReads:2,applicationVersionLists:16,applicationVersionReadsPerApp:1,workerSecretValueFields:0,containerEnvironmentValueFields:0};
+ }
+ const traceFormat={p:'fixed request path with encoded query',s:'HTTP status',ok:'API success',t:'request started Unix milliseconds',ms:'request elapsed milliseconds',pg:'pagination: k=full/latest1,n=count,p=page,pp=per_page,tc=total_count,tp=total_pages,w/wi=wrapper metadata'};
+ function boundedOutput(value){const json=JSON.stringify(value),pretty=JSON.stringify(value,null,2);if(new TextEncoder().encode(json).length<=MAX_RESPONSE&&new TextEncoder().encode(pretty).length<=MAX_RESPONSE)return value;return {schema:'jhg46-gateway-hash-only-witness-held/v1',accountId:ACCOUNT,worker:W,requestId,phase,startedAt,endedAt:new Date().toISOString(),onlyGet:true,cloudWrites:0,complete:false,held:true,code:'RESPONSE_BODY_LIMIT',maximumResponseBytes:MAX_RESPONSE,requestCount:trace.length,noRawConfigurationReturned:true,noTraceBodyReturned:true,noBaselineExport:true,configurationHashesReturned:false};}
+ try{
+  check(accountId===ACCOUNT,'CONNECTOR_ACCOUNT');
+  const [c1,ar1,ir1,m1]=await Promise.all([controls(),get(AP,{per_page:500}),get(AP+'/'+E.projectViewApplicationId+'/instances-v2',{per_page:1000}),moduleRead()]);validateControls(c1);const a1=apps(ar1);instances(ir1);
+  const active=c1.deployments.result.deployments[0];check(uuid.test(active?.id??'')&&active?.versions?.length===1&&active.versions[0].percentage===100&&uuid.test(active.versions[0].version_id),'SINGLE_ACTIVE_VERSION');const workerVersionId=active.versions[0].version_id;
+  const [vr,...versions]=await Promise.all([get(S+'/versions/'+workerVersionId),...a1.map(a=>get(AP+'/'+a.id+'/versions'))]);check(vr.result?.id===workerVersionId,'ACTUAL_VERSION_ID');for(let i=0;i<versions.length;i++)complete(versions[i],versions[i].result,E.appVersionCountsById[a1[i].id]);
+  const [c2,ar2,ir2,m2]=await Promise.all([controls(),get(AP,{per_page:500}),get(AP+'/'+E.projectViewApplicationId+'/instances-v2',{per_page:1000}),moduleRead()]);validateControls(c2);const a2=apps(ar2);instances(ir2);
+  const credentialGuardCoverage=noCredentials(c1,c2,vr,a1,a2,versions);
+  const bindings=c1.settings.result.bindings,rt=vr.result.resources?.script_runtime;check(bindings.length===106&&new Set(bindings.map(x=>x.name)).size===106&&bindings.filter(x=>['secret_text','secret_key'].includes(x.type)).length===11&&object(rt?.exports)&&Object.keys(rt.exports).length===25&&Array.isArray(rt.containers)&&rt.containers.length===6,'RESOURCE_COUNTS');
+  check(await hash(bindings)===await hash(vr.result.resources.bindings),'VERSION_BINDINGS');check(!bindings.some(x=>x.name==='PROJECT_VIEW_BROWSER_POLICY_JSON')&&bindings.find(x=>x.name==='PROJECT_VIEW_POLICY_JSON')?.text==='{"enabled":false}','PROJECT_VIEW_POLICIES_NOT_CLOSED');
+  const controlCanonicalSha256={};for(const k of Object.keys(controlPaths)){const h=await hash(c1[k].result);check(h===await hash(c2[k].result),'CONTROL_BRACKET_DRIFT');controlCanonicalSha256[k]=h;}
+  const actualServingModule={mainModule:'index.js',bytes:m1.bytes,sha256:await hash(m1.text)};check(m1.bytes===m2.bytes&&actualServingModule.sha256===await hash(m2.text)&&await hash(a1)===await hash(a2),'SCOPE_BRACKET_DRIFT');
+  const expectedModule=phase==='before-worker-put'?E.beforeModule:E.afterModule;check(await hash(actualServingModule)===await hash(expectedModule),'FIXED_PHASE_MODULE');check(phase==='before-worker-put'?workerVersionId===E.beforeWorkerVersionId:workerVersionId!==E.beforeWorkerVersionId,'FIXED_PHASE_VERSION');
+  const appVersions=Object.fromEntries(versions.map((r,i)=>[a1[i].id,r.result]));const safe={schema:'jhg46-gateway-preservation-witness/v1',authority:'Personal Cloudflare connector',accountId:ACCOUNT,worker:W,requestId,phase,workerVersionId,startedAt,endedAt:new Date().toISOString(),onlyGet:true,complete:true,cloudWrites:0,actualCredentialValueGuardPassed:true,credentialGuardCoverage,counts:{bindings:106,exports:25,containerAssociations:6,namespaces:50,apps:16,appVersionLists:16},originalAppInstanceListCount:0,appsCanonicalSha256:await hash(a1),appVersionsCanonicalSha256ById:Object.fromEntries(await Promise.all(Object.entries(appVersions).map(async([id,v])=>[id,await hash(v)]))),controlCanonicalSha256,workerVersionCanonicalSha256:await hash(vr.result),actualServingModule};
+  safe.endedAt=new Date().toISOString();return boundedOutput({witness:safe,trace,traceFormat,noRawConfigurationReturned:true,noBaselineExport:true,actualCredentialValueGuardPassed:true,allConfigurationHashesAfterCredentialGuard:true,scope:{controlReads:2,applicationListReads:2,moduleReads:2,applicationVersionLists:16,applicationVersionReadsPerApp:1,instanceListReads:2},cloudWrites:0});
+ }catch(e){return boundedOutput({schema:'jhg46-gateway-hash-only-witness-held/v1',accountId:ACCOUNT,worker:W,requestId,phase,startedAt,endedAt:new Date().toISOString(),onlyGet:true,cloudWrites:0,complete:false,held:true,code:typeof e?.safeCode==='string'&&/^[A-Z0-9_]{1,80}$/.test(e.safeCode)?e.safeCode:'CONNECTOR_OR_RESPONSE_ERROR',trace,noRawConfigurationReturned:true,noBaselineExport:true,configurationHashesReturned:false,traceFormat});}
+}

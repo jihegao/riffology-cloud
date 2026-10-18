@@ -1,0 +1,129 @@
+{
+  "schema": "jhg46-fixed-hash-only-witness-independent-review/v2",
+  "recordedAt": "2026-10-18T04:05:00.113581+00:00",
+  "result": "no-must-fix-for-fixed-unexecuted-witness-preparation",
+  "mustFix": [],
+  "boundManifest": {
+    "file": "../gateway-preservation-witness-v2/operations-manifest.json",
+    "bytes": 4940,
+    "sha256": "b774dc1d6b34729c6b45022bd76ee4c5e54f219da0120a2381c9f253b8f11041"
+  },
+  "boundAuthorReceipt": {
+    "file": "../gateway-preservation-witness-v2/offline-checks/receipt.json",
+    "bytes": 3332,
+    "sha256": "a6c6aaf6c0e4b1d5fa8a8de46fda0298c4b131e46a71954465153a5d58ad619f"
+  },
+  "boundMeasurementReceipt": {
+    "file": "measurement-receipt.json",
+    "bytes": 1231,
+    "sha256": "8887cea5c805467ea50657babceda763b36b186c1b242bb819c4214647b3c79d"
+  },
+  "all9FinalManifestBindingsMatch": true,
+  "all6OriginalAuthorStreamBindingsMatch": true,
+  "finalAuthorReceiptSourceBindingsMatch": true,
+  "finalPhaseSources": [
+    {
+      "file": "../gateway-preservation-witness-v2/before-worker-put.request.txt",
+      "bytes": 14537,
+      "sha256": "18dee04d513bfb1b3671d765d467b6c5e099d750f0bf15117d8e62b66a8a00b1"
+    },
+    {
+      "file": "../gateway-preservation-witness-v2/after-worker-put.request.txt",
+      "bytes": 14536,
+      "sha256": "a126e12bedf636b85ba1af13c0362645e30a04943dfc23ccae7efd29f4318fef"
+    },
+    {
+      "file": "../gateway-preservation-witness-v2/scope.json",
+      "bytes": 1926,
+      "sha256": "45b54bbe9fd2d7efe6c4136c7a2ceeb14ec6fe83a8f4bc4b45be2f7aef0b0d57"
+    },
+    {
+      "file": "../gateway-preservation-witness-v2/make-witness-requests.mjs",
+      "bytes": 14589,
+      "sha256": "58364fb1d328a795359bc48b425be6191de2faf1f5b05f819ce9d1295be56077"
+    }
+  ],
+  "closedFindings": [
+    {
+      "id": "bounded-transport",
+      "resolution": "Trace fields/query/timestamps/pagination are compacted with an explicit legend. Both compact and pretty JSON UTF8 encodings must be<=16000; overflow returns a small fixed held without trace,witness,hash or raw body. Guard applies to successful and held outputs.",
+      "actualIndependentNormalVmSizes": [
+        {
+          "phase": "before-worker-put",
+          "complete": true,
+          "calls": 39,
+          "digests": 42,
+          "compactJsonBytes": 11228,
+          "prettyJsonBytes": 15186,
+          "within16000": true
+        },
+        {
+          "phase": "after-worker-put",
+          "complete": true,
+          "calls": 39,
+          "digests": 42,
+          "compactJsonBytes": 11227,
+          "prettyJsonBytes": 15185,
+          "within16000": true
+        }
+      ]
+    },
+    {
+      "id": "accepted-list-wrapper-pagination",
+      "resolution": "Schedules actual list and accepted schedules/instances wrapper known cursor/count/page/result_info metadata reuse strict complete-list validation. Existing final negative fixtures cover live nested cursor,false cursor,count drift and schedules length drift."
+    },
+    {
+      "id": "intermediate-schedules-count",
+      "resolution": "The intermediate e617 scope used synthetic0. Final scope uses actual frozen baseline count1 and normal synthetic fixture has exactly1 schedule. Original e617 source/tests/receipts remain byte-exact, were never account-executed, and are not promoted as the final scope."
+    }
+  ],
+  "intermediateHistory": {
+    "manifest": {
+      "file": "../gateway-preservation-witness-v2-history-e617/operations-manifest.json",
+      "bytes": 4214,
+      "sha256": "e617ec524385af3900bd1fb486859ef7e4469558645ee8e669925e9408302eab"
+    },
+    "receipt": {
+      "file": "../gateway-preservation-witness-v2-history-e617/offline-checks/receipt.json",
+      "bytes": 3332,
+      "sha256": "bc7fae9c5a922bbc783e1f84eaf7551f7c325d90c534f672cca5514e92e64ade"
+    },
+    "allIntermediateFileBindingsMatch": true,
+    "originalV1IssueAndMeasurementRetained": true
+  },
+  "staticFindings": [
+    "Only fixed requestf953/before-worker-put and after-worker-put are selectable. Account/Worker/zone/known16apps are fixed; actual active version IDs must be valid UUIDs. Before requires b62/047, after requires another actual UUID/9c8e. There is no baseline execution or raw configuration output.",
+    "Successful phases have39 GETs: eight controls twice, applications twice,module twice,original empty instance list twice,actual version once,and16complete app version lists once. No retry or endpoint expansion is introduced.",
+    "Credential guards cover two settings reads,actual version bindings,two app reads,and16version lists before any configuration/module hash; prior and final secret fixtures retain zero digests.",
+    "Complete lists use strict terminal cursor/type/count/page rules. Latest1 deployment history counts are explicitly distinguished from complete-list counts. Unknown or malformed pagination stops rather than truncating or expanding.",
+    "Safe compact trace retains actual fixed path and encoded query,HTTP status/API success,Unix-millisecond start,wall elapsed milliseconds and checked pagination summary. It does not assert a global clock or steady-clock duration guarantee.",
+    "Witness resource hashes are consumer-compatible; actual envelope/source/byte/time/hash binding and fresh publisher pre/post comparisons remain required. App version arrays are single reads, not an invented double observation."
+  ],
+  "existingAndNewChecks": {
+    "finalAuthorCommandReceipt": "a6c6aaf6c0e4b1d5fa8a8de46fda0298c4b131e46a71954465153a5d58ad619f",
+    "finalNewFixtureCases": 5,
+    "finalSyntaxCommands": 2,
+    "finalAll3CommandsExitZeroAndReaped": true,
+    "v2IntermediateAndFinalAreTwoDistinctLocalRuns": true,
+    "v1FullTestSuiteNotRerunByReviewer": true,
+    "reviewerOnlyTwoNormalVmHelpersExecuted": true,
+    "measurementOriginalPidReaped": true,
+    "actualAccountCalls": 0,
+    "authCalls": 0,
+    "builds": 0,
+    "paidProviderCalls": 0,
+    "candidateFilesModifiedByReviewer": false
+  },
+  "unchangedOpsV3Manifest": {
+    "file": "../gateway-ops-v3/operations-manifest.json",
+    "bytes": 5896,
+    "sha256": "77899ca757e87fe737c7db91e054158202a045204d5db235e129484ba5981ed0"
+  },
+  "limitations": [
+    "No real connector request was made with either final phase. Synthetic fixtures and bounded normal VM size measurements are not actual account preservation or transport acceptance evidence.",
+    "The16000 compact/pretty guard addresses the observed size risk; actual MCP delivery still requires complete envelope receipt and source/hash binding, with unknown delivery held under the original request.",
+    "Final ops remains unsealed. This review does not authorize GET invocation,publication,secrets mutation,rollout,gate opening,container/provider execution or new identity/project/Turn operations.",
+    "No physical-instance,global activity,fee settlement,billing clearance or credential-revocation proof is provided."
+  ],
+  "privateConfigurationOrCredentialValuesIncluded": false
+}

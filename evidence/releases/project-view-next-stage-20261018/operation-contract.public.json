@@ -1,0 +1,1733 @@
+{
+  "contract": {
+    "actualBindings": {
+      "browserGateCloseMethod": "DELETE",
+      "browserGateControlPlaneSha256": null,
+      "browserGateExpectedClosedVersionId": null,
+      "browserGateFinalWitnessManifestSha256": null,
+      "browserGateOpenRequestId": null,
+      "browserGateOwnedOpenVersionId": null,
+      "browserGateStableMetadataSha256": null,
+      "browserGateTransmittedOpenBodySha256": null,
+      "browserGrant": null,
+      "catalogD1DatabaseId": null,
+      "controlRevision": null,
+      "endsAt": null,
+      "gateCloseBodySha256": null,
+      "gateOpenBodySha256": null,
+      "gatewayPreparationRequestId": "f953bc1e-3ea1-4786-821c-26ecf68916a0",
+      "maintenanceRequestId": null,
+      "maintenanceStateRevision": null,
+      "newBundleSha256": "9c8e4b6b763e9887d1624f00ed3a8efb2a8a24d984d96bc68fdb289cb4d362c3",
+      "newIntegratedSourceCommit": null,
+      "newQuiescenceSourceCommit": "c669921f4796c5b35c6f2e049c92876f4faf7c5b",
+      "newSourceGraphSha256": "f8a9c6bdc9a5a4adc1ea51fcbc9c1c24a8219d421b86ffe29a371a50ac4591bf",
+      "observedBaselineAppCanonicalSha256": "c32958da504bc60edbbb771f9ba69a7c57cc19a666dfd5aea3526823afdac1f2",
+      "observedBaselineAppVersion": 11,
+      "observedBaselineConfigurationCanonicalSha256": "17efab851f0c5b8a449bdb254d7c3625b8becd1d68d2bdd46740c57db0e91b37",
+      "operator": null,
+      "ordinaryActor": null,
+      "policySha256": null,
+      "postRolloutPhysicalInstanceCriterion": "While exact original hold remains valid: complete raw app-scoped Dash placements0 plus complete logical history, original six IDs retained; any new history entry binds original rollout. Require fresh joint Beta/native quiescence and original immutable terminal proofs, exact accepted rollout completed/targetversion/f18 and full nonimage configuration canonical equality. Unknown, incomplete, contradictory or >0 placements retains hold and stops; no automatic stop/destroy/retry/rollback.",
+      "projectCreateKey": null,
+      "projectScope": null,
+      "rolloutBodySha256": "a970c950385fa8f332e439753af463549f6487ff43f38e1548b7ef2d96ea8d8a",
+      "rolloutId": null,
+      "rolloutRequestId": "5b3d8392-7917-493f-a705-2205b7e1b470",
+      "session1": null,
+      "session2": null,
+      "singleWriterOwnerAndWindow": null,
+      "startsAt": null,
+      "targetAppVersion": null,
+      "turnKeys": [
+        null,
+        null,
+        null
+      ],
+      "usableCompleteFreshBaselineSha256": "4386ea1a12dc21191bb382cfb3728c2ad3390a4fff4ca5dcae7b466040729e1e"
+    },
+    "authorActions": {
+      "apiCalls": 0,
+      "authOrCuaActions": 0,
+      "cloudWrites": 0,
+      "filesCreated": 2,
+      "gitOrGithubMutations": 0,
+      "localSourceReads": true,
+      "note": "Two contract-v4 files only. Static JSON/source/hash inspection, no test/build/API/auth/CUA/cloud execution. browsergate-v1 independent review saved separately; do not self-sign this author contract. v3 preserved byteexact. Gateexecution contract uses existing supportedconnector directly; no newnetworkrunner/frame added.",
+      "paidExecution": 0,
+      "testsOrBuilds": 0
+    },
+    "authorReviewStatus": "Author preparation only; independent contract-v4 review pending.",
+    "authorizationDelta": {
+      "alreadyAuthorized": "Existing same-account Google login/readonly identity checks and original persistent OAuth scopes remain as previously granted. Actual supported minimal identity projection stays within the readonly identity scope and requires reviewed fresh subject binding. fb99 Registry credential/push grant is consumed and does not cover new rollout/model/gate effects.",
+      "ciBoundary": "Existing known GitHub quota/payment nonexecution CI exemption remains as granted; it does not waive real technical assertion failures or source/deployment review.",
+      "newConcreteGrantStillNeeded": [
+        "New exact Gateway9c8 publication under reviewed opsv3 plan: one asset-session POST, only server-requested declared-asset uploads, and one Worker PUT; preserve closed browser/remote and all original106 bindings/25 configuredexports/6 associations/50 namespaces/16apps+versions. Prior release grants do not cover these changed inputs.",
+        "One original-owner maintenance begin/end and bounded original-only drain/quiescence observations; no pause/resume/kill substitute.",
+        "One image-only a036 rollout that may stop/replace/start actual containers, complete original-ID readback and explicit physical-state/stop policy.",
+        "One new ordinary project initialization and its necessary native/tool/TrustedPi containers, exactly two Sessions and three explicit fixed-Pi Turns within the finite window.",
+        "Exactly one browsergate secret_text PUT open and one samekeyDELETE close (each immediatelydeploys a newversion), only actualsole originalproject/actor/generation from approved receiptderivation; TTL<=4h inside Oct20/narrowhumanwindow, no fullWorker PUT/extraresources orscopeexpansion. Resolve actualIDs/dates/version/body through concretelyauthorized derivation or supplementarygrant beforewrite.",
+        "All new batch effects share one explicit<=4h humanwindow bounded by Oct20/narrower limits, same root singlewriter/directconnector for gate. This does not require building a new networkrunner and does not convert purewitness fixtures into authority/CAS."
+      ],
+      "normalRepositoryWorkflow": "Normal authorized push/PR/Issue/Project evidence writeback follows existing user/AGENTS workflow; this offline task performs none. Local fixed commits, hashes and review remain traceable inputs; no new public-publication approval rule is imposed.",
+      "notIncluded": [
+        "New Registry credentials/push/build/export, arbitrary OAuth scope expansion, subscription/payment/autopay changes.",
+        "G5/M3/M4/Runs/model fallback, cross-project/second-identity full JHG56 matrix, old project restore, extra repair Turn, arbitrary resource deletion."
+      ]
+    },
+    "blockingPreparationBeforeExecutable": [
+      "Actual normal fixed239/246/250 merges and selected-source byte proof. PR250 original-head greenCI/Ready is observed, not merge/deploy success.",
+      "GatewayOps v3 already has exact source graph, complete derived baseline, metadata and reviewed plan; still finalized=false/finalCandidate=false. Freeze reviewed immutable execution seal and finite direct-human grant.",
+      "Fixed new same-request Personal before/after preservation witness source and fresh observations; old received baseline remains dated preparation evidence, not presently held execution snapshot.",
+      "Under exact original maintenance hold, fresh combined Beta/native quiescence + original terminal validators + complete unfiltered logical and raw Dash placements0/history criterion before rollout. No stale unheld observation substitution.",
+      "Named single-writer owner/window and actual rollout wire bytes/hash; canonical a970 object is prepared, no examined server CAS.",
+      "Independent exact D1 request review and fresh /api/me bracket params; source-bound CATALOG and SELECT are prepared but identity acceptance not executed.",
+      "New bounded human grant covering exact source protocol, maintenance, one rollout, one newproject/2Sessions/3Turns and limited browser gate operations inside one<=4h batchwindow as actually prepared. IDs remain from original actual receipts only.",
+      "Browsergate purefactory+directPUT/DELETE/schema are prepared/independentlyreviewed. Still require actual solecreate/R2/currentme/SQL authorities, finitehuman grant, exact currentversions, full stableMetadata/controlPlane projection, actualserialization/ACKs and same root directconnector originalonce intents/ACK/readback and explicit concretegrant. Pendingplan cannotexecute.",
+      "Root mechanical final witness-v2 hash/review binding after actual schedules=1 correction; leave fields null meanwhile, then independently verify exact finalfile before anyexecutionseal."
+    ],
+    "browserGatePreparation": {
+      "executionMechanism": "Existing supported connector, operated directly by same root; purefactory supplies exact request only. Root preserves original once intent/currentfullwitness/ACK and independentreadback.",
+      "factories": {
+        "bytes": 4798,
+        "file": "../browser-gate-ops-v1/requests.mjs",
+        "sha256": "8920716d09899d924f5226afd4d50c4fbbb66e8d8d3fbfd98a175132940ba752"
+      },
+      "independentReview": {
+        "bytes": 6798,
+        "file": "../independent-browser-gate-v1-review.json",
+        "sha256": "047c822d30f2cf29343932d25e148922f9eb8b1f4cdf4e30227bb4d97058d4b6"
+      },
+      "manifest": {
+        "bytes": 3871,
+        "file": "../browser-gate-ops-v1/operations-manifest.json",
+        "sha256": "5914927bf64d9bb5f15092d3e89c39ac506569bd03569f4843522a770e5c3650"
+      },
+      "networkCredentialsCloudActionsDuringPreparation": 0,
+      "newNetworkRunnerImplementationRequired": false,
+      "oneOpenPutOneCloseDelete": true,
+      "pendingPlan": {
+        "bytes": 1025,
+        "file": "../browser-gate-ops-v1/plan.pending.json",
+        "sha256": "5932e9fe569394ed655a63fa5eaca8321180a8a1d6a404bce3bc5a887bf5dd97"
+      },
+      "plaintextOrPolicyHashGETReadbackClaimed": false,
+      "readyForExecution": false,
+      "rootDirectConnectorOperationReviewPending": true,
+      "schemaSource": {
+        "bytes": 2737,
+        "file": "../browser-gate-ops-v1/schema-source.json",
+        "sha256": "e2aedfbd953fda94986f985e5e7c68b3a6f09c044aebb8ffa855b5b2819be76a"
+      },
+      "senderIncluded": false,
+      "transmitted": false,
+      "writeOnlyText": true
+    },
+    "executed": false,
+    "executionAuthorized": false,
+    "finiteAuthority": {
+      "batchMaximumWindowMs": 14400000,
+      "browserContractNarrowsProductWindow": "Exactly one grant, policy TTL<=4h wholly inside explicit human window, endsAt<=Oct20 and any narrower existing grant. Product source24h limit is not changed.",
+      "browserMaximumWindowMs": 14400000,
+      "browserProductParserMaximumMs": 86400000,
+      "configuredDecemberDateDoesNotExtendHumanAuthority": true,
+      "effectiveEnd": "min(original October20 human authority, configured reviewAt, narrower explicit batch/cleanup window); reserve time to close before end.",
+      "fees": "No fee budget cap; notify new explicit arrears. Preserve unknown fees/reservations; no subscription/autopay/payment/limit change.",
+      "hardLimitsFromRecipe": {
+        "actualTrustedPiCallDeadlineMs": 115000,
+        "bashTimeoutMaximumMs": 30000,
+        "configuredReviewDeadline": "2026-12-31T15:59:59.999Z",
+        "effectiveExpiryRule": "min(original explicit human grant/#104 authority deadline, configured reviewAt, any narrower scoped grant); config Dec31 does not extend Oct20 human authority",
+        "humanReviewDeadline": "2026-10-20T15:59:59.999Z",
+        "monitorIntervalMs": 60000,
+        "outerPolicyMaxTurnDurationMs": 900000,
+        "outerReleaseTimeoutMs": 120000,
+        "perTurnNativeExecutionDeadlineMs": 600000,
+        "perUserActiveTurns": 1,
+        "policyMaxProviderCallDurationMs": 360000,
+        "privateBetaLogicalGlobalActiveTurns": 2,
+        "toolCommandTotalDeadlineMaximumMs": 120000,
+        "trustedPiUnderlyingGlobalSlots": 1
+      },
+      "humanReviewDeadline": "2026-10-20T15:59:59.999Z",
+      "noFourthRepairTurn": true,
+      "oneProjectTwoSessionsThreeExplicitTurns": true,
+      "singleBatchWindow": "One concrete new authorization window<=4h covering source publication if included, originaloperator hold→singlefixedrollout→sameoriginalend/resume→ordinary oneblank/2Sessions/3Turns→one exactgateclose. Gatepolicy/cleanup wholly inside samehumanwindow and Oct20/narrower deadline. No automatic holdend if unknown at expiry."
+    },
+    "fixedTargets": {
+      "appOrigin": "https://app.riffoid.com",
+      "application": "a03628c4-f032-461f-a65b-612ccac11a06",
+      "betaActor": "private-beta-capacity-v1",
+      "cloudflareAccount": "8b0d70250211aa10d89e20605a1c7e5e",
+      "platformImage": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-issue165-trusted-pi@sha256:f18a826d40b2fd60e2cf8c49d7f7b8f595fa609fe2be4c28593479ae846960ea",
+      "trustedPiActor": "trusted-pi-capacity:application",
+      "worker": "riffology-m1-gateway-staging"
+    },
+    "gatewayPreparation": {
+      "actualNormalMergesObserved": false,
+      "allBindings": 106,
+      "apps": 16,
+      "assets": 96,
+      "completeBaselineBytes": 143922,
+      "completeBaselineSha256": "4386ea1a12dc21191bb382cfb3728c2ad3390a4fff4ca5dcae7b466040729e1e",
+      "configuredRuntimeExports": 25,
+      "containerAssociations": 6,
+      "executionSealed": false,
+      "finalCandidate": false,
+      "finalized": false,
+      "independentReview": {
+        "bytes": 8333,
+        "file": "../gateway-ops-v3-independent-review/review.json",
+        "sha256": "f5701d18ad843e66119c95d994279ae1bf3398d94a12f3da22d3b25a34e8086d"
+      },
+      "manifest": {
+        "bytes": 5896,
+        "file": "../gateway-ops-v3/operations-manifest.json",
+        "sha256": "77899ca757e87fe737c7db91e054158202a045204d5db235e129484ba5981ed0"
+      },
+      "mergeProof": null,
+      "metadataPreparationSafe": {
+        "bytes": 892,
+        "file": "../gateway-ops-v3/metadata-preparation-safe.json",
+        "sha256": "dd5894817e13e86185ceefada71b6822cf3f6daa6f7322c672a139c42fdb6a66"
+      },
+      "metadataPrepared": true,
+      "metadataWithoutAssetJwtBytes": 30452,
+      "metadataWithoutAssetJwtSha256": "8058ff9de79cfb891882058c793ff839d0635aa48bd1586b8ea996243524d079",
+      "namespaces": 50,
+      "newHumanGrantPresent": false,
+      "plan": {
+        "bytes": 2347,
+        "file": "../gateway-ops-v3/publication-attempts/f953bc1e-3ea1-4786-821c-26ecf68916a0/plan.json",
+        "sha256": "b0cdb7ff1a785a1b8a15c3cd52e1e31910c866e329d221d28953bcd13f311db2"
+      },
+      "preparedInputsAreNotFreshExecutionWitness": true,
+      "privateBodiesPublished": false,
+      "retainedSecretsByType": 11,
+      "safeBaselineBytes": 20917,
+      "safeBaselineSha256": "f75e008fd81ef68164a8d03d598d7de29aa20cd75535d3a8cff02212e8a7a39e",
+      "sourceGraphPending": false,
+      "wireBindings": 95
+    },
+    "gatewayPreservationWitnessV2": {
+      "directory": "../gateway-preservation-witness-v2",
+      "finalBindingPendingRootMechanicalRefresh": false,
+      "finalIndependentReview": {
+        "bytes": 6938,
+        "file": "../gateway-preservation-witness-v2-independent-review/review.json",
+        "sha256": "a1bfdf7ad1d990eaf5060373c491d624d6b6611acb0e09beb140a9f1c11c826a"
+      },
+      "finalManifest": {
+        "bytes": 4940,
+        "file": "../gateway-preservation-witness-v2/operations-manifest.json",
+        "sha256": "b774dc1d6b34729c6b45022bd76ee4c5e54f219da0120a2381c9f253b8f11041"
+      },
+      "reason": "Final actual schedule count1 and bounded-response sources independently reviewed; real phase responses and execution seal remain pending."
+    },
+    "independentReview": null,
+    "notParallelRoadmapOrStatusTable": true,
+    "operations": [
+      {
+        "futureRequestId": "f953bc1e-3ea1-4786-821c-26ecf68916a0",
+        "gate": "PROJECT_VIEW_BROWSER_POLICY_JSON stays absent/closed; remote policy/G5/M3/M4 remain closed.",
+        "id": "gateway-source-publication",
+        "implementedSurface": true,
+        "metadataPrepared": true,
+        "method": "PUT",
+        "operationsFinalized": false,
+        "operationsIndependentReview": {
+          "bytes": 8333,
+          "file": "../gateway-ops-v3-independent-review/review.json",
+          "sha256": "f5701d18ad843e66119c95d994279ae1bf3398d94a12f3da22d3b25a34e8086d"
+        },
+        "operationsPreparation": {
+          "bytes": 5896,
+          "file": "../gateway-ops-v3/operations-manifest.json",
+          "sha256": "77899ca757e87fe737c7db91e054158202a045204d5db235e129484ba5981ed0"
+        },
+        "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/scripts/riffology-m1-gateway-staging",
+        "payloadContract": "Reviewed opsv3 protocol: original once asset-session POST and only server-requested declared-asset bucket uploads, then exact metadata+index.js Worker PUT. Graph/bundle/baseline/metadata/plan are prepared and independently reviewed; immutable execution seal/normal merges/newfinitegrant/freshwitness remain pending. Asset bodies96 are unchanged but asset-session JWT still required by existing protocol.",
+        "phase": "source-before-maintenance",
+        "preparedBundleSha256": "9c8e4b6b763e9887d1624f00ed3a8efb2a8a24d984d96bc68fdb289cb4d362c3",
+        "preparedPlan": {
+          "bytes": 2347,
+          "file": "../gateway-ops-v3/publication-attempts/f953bc1e-3ea1-4786-821c-26ecf68916a0/plan.json",
+          "sha256": "b0cdb7ff1a785a1b8a15c3cd52e1e31910c866e329d221d28953bcd13f311db2"
+        },
+        "preparedSourceGraphSha256": "f8a9c6bdc9a5a4adc1ea51fcbc9c1c24a8219d421b86ffe29a371a50ac4591bf",
+        "prerequisites": [
+          "Actual normal merges of fixed239/246/250 heads, byte-exact selected source proof and original-head CI/review requirements satisfied.",
+          "Reviewed opsv3 source/bundle/graph/derivedbaseline/metadata/plan pins; immutable final executionseal/newfinitehuman grant.",
+          "Fixed new same-request Personal before/after full16app/version/namespace/resource preservation witnesses; immediate sender prePUT state must agree.",
+          "Exact original once identity and per-mutation intent/bodySHA/private ACK persistence; no actual publication under this draft."
+        ],
+        "protocolWrites": [
+          {
+            "bodySchema": {
+              "additionalProperties": false,
+              "properties": {
+                "manifest": {
+                  "description": "exact96-path frozen assets manifest; each path maps only exact hash and size from b24e manifest",
+                  "type": "object"
+                }
+              },
+              "required": [
+                "manifest"
+              ],
+              "type": "object"
+            },
+            "contentType": "application/json",
+            "count": 1,
+            "credential": "same local existing OAuth; no new login/scope/AMD transfer by sender",
+            "id": "asset-session",
+            "manifestSource": {
+              "bytes": 15987,
+              "file": "../gateway-build-v2/assets-manifest.json",
+              "sha256": "b24e87bf762801056e447c106600e1fcee9f23e43c01830436006b5dca8ce1ad"
+            },
+            "method": "POST",
+            "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/scripts/riffology-m1-gateway-staging/assets-upload-session",
+            "responseGuard": "jwt string <16384, <=100 nonempty buckets each<=1000 hashes; every hash known and globally unique; changed single-asset protocol rejected. Private JWT never logs/publicsource."
+          },
+          {
+            "bodySchema": "Each part named exact declared asset hash, filename same hash, body base64 of exact pinned local bytes; MIME from frozen source extension. No undeclared file or caller-chosen bucket; each body<=150MiB.",
+            "contentType": "multipart/form-data boundary frozen per original bucket",
+            "count": "one per actually returned validated bucket only; zero if no buckets",
+            "credential": "original session asset JWT only, target/account restricted; private completion JWT retained only for exact Worker multipart.",
+            "id": "server-requested-asset-uploads",
+            "method": "POST",
+            "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/assets/upload?base64=true",
+            "receipt": "One exclusive intent and bounded private original ACK per asset-upload-N; unknown stops without reupload/newsession."
+          },
+          {
+            "bodySchema": "multipart exactly metadata JSON and index.js ES module; metadataWithoutJwt exact8058 pin plus assets:{jwt:originalcompletion,config:original html_handling/not_found_handling/run_worker_first}; metadata preserves95 nonsecrets +11 keep-secret types,25 exports/6 associations and settings.",
+            "count": 1,
+            "dynamicWireBytes": "Generated original asset completion JWT and multipart boundary prevent preinventing bodySHA; freeze exact resulting bytes/contentType/SHA before original oncePUT intent, recheck samegrant/source/witness first.",
+            "id": "single-worker-put",
+            "metadataSourceSha256": "8058ff9de79cfb891882058c793ff839d0635aa48bd1586b8ea996243524d079",
+            "method": "PUT",
+            "moduleSha256": "9c8e4b6b763e9887d1624f00ed3a8efb2a8a24d984d96bc68fdb289cb4d362c3",
+            "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/scripts/riffology-m1-gateway-staging",
+            "unknown": "Original lock retained; no secondPUT/rollback/newrequest. Only covered original ACK/id/version GET reconciliation."
+          }
+        ],
+        "requestBody": null,
+        "requestBodySha256": null,
+        "sourceGraphPending": false,
+        "transport": "Cloudflare Personal",
+        "unknown": "Keep original Worker once lock and ACK/body records; GET-only original-version/module reconciliation. No second PUT or rollback."
+      },
+      {
+        "body": null,
+        "guard": "Fresh actual operator userId; no authVersion/invitation/role conclusion from /api/me alone.",
+        "id": "operator-me",
+        "method": "GET",
+        "path": "https://app.riffoid.com/api/me",
+        "phase": "operator-bind",
+        "transport": "Existing authorized application browser session"
+      },
+      {
+        "body": null,
+        "guard": "Successful active-operator authorization. Capture state.revision/control policySha256/pinnedPolicySha256/control revision, enabled/unpaused/current pin. If an unrelated hold exists, stop; do not take it over.",
+        "id": "operator-role-and-state",
+        "method": "GET",
+        "path": "https://app.riffoid.com/api/admin/private-beta/maintenance",
+        "phase": "operator-bind",
+        "querySchema": {
+          "additionalProperties": false,
+          "properties": {
+            "requestId": {
+              "pattern": "^[A-Za-z0-9_-]{1,128}$",
+              "type": "string"
+            }
+          },
+          "required": [],
+          "type": "object"
+        },
+        "sourceImplementedAt": "c669921f4796c5b35c6f2e049c92876f4faf7c5b"
+      },
+      {
+        "actor": "Server derives original operator userId/authVersion; never supplied in body.",
+        "bodySchema": {
+          "additionalProperties": false,
+          "properties": {
+            "action": {
+              "enum": [
+                "begin",
+                "end"
+              ]
+            },
+            "expectedPolicySha256": {
+              "pattern": "^[a-f0-9]{64}$",
+              "type": "string"
+            },
+            "expectedRevision": {
+              "maximum": 9007199254740991,
+              "minimum": 0,
+              "type": "integer"
+            },
+            "requestId": {
+              "pattern": "^[A-Za-z0-9_-]{1,128}$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "action",
+            "requestId",
+            "expectedRevision",
+            "expectedPolicySha256"
+          ],
+          "type": "object"
+        },
+        "bodyTemplate": {
+          "action": "begin",
+          "expectedPolicySha256": null,
+          "expectedRevision": null,
+          "requestId": null
+        },
+        "guard": "Use original fresh state.revision and control.policySha256. Persist once intent before POST; ACK receipt and current revision/hold must bind exact request/operator/policy/control revision.",
+        "id": "maintenance-begin",
+        "maxMutatingAttempts": 1,
+        "method": "POST",
+        "originRequired": "https://app.riffoid.com",
+        "path": "https://app.riffoid.com/api/admin/private-beta/maintenance",
+        "phase": "hold",
+        "unknownRead": "GET same route with original requestId; compare original begin receipt AND current hold. Never replay POST to recover a lost ACK."
+      },
+      {
+        "body": null,
+        "guard": "Original hold/owner/policy and control revision retained. ledger.activeSlots=0 and unresolvedCalls=0 required; GET does not drain, cancel, release or prove physical instances absent.",
+        "id": "hold-and-beta-read",
+        "method": "GET",
+        "path": "https://app.riffoid.com/api/admin/private-beta/maintenance",
+        "phase": "natural-drain",
+        "querySchema": {
+          "additionalProperties": false,
+          "properties": {
+            "requestId": {
+              "pattern": "^[A-Za-z0-9_-]{1,128}$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "requestId"
+          ],
+          "type": "object"
+        }
+      },
+      {
+        "body": null,
+        "guard": "Original terminal execution/persistence and native stop/fence/resource/canonical proofs; activeTurn/resourceWait/releaseHold/recoveryHold clear. Never infer another user workspace access from operator role. Missing supported original-owner reader is pending.",
+        "id": "original-workspace-read",
+        "ids": "Only already recorded active original workspace/request identities, under their authorized authenticated owner. No new project to escape a hold.",
+        "method": "GET",
+        "path": "https://app.riffoid.com/api/workspaces/{originalWorkspaceId}",
+        "phase": "natural-drain"
+      },
+      {
+        "body": null,
+        "guard": "Read original receipt only. Do not use POST resubmission, new key, alternate Session/provider or timeout as proof.",
+        "headerSchema": {
+          "Idempotency-Key": "exact original Turn key"
+        },
+        "id": "original-turn-receipt-read",
+        "method": "GET",
+        "path": "https://app.riffoid.com/api/workspaces/{originalWorkspaceId}/sessions/{originalSessionId}/turns/receipt",
+        "phase": "natural-drain"
+      },
+      {
+        "actualContainerReleaseVerified": false,
+        "body": null,
+        "id": "native-quiescence",
+        "method": "GET",
+        "negativeOrUnknownAction": "Keep original hold; a valid409 negative proof is not success. Poll only covered original read under bounded window, no end/rebegin or new request.",
+        "negativeProofHttpStatus": 409,
+        "notPhysicalProof": true,
+        "path": "https://app.riffoid.com/api/admin/private-beta/maintenance/quiescence",
+        "phase": "natural-drain",
+        "querySchema": {
+          "additionalProperties": false,
+          "properties": {
+            "requestId": {
+              "pattern": "^[A-Za-z0-9_-]{1,128}$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "requestId"
+          ],
+          "type": "object"
+        },
+        "requiredProof": "Original operator userId/authVersion, requestId, hold/policy/control state stable before/after bounded native RPC; both Beta before/after ledgers and native cold/paired proof jointly quiescent. Native proof actor/policy identity and zero unresolved counts exact; actualContainerReleaseVerified=false. No native allocator initialization/reconcile/promotion/retirement/alarm/release.",
+        "sourceImplementedAt": "c669921f4796c5b35c6f2e049c92876f4faf7c5b",
+        "sourceStatus": "Implemented at immutable c669 for Issue248, actual PR250 root-observed Ready/green at originalhead; not currently proven merged/deployed. New servingversion check remains required.",
+        "successfulHttpStatus": 200
+      },
+      {
+        "body": null,
+        "guard": "Fresh exact original app/version/full configuration/stable controls and unfiltered complete actual instance list must match frozen actual inputs. Observed app.version11/default/max1/legacyinstances1; configuration has no literal instance_type, effective resources are exact basic. Drift stops without PATCH to history.",
+        "id": "app-before",
+        "method": "GET",
+        "pagination": "Complete bounded pagination; no name/state filter. Every original page identity/bytes/hash is bound. Incomplete/error is unknown.",
+        "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a03628c4-f032-461f-a65b-612ccac11a06",
+        "phase": "physical-baseline-and-final-preflight",
+        "query": null,
+        "transport": "Cloudflare Personal"
+      },
+      {
+        "body": null,
+        "guard": "Fresh exact original app/version/full configuration/stable controls and unfiltered complete actual instance list must match frozen actual inputs. Observed app.version11/default/max1/legacyinstances1; configuration has no literal instance_type, effective resources are exact basic. Drift stops without PATCH to history.",
+        "id": "versions-before",
+        "method": "GET",
+        "pagination": "Complete bounded pagination; no name/state filter. Every original page identity/bytes/hash is bound. Incomplete/error is unknown.",
+        "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a03628c4-f032-461f-a65b-612ccac11a06/versions",
+        "phase": "physical-baseline-and-final-preflight",
+        "query": null,
+        "transport": "Cloudflare Personal"
+      },
+      {
+        "body": null,
+        "guard": "Fresh exact original app/version/full configuration/stable controls and unfiltered complete actual instance list must match frozen actual inputs. Observed app.version11/default/max1/legacyinstances1; configuration has no literal instance_type, effective resources are exact basic. Drift stops without PATCH to history. Complete raw Dash placements are a separate mandatory conjunction, with raw population inspection and originalhistory preservation. Logical inactive labels alone do not establish it.",
+        "id": "instances-before",
+        "lastObservedRows": 6,
+        "lastObservedStates": "All six inactive; historical observation only, not empty-list/global-inactivity/logical-release evidence. Must refresh while held.",
+        "lastSafeObservation": {
+          "bytes": 1820,
+          "file": "../pi-rollout-preparation-v2/a036-instances-safe.json",
+          "sha256": "8d3a5384238e311f62963b4fd8fdd8ce55c721229e5e8c6c2c2c73c2776753ee"
+        },
+        "method": "GET",
+        "pagination": "Complete bounded pagination; no name/state filter. Every original page identity/bytes/hash is bound. Incomplete/error is unknown.",
+        "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a03628c4-f032-461f-a65b-612ccac11a06/instances-v2",
+        "phase": "physical-baseline-and-final-preflight",
+        "query": {
+          "per_page": 1000
+        },
+        "transport": "Cloudflare Personal"
+      },
+      {
+        "body": null,
+        "guard": "Fresh under exact same original hold after naturaldrain: allpages complete, rawplacements empty; logical history ids match fresh instances-v2 and original retainedsix. Combine jointBeta/native quiescence + original terminal validators. Missing/error/contradiction/>0placements retains hold and stops, no stop/destroy/reconcile/rollout.",
+        "id": "raw-dash-placements-before",
+        "method": "GET",
+        "observedSafeReceipt": {
+          "bytes": 1817,
+          "file": "../pi-rollout-preparation-v2/dash-placement-safe.json",
+          "sha256": "2dcbd02f16eff558af1237d1f4fca5a1e182e59970a352fc88c3c09b43ef391c"
+        },
+        "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/dash/applications/a03628c4-f032-461f-a65b-612ccac11a06/instances",
+        "phase": "physical-baseline-and-final-preflight",
+        "query": {
+          "per_page": 1000
+        },
+        "queryPagination": "Append exact next_page_token only on same account/app/path/per_page; no name/state filter. Preserve result_info and explicit terminal cursor. Cursor must be absent/null/empty terminal or valid nonempty string; reject false/0/objects/repetition. Bounded page cap is held/incomplete, never completeness.",
+        "responseSchema": "success=true; result.instances array and optional durable_objects array, raw populations kept separate. Inspect every placement including orphan/unjoined; never use CLI projected inactive count.",
+        "scope": "App-scoped control-plane inventory; no SDK construction or perhistoricalDO runtimeRPC; not OS/global zero.",
+        "sourceContractReview": {
+          "bytes": 11447,
+          "file": "../../nextstage/pi-rollout-preparation-v2/physical-read-contract-review.json",
+          "sha256": "98cb0da492b4603e6196a7668161d772d3401c8ce4c85b42c44508e1ed5fedd0"
+        },
+        "transport": "Supported installed Wrangler4.129 Dash application instances GET via supported Cloudflare account surface; no fullCLI initializer."
+      },
+      {
+        "bodyBytesSha256": null,
+        "bodyCanonicalSha256": "a970c950385fa8f332e439753af463549f6487ff43f38e1548b7ef2d96ea8d8a",
+        "bodySchema": {
+          "additionalProperties": false,
+          "properties": {
+            "description": {
+              "const": "JHG-46 original a036 image rollout 5b3d8392-7917-493f-a705-2205b7e1b470"
+            },
+            "kind": {
+              "const": "full_auto"
+            },
+            "step_percentage": {
+              "const": 100
+            },
+            "strategy": {
+              "const": "rolling"
+            },
+            "target_configuration": {
+              "additionalProperties": false,
+              "properties": {
+                "command": {
+                  "const": []
+                },
+                "entrypoint": {
+                  "const": []
+                },
+                "image": {
+                  "const": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-issue165-trusted-pi@sha256:f18a826d40b2fd60e2cf8c49d7f7b8f595fa609fe2be4c28593479ae846960ea"
+                },
+                "instance_type": {
+                  "const": "basic"
+                },
+                "observability": {
+                  "const": {
+                    "logs": {
+                      "enabled": true
+                    }
+                  }
+                }
+              },
+              "required": [
+                "command",
+                "entrypoint",
+                "observability",
+                "instance_type",
+                "image"
+              ],
+              "type": "object"
+            }
+          },
+          "required": [
+            "description",
+            "strategy",
+            "kind",
+            "step_percentage",
+            "target_configuration"
+          ],
+          "type": "object"
+        },
+        "bodyTemplate": {
+          "description": "JHG-46 original a036 image rollout 5b3d8392-7917-493f-a705-2205b7e1b470",
+          "kind": "full_auto",
+          "step_percentage": 100,
+          "strategy": "rolling",
+          "target_configuration": {
+            "command": [],
+            "entrypoint": [],
+            "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-issue165-trusted-pi@sha256:f18a826d40b2fd60e2cf8c49d7f7b8f595fa609fe2be4c28593479ae846960ea",
+            "instance_type": "basic",
+            "observability": {
+              "logs": {
+                "enabled": true
+              }
+            }
+          }
+        },
+        "currentReadOnlyOrNormalizedKeysNotTransmitted": [
+          "disk",
+          "memory",
+          "memory_mib",
+          "network",
+          "runtime",
+          "vcpu"
+        ],
+        "effectiveResourceProfile": {
+          "basis": "current actual numeric resources exactly match official basic definition; no literal configuration.instance_type was present",
+          "disk_mb": 4000,
+          "label": "basic",
+          "memory_mib": 1024,
+          "vcpu": 0.25
+        },
+        "effects": "May stop/replace/start actual containers. No model/Turn/Run invocation; no zero-container guarantee.",
+        "fixedImage": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-issue165-trusted-pi@sha256:f18a826d40b2fd60e2cf8c49d7f7b8f595fa609fe2be4c28593479ae846960ea",
+        "fullTargetConfigurationLiteralSchemaFrozen": true,
+        "id": "rollout-once",
+        "literalFullCurrentReadConfigurationClone": false,
+        "maxMutatingAttempts": 1,
+        "method": "POST",
+        "nonImageConfigurationReadbackRule": "canonical original configuration after removing image must equal fresh after configuration after removing image; if any normalized field differs, hold and stop without retry/rollback",
+        "originalAckRolloutId": null,
+        "originalAckTargetVersion": null,
+        "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a03628c4-f032-461f-a65b-612ccac11a06/rollouts",
+        "phase": "image-rollout",
+        "physicalCriterion": "While exact original hold remains valid: complete raw app-scoped Dash placements0 plus complete logical history, original six IDs retained; any new history entry binds original rollout. Require fresh joint Beta/native quiescence and original immutable terminal proofs, exact accepted rollout completed/targetversion/f18 and full nonimage configuration canonical equality. Unknown, incomplete, contradictory or >0 placements retains hold and stops; no automatic stop/destroy/retry/rollback.",
+        "preflightIsAtomicCas": false,
+        "preparedRequestSource": {
+          "bytes": 4244,
+          "file": "../pi-rollout-preparation-v2/rollout-input.json",
+          "sha256": "d7956988abe42af2089f4ab886530481e0cadeb7a6b1d5868fd1ac262971ec86"
+        },
+        "requestId": "5b3d8392-7917-493f-a705-2205b7e1b470",
+        "requires": "Named single-writer owner/window plus immediate exact same original app/version/config/allversions/instances and combined maintenance proof; fixed a970 body, grant/source/baseline/wire SHA and deadline bound before once intent. Require fresh app-scoped raw Dash placements0 plus original terminal/ledger validators while same hold is live; no construction of historical Sandbox objects.",
+        "serverConditionalWriteDocumented": false,
+        "sourceSchema": {
+          "bytes": 9416,
+          "file": "../pi-rollout-preparation-v2/official-api-schema.json",
+          "sha256": "76f29327cd5542b3f074be303aefe2d2a1e4e35f13e52a626b4966056c95bfbf"
+        },
+        "targetConfigurationRule": "only image; supported command/entrypoint/observability copied; explicit basic maps unchanged numeric resources; platform-derived fields must compare equal on actual readback",
+        "targetConfigurationSupportedKeys": [
+          "authorized_keys",
+          "command",
+          "entrypoint",
+          "environment_variables",
+          "image",
+          "instance_type",
+          "observability"
+        ],
+        "transport": "Cloudflare Personal",
+        "unknown": "Keep exact original5b3 request/body/lock/intent/ACK and maintenance hold; read original app/versions/instances and trusted-ACK exact rollout only. No POST retry/PATCH/rollback/new request. Historical observed version11 is not a guessed future target.",
+        "wireSerializationRule": "Freeze actual UTF-8 wire serialization and SHA before once intent. bodyCanonicalSha256 hashes sorted-key compact canonical object, not an unfrozen pretty/wire serialization."
+      },
+      {
+        "body": null,
+        "guard": "ID only from trusted original POST ACK. No ID inferred from latest rollout or hardcoded historical version. Require exact target_configuration/image, target_version, completed terminal, version distribution and health policy frozen before execution. Limited history cannot identify a lost newPOST ACK or prove its success.",
+        "historicalListReturnCountReportedByRoot": 10,
+        "id": "exact-rollout-read",
+        "method": "GET",
+        "originalRolloutId": null,
+        "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a03628c4-f032-461f-a65b-612ccac11a06/rollouts/{originalRolloutId}",
+        "phase": "rollout-readback",
+        "safeAvailabilityEvidence": {
+          "bytes": 1542,
+          "file": "../pi-rollout-preparation-v2/rollout-get-surface-v2-safe.json",
+          "sha256": "05eb7cb8c854df3c855c3d631548aa3d32975dabba17c3f304be2ff88dd1451d"
+        },
+        "safeReceiptDoesNotRecordReturnedCount": true,
+        "source": "Installed frozen Wrangler RolloutsService pure-GET surface observed by root: limited list request limit1 returned10 perroot actual observation and historical exact GET200 completed10→11. Existing safe receipt records requestquery, not returnedrowcount. Not fullhistory or newPOST proof; future ID only from trusted neworiginal ACK.",
+        "transport": "Cloudflare Personal"
+      },
+      {
+        "body": null,
+        "guard": "Complete original app/config/versions/actual-instance readback; preserve every old version/config row and all non-image stable controls. Record dynamic observations without silently normalizing them; preserve all other apps/versions/resources against the sealed complete baseline. Require full configuration-minus-image canonical equality to fresh before; normalized fields are never silently omitted. All six previously observed IDs, any new actual IDs and state/health/distribution must satisfy the still-to-be-frozen criterion. Legacyinstances1 is not physical count.",
+        "id": "app-after",
+        "method": "GET",
+        "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a03628c4-f032-461f-a65b-612ccac11a06",
+        "phase": "rollout-readback",
+        "query": null,
+        "transport": "Cloudflare Personal"
+      },
+      {
+        "body": null,
+        "guard": "Complete original app/config/versions/actual-instance readback; preserve every old version/config row and all non-image stable controls. Record dynamic observations without silently normalizing them; preserve all other apps/versions/resources against the sealed complete baseline. Require full configuration-minus-image canonical equality to fresh before; normalized fields are never silently omitted. All six previously observed IDs, any new actual IDs and state/health/distribution must satisfy the still-to-be-frozen criterion. Legacyinstances1 is not physical count.",
+        "id": "versions-after",
+        "method": "GET",
+        "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a03628c4-f032-461f-a65b-612ccac11a06/versions",
+        "phase": "rollout-readback",
+        "query": null,
+        "transport": "Cloudflare Personal"
+      },
+      {
+        "body": null,
+        "guard": "Complete original app/config/versions/actual-instance readback; preserve every old version/config row and all non-image stable controls. Record dynamic observations without silently normalizing them; preserve all other apps/versions/resources against the sealed complete baseline. Require full configuration-minus-image canonical equality to fresh before; normalized fields are never silently omitted. All six previously observed IDs, any new actual IDs and state/health/distribution must satisfy the still-to-be-frozen criterion. Legacyinstances1 is not physical count. Complete raw Dash placements are a separate mandatory conjunction, with raw population inspection and originalhistory preservation. Logical inactive labels alone do not establish it.",
+        "id": "instances-after",
+        "method": "GET",
+        "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a03628c4-f032-461f-a65b-612ccac11a06/instances-v2",
+        "phase": "rollout-readback",
+        "query": {
+          "per_page": 1000
+        },
+        "transport": "Cloudflare Personal"
+      },
+      {
+        "body": null,
+        "guard": "While sameoriginalhold stable, fresh full rawplacements0 + complete logicalhistory, originalsixIDs retained and every newhistoryentry bound to original acceptedrollout. Require exact originalACK rollout completed/targetversion/f18/nonimageconfiguration canonicalequal + fresh jointBeta/native originalterminalproofs. Unknown/>0/incomplete retains hold; no automaticdestroy/retry/rollback/end.",
+        "id": "raw-dash-placements-after",
+        "method": "GET",
+        "observedSafeReceipt": {
+          "bytes": 1817,
+          "file": "../pi-rollout-preparation-v2/dash-placement-safe.json",
+          "sha256": "2dcbd02f16eff558af1237d1f4fca5a1e182e59970a352fc88c3c09b43ef391c"
+        },
+        "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/dash/applications/a03628c4-f032-461f-a65b-612ccac11a06/instances",
+        "phase": "rollout-readback",
+        "query": {
+          "per_page": 1000
+        },
+        "queryPagination": "Append exact next_page_token only on same account/app/path/per_page; no name/state filter. Preserve result_info and explicit terminal cursor. Cursor must be absent/null/empty terminal or valid nonempty string; reject false/0/objects/repetition. Bounded page cap is held/incomplete, never completeness.",
+        "responseSchema": "success=true; result.instances array and optional durable_objects array, raw populations kept separate. Inspect every placement including orphan/unjoined; never use CLI projected inactive count.",
+        "scope": "App-scoped control-plane inventory; no SDK construction or perhistoricalDO runtimeRPC; not OS/global zero.",
+        "sourceContractReview": {
+          "bytes": 11447,
+          "file": "../../nextstage/pi-rollout-preparation-v2/physical-read-contract-review.json",
+          "sha256": "98cb0da492b4603e6196a7668161d772d3401c8ce4c85b42c44508e1ed5fedd0"
+        },
+        "transport": "Supported installed Wrangler4.129 Dash application instances GET via supported Cloudflare account surface; no fullCLI initializer."
+      },
+      {
+        "bodySchema": {
+          "additionalProperties": false,
+          "properties": {
+            "action": {
+              "enum": [
+                "begin",
+                "end"
+              ]
+            },
+            "expectedPolicySha256": {
+              "pattern": "^[a-f0-9]{64}$",
+              "type": "string"
+            },
+            "expectedRevision": {
+              "maximum": 9007199254740991,
+              "minimum": 0,
+              "type": "integer"
+            },
+            "requestId": {
+              "pattern": "^[A-Za-z0-9_-]{1,128}$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "action",
+            "requestId",
+            "expectedRevision",
+            "expectedPolicySha256"
+          ],
+          "type": "object"
+        },
+        "bodyTemplate": {
+          "action": "end",
+          "expectedPolicySha256": null,
+          "expectedRevision": null,
+          "requestId": null
+        },
+        "guard": "Only after trusted exactoriginalACK rollout completed/expectedtargetversion/f18/fullnonimagecanonicalequal, complete app/allversions/otherresource preservation, fresh samehold rawDash placements0 and logicalhistory originalsixretained/newentriesoriginalbound, combinedBeta/native originalterminalproofs: sameoperator/authVersion/request/policy/control and freshcurrent state.revision. End itself rechecks sameoriginal quiescence; no forcepause/kill/policy or autoexpiry.",
+        "id": "maintenance-end",
+        "maxMutatingAttempts": 1,
+        "method": "POST",
+        "onUnknown": "Keep admission hold/locks. No automatic expiry/end or owner transfer.",
+        "originRequired": "https://app.riffoid.com",
+        "path": "https://app.riffoid.com/api/admin/private-beta/maintenance",
+        "phase": "hold-release",
+        "unknownRead": "GET maintenance?requestId=original; require exact original end receipt plus current hold null and expected revision. Missing receipt/current mismatch is unknown; historical ACK alone is not current-state proof."
+      },
+      {
+        "body": null,
+        "guard": "Confirm exact original end receipt/current state before switching out of original operator session.",
+        "id": "maintenance-end-read",
+        "method": "GET",
+        "path": "https://app.riffoid.com/api/admin/private-beta/maintenance",
+        "phase": "hold-release",
+        "querySchema": {
+          "additionalProperties": false,
+          "properties": {
+            "requestId": {
+              "pattern": "^[A-Za-z0-9_-]{1,128}$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "requestId"
+          ],
+          "type": "object"
+        }
+      },
+      {
+        "bodySchema": {
+          "additionalProperties": false,
+          "properties": {},
+          "required": [],
+          "type": "object"
+        },
+        "bodyTemplate": {},
+        "executionMode": "Normal existing UI auth flow only, after maintenance closure is independently confirmed. No cookie/token extraction.",
+        "id": "operator-sign-out",
+        "method": "POST",
+        "path": "https://app.riffoid.com/api/auth/sign-out",
+        "phase": "ordinary-identity-switch"
+      },
+      {
+        "bodySchema": {
+          "additionalProperties": false,
+          "properties": {
+            "callbackURL": {
+              "const": "https://app.riffoid.com/"
+            },
+            "provider": {
+              "const": "google"
+            }
+          },
+          "required": [
+            "provider",
+            "callbackURL"
+          ],
+          "type": "object"
+        },
+        "bodyTemplate": {
+          "callbackURL": "https://app.riffoid.com/",
+          "provider": "google"
+        },
+        "executionMode": "Normal existing Google account <approved-ordinary-account> selection, ordinary UI only. Auth callback/query/cookies remain in browser; do not replay callback or copy credential values.",
+        "id": "ordinary-sign-in",
+        "method": "POST",
+        "path": "https://app.riffoid.com/api/auth/sign-in/social",
+        "phase": "ordinary-identity-switch"
+      },
+      {
+        "body": null,
+        "guard": "Fresh userId and selected personal tenant; bracket the extra identity projection with another GET /api/me, same user/tenant.",
+        "id": "ordinary-me-before",
+        "method": "GET",
+        "path": "https://app.riffoid.com/api/me",
+        "phase": "ordinary-identity-switch"
+      },
+      {
+        "bodySchema": {
+          "additionalProperties": false,
+          "properties": {
+            "params": {
+              "maxItems": 3,
+              "minItems": 3,
+              "prefixItems": [
+                {
+                  "description": "fresh /api/me userId",
+                  "type": "string"
+                },
+                {
+                  "const": "<approved-ordinary-account>"
+                },
+                {
+                  "description": "same fresh /api/me selected active personal tenantId",
+                  "type": "string"
+                }
+              ],
+              "type": "array"
+            },
+            "sql": {
+              "const": "SELECT u.id AS userId,u.auth_version AS authVersion,u.status AS userStatus,t.id AS tenantId,t.kind AS tenantKind,t.status AS tenantStatus,m.role AS membershipRole,m.status AS membershipStatus,EXISTS(SELECT 1 FROM catalog_platform_roles r WHERE r.user_id=u.id AND r.status='active') AS hasActivePlatformRole,(SELECT i.id FROM catalog_invitations i WHERE i.accepted_by=u.id AND i.state='accepted' AND i.purpose='user' AND i.issued_by IS NOT NULL ORDER BY i.accepted_at,i.id LIMIT 1) AS invitationId FROM catalog_users u JOIN catalog_tenants t ON t.owner_user_id=u.id JOIN catalog_memberships m ON m.tenant_id=t.id AND m.user_id=u.id WHERE u.id=? AND u.normalized_email=? AND t.id=? AND t.kind='personal' LIMIT 2"
+            }
+          },
+          "required": [
+            "sql",
+            "params"
+          ],
+          "type": "object"
+        },
+        "bodyTemplate": {
+          "params": [
+            null,
+            "<approved-ordinary-account>",
+            null
+          ],
+          "sql": "SELECT u.id AS userId,u.auth_version AS authVersion,u.status AS userStatus,t.id AS tenantId,t.kind AS tenantKind,t.status AS tenantStatus,m.role AS membershipRole,m.status AS membershipStatus,EXISTS(SELECT 1 FROM catalog_platform_roles r WHERE r.user_id=u.id AND r.status='active') AS hasActivePlatformRole,(SELECT i.id FROM catalog_invitations i WHERE i.accepted_by=u.id AND i.state='accepted' AND i.purpose='user' AND i.issued_by IS NOT NULL ORDER BY i.accepted_at,i.id LIMIT 1) AS invitationId FROM catalog_users u JOIN catalog_tenants t ON t.owner_user_id=u.id JOIN catalog_memberships m ON m.tenant_id=t.id AND m.user_id=u.id WHERE u.id=? AND u.normalized_email=? AND t.id=? AND t.kind='personal' LIMIT 2"
+        },
+        "freshParamsResolved": false,
+        "guard": "Exact sql hash and actual private CATALOG binding must match source. Freeze only fresh /api/me user/tenant params, perform one exact SELECT, require zero-write authority metadata, then matching fresh me bracket. No auth_session/auth_account/credential/slot/token fields. Null params never sent; query alone is not current-browser-session proof. Any error/mismatch stops ordinary acceptance, does not change identity or create alternate project.",
+        "id": "ordinary-extra-identity-projection",
+        "independentRequestReviewPending": true,
+        "method": "POST",
+        "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/d1/database/{privatelySourceBoundCatalogDatabaseId}/query",
+        "phase": "ordinary-identity-switch",
+        "privatePreparedQuery": {
+          "bytes": 2019,
+          "sha256": "4234ad553e12217a28240dee3f67912bbe37acc5468012f64543627695a30e68"
+        },
+        "requestNotExecuted": true,
+        "requiredAuthorityMeta": {
+          "changed_db": false,
+          "changes": 0,
+          "rows_written": 0
+        },
+        "requiredResult": {
+          "authVersion": 2,
+          "hasActivePlatformRole": 0,
+          "invitationId": "nonempty original accepted user invitation with issued_by present",
+          "membershipRole": "owner",
+          "membershipStatus": "active",
+          "rowCount": 1,
+          "tenantId": null,
+          "tenantKind": "personal",
+          "tenantStatus": "active",
+          "userId": null,
+          "userStatus": "active"
+        },
+        "safePreparation": {
+          "bytes": 892,
+          "file": "../identity-read-preparation-v1/safe-preparation.json",
+          "sha256": "ee156a1c5c1d7191ce848e6dd4e2e49b3bfadce6c08cfcd93aaa474760129d72"
+        },
+        "semanticOperation": "One read-only single SELECT; POST does not authorize other SQL.",
+        "sqlSha256": "615b027594d5838ccd53fe928c6f7f1152a316c4adced127414668c0d0e23446",
+        "supportedD1CatalogBinding": {
+          "actualBindingFromVerifiedSection": true,
+          "bindingName": "CATALOG",
+          "bindingType": "d1",
+          "databaseIdPublished": false,
+          "privateProjectionBytes": 144,
+          "privateProjectionSha256": "a4777a22ceb2d59dffbb42feb1d398faa4c3e1f397c1103469e7f06bee5b4c6b",
+          "privateSourceSectionBytes": 25199,
+          "privateSourceSectionSha256": "c7f7d7a2c3aafa7f071b5c90ed9af0c440eb547f596097d8cf264aa56b7d4535"
+        },
+        "transport": "Supported Cloudflare OpenAPI D1 query; actual private binding resolved in private execution material, never guessed or published."
+      },
+      {
+        "body": null,
+        "guard": "Same actual userId/personal tenant as first me and approved identity projection; no operator principal reused as ordinary evidence.",
+        "id": "ordinary-me-after",
+        "method": "GET",
+        "path": "https://app.riffoid.com/api/me",
+        "phase": "ordinary-identity-switch"
+      },
+      {
+        "actualProjectId": null,
+        "actualWorkspaceGeneration": null,
+        "actualWorkspaceId": null,
+        "bodySchema": {
+          "additionalProperties": false,
+          "properties": {
+            "starterVersion": {
+              "const": "blank-v1"
+            },
+            "title": {
+              "const": "JHG46 Native Pages Acceptance 20261018"
+            }
+          },
+          "required": [
+            "title",
+            "starterVersion"
+          ],
+          "type": "object"
+        },
+        "bodyTemplate": {
+          "starterVersion": "blank-v1",
+          "title": "JHG46 Native Pages Acceptance 20261018"
+        },
+        "guard": "Ordinary UI only; one frozen original key/body. Bind IDs only from original actual receipt and trusted ProjectRuntime initialization/release. Unknown means readonly original creation reconciliation, never another key/project.",
+        "headerSchema": {
+          "Idempotency-Key": null
+        },
+        "id": "create-one-blank",
+        "maxMutatingAttempts": 1,
+        "method": "POST",
+        "path": "https://app.riffoid.com/api/tenants/{actualPersonalTenantId}/projects",
+        "phase": "ordinary-finite-acceptance"
+      },
+      {
+        "bodySchema": {
+          "additionalProperties": false,
+          "properties": {
+            "title": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "title"
+          ],
+          "type": "object"
+        },
+        "bodyTemplate": {
+          "title": null
+        },
+        "guard": "First message UI may create Session1 automatically: do not add an extra New Session click. Session1 has T1/T2; create Session2 only after R2 and all original release proofs, for T3 only. Freeze actual generated title/key before each POST; no fabricated Session IDs.",
+        "headerSchema": {
+          "Idempotency-Key": null
+        },
+        "id": "create-two-sessions-total",
+        "method": "POST",
+        "path": "https://app.riffoid.com/api/workspaces/{actualWorkspaceId}/sessions",
+        "phase": "ordinary-finite-acceptance",
+        "totalSessionLimit": 2
+      },
+      {
+        "artifact": "In T2 only: one <=30000ms project_bash creates exact17408B ASCII prefix+LF+x file, then project_read materializes actual JSON tool-result artifact. Persist actual artifactId; artifact SHA is JSON result hash, not file SHA. T3 only changes series/version and preserves artifactId/other bytes.",
+        "bodySchema": {
+          "additionalProperties": false,
+          "properties": {
+            "message": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "message"
+          ],
+          "type": "object"
+        },
+        "bodyTemplate": {
+          "message": null
+        },
+        "explicitTurnLimit": 3,
+        "guard": "Every original Turn must finish trusted canonical+Session checkpoint/CAS and native/tool/container/capacity release before any next Turn/Session. No fourth repair Turn, retry, provider fallback or new policy/window workaround.",
+        "headerSchema": {
+          "Idempotency-Key": null
+        },
+        "id": "three-turns-only",
+        "method": "POST",
+        "normalPins": {
+          "gatewayId": "riffology-g5-20260916",
+          "lazyProjectEnabled": false,
+          "maxInputTokensPerCall": 262144,
+          "maxOutputTokensPerCall": 4096,
+          "model": "gpt-5.6-luna",
+          "profileSha256": "7291181d366d597b4c5ebcf365d43dd455904bfdcc4825ba7bf020aac9903341",
+          "profileVersion": "g5-openai-luna-20260916-wiring-v1",
+          "protocol": "openai-responses",
+          "provider": "openai",
+          "providerRetryOrFallback": false,
+          "trustedPiRequestDeadlineMs": 115000,
+          "workspaceRuntimeReuseEnabled": false
+        },
+        "order": "T1 in Session1 => saved R1; T2 same Session1 slash R1 => saved R2/V1; T3 only Session2 slash R2 => saved R3/V2.",
+        "path": "https://app.riffoid.com/api/workspaces/{actualWorkspaceId}/sessions/{actualSessionId}/turns",
+        "phase": "ordinary-finite-acceptance",
+        "promptSources": [
+          {
+            "actualUiWireCaptureStillRequired": true,
+            "derivedCompactJsonBodyBytes": 3473,
+            "derivedCompactJsonBodySha256": "36ee35cbd1a879f0b2ac8771f7bc1410ec6d82415f1b9f80f4d1d56ecb51f16c",
+            "derivedUiTrimmedMessageBytes": 3442,
+            "derivedUiTrimmedMessageSha256": "3a0d9e002bdc15e26779d0ce4f2bdbad0e5f9932e20a59c88d0c549f5164d3a2",
+            "file": "../ordinary-acceptance-v2/prompts/turn-1-create-skill.md",
+            "fileBytes": 3443,
+            "fileSha256": "1df6ef71590068a5aca85e3d7ab8683aeee80b96d8ebb23f9e51b4727bba1525"
+          },
+          {
+            "actualUiWireCaptureStillRequired": true,
+            "derivedCompactJsonBodyBytes": 2167,
+            "derivedCompactJsonBodySha256": "e5b162b585e36856fffae57f03f20e6539079a9e82e18743b5d0b279cc64299f",
+            "derivedUiTrimmedMessageBytes": 2100,
+            "derivedUiTrimmedMessageSha256": "beafecf06f62453d769d0935b529276fd0e3b771351958f289c284e490c8a621",
+            "file": "../ordinary-acceptance-v2/prompts/turn-2-build-v1.md",
+            "fileBytes": 2101,
+            "fileSha256": "1e59966637fec33c3d2d5728ed1c4b9c8c00c30dee990fdeb2866ddf99afe6df"
+          },
+          {
+            "actualUiWireCaptureStillRequired": true,
+            "derivedCompactJsonBodyBytes": 979,
+            "derivedCompactJsonBodySha256": "302c8d053d2227f5ac6790bbc685c1f3e2551f78fdf31de7966b71e6ae3e9852",
+            "derivedUiTrimmedMessageBytes": 961,
+            "derivedUiTrimmedMessageSha256": "2757423b118192fcd82380ad48a2ab5a011c4cf734cb2630cbc3e3d32d05b018",
+            "file": "../ordinary-acceptance-v2/prompts/turn-3-cold-edit-v2.md",
+            "fileBytes": 962,
+            "fileSha256": "c8c858c602fbc2c923c4b9c2e400696fc45527faaa25b54287eaf59434cea149"
+          }
+        ]
+      },
+      {
+        "body": null,
+        "guard": "Use complete returned binding names/types only, combined with full actualsource/version/settings/resource preservation. Beforeopen gateabsent; afteropen one secret_text newkey; afterclose absent and original11secret identities/types preserved. Never read/claim plaintext/hash or inspect other secretvalues. Incomplete/error is unknown.",
+        "id": "browser-gate-secret-inventory-read",
+        "method": "GET",
+        "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/scripts/riffology-m1-gateway-staging/secrets",
+        "phase": "gate-before-after-preservation",
+        "schemaSource": {
+          "bytes": 2737,
+          "file": "../browser-gate-ops-v1/schema-source.json",
+          "sha256": "e2aedfbd953fda94986f985e5e7c68b3a6f09c044aebb8ffa855b5b2819be76a"
+        }
+      },
+      {
+        "bodySchema": {
+          "additionalProperties": false,
+          "properties": {
+            "name": {
+              "const": "PROJECT_VIEW_BROWSER_POLICY_JSON"
+            },
+            "text": {
+              "description": "Exact deterministic JSON.stringify of production-parsed sole-grant policy; UTF8<=16384, no nulls, narrower4h and human Oct20 rules.",
+              "type": "string"
+            },
+            "type": {
+              "const": "secret_text"
+            }
+          },
+          "required": [
+            "name",
+            "type",
+            "text"
+          ],
+          "type": "object"
+        },
+        "bodyTemplate": {
+          "name": "PROJECT_VIEW_BROWSER_POLICY_JSON",
+          "text": null,
+          "type": "secret_text"
+        },
+        "deferredIds": "Initial execution grant must explicitly authorize deterministic binding to the single original creation receipt, or pause for a concrete supplementary gate grant once those IDs exist. Never send null/guessed IDs or broaden to all users/projects.",
+        "exactWireBodySha256": null,
+        "executionMechanism": "Same root direct existing supported connector, using purefactory body and exclusive originalintent. Immediately verify actual fullwitness/latest=sole100%active/source/bindings before onePUT, persist actualwire+ACK and read back. No newnetworkrunner implementation.",
+        "factoryFunction": "openRequest(plan,witness,now)",
+        "factorySource": {
+          "bytes": 4798,
+          "file": "../browser-gate-ops-v1/requests.mjs",
+          "sha256": "8920716d09899d924f5226afd4d50c4fbbb66e8d8d3fbfd98a175132940ba752"
+        },
+        "guard": "Only after R2 originalsave/release. Rootreviewed human grant, actual fresh originalcreate/R2/me/Catalog receipt authorities must bind sole exactactor/scope/generation and ordinary authVersion2. Beforewrite source9c8 unchanged; expectedversion=latest=sole100%active; gateabsent, bindings106/secrets11. Full stableMetadata/controlPlane authorities match, not count-only. Exclusive originalintent records exact transmittedUTF8 serialization/SHA before onePUT. No null/guessed IDs, wildcard/extra grant or route fallback.",
+        "headers": {
+          "content-type": "application/json"
+        },
+        "id": "browser-gate-open",
+        "intendedBindingDelta": "Only add previously absent PROJECT_VIEW_BROWSER_POLICY_JSON as secret_text; expected107bindings/12secrets, all original106 bindings/names/types/settings and resources exactpreserved. No overwrite preexistinggate, no fullWorker/assets PUT.",
+        "maxMutatingAttempts": 1,
+        "method": "PUT",
+        "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/scripts/riffology-m1-gateway-staging/secrets",
+        "phase": "after-R2-release-before-browser-check",
+        "policyRelationalGuards": {
+          "enabled": true,
+          "endsAtAtMost": "2026-10-20T15:59:59.999Z",
+          "grantCount": 1,
+          "identityActorAuthVersionMustBeOrdinaryExpected": 2,
+          "maximumEndsAtMinusStartsAtMs": 14400000,
+          "openNowAtLeastStartsAtAndBeforeEndsAt": true,
+          "startAndEndInsideExplicitHumanWindow": true
+        },
+        "policyTemplate": {
+          "dataEgress": "accepted",
+          "enabled": true,
+          "endsAt": null,
+          "grants": [
+            {
+              "actor": null,
+              "scope": null
+            }
+          ],
+          "schema": "project-view-browser-policy/v1",
+          "startsAt": null
+        },
+        "policyValueSchema": {
+          "additionalProperties": false,
+          "properties": {
+            "dataEgress": {
+              "const": "accepted"
+            },
+            "enabled": {
+              "const": true
+            },
+            "endsAt": {
+              "minimum": 2,
+              "type": "integer"
+            },
+            "grants": {
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "actor": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "authVersion": {
+                        "const": 2
+                      },
+                      "userId": {
+                        "pattern": "^[A-Za-z0-9_-]{1,128}$",
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "userId",
+                      "authVersion"
+                    ],
+                    "type": "object"
+                  },
+                  "scope": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "projectId": {
+                        "pattern": "^[A-Za-z0-9_-]{1,128}$",
+                        "type": "string"
+                      },
+                      "tenantId": {
+                        "pattern": "^[A-Za-z0-9_-]{1,128}$",
+                        "type": "string"
+                      },
+                      "workspaceGeneration": {
+                        "maximum": 9007199254740991,
+                        "minimum": 1,
+                        "type": "integer"
+                      },
+                      "workspaceId": {
+                        "pattern": "^[A-Za-z0-9_-]{1,128}$",
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "tenantId",
+                      "projectId",
+                      "workspaceId",
+                      "workspaceGeneration"
+                    ],
+                    "type": "object"
+                  }
+                },
+                "required": [
+                  "scope",
+                  "actor"
+                ],
+                "type": "object"
+              },
+              "maxItems": 1,
+              "minItems": 1,
+              "type": "array"
+            },
+            "schema": {
+              "const": "project-view-browser-policy/v1"
+            },
+            "startsAt": {
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          "required": [
+            "schema",
+            "enabled",
+            "startsAt",
+            "endsAt",
+            "dataEgress",
+            "grants"
+          ],
+          "type": "object"
+        },
+        "preparedPlan": {
+          "bytes": 1025,
+          "file": "../browser-gate-ops-v1/plan.pending.json",
+          "sha256": "5932e9fe569394ed655a63fa5eaca8321180a8a1d6a404bce3bc5a887bf5dd97"
+        },
+        "request": null,
+        "unknown": "Retain originalintent/body/ACK/versionidentity. Only sameoriginal GET reconciliation; do not repeatPUT, issueDELETEasunknownworkaround, rollback/createDraft/versionAPI/newrequest.",
+        "versionEffect": "Direct Secrets PUT creates/deploys new version; bind actual acknowledged ownopen version through trusted originalACK and readback. No examined serverCAS, require exclusiveowner/freshordering; no latestdraft auto-deploy workaround.",
+        "withinSameBatchWindowMaximumMs": 14400000,
+        "writeOnlyEvidence": "No independent plaintext/hash GET. Persist actual transmittedfixedbody hash plus trusted originalACK, currentversion/source, fullpreservation and intended originalprojectviews admission. Preparation JSONhash is not by itself actualtransport proof."
+      },
+      {
+        "body": null,
+        "guard": "ReadOnly native DOM browser; current package five assets/two pages. R2 V1 factor2=20/factor5=50; pause/resume; real subscriptions and artifact list/chunks; refresh/leave saved defaults. R3 V2 factor2=24/factor5=60, cold reload no replay. Browser values local/unverified.",
+        "id": "browser-package-read",
+        "method": "GET",
+        "path": "https://app.riffoid.com/api/workspaces/{actualWorkspaceId}/project-views",
+        "phase": "ordinary-browser-check",
+        "querySchema": {
+          "additionalProperties": false,
+          "properties": {
+            "identity": {
+              "pattern": "^[a-f0-9]{64}$",
+              "type": "string"
+            }
+          },
+          "required": [],
+          "type": "object"
+        }
+      },
+      {
+        "body": null,
+        "guard": "Use real riffoid listArtifacts/readArtifact pagination and nextOffset. Reassemble multi-chunk bytes, verify actual receipt bytes/SHA independently, then parse kind/path/content/prefix; no fetch or direct tool/model call from page.",
+        "id": "browser-artifact-list",
+        "method": "GET",
+        "path": "https://app.riffoid.com/api/workspaces/{actualWorkspaceId}/project-view-artifacts",
+        "phase": "ordinary-browser-check",
+        "querySchema": {
+          "additionalProperties": false,
+          "properties": {
+            "cursor": {
+              "pattern": "^(?:[a-f0-9]{64}:)?[a-f0-9]{64}:[a-f0-9]{64}:artifact-[a-f0-9]{60}$",
+              "type": "string"
+            },
+            "identity": {
+              "pattern": "^[a-f0-9]{64}$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "identity"
+          ],
+          "type": "object"
+        }
+      },
+      {
+        "body": null,
+        "guard": "Actual SDK starts offset0 then follows nextOffset until null; receipt and package identity must stay exact. Decode and independently hash original returned bytes before parsing JSON. No body, fetch or invented SDK method.",
+        "id": "browser-artifact-chunk",
+        "method": "GET",
+        "path": "https://app.riffoid.com/api/workspaces/{actualWorkspaceId}/project-view-artifacts/{actualArtifactId}",
+        "pathIdSchema": {
+          "pattern": "^(?:artifact-[a-f0-9]{60}|manual-artifact-[a-f0-9]{64})$",
+          "type": "string"
+        },
+        "phase": "ordinary-browser-check",
+        "querySchema": {
+          "additionalProperties": false,
+          "properties": {
+            "identity": {
+              "pattern": "^[a-f0-9]{64}$",
+              "type": "string"
+            },
+            "offset": {
+              "pattern": "^(0|[1-9][0-9]{0,6})$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "identity"
+          ],
+          "type": "object"
+        }
+      },
+      {
+        "body": null,
+        "bodySchema": {
+          "absent": true
+        },
+        "closeReadback": "GET secret names/types and fullmetadata prove originalkeyabsence, source/resourcespreserved; existing exactscope projectviews route restores originaldefaultclosed with remote policy stillclosed. No plaintext/hashGET claim. Verify originalframe/port/listener/graphics cleanup; retain allRevisions/project/usage/history.",
+        "exactWireBodySha256": null,
+        "executionMechanism": "Same root direct existing supported connector, using purefactory DELETE and original ownedopenreceipt. Exclusive originalcloseintent and immediateactual fullwitness, oneDELETE ACK and readback. No newnetworkrunner implementation.",
+        "factoryFunction": "closeRequest(plan,witness,ownOpen,now)",
+        "factorySource": {
+          "bytes": 4798,
+          "file": "../browser-gate-ops-v1/requests.mjs",
+          "sha256": "8920716d09899d924f5226afd4d50c4fbbb66e8d8d3fbfd98a175132940ba752"
+        },
+        "guard": "After R3save/terminal/releases and browserchecks, within explicit human cleanupwindow: exact acknowledgedoriginalopen request/actualversion/bodySHA/actor; current latest=sole100%active=ownedopen version and differs originalclosed. Source9c8/stablemetadata/controlPlane same; gate secret_text,107bindings/12secrets. Persist one exclusiveDELETEintent, no body, no optional url_encoded needed for fixedsafe key. UnknownACK/thirdpartyversion/source/metadata drift stops withoutDELETE.",
+        "id": "browser-gate-close",
+        "intendedBindingDelta": "Remove only owned originalsecret key; restore106bindings/11secrets and gateabsence, all originalbinding identities/types/config and otherresources preserved. Does not set enabled=false or replaceWorker.",
+        "maxMutatingAttempts": 1,
+        "method": "DELETE",
+        "ownOpen": {
+          "acknowledged": false,
+          "actor": null,
+          "bodySha256": null,
+          "requestId": null,
+          "versionId": null
+        },
+        "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/scripts/riffology-m1-gateway-staging/secrets/PROJECT_VIEW_BROWSER_POLICY_JSON",
+        "phase": "finite-close",
+        "policyRule": "Same originalfinitepolicy authority binds cleanup; DELETE afterpolicyexpiry allowed only within still-live explicit human cleanupgrant. Expiry alone is not evidence of explicitDELETE/resource release.",
+        "query": null,
+        "request": null,
+        "unknown": "Retain originalopen/closeintents. Originalidentity GET only; no repeatedDELETE, PUT/rollback/newdraft/newrequest or timerautocleanup. Any uncovered recoverymutation needs concrete authority.",
+        "versionEffect": "Direct Secrets DELETE creates/deploys newversion; exact originalACK/currentversion/source/fullpreservation required.",
+        "withinSameBatchWindowMaximumMs": 14400000
+      }
+    ],
+    "ordering": [
+      "Complete actual normal fixedhead merges/sourceproof, opsv3 immutable executionseal/newgrant/freshwitness; original once asset-session/onlyrequesteduploads/singleWorkerPUT publishes maintenance+quiescence with browser admissionclosed; verify actualservingversion.",
+      "Keep original operator identity; GET state, one begin, validate current original hold.",
+      "Natural drain without cancel/pause/reconcile; sameoriginal hold, jointreadonly Beta/native + immutable originalterminalproofs + complete logicalhistory/rawDash placements0 and exact actualconfig reads.",
+      "Immediate drift checks and named single-writer agreement; one fixed a036 f18 rollout; trusted original ACK and complete exact readback.",
+      "Samehold post exact originalACK rolloutcompleted/targetversion/f18/nonimagecanonicalequal, alloriginalresources preserved, fresh jointterminalproofs/rawDash placements0/historypreserved; onlythen sameoriginal endonce and originalreceipt/currentholdnull.",
+      "Only then switch to ordinary actor; fresh /api/me bracket plus approved minimal D1 identity projection.",
+      "One actual blank project; two Sessions/three Turns via ordinary UI, original save/release after every step; R2 yields actual scope for one finite browser grant.",
+      "AfterR2 open only one exactderived secret_text grant via onceSecretsPUT; intended V1browserchecks, T3/R3coldV2; onceDELETE sameownedkey restoresoriginalabsence/defaultclosed and verifies originalresourcecleanup within boundedhumanwindow. No fullWorker/assetsPUT for gate."
+    ],
+    "ordinaryRecipeSourceRefresh": {
+      "READMEAndThreePromptsUnchanged": true,
+      "actualIdentityOrAcceptanceExecuted": false,
+      "appFullSourceChanged": true,
+      "independentReview": {
+        "bytes": 10238,
+        "file": "../independent-ordinary-recipe-v2-review.json",
+        "sha256": "67ae1979eeb338aa8048a8b049e12a24e696e2f65ce1a5fb739da67fbe43f404"
+      },
+      "manifest": {
+        "bytes": 7804,
+        "file": "../ordinary-acceptance-v2/manifest.json",
+        "sha256": "bf4e619b905824d9bf9e781a212dcc964d8856d6e2f8ac4dcfa3cbcfe858a4bd"
+      },
+      "meHandlerBodyUnchanged": true,
+      "other13SourcesUnchanged": true,
+      "productRecipeReady": false,
+      "sourceRefreshPending": false
+    },
+    "originalIdentityAndOnceRules": {
+      "directGateExecutor": "Same root is sole gate directconnector executor for this batch, under named singlewriter agreement and fresh actualoperator/ordinary authorities. Existing supported connector + purefactory + original O_EXCL intent + immediate complete actualwitness + originalACK/readback suffices. No new networkrunner/framework is required; no serverCAS is implied.",
+      "hold": "Do not end hold on unknown rollout/release, move owner, toggle policy/pause/kill or end/rebegin to obtain a proof.",
+      "mutations": "Exclusive per-request/operation intent lock, complete method/path/body bytes+SHA, source/baseline/grant hashes, original actor and deadline before transport; persist bounded private original ACK before validation.",
+      "preserve": "All original app versions/resources/archives/locks/canonical R1-R3/usage/fees/reservations retained; no cleanup of unrelated resources/history.",
+      "readOnlyDoesNotMeanPhysicalRelease": "maintenance status/quiescence ledgers and original receipts do not prove Cloudflare physical instance absence. Complete instances reads and a frozen physical-state criterion remain separately necessary.",
+      "singleWriter": "Hold fences only original Beta new admissions. It is not a Cloudflare-wide lock; absent server CAS leaves a final GET-to-POST external-writer race.",
+      "unknown": "Do not equate failed/missing readback with not-applied. Stop subsequent mutations, retain locks/history and original scope; only exact original readonly reconciliation, no new key/project/provider, automatic retry/rollback or timer-based maintenance reopen."
+    },
+    "payloadTemplatesContainUnresolvedNullsAndMustNeverBeTransmitted": true,
+    "physicalSourceReview": {
+      "allObservedDeploymentIdsNull": true,
+      "observedHistoryRows": 6,
+      "observedPlacementCount": 0,
+      "observedTimes": [
+        "2026-10-18T03:38:26.799Z",
+        "2026-10-18T03:38:27.260Z"
+      ],
+      "originalImmutableRuntimeTerminalProofsStillRequired": true,
+      "originalLogicalAndDashIdSetsEqual": true,
+      "review": {
+        "bytes": 11447,
+        "file": "../../nextstage/pi-rollout-preparation-v2/physical-read-contract-review.json",
+        "sha256": "98cb0da492b4603e6196a7668161d772d3401c8ce4c85b42c44508e1ed5fedd0"
+      },
+      "safeDashObservation": {
+        "bytes": 1817,
+        "file": "../pi-rollout-preparation-v2/dash-placement-safe.json",
+        "sha256": "2dcbd02f16eff558af1237d1f4fca5a1e182e59970a352fc88c3c09b43ef391c"
+      },
+      "scope": "Unheld dated point-in-time preparation evidence, not fresh samehold pre/post proof or executiongrant."
+    },
+    "preparedAt": "2026-10-18T04:05:15.343283+00:00",
+    "priorContract": {
+      "bytes": 79895,
+      "file": "../next-phase-contract-v3/operations.json",
+      "preservedUnmodified": true,
+      "sha256": "7731169d71a4c524ca9e1618f58b3482dff65d2e0d61b26091153debe843ed9f"
+    },
+    "priorReadme": {
+      "bytes": 14464,
+      "file": "../next-phase-contract-v3/README.md",
+      "preservedUnmodified": true,
+      "sha256": "06d61e16c2dff3d2ca8870712f7ebce8a63967f24db8078cb62304e4f3eb8a7f"
+    },
+    "ready": false,
+    "reviewOnly": true,
+    "schema": "jhg46-next-phase-local-reviewable-execution-contract-preparation/v4",
+    "schemaNotes": {
+      "browserGate": "Concrete supported direct Secrets API: exactly one PUT secret_text opens only PROJECT_VIEW_BROWSER_POLICY_JSON; exactly one DELETE samekey closes to originalabsence. No fullWorker/assets PUT for gate operations. Policy text is writeOnly, not independently GET-readable. Factories are pure pending HTTP-object construction; same root using existing supported connector owns authority/freshread/writeonce/serialization/preservation. No newnetworkrunner is required.",
+      "identity": "Supported D1 POST query with a single parameterized SELECT is prepared from actual verified private CATALOG source. Generic SQL and safe source/query fingerprints appear here; the actual database ID and private source bodies do not. Fresh user/tenant remain null. POST transport is semantically read-only only for this exact SELECT and zero-write authority metadata.",
+      "maintenance": "Exact source route body keyset; expectedRevision is maintenance state.revision, not control.revision. Same request/operator/policy/control identity across begin/end.",
+      "maintenanceReadonlyScope": "Method-level readonly proof does not claim all Durable Object construction performs zero storage writes. Existing Beta constructor schema initialization is separate; native proof must not initialize cold/paired allocators.",
+      "physical": "Observed six inactive DO history rows are retained. Raw Dash result.instances=[] is a separate app-scoped point-in-time placement observation; it is not OS/global zero or logical release. The future held pre/post criterion combines full raw placements/history with original terminal authority.",
+      "rollout": "Frozen target sends only five documented fields. basic is an equivalent numeric resource mapping, not a literal existing instance_type field or full read-configuration clone. All nonimage normalized configuration must compare canonical-equal on real readback.",
+      "sourceGraphs": "1124 module inputs plus explicitly recorded auxiliary witnesses do not describe all filesystem reads; global fetch guard is not an OS network sandbox."
+    },
+    "sourceComposition": {
+      "assets": 96,
+      "bundle": {
+        "bytes": 5771650,
+        "file": "../gateway-build-v2/gateway.mjs",
+        "sha256": "9c8e4b6b763e9887d1624f00ed3a8efb2a8a24d984d96bc68fdb289cb4d362c3"
+      },
+      "bundleBytesAreNotProductionAddedSourceBytes": true,
+      "combinedSourceBinding": {
+        "bytes": 10978,
+        "file": "../combined-v2/source-content-binding.json",
+        "sha256": "786cdb428a40e1d996539b8d6157d8705bf73eade02ca6d8ba4bddc7a1fcfeaf"
+      },
+      "configuredWorkerRuntimeExportsObservedElsewhere": 25,
+      "countsDescribeDifferentMeasures": true,
+      "dependencyModuleInputs": 821,
+      "esmExportNames": 30,
+      "existingA946B093SourceIdentityNotRebuiltAt17dOrC669": true,
+      "gitModuleInputs": 303,
+      "issue248Implementation": "c669921f4796c5b35c6f2e049c92876f4faf7c5b",
+      "main": "638a366d31a37f7bc1d7dcd124e0b5ba753d6401",
+      "maintenanceImplementationIssue": 248,
+      "maintenanceImplementationPr": 250,
+      "maintenancePrCi": {
+        "head": "c669921f4796c5b35c6f2e049c92876f4faf7c5b",
+        "refreshedByContractAuthor": false,
+        "runId": 39093215235,
+        "statusReportedByRoot": "green",
+        "url": "https://github.com/jihegao/riffology-cloud/actions/runs/39093215235"
+      },
+      "maintenancePrStatus": "Root-observed PR250 Ready with original-head CI green, run39093215235. No normal merge or production publication claimed by this preparation.",
+      "moduleInputs": 1124,
+      "pr239": "17d6545c308c6ae7647080bdde0ba55021384700",
+      "pr246": "05681cf3cf53d965784df486c25c622b74421ef0",
+      "preparedCompositionNotNormalMergeCommit": true,
+      "requiresActualNormalMergedProductionSourcesToMatch": true,
+      "sourceContentBytes": 9744361,
+      "sourceFiles": 477,
+      "sourceGraph": {
+        "bytes": 879161,
+        "file": "../gateway-build-v2/source-graph.json",
+        "sha256": "f8a9c6bdc9a5a4adc1ea51fcbc9c1c24a8219d421b86ffe29a371a50ac4591bf"
+      },
+      "unchangedAssetsBytes": 53782277
+    },
+    "sources": [
+      {
+        "bytes": 7714,
+        "commit": "c669921f4796c5b35c6f2e049c92876f4faf7c5b",
+        "file": "docs/pi-maintenance-admission.md",
+        "sha256": "a207fbf382fbb201c6e08bc857a384481c0349611f57c13e55e3151cb851de1b"
+      },
+      {
+        "bytes": 62928,
+        "commit": "c669921f4796c5b35c6f2e049c92876f4faf7c5b",
+        "file": "services/gateway/app.ts",
+        "sha256": "8d1e4c75a69c5ec14ca951d500c3092076a2865226f53b68fb73dba3b36feedf"
+      },
+      {
+        "bytes": 20049,
+        "commit": "c669921f4796c5b35c6f2e049c92876f4faf7c5b",
+        "file": "services/gateway/index.ts",
+        "sha256": "c936f287efa16db1b5919b22586205cb317b903d90b685f25a36c63b3dc4f5fa"
+      },
+      {
+        "bytes": 6175,
+        "commit": "c669921f4796c5b35c6f2e049c92876f4faf7c5b",
+        "file": "services/model-budget/private-beta-maintenance.ts",
+        "sha256": "e4f6ba59521d0fad90fc619390b89f928e66c573a2500e286c2a8b055ab17c67"
+      },
+      {
+        "bytes": 38886,
+        "commit": "c669921f4796c5b35c6f2e049c92876f4faf7c5b",
+        "file": "services/model-budget/private-beta-capacity.ts",
+        "sha256": "fc36f4de0ce6e79804b080e47a9b696c41c0627464bf4d373249ea7997bec74d"
+      },
+      {
+        "bytes": 2713,
+        "commit": "c669921f4796c5b35c6f2e049c92876f4faf7c5b",
+        "file": "services/project-views/browser-policy.ts",
+        "sha256": "d7e3d0543c2d0982eb7138b2c3dd6a00555429163541cae21e7660635e67f179"
+      },
+      {
+        "bytes": 4680,
+        "commit": "c669921f4796c5b35c6f2e049c92876f4faf7c5b",
+        "file": "services/catalog/admission.ts",
+        "sha256": "26f870e4de77f5247650928200f0c604a7ccfeb0477aa615be3abcd2c2aa04a1"
+      },
+      {
+        "bytes": 17462,
+        "commit": "c669921f4796c5b35c6f2e049c92876f4faf7c5b",
+        "file": "services/catalog/admin.ts",
+        "sha256": "43798c3ef0e4e9ade22c126a07f8dd3269fbfe558d15fb2f715dc00c0000572a"
+      },
+      {
+        "bytes": 2724,
+        "commit": "c669921f4796c5b35c6f2e049c92876f4faf7c5b",
+        "file": "services/catalog/contracts.ts",
+        "sha256": "431d434690709fca325d04205fedb1ca01527d1753fe2715dd26c85c2d5ba1ed"
+      },
+      {
+        "bytes": 3607,
+        "commit": "c669921f4796c5b35c6f2e049c92876f4faf7c5b",
+        "file": "services/catalog/migrations/0005_initial_operator.sql",
+        "sha256": "d47edceeb7e3bbe105e01a571468bbe681e53ed24e09da5349649572ae5081d3"
+      },
+      {
+        "bytes": 6830,
+        "file": "../pi-rollout-preparation-v1/api-contract.json",
+        "sha256": "7f26d12eefb604b1cbd3a7018ea79e5712f3c494909d55b75d2ff97aace821a3"
+      },
+      {
+        "bytes": 7804,
+        "file": "../ordinary-acceptance-v2/manifest.json",
+        "sha256": "bf4e619b905824d9bf9e781a212dcc964d8856d6e2f8ac4dcfa3cbcfe858a4bd"
+      },
+      {
+        "bytes": 9079,
+        "file": "../ordinary-acceptance-v2/README.md",
+        "sha256": "b9d0c4bb52d88e6fc364118b0ce96e85f719c8f72663e6e02ebb33a452e2ce95"
+      },
+      {
+        "bytes": 11284,
+        "file": "../ordinary-acceptance-v2/source-bindings.json",
+        "sha256": "a8113bf94661c9c37af21b28543491f9f3792ec44448268abe68c34d884a215f"
+      },
+      {
+        "bytes": 10238,
+        "file": "../independent-ordinary-recipe-v2-review.json",
+        "sha256": "67ae1979eeb338aa8048a8b049e12a24e696e2f65ce1a5fb739da67fbe43f404"
+      },
+      {
+        "bytes": 14900,
+        "commit": "c669921f4796c5b35c6f2e049c92876f4faf7c5b",
+        "file": "services/web/project-views.js",
+        "sha256": "9da41ade420c660a61f0ad4fc46408b728e81248bdeb30bdc419e63bdc61f1c9"
+      },
+      {
+        "bytes": 10978,
+        "file": "../combined-v2/source-content-binding.json",
+        "sha256": "786cdb428a40e1d996539b8d6157d8705bf73eade02ca6d8ba4bddc7a1fcfeaf"
+      },
+      {
+        "bytes": 9544,
+        "file": "../independent-combined-v2-build-input-review.json",
+        "sha256": "3a697039ebb439c3322f795cd071e18c9f0db5d662f516892f6baca3d6a92882"
+      },
+      {
+        "bytes": 9416,
+        "file": "../pi-rollout-preparation-v2/official-api-schema.json",
+        "sha256": "76f29327cd5542b3f074be303aefe2d2a1e4e35f13e52a626b4966056c95bfbf"
+      },
+      {
+        "bytes": 4244,
+        "file": "../pi-rollout-preparation-v2/rollout-input.json",
+        "sha256": "d7956988abe42af2089f4ab886530481e0cadeb7a6b1d5868fd1ac262971ec86"
+      },
+      {
+        "bytes": 1820,
+        "file": "../pi-rollout-preparation-v2/a036-instances-safe.json",
+        "sha256": "8d3a5384238e311f62963b4fd8fdd8ce55c721229e5e8c6c2c2c73c2776753ee"
+      },
+      {
+        "bytes": 1542,
+        "file": "../pi-rollout-preparation-v2/rollout-get-surface-v2-safe.json",
+        "sha256": "05eb7cb8c854df3c855c3d631548aa3d32975dabba17c3f304be2ff88dd1451d"
+      },
+      {
+        "bytes": 3858,
+        "file": "../independent-rollout-v2-input-review.json",
+        "sha256": "9a76cc752e008f18d4aa2a4c97c8b8cb4b1fc5a5281ec9467a138fbd1a275c2d"
+      },
+      {
+        "bytes": 892,
+        "file": "../identity-read-preparation-v1/safe-preparation.json",
+        "sha256": "ee156a1c5c1d7191ce848e6dd4e2e49b3bfadce6c08cfcd93aaa474760129d72"
+      },
+      {
+        "bytes": 5896,
+        "file": "../gateway-ops-v3/operations-manifest.json",
+        "sha256": "77899ca757e87fe737c7db91e054158202a045204d5db235e129484ba5981ed0"
+      },
+      {
+        "bytes": 10560,
+        "file": "../ordinary-acceptance-v2/source-delta.patch",
+        "sha256": "02ccada07bd87c978b2fcbb6e9d2b64d60621e24537dd0edea78377bfceb9488"
+      },
+      {
+        "bytes": 8333,
+        "file": "../gateway-ops-v3-independent-review/review.json",
+        "sha256": "f5701d18ad843e66119c95d994279ae1bf3398d94a12f3da22d3b25a34e8086d"
+      },
+      {
+        "bytes": 2347,
+        "file": "../gateway-ops-v3/publication-attempts/f953bc1e-3ea1-4786-821c-26ecf68916a0/plan.json",
+        "sha256": "b0cdb7ff1a785a1b8a15c3cd52e1e31910c866e329d221d28953bcd13f311db2"
+      },
+      {
+        "bytes": 892,
+        "file": "../gateway-ops-v3/metadata-preparation-safe.json",
+        "sha256": "dd5894817e13e86185ceefada71b6822cf3f6daa6f7322c672a139c42fdb6a66"
+      },
+      {
+        "bytes": 1812,
+        "file": "../gateway-ops-v3/preparation-config.json",
+        "sha256": "794641fa6ae5aa18a30ebede9ebbeee810b061aab31e4c6f4d61296afd69419f"
+      },
+      {
+        "bytes": 11447,
+        "file": "../../nextstage/pi-rollout-preparation-v2/physical-read-contract-review.json",
+        "sha256": "98cb0da492b4603e6196a7668161d772d3401c8ce4c85b42c44508e1ed5fedd0"
+      },
+      {
+        "bytes": 1817,
+        "file": "../pi-rollout-preparation-v2/dash-placement-safe.json",
+        "sha256": "2dcbd02f16eff558af1237d1f4fca5a1e182e59970a352fc88c3c09b43ef391c"
+      },
+      {
+        "bytes": 2413,
+        "file": "../pi-rollout-preparation-v2/dash-placement.request.txt",
+        "sha256": "f3afc7e9ef8f47c2e71ecd80a30b6969d3903cc15aac657c3db638682d6e5345"
+      },
+      {
+        "bytes": 3871,
+        "file": "../browser-gate-ops-v1/operations-manifest.json",
+        "sha256": "5914927bf64d9bb5f15092d3e89c39ac506569bd03569f4843522a770e5c3650"
+      },
+      {
+        "bytes": 4798,
+        "file": "../browser-gate-ops-v1/requests.mjs",
+        "sha256": "8920716d09899d924f5226afd4d50c4fbbb66e8d8d3fbfd98a175132940ba752"
+      },
+      {
+        "bytes": 2737,
+        "file": "../browser-gate-ops-v1/schema-source.json",
+        "sha256": "e2aedfbd953fda94986f985e5e7c68b3a6f09c044aebb8ffa855b5b2819be76a"
+      },
+      {
+        "bytes": 1025,
+        "file": "../browser-gate-ops-v1/plan.pending.json",
+        "sha256": "5932e9fe569394ed655a63fa5eaca8321180a8a1d6a404bce3bc5a887bf5dd97"
+      },
+      {
+        "bytes": 6798,
+        "file": "../independent-browser-gate-v1-review.json",
+        "sha256": "047c822d30f2cf29343932d25e148922f9eb8b1f4cdf4e30227bb4d97058d4b6"
+      }
+    ],
+    "supersededContext": {
+      "apiContractV1RetainedForHistory": true,
+      "notCurrentLiteralBaselineOrTargetRules": "v1 historical expected configuration.instance_type/basic and copy-read-config wording superseded by official schema+actual numeric mapping in rollout-v2. v2 operations are authoritative preparation; no prior requests are replayed.",
+      "old3ceSourceAndV1ContractUnmodified": true,
+      "oldWholeTransportNotRecoveredAsFullSnapshot": true
+    }
+  },
+  "executionContract": {
+    "localBytes": 90547,
+    "localSha256": "57c29f29d7a2841a5f2c2e79f7331a1061f82cd4248ab9bcb42768a593c4915a",
+    "publicProjectionIsNotExecutionInput": true,
+    "redactions": [
+      "approved ordinary account email"
+    ]
+  },
+  "schema": "jhg46-next-stage-public-contract-projection/v1"
+}
