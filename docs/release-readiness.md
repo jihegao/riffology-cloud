@@ -1,8 +1,8 @@
-## 2026-10-19：SDK已默认关闭发布，T1保存；精确idle placement差异待决定
+## 2026-10-19：SDK已默认关闭发布，T1联合释放；已知idle自然替换条件待决定
 
-固定#257正常合并004e，新Gateway3043/d266已单次发布，前后完整保全与96资产完整字节GET通过。新普通项目仅一Session/T1，R1已saved；截至22:24检查点原联合释放仍待容量确认，T2/gate未开始。当前同d03b/v13/ec8已知idle placement由原8ef5变为9f18，超出原固定例外，须按[最小差异提案](project-view-native-sdk-idle-placement-difference-proposal-20261019.md)决定；提案未授权，不改原8f7/c65，窗口仍止于2026-10-19T01:59Z。
+固定#257正常合并004e，新Gateway3043/d266单次发布、前后完整保全及96资产完整字节GET通过。新普通项目仅一Session/T1，R1 saved；22:26原用户五GET与22:27完整物理四GET已确认T1产品级联合释放。T2/gate尚未执行。新frame尚未GET，源码闭门503行为使其只读核对安排在R2可信唯一PUT后/V1前，仍pending。
 
-只提议将单个已知idle例外精确替换，不新增/删除/重启/rollout/hold，不扩大未来unknown身份。即使接受也须原T1联合释放可信后才能T2/R2，R2释放后有限gate、V1通过才Session2/T3。#214仍Acceptance/blocked，#255为Acceptance/OPEN，未整体验收或Done。[安全证据](../evidence/releases/project-view-native-sdk-idle-placement-difference-20261019/inventory.json)保留实际结果、限制及原件hash。下方旧准备快照按原时点保留。
+当前同a036/d03b/v13/ec8/basic-max1 idle placement由8ef5替换为9f18；[修订提案](project-view-native-sdk-idle-placement-difference-proposal-20261019.md)仅拟接受同一原应用当前完整暴露scope内至多一份经完整unfiltered回读明确识别的VM running/container stopped idleplacement，包括本批原T2/T3自然释放可证替换。未知/多份/其它配置不包含，每Turn原联合释放独立必需；未授权，不增操作或次数，01:59Z截止不延长。#214仍Acceptance/blocked，#255Acceptance/OPEN，未整体Done。[安全证据](../evidence/releases/project-view-native-sdk-idle-placement-difference-20261019/inventory.json)保留22:24 pending历史与最新原件hash；原8f7/c65冻结输入不改。
 
 ## 2026-10-19：SDK 固定发布与全新项目验收包准备完成，等待新批授权
 

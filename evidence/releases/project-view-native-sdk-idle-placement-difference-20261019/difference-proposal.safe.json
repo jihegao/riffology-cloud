@@ -8,7 +8,7 @@
     "endsAt": "2026-10-19T01:59:00Z",
     "extended": false
   },
-  "observedCheckpoint": "2026-10-18T22:24:30Z",
+  "observedCheckpoint": "2026-10-18T22:27:06.298Z",
   "deploymentId": "d03b8c4d-8cc2-475e-ba96-6e46d062983c",
   "applicationVersion": 13,
   "image": "sha256:ec8dbe9efe229a1626ea3202b618653f82f8d29d9da8b19310c3b3838f2a2623",
@@ -30,15 +30,14 @@
     "skillSha256": "8ef3375d58464b2a74cc57031771f5f7bad21b15f09991fb3838620e9f3ae6d7",
     "bashExitCode": 0,
     "exactScriptAndTimeoutBytesVerified": false,
-    "productReleaseConfirmed": false,
-    "capacityAtLatestRead": "release-pending"
+    "productReleaseConfirmed": true,
+    "capacityAtLatestRead": "available"
   },
-  "continuation": "Only after explicit acceptance of this exact replacement and trustworthy original T1 joint release, continue original T2/R2; gate after R2 release; Session2/T3 only after V1 passes.",
+  "continuation": "T1 joint release confirmed; only if proposed narrow known-idle replacement rule explicitly accepted and fresh same-original recheck passes, continue original remaining T2/R2 then finite gate; V1 must pass before original Session2/T3. No extra attempts or extended window.",
   "exclusions": [
-    "No additional or unknown placement acceptance",
-    "No new/removed/restarted VM, image rollout, maintenance hold or new project/window/request replay",
-    "No claim old placement disposed, T1 caused placement replacement, all VM released, zero cost or full acceptance",
-    "No change original byte/count/model/provider/tool/concurrency limits"
+    "No unknown, multiple-running, running-container or other-deployment/version/image/profile/config state",
+    "No additional operator/API VM create/delete/restart, rollout or hold; platform natural replacement under the exact approved condition is the proposed observed scope. No extra project, Turn, retry or window.",
+    "No claim T1 caused replacement, old placement disposed, all VM released, zero fee or overall acceptance"
   ],
   "sources": [
     {
@@ -58,6 +57,33 @@
       "bytes": 2499,
       "sha256": "cc64d98be6cfe175527314a20df7477b37cfb07e4556f5fc6ace52bc458ea8c6",
       "bodyCopied": false
+    },
+    {
+      "file": "ordinary/turn-1-once/capacity-confirm-five-get-original.private.json",
+      "bytes": 21053,
+      "sha256": "6c478c4ae4eb7a283edca1e2151f2e3c6943eb975d44ef4738fafb55c51d2c01",
+      "bodyCopied": false
+    },
+    {
+      "file": "ordinary/turn-1-once/physical-product-released.tool-result.private.json",
+      "bytes": 16553,
+      "sha256": "981c3bc7d8cd1f4eddc899fd8fe75f1cbfe12417c8519c97c9ac571e3ffadb23",
+      "bodyCopied": false
     }
-  ]
+  ],
+  "proposedRule": {
+    "targetApplicationId": "a03628c4-f032-461f-a65b-612ccac11a06",
+    "deploymentId": "d03b8c4d-8cc2-475e-ba96-6e46d062983c",
+    "version": 13,
+    "image": "sha256:ec8dbe9efe229a1626ea3202b618653f82f8d29d9da8b19310c3b3838f2a2623",
+    "profile": "default/basic",
+    "maxInstances": 1,
+    "maxKnownRunningIdleVmAcrossEntireTarget": 1,
+    "containerStatus": "stopped",
+    "currentPlacement": "9f18c9ab-e7ea-47bc-8238-efce81feea0e",
+    "subsequentReplacements": "Only original T2/T3 natural release followed by complete unfiltered logical/scheduler/exact/Dash identification under identical deployment/version/image/profile/config",
+    "unknownMultipleOrOtherConfigAccepted": false,
+    "perTurnOriginalRuntimeToolCapacityJointReleaseStillRequired": true,
+    "currentExposureScope": "Same original application current complete unfiltered exposed scope only; no historical disposal or global VM-count inference"
+  }
 }
