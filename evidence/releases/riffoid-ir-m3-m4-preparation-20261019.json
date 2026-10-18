@@ -143,11 +143,11 @@
   },
   "deployment": null,
   "onlineAcceptance": null,
-  "executionBoundary": "Shared fixed package integration preparation only. Browser outputs remain local/unverified. No production gate, resource, deployment, model request or paid execution is performed by this evidence.",
+  "executionBoundary": "Shared fixed package implementation and actual local Workerd/browser plus AMD128 native-image probes. Browser outputs remain local/unverified; native SDK probes use synthetic transport callbacks. No production deployment or online ACC is established.",
   "remaining": [
-    "Confirm ongoing work final merged baseline before serial production integration.",
-    "Deploy exact reviewed package and retain authoritative deployment/resource receipts.",
-    "Perform actual dual-host ACC-01 through ACC-05 with same package; retain selected session/tool/run/reference evidence."
+    "Receive confirmed final baseline and serial production handoff from the ongoing acceptance batch.",
+    "Integrate into that baseline, publish exact reviewed immutable images and deploy while preserving existing resources.",
+    "Complete actual Riffoid online ACC-01 through ACC-05 with the same passed PiWeb artifact and retain selected real session/tool/run/reference evidence."
   ],
   "selectedLocalWorkerdEvidence": "riffoid-ir-m3-m4-20261019/",
   "pluginPullRequest": "https://github.com/jihegao/riffoid-ir-plugin/pull/2",
@@ -170,6 +170,25 @@
     },
     "head": "f905d790992873f84d539666de63a3b112a4d2e1",
     "sourceTree": "716d926bcedc605ad3ad58a9edff43aa426ce108",
-    "fullCheckEvidence": "riffoid-ir-m3-m4-20261019/ci-sdk257-integrated.json"
+    "fullCheckEvidence": "riffoid-ir-m3-m4-20261019/ci-sdk257-integrated.json",
+    "upstreamSdkMainMerge": "004e5cd5940c6e283b1b58501c3f409a569f6e20"
+  },
+  "trustedPiImageExecutionProbe": {
+    "status": "passed",
+    "evidence": "riffoid-ir-m3-m4-20261019/trusted-pi-image-probe.json",
+    "provenance": "riffoid-ir-m3-m4-20261019/trusted-pi-image-probe-provenance.json",
+    "engineId": "sha256:dcd4a5fc6f02c9d0ee1290e07c268a8dba4aba1790e75b98c5f7bb83792da487",
+    "localDescriptorType": "application/vnd.oci.image.manifest.v1+json",
+    "nodeVersion": "22.23.2",
+    "piSdkVersion": "0.85.0",
+    "uid": 10002,
+    "gid": 10002,
+    "checkedImageTargets": 59,
+    "fixedPackageFiles": 45,
+    "syntheticTransportsOnly": true,
+    "registryPublication": null,
+    "productionDeployment": false,
+    "rawEvidenceFiles": 43,
+    "rawEvidenceBytes": 88828
   }
 }
