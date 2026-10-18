@@ -1,5 +1,11 @@
 # Current release readiness — 2026-10-18
 
+## 2026-10-18 #252 host resources fix: offline packet ready; execution pending
+
+[PR253](https://github.com/jihegao/riffology-cloud/pull/253) fixed head `0a10da572264470aaac111e6f5da2bd20b2f2c45` has successful original CI. The independently reviewed [new offline packet](project-view-trusted-pi-native-resource-snapshot-host-offline-packet-20261018.md) fixes only the baked host overlay, reuses the existing a946/f18 local-cache identity, and freezes archive `91b42a14…` plus operations `fe1ab539…`. The actual macOS source-equivalence check and 23 pure fixtures (17 operation fakes / 6 reader fixtures) passed within their stated scope; no new AMD transfer/build/mock, image validation, Registry/application/Gateway action or ordinary-user acceptance occurred. [Safe file inventory](../evidence/releases/project-view-trusted-pi-native-resource-snapshot-host-offline-20261018/inventory.json).
+
+The proposed next batch is only one fixed-input offline transfer/build/network-none UID10002 mock and original-CID cleanup/readback, pending a new specific grant. It does not extend the old real-acceptance deadline (2026-10-18 20:42:46 Asia/Shanghai / 12:42:46Z), authorize a new Turn, reuse T2/T3, prove project_write fixed or complete JHG-46. The failed T1 and maintenance-end histories below remain unchanged.
+
 ## 2026-10-18 ordinary invited-user T1 failed; original release cleared
 
 After the confirmed original maintenance end, fresh ordinary authVersion2 / accepted invitation / personal owner / no platform role checks and one blank-project initialization passed. The single UI T1 (OpenAI/gpt-5.6-luna, original Turn bd291436…) returned ACK202, then failed with `turn-native-exit-failed` and `turn-checkpoint-unknown`; checkpoint, Session head and canonical Revision remain null. Selected original events contain two provider HTTP200 responses and `project_write` isError=true. No R1 was saved, and T2/T3, a second Session and browser-gate PUT/DELETE were not sent. [Actual failed acceptance](project-view-trusted-pi-ordinary-t1-result-20261018.md) · [safe evidence](../evidence/releases/project-view-trusted-pi-ordinary-t1-20261018/inventory.json).

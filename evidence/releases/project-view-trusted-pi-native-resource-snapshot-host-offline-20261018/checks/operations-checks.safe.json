@@ -1,0 +1,24 @@
+{
+  "schema": "trusted-pi-native-resource-snapshot-host-operations-healthcheck-repair-checks/v1",
+  "recordedAt": "2026-10-18T10:52:54.961817+00:00",
+  "scope": "Pure local operation fake and reader fixtures only, no AMD/SSH/Docker/API/provider/credential execution.",
+  "operationFakes": 17,
+  "independentReaderFixtures": 6,
+  "passed": 23,
+  "failed": 0,
+  "log": {
+    "bytes": 1859,
+    "sha256": "be07a640830c78d345f0767f03a1a3368b35fb4bc3accd3c4ac5a1cdcd079345"
+  },
+  "pythonAstFiles": 7,
+  "operationsManifestSha256": "fe1ab539e48c1a19d1b48e355b63c93a7c8c1c82bdcee319a385c7aac1ef78c5",
+  "corrected": [
+    "ambientFetch/requestId original interface binding",
+    "Closed typed OCI/Docker Config comparison with API1.56 historical source",
+    "Non-null Healthcheck pointer preserves empty object; only null pointer is omission-equivalent"
+  ],
+  "historyPreserved": true,
+  "payloadArchiveUnchanged": true,
+  "actualCachedBaseOrTargetImageTested": false,
+  "executionAuthorized": false
+}
