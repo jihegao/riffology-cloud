@@ -1,0 +1,27 @@
+{
+  "schema": "jhg46-fb07-difference-public-inventory/v1",
+  "proposalOnly": true,
+  "files": [
+    {
+      "file": "actual-sdk-publication-review.safe.json",
+      "bytes": 3047,
+      "sha256": "342b8218231e91cbd7d74a19e28fa72de423a3c0cc0f279cec29b048a96f851c"
+    },
+    {
+      "file": "t1-saved-effects-review.safe.json",
+      "bytes": 10813,
+      "sha256": "df3cd1e18a978cd10855d4f834af116b7b406098d1ff0597f497adac0b0a8a0e"
+    },
+    {
+      "file": "t1-physical-release-contract-review.safe.json",
+      "bytes": 12341,
+      "sha256": "f24884cec994c2ce015cc2fa8124f0aa15fb0d0932d60f8663332dec94fe01b6"
+    },
+    {
+      "file": "difference-proposal.safe.json",
+      "bytes": 2549,
+      "sha256": "baf5df9439ed393d2a0ef12b417bf6e8490775a11f7aa3a37cec9cb6727398ed"
+    }
+  ],
+  "privateBodiesCopied": false
+}
