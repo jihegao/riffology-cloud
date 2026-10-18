@@ -1,0 +1,208 @@
+{
+  "schema": "riffology-task-reconciliation/v1",
+  "recordedDate": "2026-10-15",
+  "timezone": "Asia/Shanghai",
+  "sourceMain": "fbc0e46bde2c8781b71609fa4524d2e75bffaf99",
+  "stages": [
+    {
+      "name": "authorized task reconciliation before Browser Preview cancellation",
+      "githubExistingIssuesUpdated": [
+        209,
+        148,
+        152,
+        212,
+        213,
+        37,
+        207,
+        214,
+        177,
+        182,
+        184,
+        185,
+        183,
+        150,
+        127,
+        151,
+        191,
+        35,
+        196,
+        202,
+        215,
+        216,
+        104,
+        153,
+        136,
+        73,
+        206,
+        85,
+        211
+      ],
+      "githubNewIssues": [
+        219,
+        220
+      ],
+      "pullRequestMetadataUpdated": [
+        208,
+        210,
+        217
+      ],
+      "linearExistingIssuesUpdated": [
+        46,
+        17,
+        18,
+        22,
+        20,
+        21,
+        23,
+        24,
+        25,
+        41,
+        42,
+        43,
+        44,
+        45,
+        12,
+        13,
+        14,
+        26,
+        28,
+        29,
+        30,
+        31
+      ],
+      "linearNewIssues": [
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55
+      ],
+      "linearNewIssueStates": {
+        "inReview": [
+          47,
+          48,
+          53
+        ],
+        "backlog": [
+          49,
+          50,
+          51,
+          52,
+          54,
+          55
+        ]
+      },
+      "linearProjectDescriptionUpdated": true
+    },
+    {
+      "name": "Browser Preview cancellation audit increment",
+      "authority": [
+        "https://github.com/jihegao/riffology-cloud/pull/217#issuecomment-6188237585",
+        "https://github.com/jihegao/riffology-cloud/pull/217#issuecomment-6188262716"
+      ],
+      "keep": "Generic HTML/JS pages, routing and read-only subscriptions owned by Cloud214/JHG46",
+      "retire": "Simulation Browser Preview, old cases, js-frame/frame templates, marks DSL, fixed 600x420 and five/seven-file contracts; no optional compatibility profile",
+      "allowedWrites": "PR217 body and audit documentation only",
+      "otherIssueOrPrWrites": 0,
+      "linearWrites": 0,
+      "implementationEdits": 0,
+      "caseFilesDeleted": 0,
+      "productionDataDeletes": 0
+    }
+  ],
+  "taskMap": [
+    {
+      "github": 209,
+      "linear": "JHG-47",
+      "pr": 210
+    },
+    {
+      "github": 211,
+      "linear": "JHG-48",
+      "pr": 217
+    },
+    {
+      "github": 212,
+      "linear": "JHG-49"
+    },
+    {
+      "github": 213,
+      "linear": "JHG-50"
+    },
+    {
+      "github": 214,
+      "linear": "JHG-46"
+    },
+    {
+      "github": 215,
+      "linear": "JHG-51"
+    },
+    {
+      "github": 216,
+      "linear": "JHG-52"
+    },
+    {
+      "github": [
+        206,
+        207
+      ],
+      "linear": "JHG-53",
+      "pr": 208
+    },
+    {
+      "github": 219,
+      "linear": "JHG-54"
+    },
+    {
+      "github": 220,
+      "linear": "JHG-55"
+    }
+  ],
+  "skillsCanonicalCard": "https://github.com/jihegao/riffology-cloud/issues/85; intentionally no separate Linear mirror",
+  "graphReview": {
+    "nodes": 33,
+    "edges": 40,
+    "missing": [],
+    "cycles": []
+  },
+  "linkCorrections": {
+    "pr208OnlyTask": "JHG-53",
+    "pr208RemovedTask": "JHG-46",
+    "pr210OnlyTask": "JHG-47",
+    "pr217OnlyTask": "JHG-48",
+    "botComment": "https://github.com/jihegao/riffology-cloud/pull/208#issuecomment-6172760383",
+    "incorrectCompilerReferencesReplacedWithFullCloudUrls": true,
+    "linearOutboundReferencesNormalized": true
+  },
+  "stateBoundaries": {
+    "issueClosures": 0,
+    "issuesReopened": 0,
+    "linearDoneWrites": 0,
+    "deploymentWrites": 0,
+    "paidProductRuns": 0,
+    "cloudDataDeletes": 0,
+    "githubProjectFields": "unverified: missing read:project",
+    "issueSyncOrStatusAutomationSettings": "not exposed; not changed",
+    "jhg46": "Preexisting In Progress and 2026-10-20 due date preserved",
+    "purge": "Fixed 34-project scope remains authorized; not implemented or executed",
+    "modelPr": "Draft source still has historical 5.6 reader/reverse migration; body records required revision before merge"
+  },
+  "reviewThreads": [
+    {
+      "pr": 203,
+      "github": 219,
+      "url": "https://github.com/jihegao/riffology-cloud/pull/203#discussion_r4268576913",
+      "liveReproduced": false
+    },
+    {
+      "pr": 203,
+      "github": 220,
+      "url": "https://github.com/jihegao/riffology-cloud/pull/203#discussion_r4268576928",
+      "liveReproduced": false
+    }
+  ]
+}

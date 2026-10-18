@@ -1,5 +1,7 @@
 # Current release readiness — 2026-10-17
 
+> 2026-10-17 文档收口：[#235 已合并及默认关闭发布、#236 离线兼容进度、历史收据保全与后续交接](documentation-closeout-20261017.md)。下方候选/权限缺失描述保留历史语境，以较新的具名证据为准。
+
 ## 2026-10-18 JHG-46 Registry recovery prepared; persistent OAuth grant pending
 
 The c3e result below remains a stopped publication: original export/raw verification passed, one credential POST returned403, no tag/push/Registry image readback/merge occurred, and original cleanup was independently confirmed. The [new fixed recovery packet](project-view-trusted-pi-registry-recovery-packet-20261018.md) is preparation only:8 sources/manifest3779af35,16 operation fakes/7 reader fixtures and independent review. It proposes one explicit same-user consent adding persistent `containers:write` to the existing five OAuth scopes, immutable original archive reuse with0exports, one new15-minute account Registry push/pull credential and one fixed platform push/readback/cleanup. Normal OAuth has no account/repository resource filter and outlives the Registry credential; the executor pins this one target. Scope addition does not establish the original403 cause or guarantee recovery. No new human grant or real auth/SSH/API/Docker action was supplied by preparation. This packet excludes239merge, rollout/app/Gateway/gate and real project/model/Turn/Run.

@@ -1,0 +1,19 @@
+{
+  "previousHead": "33359ba29ff4be09017d3161b0baaac1a95446e0",
+  "testSourceSha256": "a11931b2269ee8530867ea63fd31af81826c8d470eb70013b3308d8b2d70683a",
+  "node": "25.3.0",
+  "localInvocations": 1,
+  "passed": 13,
+  "failed": 0,
+  "childGcInvocations": 1,
+  "gcCalls": 4,
+  "itemDeadlineMs": 4000,
+  "parentChildTimeoutMs": 8500,
+  "network": "offline injected only",
+  "originalCiGcCauseProven": false,
+  "realFetchCancellationProven": false,
+  "artifacts": {
+    "six-process-diagnosis-archive.json": "771a592f4bb754cb52076921d89e2a29b4b2ba385ff4e55898b4fbee0cfbf7aa",
+    "local-test.json": "f64666c51564a55c2bcf3586ca843530487d0148e62c413420c1ab9964868424"
+  }
+}

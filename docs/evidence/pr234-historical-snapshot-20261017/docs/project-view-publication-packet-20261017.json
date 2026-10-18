@@ -1,0 +1,970 @@
+{
+  "schema": "project-view-publication-review/v1",
+  "reviewOnly": true,
+  "deployable": false,
+  "sourceCommit": "e1aeaa0f5bcdbaf8c459be4e816cdae533df17e1",
+  "documentationCommit": "0a2f0c8",
+  "accountId": "8b0d70250211aa10d89e20605a1c7e5e",
+  "worker": "riffology-m1-gateway-staging",
+  "releaseTag": "jhg46-e1aeaa0-20261017-88cd0e21",
+  "releaseTagIsMigrationTag": false,
+  "observations": {
+    "first": "2026-10-17T06:28:08.807Z",
+    "version": "2026-10-17T06:28:39.657Z",
+    "bracket": "2026-10-17T06:32:04.662Z",
+    "transport": "Personal Cloudflare connector GET; safe projection and canonical hashes computed inside connector; no raw source/body/credential evidence",
+    "priorWrongAccountRead": {
+      "status": "authentication-error-before-target-access",
+      "mutations": 0
+    },
+    "activeDeployment": {
+      "id": "2ffb14ba-a651-4010-b042-f8cd5e2d97f0",
+      "versions": [
+        {
+          "version_id": "f2a0b0a3-8742-4466-89d0-74cf0db6c47b",
+          "percentage": 100
+        }
+      ]
+    },
+    "settingsCanonicalSha256": "b187da114653d4e4ace2f3dd822b4e4b6796f2bacca2d0d9f78aa5a7870661a8",
+    "bracketSettingsCanonicalSha256": "b187da114653d4e4ace2f3dd822b4e4b6796f2bacca2d0d9f78aa5a7870661a8",
+    "bindingCount": 100,
+    "bindingNamesAndTypes": [
+      "APP_ORIGIN:plain_text",
+      "APP_TRANSPORT_ORIGIN:plain_text",
+      "ASSETS:assets",
+      "BETTER_AUTH_SECRET:secret_text",
+      "BROWSER_PREVIEW_EXECUTION_ORIGIN:plain_text",
+      "CATALOG:d1",
+      "CF_VERSION_METADATA:version_metadata",
+      "ENTRY_REPLAY:durable_object_namespace",
+      "ENTRY_SIGNING_PUBLIC_KEYS_JSON:plain_text",
+      "G4_BROWSER_BUILD_HOLD_SCOPES_JSON:plain_text",
+      "G4_CONTROLLED_WINDOW_JSON:plain_text",
+      "G5_ADMISSION_ENABLED:plain_text",
+      "G5_CONTROLLED_WINDOW_JSON:plain_text",
+      "G5_TOKEN_BUDGET:durable_object_namespace",
+      "G5_TOKEN_BUDGET_POLICY_JSON:plain_text",
+      "G5_WINDOW_GUARD:durable_object_namespace",
+      "GOOGLE_CLIENT_ID:secret_text",
+      "GOOGLE_CLIENT_SECRET:secret_text",
+      "INVITED_PROJECT_ADMISSION_ENABLED:plain_text",
+      "INVITED_RUN_CAPACITY:durable_object_namespace",
+      "INVITED_RUNS_POLICY_JSON:plain_text",
+      "LEGACY_RECOVERY_ORIGIN:plain_text",
+      "LEGACY_RECOVERY_UNTIL:plain_text",
+      "M2_LAZY_PROJECT_ENABLED:plain_text",
+      "M2_MODEL_BUDGET_POLICY_VERSION:plain_text",
+      "M2_MODEL_CAPABILITY_TTL_MS:plain_text",
+      "M2_MODEL_ID:plain_text",
+      "M2_MODEL_MAX_INPUT_TOKENS_PER_CALL:plain_text",
+      "M2_MODEL_MAX_OUTPUT_TOKENS_PER_CALL:plain_text",
+      "M2_MODEL_PROVIDER:plain_text",
+      "M2_MODEL_PROVIDER_ENABLED:plain_text",
+      "M2_MODEL_PROXY_REQUEST_KEY:secret_text",
+      "M2_MODEL_TURN_CAPABILITY_KEY:secret_text",
+      "M2_OPENCODE_GO_API_KEY:secret_text",
+      "M2_PROJECT_EFFECT_CAPABILITY_KEY:secret_text",
+      "M2_TOOL_BRIDGE_REQUEST_KEY:secret_text",
+      "M2_TURN_ADMISSION_TELEMETRY:plain_text",
+      "M2_TURN_OPERATION_TELEMETRY:plain_text",
+      "M2_TURNS_ENABLED:plain_text",
+      "M2_WORKER_SOURCE_SHA:plain_text",
+      "M2_WORKSPACE_RUNTIME_REUSE_ENABLED:plain_text",
+      "M2_WORKSPACE_RUNTIME_VERSION:plain_text",
+      "M3_OBSERVER_ENABLED:plain_text",
+      "M3_PREVIEW_ENABLED:plain_text",
+      "M3_PREVIEW_ORIGIN:plain_text",
+      "M3_PREVIEW_WS_ENABLED:plain_text",
+      "M3_SERVICE_ENABLED:plain_text",
+      "M3_SERVICE_IMAGE:plain_text",
+      "M4_SIMULATION_ENABLED:plain_text",
+      "M4_SIMULATION_IMAGE:plain_text",
+      "MANAGED_ACCEPTANCE_JSON:plain_text",
+      "MANAGED_OPENAI_API_KEY:secret_text",
+      "MANAGED_PROJECT_BOOTSTRAP_JSON:plain_text",
+      "MANAGED_TESTING_JSON:plain_text",
+      "MANAGED_TESTING_PATCH_SHA256:plain_text",
+      "MANAGED_TURN_RUNTIME:durable_object_namespace",
+      "MANUAL_SAVE_POLICY_JSON:plain_text",
+      "MODEL_BUDGET_MAX_DISPATCHED_CALLS_PER_TURN:plain_text",
+      "MODEL_BUDGET_MAX_INPUT_TOKENS_PER_CALL:plain_text",
+      "MODEL_BUDGET_MAX_OUTPUT_TOKENS_PER_CALL:plain_text",
+      "MODEL_BUDGET_MAX_RESERVATION_ATTEMPTS_PER_TURN:plain_text",
+      "MODEL_BUDGET_MAX_RESERVED_TOKENS_PER_TURN:plain_text",
+      "MODEL_BUDGET_POLICY_VERSION:plain_text",
+      "MODEL_CONTENT:r2_bucket",
+      "MODEL_PROXY:service",
+      "PHASE1_RELEASE_PROFILE:plain_text",
+      "PI_DEVELOPER_BUDGET:durable_object_namespace",
+      "PI_DEVELOPER_POLICY_JSON:plain_text",
+      "PRIVATE_BETA_CAPACITY:durable_object_namespace",
+      "PRIVATE_BETA_POLICY_JSON:plain_text",
+      "PRODUCTION_ACCEPTED_EVIDENCE_SHA256:plain_text",
+      "PRODUCTION_AI_GATEWAY_TOKEN:secret_text",
+      "PRODUCTION_MODEL_BUDGET:durable_object_namespace",
+      "PRODUCTION_MODEL_ENABLED:plain_text",
+      "PRODUCTION_MODEL_PROFILE_JSON:plain_text",
+      "PRODUCTION_MONEY_POLICY_JSON:plain_text",
+      "PRODUCTION_OPENAI_API_KEY:secret_text",
+      "PRODUCT_TURN_RUNTIME:durable_object_namespace",
+      "PROJECT_RUNTIME:durable_object_namespace",
+      "PROJECT_SANDBOX:durable_object_namespace",
+      "REVISION_STORE:durable_object_namespace",
+      "SERVICE_RUN:durable_object_namespace",
+      "SERVICE_RUNTIME:durable_object_namespace",
+      "SERVICE_SANDBOX:durable_object_namespace",
+      "SIMULATION_SANDBOX:durable_object_namespace",
+      "TENANT_MODEL_BUDGET:durable_object_namespace",
+      "TENANT_QUOTA:durable_object_namespace",
+      "TENANT_QUOTA_CAPACITY:plain_text",
+      "TENANT_QUOTA_POLICY_VERSION:plain_text",
+      "TENANT_QUOTA_UPGRADE_FROM:plain_text",
+      "TOOL_ARTIFACT_STORE:durable_object_namespace",
+      "TOOL_BRIDGE:service",
+      "TOOL_BRIDGE_AGENT:durable_object_namespace",
+      "TRUSTED_PI_CAPACITY:durable_object_namespace",
+      "TRUSTED_PI_CAPACITY_LIMIT:plain_text",
+      "TRUSTED_PI_CAPACITY_POLICY_VERSION:plain_text",
+      "TRUSTED_PI_SANDBOX:durable_object_namespace",
+      "TWO_ACCOUNT_AUTH_MODE:plain_text",
+      "WORKSPACE_AGENT:durable_object_namespace",
+      "WORKSPACE_CHECKPOINTS:r2_bucket"
+    ],
+    "bindingsCanonicalSha256": "561e69099d07cd9906d76604b561080ed0cbfe84a35b57b66cbe45b6e5258f69",
+    "runtime": {
+      "compatibility_date": "2026-09-09",
+      "compatibility_flags": [
+        "nodejs_compat",
+        "nodejs_compat_do_not_populate_process_env",
+        "enable_request_signal"
+      ],
+      "exports": {
+        "EntryReplayGuard": {
+          "type": "durable-object",
+          "storage": "sqlite"
+        },
+        "G5ControlledWindow": {
+          "type": "durable-object",
+          "storage": "sqlite"
+        },
+        "G5TenantModelBudget": {
+          "type": "durable-object",
+          "storage": "sqlite"
+        },
+        "InvitedRunCapacity": {
+          "type": "durable-object",
+          "storage": "sqlite"
+        },
+        "ManagedProductRuntime": {
+          "type": "durable-object",
+          "storage": "sqlite"
+        },
+        "PiDeveloperBudget": {
+          "type": "durable-object",
+          "storage": "sqlite"
+        },
+        "PrivateBetaCapacity": {
+          "type": "durable-object",
+          "storage": "sqlite"
+        },
+        "ProductTurnRuntime": {
+          "type": "durable-object",
+          "storage": "sqlite"
+        },
+        "ProductionModelBudget": {
+          "type": "durable-object",
+          "storage": "sqlite"
+        },
+        "ProjectRuntime": {
+          "type": "durable-object",
+          "storage": "sqlite",
+          "container": "riffology-m1-project-staging"
+        },
+        "ProjectToolSandbox": {
+          "type": "durable-object",
+          "storage": "sqlite",
+          "container": "riffology-m3-project-tools-staging"
+        },
+        "RevisionStore": {
+          "type": "durable-object",
+          "storage": "sqlite"
+        },
+        "ServiceRun": {
+          "type": "durable-object",
+          "storage": "sqlite"
+        },
+        "ServiceRuntime": {
+          "type": "durable-object",
+          "storage": "sqlite"
+        },
+        "ServiceSandbox": {
+          "type": "durable-object",
+          "storage": "sqlite",
+          "container": "riffology-m3-service-staging"
+        },
+        "SimulationSandbox": {
+          "type": "durable-object",
+          "storage": "sqlite",
+          "container": "riffology-phase1-simulation"
+        },
+        "TenantModelBudget": {
+          "type": "durable-object",
+          "storage": "sqlite"
+        },
+        "TenantQuota": {
+          "type": "durable-object",
+          "storage": "sqlite"
+        },
+        "ToolArtifactStore": {
+          "type": "durable-object",
+          "storage": "sqlite"
+        },
+        "ToolBridgeAgent": {
+          "type": "durable-object",
+          "storage": "sqlite"
+        },
+        "TrustedPiCapacity": {
+          "type": "durable-object",
+          "storage": "sqlite"
+        },
+        "TrustedPiSandbox": {
+          "type": "durable-object",
+          "storage": "sqlite",
+          "container": "riffology-m3-trusted-pi-staging"
+        },
+        "WorkspaceAgent": {
+          "type": "durable-object",
+          "storage": "sqlite"
+        }
+      },
+      "containers": [
+        {
+          "class_name": "ProjectRuntime",
+          "name": "riffology-m1-project-staging"
+        },
+        {
+          "class_name": "ProjectToolSandbox",
+          "name": "riffology-m3-project-tools-staging"
+        },
+        {
+          "class_name": "TrustedPiSandbox",
+          "name": "riffology-m3-trusted-pi-staging"
+        },
+        {
+          "class_name": "ServiceSandbox",
+          "name": "riffology-m3-service-staging"
+        },
+        {
+          "class_name": "SimulationSandbox",
+          "name": "riffology-phase1-simulation"
+        }
+      ],
+      "assets": {
+        "html_handling": "none",
+        "not_found_handling": "none",
+        "serve_directly": false,
+        "raw_run_worker_first": true,
+        "base_path": "/"
+      }
+    },
+    "runtimeCanonicalSha256": "74b620fad2b790291df88ce5e56fc3d1a8aeb27b4750d4b99424082521bbcd0f",
+    "resourcesCanonicalSha256": "3490a1140ba8ac8cf1e2b6ea0c2ff45974f9a3f714a6b412182f492c3696025d",
+    "workspace": {
+      "name": "WORKSPACE_AGENT",
+      "type": "durable_object_namespace",
+      "class_name": "WorkspaceAgent",
+      "namespace_id": "64bf54d3461746cebcf6ede7cf8a2e31"
+    },
+    "accountContainerApplications": {
+      "count": 15,
+      "canonicalSha256": "61e805a13f6952a1bde9e14212fd3728ca803cee33ec6bb41ff4c18bdb7ca425",
+      "resultInfo": {
+        "per_page": 500
+      },
+      "applications": [
+        {
+          "id": "a03836ca-d275-4f7d-898f-bc16d0875089",
+          "name": "riffology-phase1-simulation",
+          "canonicalSha256": "59021dc5322effcdf6837743c7a31719c153b8251affa0e53a713da08830a598",
+          "configurationSha256": "1ef5926e593a718639be8ca2c54b4f58bf2c21ba1cd03e60c86728e7ec7caf89",
+          "schedulingPolicy": "default",
+          "maxInstances": 1,
+          "namespaceId": "61afc653d0054bce8d731f3020075c70"
+        },
+        {
+          "id": "a03c0a4c-7533-4190-ba2b-ff4fecaabb48",
+          "name": "riffology-m3-service-staging",
+          "canonicalSha256": "0f2e0f3217364cd314e18796d2e012e84426067f52571d113ed2bb182f4647bf",
+          "configurationSha256": "b4948cdb7ab6a36218023a8977f6e29524d1608133fc3ec28573249d7a233b09",
+          "schedulingPolicy": "default",
+          "maxInstances": 1,
+          "namespaceId": "918293516c824d868fc719f325b0b269"
+        },
+        {
+          "id": "a03628c4-f032-461f-a65b-612ccac11a06",
+          "name": "riffology-m3-trusted-pi-staging",
+          "canonicalSha256": "c32958da504bc60edbbb771f9ba69a7c57cc19a666dfd5aea3526823afdac1f2",
+          "configurationSha256": "17efab851f0c5b8a449bdb254d7c3625b8becd1d68d2bdd46740c57db0e91b37",
+          "schedulingPolicy": "default",
+          "maxInstances": 1,
+          "namespaceId": "ac0e9a31323e463b9a05696dad1b30d5"
+        },
+        {
+          "id": "a03156a6-9bf5-43fb-8b7f-a1f5b8d1a650",
+          "name": "riffology-m3-project-tools-staging",
+          "canonicalSha256": "2382c0afc8c90db010b1193180db9e5406333cc704bd477b513d34c740201dbf",
+          "configurationSha256": "2058e2a562608967110f4c325d8163ac4b71647cc5b25f9be11ecf0443a4429e",
+          "schedulingPolicy": "default",
+          "maxInstances": 1,
+          "namespaceId": "bd4b82ecc2d742098ed6c470229b5dc0"
+        },
+        {
+          "id": "a035c941-2207-406e-97aa-a42ab6e9d249",
+          "name": "riffology-m1-project-staging",
+          "canonicalSha256": "2eefcbb0124f44a5bc1a0d47264094cc85d1630f18ae198b4e8a3e4f95ebff79",
+          "configurationSha256": "eefab290567020c905fdd654698cb30830ccd07455b639df5a421f0f73612fa1",
+          "schedulingPolicy": "default",
+          "maxInstances": 1,
+          "namespaceId": "fa42f2fd7ae24a0690d9efe649fadaf6"
+        },
+        {
+          "id": "a03693b8-f5be-4247-9280-f0c38435d911",
+          "name": "riffology-m0-release-completion-staging",
+          "canonicalSha256": "3afd011219204198ae77352879a238f09aa4b440d06119a5e3db4cead2d41dd4",
+          "configurationSha256": "5074619fec6b715ef5f0c9e3758bda8599451132c362a4ef6b7afc091bb918e0",
+          "schedulingPolicy": "default",
+          "maxInstances": 1,
+          "namespaceId": "770fb0b25f4d4cfd8ea021495c2aebd6"
+        },
+        {
+          "id": "a03a6e91-25cb-4a8d-89a8-be522368dde4",
+          "name": "riffology-m0-release-staging",
+          "canonicalSha256": "7af564eda3f25b60c8452f450504e51788259bf68850f4846bdf36af91e96d58",
+          "configurationSha256": "5074619fec6b715ef5f0c9e3758bda8599451132c362a4ef6b7afc091bb918e0",
+          "schedulingPolicy": "default",
+          "maxInstances": 1,
+          "namespaceId": "b3b02828c43a4578bc512cf4235903db"
+        },
+        {
+          "id": "a039ed42-159d-43db-be13-69315bce5189",
+          "name": "riffology-m0-pi-live-project-staging",
+          "canonicalSha256": "4628c1b1a35fd070e777996540df08a9b1ca8c9f8f00f4741e804f0849eba0f5",
+          "configurationSha256": "990cbe8f00d1348ccf1cc86ebfc877d4f964709850b575eb0c7a6576bc1b3df9",
+          "schedulingPolicy": "default",
+          "maxInstances": 1,
+          "namespaceId": "2217a2e7507d46ddb766164f94c678f7"
+        },
+        {
+          "id": "a03ddc7e-1c6e-4cea-93ec-ac03d7b0073a",
+          "name": "riffology-m0-pi-live-trusted-staging",
+          "canonicalSha256": "8e8d941a9db7fa3cd1f2a4de54ee061333a7cc9944daeb216a590b8ea20c418b",
+          "configurationSha256": "5074619fec6b715ef5f0c9e3758bda8599451132c362a4ef6b7afc091bb918e0",
+          "schedulingPolicy": "default",
+          "maxInstances": 1,
+          "namespaceId": "81dab5c2d43c44fa8a7e2fa7518ea389"
+        },
+        {
+          "id": "a0321718-f17e-4ccf-974a-fd447dde5920",
+          "name": "riffology-m0-pi-host-staging",
+          "canonicalSha256": "5ca3aac780c8bc66f1ca2fc8bbf7d46c292d0175a0b1d7994ae500091921179e",
+          "configurationSha256": "5074619fec6b715ef5f0c9e3758bda8599451132c362a4ef6b7afc091bb918e0",
+          "schedulingPolicy": "default",
+          "maxInstances": 1,
+          "namespaceId": "3f54614572894e1394797b699602343d"
+        },
+        {
+          "id": "a036b418-dcce-4d2f-bd3d-6debf982ea6f",
+          "name": "riffology-m0-recovery-staging",
+          "canonicalSha256": "3fb47e3f1d5d2f0aff49a0c6ef57030f6f0de30e87c3263d550c44c95888b4b4",
+          "configurationSha256": "5074619fec6b715ef5f0c9e3758bda8599451132c362a4ef6b7afc091bb918e0",
+          "schedulingPolicy": "default",
+          "maxInstances": 2,
+          "namespaceId": "e17c13abe5474cd0bbb673c6ce58a2a0"
+        },
+        {
+          "id": "a03c0d4b-d529-4d81-a2b6-bfb901222a18",
+          "name": "riffology-m0-files-project-staging",
+          "canonicalSha256": "04b7ba6df23c4af7ad8f3415df3656a24ee765a479d52ec9426a376d14ae22ab",
+          "configurationSha256": "990cbe8f00d1348ccf1cc86ebfc877d4f964709850b575eb0c7a6576bc1b3df9",
+          "schedulingPolicy": "default",
+          "maxInstances": 2,
+          "namespaceId": "9b500c7a03a5410eb3969f37f9e13d7b"
+        },
+        {
+          "id": "a0332851-f795-46df-9f8e-ee0ddc220095",
+          "name": "riffology-m0-preview-staging",
+          "canonicalSha256": "6765bc50ea6893710d08602feb43dab6ede82d822831e96d4e5c960953f2fb04",
+          "configurationSha256": "c1f743aa507102a4ec026e815ae3113795578d59d2a6f3fc6c8a631b5569a49d",
+          "schedulingPolicy": "default",
+          "maxInstances": 2,
+          "namespaceId": "27043826748b49c691b140bf08f00a51"
+        },
+        {
+          "id": "a03313e4-fa9d-4de2-ac2c-d2cc69efd875",
+          "name": "riffology-m0-project-staging",
+          "canonicalSha256": "c46388038a9363b86118e7150fcb5080f33172f88b7a8a09bb191d2e4c5bbe6b",
+          "configurationSha256": "990cbe8f00d1348ccf1cc86ebfc877d4f964709850b575eb0c7a6576bc1b3df9",
+          "schedulingPolicy": "default",
+          "maxInstances": 2,
+          "namespaceId": "34cc750fbe3046d79a0cc0c5a4eca171"
+        },
+        {
+          "id": "a03ea65b-b039-4f56-8422-36c719b87b72",
+          "name": "riffology-m0-trusted-staging",
+          "canonicalSha256": "e68ab85342eba280afc00cedc825a094eef9c44d7bd3702fa82ab698e105d13b",
+          "configurationSha256": "5074619fec6b715ef5f0c9e3758bda8599451132c362a4ef6b7afc091bb918e0",
+          "schedulingPolicy": "default",
+          "maxInstances": 2,
+          "namespaceId": "9378e4a1e1e546d09fb2c0ef5a45c25e"
+        }
+      ]
+    },
+    "registry": [
+      {
+        "domain": "registry.cloudflare.com",
+        "kind": "default",
+        "created_at": "2026-09-05T09:37:11.415000064Z"
+      }
+    ],
+    "scriptSettings": {
+      "status": 200,
+      "canonicalSha256": "1b970dd180239f490dd89ef94a2e456c4b18625c61d79aabdb93cb665b770ee0",
+      "keys": [
+        "logpush",
+        "tags",
+        "tail_consumers",
+        "observability"
+      ],
+      "observability": {
+        "enabled": true,
+        "head_sampling_rate": 1,
+        "redact_query_string": false,
+        "logs": {
+          "enabled": true,
+          "head_sampling_rate": 1,
+          "persist": true,
+          "invocation_logs": true
+        },
+        "traces": {
+          "enabled": false,
+          "persist": true,
+          "head_sampling_rate": 1
+        }
+      },
+      "logpush": false,
+      "tail_consumers": null
+    },
+    "limits": {
+      "completeReadbackRawSettingsPresentOnlyInPrivateLocalInputs": true,
+      "currentModuleRawGetNotRepeated": true,
+      "routesAndCronReadNotRefreshed": true,
+      "containerServingVersionsNotRefreshed": true,
+      "capacityOccupancyNotRead": true,
+      "freshPrewriteSnapshotRequired": true
+    }
+  },
+  "localInputs": {
+    "directory": ".local/jhg46-publication-review-20261017",
+    "directoryMode": "0700",
+    "filesMode": "0600",
+    "baselineSettings": "baseline-settings.private.json",
+    "baselineVersion": "baseline-version.private.json",
+    "baselineSource": "PR232 existing local restricted snapshots; exact settings/bindings/runtime canonical hashes match the fresh connector reads",
+    "credentialsCopied": false,
+    "candidate": {
+      "mainModule": "index.js",
+      "bundle": "gateway.mjs",
+      "bundleBytes": 5768905,
+      "bundleSha256": "d92548f0f07bb782527618dd26166b11985eaed1723801d6e65cb49b9a41ea78",
+      "old23ExportsRetained": true,
+      "newExports": [
+        "ProjectViewRuntime",
+        "ProjectViewCapacity"
+      ],
+      "nativePlaywrightDependencyInputs": 0,
+      "assets": 95,
+      "immutableAssets": 68,
+      "missingOrAddedAssetPaths": 0,
+      "changedAssets": [
+        {
+          "path": "/project-view-remote.js",
+          "bytes": 9888,
+          "sha256": "8e13adf868a6ded4ccd240d64f38404eea07ba76416635ede1db08be46e26974"
+        },
+        {
+          "path": "/project-views.js",
+          "bytes": 13169,
+          "sha256": "fc53df2a13d48a8de676d4af0c7693d866811cfab7ce3748d9ec161bab0aa6c9"
+        }
+      ],
+      "assetsInventoryCanonicalSha256": "55482b08f7cd5aa23c1596cc1e218a119f82163a829f98d4f986c8d98ddbd547",
+      "assetsManifestCanonicalSha256": "64cba1ffa24765df3807b3a273b8ab5e70128a92214367f8fa8efd1c17a231fa"
+    },
+    "metadataGenerator": {
+      "file": "prepare-metadata-review.mjs",
+      "sha256": "7a54f2ce1c30c210f758fe3247b4eb45a36229b88fcac766269f66353ed839d3",
+      "pureOffline": true,
+      "allowedImageRepository": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-project-view-browser",
+      "assetJwtSlot": "pending-authorized-asset-session",
+      "networkOrCredentialModules": false
+    },
+    "generatedMetadataReview": {
+      "directory": "metadata-reviews/48eab2f0-541c-43fd-a9bd-cf6eb8f69087",
+      "receiptSha256": "781cd2c9a8d75a26d65d92adfd76cb71a0af0111bf68b7b15b69683ecf10bc95",
+      "metadataWithoutJwtSha256": "fff9ca5e3fdbc8d99a3b81aa74b8dcb25cfaf9c87a20dd0e68f17a4994c2846b",
+      "metadataWithoutJwtCanonicalSha256": "69a1236d3f9ff99b293479ba15f437238895e8cf3bed144509ed092d942c8ee9",
+      "logicalBindings": 106,
+      "explicitWireBindings": 95,
+      "retainedSecretBindings": 11,
+      "exports": 25,
+      "containerAssociations": 6,
+      "expectedOnlyImagePin": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-project-view-browser@sha256:742a5fd20d84f6e0d233c291e7764db8e087ba7f20d75ad102b70e788e2a5339",
+      "registryActualReadback": false,
+      "rawManifestAndConfigVerified": false,
+      "completionJwt": null,
+      "actualNewNamespaceId": null,
+      "reviewOnly": true,
+      "deployable": false,
+      "strictPreservationAssertionsPassed": true
+    }
+  },
+  "additions": {
+    "exports": {
+      "ProjectViewRuntime": {
+        "type": "durable-object",
+        "storage": "sqlite",
+        "container": "riffology-project-view-browser"
+      },
+      "ProjectViewCapacity": {
+        "type": "durable-object",
+        "storage": "sqlite"
+      }
+    },
+    "bindings": [
+      {
+        "name": "PROJECT_VIEW_RUNTIME",
+        "type": "durable_object_namespace",
+        "class_name": "ProjectViewRuntime"
+      },
+      {
+        "name": "PROJECT_VIEW_CAPACITY",
+        "type": "durable_object_namespace",
+        "class_name": "ProjectViewCapacity"
+      }
+    ],
+    "containerAssociation": {
+      "name": "riffology-project-view-browser"
+    },
+    "disabledPolicyRaw": "{\"enabled\":false}",
+    "additionalPlainTextPins": {
+      "PROJECT_VIEW_RUNTIME_IMAGE": null,
+      "PROJECT_VIEW_RUNTIME_CONTEXT_RECEIPT_SHA256": "357e280840ff665334b1fa055d74755ec4019932922e6b57dbc620bbb953fe8c",
+      "PROJECT_VIEW_RUNTIME_POLICY_HASH": "5acf3ff77b4420677b5923071f303facaba7a9273a346284a667a275df325146"
+    },
+    "lifecycle": {
+      "mode": "modern-exports",
+      "legacyMigrationsAllowed": false,
+      "tombstonesOrRenamesOrTransfersAllowed": false,
+      "versionsUploadAppliesLifecycle": false,
+      "priorVersionRollbackAcrossLifecycle": false
+    },
+    "application": {
+      "name": "riffology-project-view-browser",
+      "scheduling_policy": "default",
+      "instances": 0,
+      "max_instances": 1,
+      "durable_objects": {
+        "namespace_id": null
+      },
+      "configuration": {
+        "image": null,
+        "instance_type": "basic"
+      },
+      "resourceIntent": {
+        "vcpu": 0.25,
+        "memoryGiB": 1,
+        "diskGB": 4,
+        "targetViabilityVerified": false,
+        "automaticUpsizing": false
+      },
+      "environmentVariables": [],
+      "publicPorts": [],
+      "applicationId": null
+    }
+  },
+  "registryProposal": {
+    "existingDomain": "registry.cloudflare.com",
+    "existingKind": "default",
+    "repository": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-project-view-browser",
+    "tag": "e1aeaa0-20261017",
+    "actualRegistryManifestDigest": null,
+    "pushAuthorizedByThisArtifact": false,
+    "registryAuthenticationPerformed": false,
+    "repositoryExistenceAndVisibilityNotVerified": true,
+    "expectedOnlyImagePin": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-project-view-browser@sha256:742a5fd20d84f6e0d233c291e7764db8e087ba7f20d75ad102b70e788e2a5339",
+    "rawManifestAndConfigHashVerified": false,
+    "expectedImagePinAuthority": "Root offline Engine manifest projection only; not raw-body hash evidence or registry readback"
+  },
+  "registryAndCostResearch": {
+    "retrievedOn": "2026-10-17",
+    "researchOnly": true,
+    "accountBillingOrSubscriptionsRead": false,
+    "credentialsReadGeneratedOrTransferred": false,
+    "imageTagExportPushOrRegistryAuthenticationPerformed": false,
+    "sources": {
+      "containersPricing": "https://developers.cloudflare.com/containers/platform/pricing/",
+      "accountImageStorageLimit": "https://developers.cloudflare.com/containers/platform/limits/#account-limits",
+      "managedRegistryImageManagement": "https://developers.cloudflare.com/containers/guides/image-management/",
+      "registryCredentialsCommand": "https://developers.cloudflare.com/workers/wrangler/commands/containers/#registries-credentials",
+      "accountPermissionNames": "https://developers.cloudflare.com/fundamentals/api/reference/permissions/",
+      "dockerSinglePlatformPush": "https://docs.docker.com/reference/cli/docker/image/push/#options",
+      "dockerCliV29_8_1Implementation": "https://github.com/docker/cli/blob/v29.8.1/cli/command/image/push.go#L57-L110",
+      "usageReconciliation": "https://developers.cloudflare.com/billing/understand/usage-based-billing/"
+    },
+    "registryStorage": {
+      "ratePublishedInInspectedOfficialSources": false,
+      "rate": null,
+      "billingBasis": null,
+      "layerOrVersionDeduplicationAccounting": null,
+      "registryFreeAllowance": null,
+      "separateRegistrySubscriptionRequirement": null,
+      "accountStorageCapacityLimitGB": 50,
+      "capacityLimitIsFreeAllowance": false,
+      "r2BackedDoesNotEstablishR2CustomerPricing": true,
+      "candidateBlobSizesAndRetentionCostVerified": false,
+      "unknownDoesNotMeanZero": true
+    },
+    "credentialContract": {
+      "source": "Official commands/OpenAPI plus installed Wrangler 4.129.0; no credential request executed",
+      "endpoint": "POST /accounts/{account_id}/containers/registries/{domain}/credentials",
+      "defaultExpirationMinutes": 15,
+      "schemaMinimumExpirationMinutes": 1,
+      "schemaPermissions": [
+        "pull",
+        "push",
+        "list"
+      ],
+      "proposedPushAndReadbackPermissions": [
+        "push",
+        "pull"
+      ],
+      "repositoryScopeFieldExposed": false,
+      "oneRepositoryTokenGuaranteed": false,
+      "effectiveScope": "Account/domain credential; enforce exact approved repository/path in executor, without claiming a repository-scoped token",
+      "installedWranglerOAuthScope": "containers:write",
+      "publishedAccountRoleCandidate": "Containers Write",
+      "perEndpointMinimumRoleVerified": false,
+      "currentCredentialPermissionVerified": false,
+      "credentialGenerationOrTransferAuthorizedByThisArtifact": false
+    },
+    "futureSinglePlatformPush": {
+      "protocolOnlyNotExecutableNow": true,
+      "minimumDockerEngineApi": "1.46",
+      "source": "Verified original same-build local index, preserving local index/provenance as separate build evidence",
+      "destinationTag": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-project-view-browser:e1aeaa0-20261017",
+      "reviewCommands": [
+        "docker image tag <VERIFIED_ORIGINAL_LOCAL_INDEX_ID> registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-project-view-browser:e1aeaa0-20261017",
+        "docker image push --platform linux/amd64 registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-project-view-browser:e1aeaa0-20261017"
+      ],
+      "platform": "linux/amd64",
+      "expectedRunnableManifestDigest": "sha256:742a5fd20d84f6e0d233c291e7764db8e087ba7f20d75ad102b70e788e2a5339",
+      "requiresRawManifestConfigAndLayerIdentityBeforePush": true,
+      "requiresAuthoritativeRegistryRawManifestAndBlobReadback": true,
+      "rawOrPushedDigestMismatchAction": "stop; do not replace the approved image pin or rewrite image content",
+      "dockerOptionPushesIndexOrAttestations": false,
+      "cloudflareIndexProvenanceOrReferrerCompatibilityEstablished": false,
+      "installedWranglerPush": "Checks linux/amd64 then ordinary docker tag/push; no platform-selection option, so not equivalent to the exact single-platform step",
+      "documentedPushWorkflowRequiresDockerSaveArchive": false,
+      "currentDaemonProxyPort": 7897,
+      "currentDaemonProxyListenerPresent": false,
+      "offlineBuildRepairedDaemonProxy": false,
+      "pushStillUsesDaemonProxy": true,
+      "routeRemediationAuthorizedByThisArtifact": false,
+      "automaticRelayDaemonChangeOrRegistryFallbackAllowed": false,
+      "dockerProgressIsUncompressedTransferIsCompressed": true,
+      "dockerByteCountsEstablishRegistryBillingBasis": false
+    },
+    "costProposal": {
+      "currency": "USD",
+      "proposedIncrementalBatchBudget": 1,
+      "budgetVerified": false,
+      "totalIncrementalCost": null,
+      "totalCostStatus": "unknown; Registry fees, applicable plan and non-compute dimensions are unverified",
+      "noWorkersPaidPlanAssumed": true,
+      "neverNewSubscribe": true,
+      "currentAccountPlanOrAllowanceVerified": false,
+      "publishedWorkersPaidMonthlyMinimumUSD": 5,
+      "publishedMonthlyIncluded": {
+        "memoryGiBHours": 25,
+        "cpuVcpuMinutes": 375,
+        "diskGBHours": 200
+      },
+      "nominalBasicProfileIllustration": {
+        "targetResourceProfileReadbackVerified": false,
+        "memoryGiB": 1,
+        "activeVcpuAssumedForIllustration": 0.25,
+        "provisionedDiskGB": 4,
+        "includedAllowanceAssumedAvailable": false,
+        "publishedOverageUSDPerGiBSecondMemory": 2.5e-06,
+        "publishedOverageUSDPerVcpuSecondActiveCpu": 2e-05,
+        "publishedOverageUSDPerGBSecondProvisionedDisk": 7e-08,
+        "illustrativeComputeUSDPerSecond": 7.78e-06,
+        "illustrativeComputeUSDFor300Seconds": 0.002334,
+        "illustrativeComputeUSDFor600Seconds": 0.004668,
+        "cpuBillingFollowsActualActiveTime": true,
+        "isFullBillOrHardSpendingCap": false,
+        "isAuthorizedComputeRunOrMeasuredBill": false
+      },
+      "excludedOrUnverifiedDimensions": [
+        "Registry storage and operations",
+        "Workers",
+        "Durable Objects",
+        "logs",
+        "egress",
+        "tax",
+        "provider calls"
+      ],
+      "currentProposedApplicationInstances": 0,
+      "containerStartsPerformed": 0,
+      "zeroTotalBillClaimed": false,
+      "usageAlertsAreSynchronousSpendCaps": false,
+      "budgetBillingSubscriptionApiCallsPerformed": 0,
+      "preExecutionEvidenceStillRequired": [
+        "Already-authorized evidence of applicable active plan without creating a subscription or assuming Workers Paid",
+        "Applicable published/account-specific Registry terms; if unresolved, keep total cost unknown and budgetVerified false",
+        "Measured candidate blob sizes and retention horizon",
+        "Bounded compute, request, log and transfer activity plus other fee dimensions",
+        "Actual execution grant and original-identity stop/reconciliation contract; this research does not authorize account billing reads"
+      ]
+    }
+  },
+  "selectedAcceptance": {
+    "grants": null,
+    "startsAt": null,
+    "endsAt": null,
+    "maxPolicyWindowMs": 86400000,
+    "globalOccupiedSessions": 1,
+    "sessionMs": 300000,
+    "idleMs": 10000,
+    "providerCallsAuthorizedByThisArtifact": false,
+    "infrastructureCostPolicy": null,
+    "monitoringOwner": null,
+    "stopOwner": null,
+    "completeJhg56Prerequisite": false
+  },
+  "writesPerformed": {
+    "worker": 0,
+    "registry": 0,
+    "containerApplication": 0,
+    "containerStart": 0,
+    "database": 0
+  },
+  "dependenciesByStep": {
+    "beforeRegistryPush": [
+      "Approved exact export/push destination and source identity scope",
+      "Verify actual raw runnable manifest/config bytes and digest relationship; current Engine projection is expected-only"
+    ],
+    "beforeClosedWorkerPut": [
+      "Registry authoritative readback must match expected canonical digest exactly, with actual build/probe/cleanup receipts",
+      "Fresh complete deployment/latest-version/settings/runtime/module/assets/routes/schedules/account-app snapshot; exclusive publisher; unique release tag collision guard",
+      "Authorized asset session completion JWT added after review; never printed or produced by offline generator",
+      "Freeze exact full multipart bytes, request identity and single-write/lost-ACK recovery contract; modern exports lifecycle via PUT"
+    ],
+    "beforeNewApplicationCreate": [
+      "Read actual newly reconciled Runtime namespace from Worker PUT/version result; retain all original IDs",
+      "Recheck new app name unoccupied; exact default/basic/instances0/max1 request and registry pin"
+    ],
+    "beforeEnabledGrant": [
+      "Read actual application and every serving version's immutable image/resources/namespace/traffic",
+      "One concrete selected actor/project/authVersion/window, cost policy, monitoring/stop owner; unchanged manual/Pi/Runs admission",
+      "Disabled-publication source/config/95-assets/unauthenticated-denial readback"
+    ],
+    "duringFirstTargetAcceptance": [
+      "Actual basic startup/peak viability, target preflight/no-network/original-ID cleanup and the selected owner flow; these are target outcomes, not prerequisites falsely claimed before the first closed Worker PUT",
+      "Broader JHG56 remains separately pending unless explicitly selected"
+    ]
+  },
+  "currentExecution": {
+    "evidence": "../evidence/releases/project-view-default-closed-publication-20261017.json",
+    "snapshotStage": "Original preparation fields below are retained as historical expected-only review inputs; later actual execution evidence supersedes their raw-image and authorization status.",
+    "directPublicationScopeGranted": true,
+    "maximumIncrementalUsd": null,
+    "costCapRemovedByHuman": true,
+    "githubCiQuotaFailureMayBeIgnored": true,
+    "originalImageExportExecutedOnce": true,
+    "rawManifestAndConfigVerified": true,
+    "registryReadbackVerified": true,
+    "deployed": true,
+    "targetContainerStartAuthorized": false,
+    "newSubscriptionAuthorized": false,
+    "credentialTransferSpecificallyGranted": true,
+    "premergeResourcePreservationPassed": true,
+    "merged": true,
+    "workerPublicationPending": false,
+    "applicationPublicationPending": false,
+    "applicationCreated": true,
+    "applicationReadback": "default-closed-max-one-authorized-variance-readback-verified",
+    "applicationState": "published-max-one-under-explicitly-accepted-variance",
+    "originalMaxOnePublicationComplete": false,
+    "historicalMaxZeroHoldVerified": true,
+    "currentAuthorizedMaxOnePublicationComplete": true,
+    "originalNoVarianceContractPassed": false,
+    "defaultClosedPublicationComplete": true,
+    "productionEligible": false,
+    "targetAcceptance": "pending",
+    "acceptedLegacyInstancesVariance": {
+      "explicitHumanAccepted": true,
+      "field": "application.instances",
+      "allowed": [
+        0,
+        1
+      ],
+      "observed": 1,
+      "nonzeroObserved": true,
+      "doesNotProveRuntimeCount": true,
+      "serverSideNormalizationProved": false,
+      "authorizationEvidence": {
+        "evidence": "../evidence/releases/project-view-closed-publication-20261017/max-one-recovery-authorization.json",
+        "bytes": 1025,
+        "sha256": "59b00e3fa015d495165ab9181b6a9c77675ae3393ced22eab6d7fe9bf41db79b"
+      }
+    },
+    "applicationReadbackEvidence": {
+      "evidence": "../evidence/releases/project-view-closed-publication-20261017/app-restored-max-one-readback.json",
+      "bytes": 11210,
+      "sha256": "f1df09ecee66055a3b065262b0b5108d9a6be64121b467f19aa8572b7f4f5ecc"
+    },
+    "applicationRestoreAckEvidence": {
+      "evidence": "../evidence/releases/project-view-closed-publication-20261017/app-restore-max-one-ack.json",
+      "bytes": 1991,
+      "sha256": "7142833f0073d72ab9216044fcdddf73d7974facb2d31fb43417aa26ea6c7aae"
+    },
+    "applicationRestoreAuthorizationEvidence": {
+      "evidence": "../evidence/releases/project-view-closed-publication-20261017/max-one-recovery-authorization.json",
+      "bytes": 1025,
+      "sha256": "59b00e3fa015d495165ab9181b6a9c77675ae3393ced22eab6d7fe9bf41db79b"
+    }
+  },
+  "writesPerformedScope": "Historical review-generation artifact only; actual later authorized execution is reported under latestActualResult",
+  "latestActualResult": {
+    "evidence": "../evidence/releases/project-view-default-closed-publication-20261017.json",
+    "workerReconciliation": "../evidence/releases/project-view-closed-publication-20261017/worker-reconciliation.json",
+    "workerReconciliationSha256": "fbdd17a60134e26df05535f997c39a4fd8e6c6ed5b47449310d39b46d7b4c952",
+    "mergeCommit": "1585280c76e55cae61f3969db5545f76edce678c",
+    "workerDeploymentId": "0f9c6266-2541-41ff-877e-9e9bbb85f3a2",
+    "workerVersionId": "eae8764f-fda5-4241-9f51-cf01ecc46b00",
+    "registryImagePin": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-project-view-browser@sha256:742a5fd20d84f6e0d233c291e7764db8e087ba7f20d75ad102b70e788e2a5339",
+    "defaultClosed": true,
+    "admissionEnabled": false,
+    "original15AppsAndAllVersionsPreserved": true,
+    "original48NamespaceRecordsPreserved": true,
+    "publicAssetsVerified": 95,
+    "unauthenticatedMeStatus": 401,
+    "originalPutInvocations": 1,
+    "originalSenderReadbackFailurePreserved": true,
+    "subsequentReadOnlyReconciliationPassed": true,
+    "newNamespaces": {
+      "ProjectViewRuntime": "5bc5561f57c24146a160d2a54160277c",
+      "ProjectViewCapacity": "dca3daa973e84b3db83a65c17a0a343a"
+    },
+    "newApplication": {
+      "id": "a031ae38-f967-483f-ae2e-3dbed3d35268",
+      "created": true,
+      "createPosts": 1,
+      "createStatus": 201,
+      "createAckInstances": 0,
+      "observedConfigurationInstances": 1,
+      "maxInstances": 1,
+      "schedulingPolicy": "default",
+      "resources": {
+        "vcpu": 0.25,
+        "memoryMiB": 1024,
+        "diskMB": 4000
+      },
+      "imagePin": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-project-view-browser@sha256:742a5fd20d84f6e0d233c291e7764db8e087ba7f20d75ad102b70e788e2a5339",
+      "namespaceId": "5bc5561f57c24146a160d2a54160277c",
+      "readbackStatus": "default-closed-max-one-authorized-variance-readback-verified",
+      "evidence": "../evidence/releases/project-view-closed-publication-20261017/app-restored-max-one-readback.json",
+      "initialReadback": {
+        "observedConfigurationInstances": 1,
+        "maxInstances": 1,
+        "status": "pending-instances-field-difference",
+        "evidence": "../evidence/releases/project-view-closed-publication-20261017/app-readback-pending.json",
+        "originalFailurePreserved": true
+      },
+      "currentState": "published-max-one-under-explicitly-accepted-variance",
+      "originalDesiredMaxInstances": 1,
+      "originalMaxOnePublicationComplete": false,
+      "readbackSha256": "f1df09ecee66055a3b065262b0b5108d9a6be64121b467f19aa8572b7f4f5ecc",
+      "holdAckEvidence": "../evidence/releases/project-view-closed-publication-20261017/app-hold-ack.json",
+      "holdAckSha256": "e748dd0476a87812ee5554cf3830751140b11ec495daf7af110b129083ce2d00",
+      "priorMaxZeroHold": {
+        "state": "paused-max-zero",
+        "observedConfigurationInstances": 0,
+        "maxInstances": 0,
+        "safeHoldVerified": true,
+        "evidence": "../evidence/releases/project-view-closed-publication-20261017/app-hold-readback.json",
+        "readbackSha256": "466727a5b98001ba5adfc4c1c5884b8e20aa48a48fc7c2f2a09056a345972d71",
+        "holdAckEvidence": "../evidence/releases/project-view-closed-publication-20261017/app-hold-ack.json",
+        "holdAckSha256": "e748dd0476a87812ee5554cf3830751140b11ec495daf7af110b129083ce2d00"
+      },
+      "readbackBytes": 11210,
+      "currentAuthorizedMaxOnePublicationComplete": true,
+      "originalNoVarianceContractPassed": false,
+      "acceptedLegacyInstancesVariance": {
+        "explicitHumanAccepted": true,
+        "field": "application.instances",
+        "allowed": [
+          0,
+          1
+        ],
+        "observed": 1,
+        "nonzeroObserved": true,
+        "doesNotProveRuntimeCount": true,
+        "serverSideNormalizationProved": false,
+        "authorizationEvidence": {
+          "evidence": "../evidence/releases/project-view-closed-publication-20261017/max-one-recovery-authorization.json",
+          "bytes": 1025,
+          "sha256": "59b00e3fa015d495165ab9181b6a9c77675ae3393ced22eab6d7fe9bf41db79b"
+        }
+      },
+      "restoreAck": {
+        "evidence": "../evidence/releases/project-view-closed-publication-20261017/app-restore-max-one-ack.json",
+        "bytes": 1991,
+        "sha256": "7142833f0073d72ab9216044fcdddf73d7974facb2d31fb43417aa26ea6c7aae"
+      },
+      "restoreAuthorization": {
+        "evidence": "../evidence/releases/project-view-closed-publication-20261017/max-one-recovery-authorization.json",
+        "bytes": 1025,
+        "sha256": "59b00e3fa015d495165ab9181b6a9c77675ae3393ced22eab6d7fe9bf41db79b"
+      },
+      "observedInstanceListCount": 0,
+      "instanceObservationEndedAt": "2026-10-17T08:43:37.290Z"
+    },
+    "newApplicationPublicationPending": false,
+    "targetContainerStartsRequested": 0,
+    "modelTurnRunInvoked": 0,
+    "targetAcceptance": "pending",
+    "done": false,
+    "defaultClosedPublicationComplete": true,
+    "originalMaxOnePublicationComplete": false,
+    "publicationMutations": {
+      "workerLifecyclePuts": 1,
+      "applicationCreatePosts": 1,
+      "applicationPausePatches": 1,
+      "applicationRestorePatches": 1,
+      "total": 4,
+      "scope": "Registry image push and asset preparation separately recorded"
+    },
+    "historicalMaxZeroHoldVerified": true,
+    "currentAuthorizedMaxOnePublicationComplete": true,
+    "originalNoVarianceContractPassed": false,
+    "productionEligible": false,
+    "currentApplicationReadbackEvidence": {
+      "evidence": "../evidence/releases/project-view-closed-publication-20261017/app-restored-max-one-readback.json",
+      "bytes": 11210,
+      "sha256": "f1df09ecee66055a3b065262b0b5108d9a6be64121b467f19aa8572b7f4f5ecc"
+    }
+  }
+}

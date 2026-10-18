@@ -1,0 +1,779 @@
+{
+  "schema": "project-view-default-closed-public-assets-readback/v1",
+  "observedAt": "2026-10-17T08:09:57.465Z",
+  "versionId": "eae8764f-fda5-4241-9f51-cf01ecc46b00",
+  "deploymentId": "0f9c6266-2541-41ff-877e-9e9bbb85f3a2",
+  "expectedFiles": 95,
+  "checkedFiles": 95,
+  "allMatch": true,
+  "root": {
+    "status": 200,
+    "sha256": "2a284df96f627f66866f8bd915d85e8d00f775c0b6dea6b41ce670b025055e27",
+    "matchesIndex": true
+  },
+  "unauthenticatedMeStatus": 401,
+  "authenticatedUserFlowVerified": false,
+  "containerOrProviderRequestMade": false,
+  "results": [
+    {
+      "path": "/admin.css",
+      "status": 200,
+      "bytes": 2470,
+      "sha256": "bc53389a7d0eda05d95b92edd43a0aa496129e5945bf58ebba762419992bc54a",
+      "expectedSha256": "bc53389a7d0eda05d95b92edd43a0aa496129e5945bf58ebba762419992bc54a",
+      "matches": true
+    },
+    {
+      "path": "/admin.html",
+      "status": 200,
+      "bytes": 8256,
+      "sha256": "1d9b3b3f956a06eed24333727c77487d6e6951a5dd6f30c9fcea5412900c20a4",
+      "expectedSha256": "1d9b3b3f956a06eed24333727c77487d6e6951a5dd6f30c9fcea5412900c20a4",
+      "matches": true
+    },
+    {
+      "path": "/admin.js",
+      "status": 200,
+      "bytes": 20477,
+      "sha256": "87f50e3f2acc6d0dc82c2ed015ad8713745ec7e65a2b01e2cedc2e095f45c41c",
+      "expectedSha256": "87f50e3f2acc6d0dc82c2ed015ad8713745ec7e65a2b01e2cedc2e095f45c41c",
+      "matches": true
+    },
+    {
+      "path": "/app.js",
+      "status": 200,
+      "bytes": 83635,
+      "sha256": "ab2ddcb5d7d647b4faab1041da1df2c0f78800f0b7036089aaad5ad8aa887165",
+      "expectedSha256": "ab2ddcb5d7d647b4faab1041da1df2c0f78800f0b7036089aaad5ad8aa887165",
+      "matches": true
+    },
+    {
+      "path": "/artifact-views.js",
+      "status": 200,
+      "bytes": 5694,
+      "sha256": "2dbb9a15cc5ed772d3a2304dbd531ca0508a2d0d783f0f9c4809b99b777d93bb",
+      "expectedSha256": "2dbb9a15cc5ed772d3a2304dbd531ca0508a2d0d783f0f9c4809b99b777d93bb",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/05934c2186c5f8bc7ddb4c9bb778400a2e5b8defe33f679da455e60b725c31a5/renderer.bundle.mjs",
+      "status": 200,
+      "bytes": 7224,
+      "sha256": "05934c2186c5f8bc7ddb4c9bb778400a2e5b8defe33f679da455e60b725c31a5",
+      "expectedSha256": "05934c2186c5f8bc7ddb4c9bb778400a2e5b8defe33f679da455e60b725c31a5",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/0ad7104a3cde648e5486a718799f3852f1d782ff19d4bfc13db9dc631df083f8/assets/micropip-0.11.1-py3-none-any.whl",
+      "status": 200,
+      "bytes": 115486,
+      "sha256": "0ad7104a3cde648e5486a718799f3852f1d782ff19d4bfc13db9dc631df083f8",
+      "expectedSha256": "0ad7104a3cde648e5486a718799f3852f1d782ff19d4bfc13db9dc631df083f8",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/0c45554ec2ea09d0e18d3639d7cc13306fa61ba917f40d3ed2c1cd6ce60c012e/delivery/worker.bundle.mjs",
+      "status": 200,
+      "bytes": 1651861,
+      "sha256": "0c45554ec2ea09d0e18d3639d7cc13306fa61ba917f40d3ed2c1cd6ce60c012e",
+      "expectedSha256": "0c45554ec2ea09d0e18d3639d7cc13306fa61ba917f40d3ed2c1cd6ce60c012e",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/16d292a3615a4326f9c7706e857aa4a4339352d09bcc6aa8eb47fbce85b987c0/delivery/frame.bundle.mjs",
+      "status": 200,
+      "bytes": 11942,
+      "sha256": "16d292a3615a4326f9c7706e857aa4a4339352d09bcc6aa8eb47fbce85b987c0",
+      "expectedSha256": "16d292a3615a4326f9c7706e857aa4a4339352d09bcc6aa8eb47fbce85b987c0",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/18b0c6a423b9b9ffe0b6679f8ebe9dc619d557c5647bfda449583d276d79d422/assets/pillow-12.2.0-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
+      "status": 200,
+      "bytes": 1037807,
+      "sha256": "18b0c6a423b9b9ffe0b6679f8ebe9dc619d557c5647bfda449583d276d79d422",
+      "expectedSha256": "18b0c6a423b9b9ffe0b6679f8ebe9dc619d557c5647bfda449583d276d79d422",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/19888142cc5f4891ff48b39439097d13f2144cbf46181d134623dae254f99632/runtime/js-frame.mjs",
+      "status": 200,
+      "bytes": 8239,
+      "sha256": "19888142cc5f4891ff48b39439097d13f2144cbf46181d134623dae254f99632",
+      "expectedSha256": "19888142cc5f4891ff48b39439097d13f2144cbf46181d134623dae254f99632",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/288a822e2533bd89fc1de6f786961fc9f261a89d29f29eb46d4e281d29bb52bf/delivery/frame.bundle.mjs",
+      "status": 200,
+      "bytes": 5811,
+      "sha256": "288a822e2533bd89fc1de6f786961fc9f261a89d29f29eb46d4e281d29bb52bf",
+      "expectedSha256": "288a822e2533bd89fc1de6f786961fc9f261a89d29f29eb46d4e281d29bb52bf",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/29edb1e328c61cad6ac21a2ff92c7d274a2b662eb7c12b2d147f04917b765ad6/assets/six-1.17.0-py2.py3-none-any.whl",
+      "status": 200,
+      "bytes": 11050,
+      "sha256": "29edb1e328c61cad6ac21a2ff92c7d274a2b662eb7c12b2d147f04917b765ad6",
+      "expectedSha256": "29edb1e328c61cad6ac21a2ff92c7d274a2b662eb7c12b2d147f04917b765ad6",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/2ac5eba365ec12839c75c03b39b3be1dd63b798852cc460b014b52238be042f7/assets/pyodide.asm.mjs",
+      "status": 200,
+      "bytes": 1250344,
+      "sha256": "2ac5eba365ec12839c75c03b39b3be1dd63b798852cc460b014b52238be042f7",
+      "expectedSha256": "2ac5eba365ec12839c75c03b39b3be1dd63b798852cc460b014b52238be042f7",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/2cef6d67f81af46c196b75d0c7df18db2f3d7276eb1cb068b05e2a774a54bde8/source/package-lock.json",
+      "status": 200,
+      "bytes": 214212,
+      "sha256": "2cef6d67f81af46c196b75d0c7df18db2f3d7276eb1cb068b05e2a774a54bde8",
+      "expectedSha256": "2cef6d67f81af46c196b75d0c7df18db2f3d7276eb1cb068b05e2a774a54bde8",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/2d127e0fbdfdd139b90c2eb487950913771846991330460fce3b183ba79d8ddb/assets/matplotlib-3.10.8-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
+      "status": 200,
+      "bytes": 6982033,
+      "sha256": "2d127e0fbdfdd139b90c2eb487950913771846991330460fce3b183ba79d8ddb",
+      "expectedSha256": "2d127e0fbdfdd139b90c2eb487950913771846991330460fce3b183ba79d8ddb",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/2d445184bcea93f59dc0b2e650c96d418b6e08fae1c17d7f7ba648c6ab694f04/runtime/renderer.mjs",
+      "status": 200,
+      "bytes": 3366,
+      "sha256": "2d445184bcea93f59dc0b2e650c96d418b6e08fae1c17d7f7ba648c6ab694f04",
+      "expectedSha256": "2d445184bcea93f59dc0b2e650c96d418b6e08fae1c17d7f7ba648c6ab694f04",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/2db2237783cbaabd16abd941a459784543ae95879c052efc429f90b4777b595f/source/contract.ts",
+      "status": 200,
+      "bytes": 8961,
+      "sha256": "2db2237783cbaabd16abd941a459784543ae95879c052efc429f90b4777b595f",
+      "expectedSha256": "2db2237783cbaabd16abd941a459784543ae95879c052efc429f90b4777b595f",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/32959d4137cec8143d75016d029281df3d2e80a232896ed903c2b59e1c44ee9f/assets/numpy-2.4.6-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
+      "status": 200,
+      "bytes": 2918760,
+      "sha256": "32959d4137cec8143d75016d029281df3d2e80a232896ed903c2b59e1c44ee9f",
+      "expectedSha256": "32959d4137cec8143d75016d029281df3d2e80a232896ed903c2b59e1c44ee9f",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/38992bdaf7ee874e4f39395485e7341347181373c45f66c998bbcfd9fe1bcea1/host.bundle.mjs",
+      "status": 200,
+      "bytes": 41203,
+      "sha256": "38992bdaf7ee874e4f39395485e7341347181373c45f66c998bbcfd9fe1bcea1",
+      "expectedSha256": "38992bdaf7ee874e4f39395485e7341347181373c45f66c998bbcfd9fe1bcea1",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/3a0a00dfeaa348ac20f9ef09904233d32d33f644339662d4af368f8a2010f37a/assets/pyodide.asm.wasm",
+      "status": 200,
+      "bytes": 9598218,
+      "sha256": "3a0a00dfeaa348ac20f9ef09904233d32d33f644339662d4af368f8a2010f37a",
+      "expectedSha256": "3a0a00dfeaa348ac20f9ef09904233d32d33f644339662d4af368f8a2010f37a",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/3fdaef09e9e365c85e002737720f8d0ab8f278c1c244a2dde6a37663cf488ad4/assets/pyodide-lock.json",
+      "status": 200,
+      "bytes": 114440,
+      "sha256": "3fdaef09e9e365c85e002737720f8d0ab8f278c1c244a2dde6a37663cf488ad4",
+      "expectedSha256": "3fdaef09e9e365c85e002737720f8d0ab8f278c1c244a2dde6a37663cf488ad4",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/4875e2d9e8db8bf82f15d1eb950c0327377c5651efafbae42f0e5c94eadb026e/source/contract.ts",
+      "status": 200,
+      "bytes": 10215,
+      "sha256": "4875e2d9e8db8bf82f15d1eb950c0327377c5651efafbae42f0e5c94eadb026e",
+      "expectedSha256": "4875e2d9e8db8bf82f15d1eb950c0327377c5651efafbae42f0e5c94eadb026e",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/49e63ea216c19622ce8a61b7ecfa1d570dad714da4438503e95aab6e11977b52/runtime/frame.mjs",
+      "status": 200,
+      "bytes": 2276,
+      "sha256": "49e63ea216c19622ce8a61b7ecfa1d570dad714da4438503e95aab6e11977b52",
+      "expectedSha256": "49e63ea216c19622ce8a61b7ecfa1d570dad714da4438503e95aab6e11977b52",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/4c0cec31da970cc4c3f547be87c792de128831e6f0269a7b81428596c8be46ac/runtime/frame.html",
+      "status": 200,
+      "bytes": 161,
+      "sha256": "4c0cec31da970cc4c3f547be87c792de128831e6f0269a7b81428596c8be46ac",
+      "expectedSha256": "4c0cec31da970cc4c3f547be87c792de128831e6f0269a7b81428596c8be46ac",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/5139f59cfb287705c920e147f5abe2a02f6b018db775b7331eb18f5f6a045044/runtime/renderer.mjs",
+      "status": 200,
+      "bytes": 2992,
+      "sha256": "5139f59cfb287705c920e147f5abe2a02f6b018db775b7331eb18f5f6a045044",
+      "expectedSha256": "5139f59cfb287705c920e147f5abe2a02f6b018db775b7331eb18f5f6a045044",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/528f14add1b13f86f4780cf2cf067aea019885b2628720e352447cd0571234f7/assets/mesa-3.5.1-py3-none-any.whl",
+      "status": 200,
+      "bytes": 275085,
+      "sha256": "528f14add1b13f86f4780cf2cf067aea019885b2628720e352447cd0571234f7",
+      "expectedSha256": "528f14add1b13f86f4780cf2cf067aea019885b2628720e352447cd0571234f7",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/5dc47f9c9e9da126476870464a9608a63134ed23a2fa587966e5091b736a338f/assets/setuptools-82.0.1-py3-none-any.whl",
+      "status": 200,
+      "bytes": 756856,
+      "sha256": "5dc47f9c9e9da126476870464a9608a63134ed23a2fa587966e5091b736a338f",
+      "expectedSha256": "5dc47f9c9e9da126476870464a9608a63134ed23a2fa587966e5091b736a338f",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/678fa6971794b1f5d9cd5ce83b7e4cb99902d80326d933acddc7426ed87acbc2/host.bundle.mjs",
+      "status": 200,
+      "bytes": 53165,
+      "sha256": "678fa6971794b1f5d9cd5ce83b7e4cb99902d80326d933acddc7426ed87acbc2",
+      "expectedSha256": "678fa6971794b1f5d9cd5ce83b7e4cb99902d80326d933acddc7426ed87acbc2",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/69e3f6ccec3e14b465df60be577ca62f536251406b9a00cce019eac5252a2495/assets/pyodide.mjs",
+      "status": 200,
+      "bytes": 17931,
+      "sha256": "69e3f6ccec3e14b465df60be577ca62f536251406b9a00cce019eac5252a2495",
+      "expectedSha256": "69e3f6ccec3e14b465df60be577ca62f536251406b9a00cce019eac5252a2495",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/6b3c56af12009b9b053d0ce097ea9633b47123950e891baa83e71a07773dbf05/runtime/js-scene.mjs",
+      "status": 200,
+      "bytes": 5363,
+      "sha256": "6b3c56af12009b9b053d0ce097ea9633b47123950e891baa83e71a07773dbf05",
+      "expectedSha256": "6b3c56af12009b9b053d0ce097ea9633b47123950e891baa83e71a07773dbf05",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/6e2e0a600f43cf1cf418095e7666a573d7c6142ac179ccc3de0c513635fcfba8/runtime/host.mjs",
+      "status": 200,
+      "bytes": 5395,
+      "sha256": "6e2e0a600f43cf1cf418095e7666a573d7c6142ac179ccc3de0c513635fcfba8",
+      "expectedSha256": "6e2e0a600f43cf1cf418095e7666a573d7c6142ac179ccc3de0c513635fcfba8",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/6e84d6d066a91819769093d7d5bf6cf67339a2c708087dc5b41934f5bc9fd931/runtime/host.mjs",
+      "status": 200,
+      "bytes": 8382,
+      "sha256": "6e84d6d066a91819769093d7d5bf6cf67339a2c708087dc5b41934f5bc9fd931",
+      "expectedSha256": "6e84d6d066a91819769093d7d5bf6cf67339a2c708087dc5b41934f5bc9fd931",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/70682ba25f1503dde0d9d3d98a889480b42b903a5d863b0a7118bc4173aa02c8/assets/cycler-0.12.1-py3-none-any.whl",
+      "status": 200,
+      "bytes": 8321,
+      "sha256": "70682ba25f1503dde0d9d3d98a889480b42b903a5d863b0a7118bc4173aa02c8",
+      "expectedSha256": "70682ba25f1503dde0d9d3d98a889480b42b903a5d863b0a7118bc4173aa02c8",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/70c5b218495d55cd610752b01dc3d9f593dfd720bec271b5bebe4d86b51ae3c0/assets/decorator-5.2.1-py3-none-any.whl",
+      "status": 200,
+      "bytes": 9167,
+      "sha256": "70c5b218495d55cd610752b01dc3d9f593dfd720bec271b5bebe4d86b51ae3c0",
+      "expectedSha256": "70c5b218495d55cd610752b01dc3d9f593dfd720bec271b5bebe4d86b51ae3c0",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/7af5d4677757a6ef5bfa886fa9e4578e0aa3a59595bb3395083b7cdeeb064ffb/runtime/host.mjs",
+      "status": 200,
+      "bytes": 11844,
+      "sha256": "7af5d4677757a6ef5bfa886fa9e4578e0aa3a59595bb3395083b7cdeeb064ffb",
+      "expectedSha256": "7af5d4677757a6ef5bfa886fa9e4578e0aa3a59595bb3395083b7cdeeb064ffb",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/80c5be6babfe03297069703410c3c29404dcf2525d2b128746bae5536f94831f/assets/python_stdlib.zip",
+      "status": 200,
+      "bytes": 2545564,
+      "sha256": "80c5be6babfe03297069703410c3c29404dcf2525d2b128746bae5536f94831f",
+      "expectedSha256": "80c5be6babfe03297069703410c3c29404dcf2525d2b128746bae5536f94831f",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/831ec2706b7c113a456bf413d7df96b82aafbbf4a20ec7de8bbe91908d8dd878/source/prepare-assets.mjs",
+      "status": 200,
+      "bytes": 5809,
+      "sha256": "831ec2706b7c113a456bf413d7df96b82aafbbf4a20ec7de8bbe91908d8dd878",
+      "expectedSha256": "831ec2706b7c113a456bf413d7df96b82aafbbf4a20ec7de8bbe91908d8dd878",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/8512aee3e4b36b5a79523628d97d0d34612a366aecbb5b44a08c7ae45dd50d57/assets/scipy-1.18.0-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
+      "status": 200,
+      "bytes": 14029768,
+      "sha256": "8512aee3e4b36b5a79523628d97d0d34612a366aecbb5b44a08c7ae45dd50d57",
+      "expectedSha256": "8512aee3e4b36b5a79523628d97d0d34612a366aecbb5b44a08c7ae45dd50d57",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/85da435e9edaf4dca3411cf5f86fa45a95fe15c78060849d11f7eb0344b5bd24/runtime/sha256.mjs",
+      "status": 200,
+      "bytes": 2241,
+      "sha256": "85da435e9edaf4dca3411cf5f86fa45a95fe15c78060849d11f7eb0344b5bd24",
+      "expectedSha256": "85da435e9edaf4dca3411cf5f86fa45a95fe15c78060849d11f7eb0344b5bd24",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/86218f40282014072b1850363814edd71bb9f7d604f641d79dc5682fd837cb3c/runtime/worker.mjs",
+      "status": 200,
+      "bytes": 9168,
+      "sha256": "86218f40282014072b1850363814edd71bb9f7d604f641d79dc5682fd837cb3c",
+      "expectedSha256": "86218f40282014072b1850363814edd71bb9f7d604f641d79dc5682fd837cb3c",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/8c3e4bb64e23a66a4c9effc4a5a09a2aafc1db7d70b8451ba3ba5b7fe6d18dd2/assets/pyparsing-3.3.2-py3-none-any.whl",
+      "status": 200,
+      "bytes": 122781,
+      "sha256": "8c3e4bb64e23a66a4c9effc4a5a09a2aafc1db7d70b8451ba3ba5b7fe6d18dd2",
+      "expectedSha256": "8c3e4bb64e23a66a4c9effc4a5a09a2aafc1db7d70b8451ba3ba5b7fe6d18dd2",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/91011f6d694a70939f901eb918a1cc5a72aeef08eda0339d7fce54fb93d41d14/runtime/package-loader.mjs",
+      "status": 200,
+      "bytes": 4861,
+      "sha256": "91011f6d694a70939f901eb918a1cc5a72aeef08eda0339d7fce54fb93d41d14",
+      "expectedSha256": "91011f6d694a70939f901eb918a1cc5a72aeef08eda0339d7fce54fb93d41d14",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/91f2bbd0ce334a8ce2144e6f26728cf292c5dfd3fa7943864cdd2d2e1ef30d57/source/prepare-assets.mjs",
+      "status": 200,
+      "bytes": 5796,
+      "sha256": "91f2bbd0ce334a8ce2144e6f26728cf292c5dfd3fa7943864cdd2d2e1ef30d57",
+      "expectedSha256": "91f2bbd0ce334a8ce2144e6f26728cf292c5dfd3fa7943864cdd2d2e1ef30d57",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/9243ccf1179d9a487059ed507474543c2dc3c7beb9c1456f93ee94d77aaaa4cd/source/package-lock.json",
+      "status": 200,
+      "bytes": 214930,
+      "sha256": "9243ccf1179d9a487059ed507474543c2dc3c7beb9c1456f93ee94d77aaaa4cd",
+      "expectedSha256": "9243ccf1179d9a487059ed507474543c2dc3c7beb9c1456f93ee94d77aaaa4cd",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/94f246abe8cd46f0695dc9256cde3966bc637b80148fe72a1e7b0e6623d62144/assets/fonttools-4.62.1-py3-none-any.whl",
+      "status": 200,
+      "bytes": 1152647,
+      "sha256": "94f246abe8cd46f0695dc9256cde3966bc637b80148fe72a1e7b0e6623d62144",
+      "expectedSha256": "94f246abe8cd46f0695dc9256cde3966bc637b80148fe72a1e7b0e6623d62144",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/99cef063109bb03956af3987b2351c4d6615060732597e224e9fc49ecd345392/assets/pandas-3.0.2-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
+      "status": 200,
+      "bytes": 4177814,
+      "sha256": "99cef063109bb03956af3987b2351c4d6615060732597e224e9fc49ecd345392",
+      "expectedSha256": "99cef063109bb03956af3987b2351c4d6615060732597e224e9fc49ecd345392",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/9c1d350424840e15c16450ac0b0d6007e908d266746b61d64760dd77263085af/assets/python_dateutil-2.9.0.post0-py2.py3-none-any.whl",
+      "status": 200,
+      "bytes": 229892,
+      "sha256": "9c1d350424840e15c16450ac0b0d6007e908d266746b61d64760dd77263085af",
+      "expectedSha256": "9c1d350424840e15c16450ac0b0d6007e908d266746b61d64760dd77263085af",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/9f522e756ee4de1eac5dfb93eea6f6f699c5f3bbc59f647cd4358d79049585d0/host.bundle.mjs",
+      "status": 200,
+      "bytes": 41203,
+      "sha256": "9f522e756ee4de1eac5dfb93eea6f6f699c5f3bbc59f647cd4358d79049585d0",
+      "expectedSha256": "9f522e756ee4de1eac5dfb93eea6f6f699c5f3bbc59f647cd4358d79049585d0",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/a71a8543a100e9256049a91bc1ceecae78524e2dfc69121245a1c63aee15b717/delivery/worker.bundle.mjs",
+      "status": 200,
+      "bytes": 1646213,
+      "sha256": "a71a8543a100e9256049a91bc1ceecae78524e2dfc69121245a1c63aee15b717",
+      "expectedSha256": "a71a8543a100e9256049a91bc1ceecae78524e2dfc69121245a1c63aee15b717",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/a8324250c1d0268eab9915ec62491ba9fce266b50d7069030507b7ef8bdf3a16/delivery/worker.bundle.mjs",
+      "status": 200,
+      "bytes": 1654476,
+      "sha256": "a8324250c1d0268eab9915ec62491ba9fce266b50d7069030507b7ef8bdf3a16",
+      "expectedSha256": "a8324250c1d0268eab9915ec62491ba9fce266b50d7069030507b7ef8bdf3a16",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/a86cb7e6e748499e673303ba621ec011850ba9f3e7743f8e27162039ce5f47b5/source/package-lock.json",
+      "status": 200,
+      "bytes": 214516,
+      "sha256": "a86cb7e6e748499e673303ba621ec011850ba9f3e7743f8e27162039ce5f47b5",
+      "expectedSha256": "a86cb7e6e748499e673303ba621ec011850ba9f3e7743f8e27162039ce5f47b5",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/adaee63a7a2088b1bad68ceb2486a8e7fa7dc43b8a90d27de91dd36e2f058126/assets/networkx-3.6.1-py3-none-any.whl",
+      "status": 200,
+      "bytes": 1084840,
+      "sha256": "adaee63a7a2088b1bad68ceb2486a8e7fa7dc43b8a90d27de91dd36e2f058126",
+      "expectedSha256": "adaee63a7a2088b1bad68ceb2486a8e7fa7dc43b8a90d27de91dd36e2f058126",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/b5605ae3086c650fa0124c0c4fc571ade2ee3910d12554a86443c5f171224e54/runtime/renderer.mjs",
+      "status": 200,
+      "bytes": 3275,
+      "sha256": "b5605ae3086c650fa0124c0c4fc571ade2ee3910d12554a86443c5f171224e54",
+      "expectedSha256": "b5605ae3086c650fa0124c0c4fc571ade2ee3910d12554a86443c5f171224e54",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/b625401e119d9fd6c8188c204059fe8fdaf78a7ea5cb3e1e3517eef2b3d9c798/source/model-spec.ts",
+      "status": 200,
+      "bytes": 8464,
+      "sha256": "b625401e119d9fd6c8188c204059fe8fdaf78a7ea5cb3e1e3517eef2b3d9c798",
+      "expectedSha256": "b625401e119d9fd6c8188c204059fe8fdaf78a7ea5cb3e1e3517eef2b3d9c798",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/bd3a0c065e226cbe7d6c5755b80d24c2c4248c60e17cb205ca59bf707471f888/runtime/js-frame.html",
+      "status": 200,
+      "bytes": 229,
+      "sha256": "bd3a0c065e226cbe7d6c5755b80d24c2c4248c60e17cb205ca59bf707471f888",
+      "expectedSha256": "bd3a0c065e226cbe7d6c5755b80d24c2c4248c60e17cb205ca59bf707471f888",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/c1e77f046229eef182b4ab91531f092772efc21dcdaa1adc13c4702f4ad8eadd/source/prepare-assets.mjs",
+      "status": 200,
+      "bytes": 5866,
+      "sha256": "c1e77f046229eef182b4ab91531f092772efc21dcdaa1adc13c4702f4ad8eadd",
+      "expectedSha256": "c1e77f046229eef182b4ab91531f092772efc21dcdaa1adc13c4702f4ad8eadd",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/c4d8fdd9fdafb055b48ee035c271806156187e8be109e14ebb8edb80c4dacf80/renderer.bundle.mjs",
+      "status": 200,
+      "bytes": 6909,
+      "sha256": "c4d8fdd9fdafb055b48ee035c271806156187e8be109e14ebb8edb80c4dacf80",
+      "expectedSha256": "c4d8fdd9fdafb055b48ee035c271806156187e8be109e14ebb8edb80c4dacf80",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/c8eaf8e55b79c2a7e765bdce5c1b84e05a43a585a16a00efadd96a0b7913914e/assets/pytz-2026.1.post1-py2.py3-none-any.whl",
+      "status": 200,
+      "bytes": 510489,
+      "sha256": "c8eaf8e55b79c2a7e765bdce5c1b84e05a43a585a16a00efadd96a0b7913914e",
+      "expectedSha256": "c8eaf8e55b79c2a7e765bdce5c1b84e05a43a585a16a00efadd96a0b7913914e",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/d0a6afcbb85b92d2ff5924a70b32b1e44ce691752cdbd1bf45d3cd8c9a4866a8/runtime/frame.mjs",
+      "status": 200,
+      "bytes": 7619,
+      "sha256": "d0a6afcbb85b92d2ff5924a70b32b1e44ce691752cdbd1bf45d3cd8c9a4866a8",
+      "expectedSha256": "d0a6afcbb85b92d2ff5924a70b32b1e44ce691752cdbd1bf45d3cd8c9a4866a8",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/d1270323c10ab24141e40a854dcd407625cb4341c9b83301f1111e7db037b57f/assets/contourpy-1.3.3-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
+      "status": 200,
+      "bytes": 118875,
+      "sha256": "d1270323c10ab24141e40a854dcd407625cb4341c9b83301f1111e7db037b57f",
+      "expectedSha256": "d1270323c10ab24141e40a854dcd407625cb4341c9b83301f1111e7db037b57f",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/ddc80a8321dec64e3373312dc4cbc709eec9d0d34477d7fe61e4b09378c7a197/runtime/protocol.mjs",
+      "status": 200,
+      "bytes": 5356,
+      "sha256": "ddc80a8321dec64e3373312dc4cbc709eec9d0d34477d7fe61e4b09378c7a197",
+      "expectedSha256": "ddc80a8321dec64e3373312dc4cbc709eec9d0d34477d7fe61e4b09378c7a197",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/df80d6f6218da064a00eae059e468ccf7e258b0c69f58dcaa256df56b97597e8/source/model-spec.ts",
+      "status": 200,
+      "bytes": 7670,
+      "sha256": "df80d6f6218da064a00eae059e468ccf7e258b0c69f58dcaa256df56b97597e8",
+      "expectedSha256": "df80d6f6218da064a00eae059e468ccf7e258b0c69f58dcaa256df56b97597e8",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/e4be32b2e90c487509fbc0ba30644db87865670e812dd9fc85e153deaf3a058e/host.bundle.mjs",
+      "status": 200,
+      "bytes": 45189,
+      "sha256": "e4be32b2e90c487509fbc0ba30644db87865670e812dd9fc85e153deaf3a058e",
+      "expectedSha256": "e4be32b2e90c487509fbc0ba30644db87865670e812dd9fc85e153deaf3a058e",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/e640951bbc86715d41994d1b11f363ac60bf818cfabbf577770bad4bc8e4c23a/renderer.bundle.mjs",
+      "status": 200,
+      "bytes": 7312,
+      "sha256": "e640951bbc86715d41994d1b11f363ac60bf818cfabbf577770bad4bc8e4c23a",
+      "expectedSha256": "e640951bbc86715d41994d1b11f363ac60bf818cfabbf577770bad4bc8e4c23a",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/e848f7d59438be4745473308d7d0d7caca5585fa741cf25ec47f3e7ac129f950/runtime/package-loader.mjs",
+      "status": 200,
+      "bytes": 5952,
+      "sha256": "e848f7d59438be4745473308d7d0d7caca5585fa741cf25ec47f3e7ac129f950",
+      "expectedSha256": "e848f7d59438be4745473308d7d0d7caca5585fa741cf25ec47f3e7ac129f950",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/ebbb126a44583b8d619b7100eab233f3f0810acaaa232850826ad3621f78b3eb/delivery/js-frame.bundle.mjs",
+      "status": 200,
+      "bytes": 20535,
+      "sha256": "ebbb126a44583b8d619b7100eab233f3f0810acaaa232850826ad3621f78b3eb",
+      "expectedSha256": "ebbb126a44583b8d619b7100eab233f3f0810acaaa232850826ad3621f78b3eb",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/ecc8d10e925d552eae08bca0a43c6ad5cdc53a1f83889b71c2d56eecf1cc3aeb/runtime/canvas.mjs",
+      "status": 200,
+      "bytes": 2106,
+      "sha256": "ecc8d10e925d552eae08bca0a43c6ad5cdc53a1f83889b71c2d56eecf1cc3aeb",
+      "expectedSha256": "ecc8d10e925d552eae08bca0a43c6ad5cdc53a1f83889b71c2d56eecf1cc3aeb",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/f08716f1e1307718c01c03748408ffed22cbbe3c2a098a0d0cb8f616e0642a63/assets/tqdm-4.67.3-py3-none-any.whl",
+      "status": 200,
+      "bytes": 78374,
+      "sha256": "f08716f1e1307718c01c03748408ffed22cbbe3c2a098a0d0cb8f616e0642a63",
+      "expectedSha256": "f08716f1e1307718c01c03748408ffed22cbbe3c2a098a0d0cb8f616e0642a63",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/f420e78080ca2310ed591ccc990d67809914e5acfb819ee34559bebde65a61cc/runtime/worker.mjs",
+      "status": 200,
+      "bytes": 5994,
+      "sha256": "f420e78080ca2310ed591ccc990d67809914e5acfb819ee34559bebde65a61cc",
+      "expectedSha256": "f420e78080ca2310ed591ccc990d67809914e5acfb819ee34559bebde65a61cc",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/f58ad9d3cde3f3051e3bc82df1db19ff0aa940439dfd5f5d470da61c5ea033bf/assets/packaging-26.1-py3-none-any.whl",
+      "status": 200,
+      "bytes": 95852,
+      "sha256": "f58ad9d3cde3f3051e3bc82df1db19ff0aa940439dfd5f5d470da61c5ea033bf",
+      "expectedSha256": "f58ad9d3cde3f3051e3bc82df1db19ff0aa940439dfd5f5d470da61c5ea033bf",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/f8b19816e2cf8e36fc2adfabb60ad24dad422dfaffa6087173d829d9924fcc07/assets/kiwisolver-1.5.0-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
+      "status": 200,
+      "bytes": 36616,
+      "sha256": "f8b19816e2cf8e36fc2adfabb60ad24dad422dfaffa6087173d829d9924fcc07",
+      "expectedSha256": "f8b19816e2cf8e36fc2adfabb60ad24dad422dfaffa6087173d829d9924fcc07",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview-assets/fdfd36964c9415369daa78869c749c0ff72e04fa6165ecbd0c79b3ba7afdc396/runtime/package-loader.mjs",
+      "status": 200,
+      "bytes": 4845,
+      "sha256": "fdfd36964c9415369daa78869c749c0ff72e04fa6165ecbd0c79b3ba7afdc396",
+      "expectedSha256": "fdfd36964c9415369daa78869c749c0ff72e04fa6165ecbd0c79b3ba7afdc396",
+      "matches": true
+    },
+    {
+      "path": "/browser-preview.js",
+      "status": 200,
+      "bytes": 24485,
+      "sha256": "7416031503673dc9e83810d03a0642d75d5a2216536e91fdccaeae6d743a4ec2",
+      "expectedSha256": "7416031503673dc9e83810d03a0642d75d5a2216536e91fdccaeae6d743a4ec2",
+      "matches": true
+    },
+    {
+      "path": "/comparison.js",
+      "status": 200,
+      "bytes": 18964,
+      "sha256": "2eb1ad8e447e292bf0ee7a19082af77508e908c54e46f55164192afb8e4ad9a0",
+      "expectedSha256": "2eb1ad8e447e292bf0ee7a19082af77508e908c54e46f55164192afb8e4ad9a0",
+      "matches": true
+    },
+    {
+      "path": "/evidence.css",
+      "status": 200,
+      "bytes": 1002,
+      "sha256": "689b6c524bbdafe1c629498be17fefde27718b704151ce138c3e6c276d19bf22",
+      "expectedSha256": "689b6c524bbdafe1c629498be17fefde27718b704151ce138c3e6c276d19bf22",
+      "matches": true
+    },
+    {
+      "path": "/evidence.js",
+      "status": 200,
+      "bytes": 11359,
+      "sha256": "9b8b3ccd44b17b86969ad3a8ed9f3cfaf99fd1de8bafc1a8af565131713a67b7",
+      "expectedSha256": "9b8b3ccd44b17b86969ad3a8ed9f3cfaf99fd1de8bafc1a8af565131713a67b7",
+      "matches": true
+    },
+    {
+      "path": "/export.js",
+      "status": 200,
+      "bytes": 4767,
+      "sha256": "31991b636dbb69f5baa28e1a8b0c775d187aef9558d18c6a5bb4d5c0af3934ab",
+      "expectedSha256": "31991b636dbb69f5baa28e1a8b0c775d187aef9558d18c6a5bb4d5c0af3934ab",
+      "matches": true
+    },
+    {
+      "path": "/i18n-bindings.js",
+      "status": 200,
+      "bytes": 2559,
+      "sha256": "d54d8c9cc94dd68383eb5dcd7947b7cead768dc283fec43c3f74bf30e303a095",
+      "expectedSha256": "d54d8c9cc94dd68383eb5dcd7947b7cead768dc283fec43c3f74bf30e303a095",
+      "matches": true
+    },
+    {
+      "path": "/i18n.js",
+      "status": 200,
+      "bytes": 150342,
+      "sha256": "8aa92fc5d74de0ce7fb4e294957b21b294fda607516ccb8a8da684aa40a4c869",
+      "expectedSha256": "8aa92fc5d74de0ce7fb4e294957b21b294fda607516ccb8a8da684aa40a4c869",
+      "matches": true
+    },
+    {
+      "path": "/index.html",
+      "status": 200,
+      "bytes": 14439,
+      "sha256": "2a284df96f627f66866f8bd915d85e8d00f775c0b6dea6b41ce670b025055e27",
+      "expectedSha256": "2a284df96f627f66866f8bd915d85e8d00f775c0b6dea6b41ce670b025055e27",
+      "matches": true
+    },
+    {
+      "path": "/layout.js",
+      "status": 200,
+      "bytes": 4859,
+      "sha256": "e67ef7ebc2af83d3ddd570ac41852ccd878e31a78ced20f9d28927ac32295f38",
+      "expectedSha256": "e67ef7ebc2af83d3ddd570ac41852ccd878e31a78ced20f9d28927ac32295f38",
+      "matches": true
+    },
+    {
+      "path": "/local-runs.js",
+      "status": 200,
+      "bytes": 16574,
+      "sha256": "ee34ad93570ba12cfe194e566f6a9c59abe1402289f1957b7463ec6ddf1022fa",
+      "expectedSha256": "ee34ad93570ba12cfe194e566f6a9c59abe1402289f1957b7463ec6ddf1022fa",
+      "matches": true
+    },
+    {
+      "path": "/locale-preference.js",
+      "status": 200,
+      "bytes": 2182,
+      "sha256": "32651ec625225572f67f3e165687ad11be1028014dc1672a79018eccc01506a3",
+      "expectedSha256": "32651ec625225572f67f3e165687ad11be1028014dc1672a79018eccc01506a3",
+      "matches": true
+    },
+    {
+      "path": "/manual-save.js",
+      "status": 200,
+      "bytes": 11484,
+      "sha256": "7382eba3d0f0bf17cff59ebda8d5ce67049d87267c372e5c302dfa389fbe7092",
+      "expectedSha256": "7382eba3d0f0bf17cff59ebda8d5ce67049d87267c372e5c302dfa389fbe7092",
+      "matches": true
+    },
+    {
+      "path": "/previews.js",
+      "status": 200,
+      "bytes": 15111,
+      "sha256": "1a1fb72e1e9a0df7ecd703ebafdb1e73844a3b6d32c689ce8471907f758b3423",
+      "expectedSha256": "1a1fb72e1e9a0df7ecd703ebafdb1e73844a3b6d32c689ce8471907f758b3423",
+      "matches": true
+    },
+    {
+      "path": "/project-status.js",
+      "status": 200,
+      "bytes": 940,
+      "sha256": "c513b2234d9b43a5f41b2daf2bb97c23c6f7ef784f3967bce2748c23bb6c9ef8",
+      "expectedSha256": "c513b2234d9b43a5f41b2daf2bb97c23c6f7ef784f3967bce2748c23bb6c9ef8",
+      "matches": true
+    },
+    {
+      "path": "/project-view-remote.js",
+      "status": 200,
+      "bytes": 9888,
+      "sha256": "8e13adf868a6ded4ccd240d64f38404eea07ba76416635ede1db08be46e26974",
+      "expectedSha256": "8e13adf868a6ded4ccd240d64f38404eea07ba76416635ede1db08be46e26974",
+      "matches": true
+    },
+    {
+      "path": "/project-views.js",
+      "status": 200,
+      "bytes": 13169,
+      "sha256": "fc53df2a13d48a8de676d4af0c7693d866811cfab7ce3748d9ec161bab0aa6c9",
+      "expectedSha256": "fc53df2a13d48a8de676d4af0c7693d866811cfab7ce3748d9ec161bab0aa6c9",
+      "matches": true
+    },
+    {
+      "path": "/publication.js",
+      "status": 200,
+      "bytes": 9756,
+      "sha256": "bad56dcb76bb02498868772cb402a1f9eaeeac9c7513d1902270f97aff0d6da8",
+      "expectedSha256": "bad56dcb76bb02498868772cb402a1f9eaeeac9c7513d1902270f97aff0d6da8",
+      "matches": true
+    },
+    {
+      "path": "/services.js",
+      "status": 200,
+      "bytes": 17559,
+      "sha256": "b2e9a9aba4a510aecd576f9d7f20c7e1cef405eb05e0695ae2eb9343b3ffc59a",
+      "expectedSha256": "b2e9a9aba4a510aecd576f9d7f20c7e1cef405eb05e0695ae2eb9343b3ffc59a",
+      "matches": true
+    },
+    {
+      "path": "/simulation.js",
+      "status": 200,
+      "bytes": 23498,
+      "sha256": "f18f4182feff6816187ab6781f781017de4954a23be21d1eae31ad1e0b31374d",
+      "expectedSha256": "f18f4182feff6816187ab6781f781017de4954a23be21d1eae31ad1e0b31374d",
+      "matches": true
+    },
+    {
+      "path": "/styles.css",
+      "status": 200,
+      "bytes": 4283,
+      "sha256": "2dfed44aaa1ecb2e66342be7cd6a3df77224be05a38519664143ed75cae6b37a",
+      "expectedSha256": "2dfed44aaa1ecb2e66342be7cd6a3df77224be05a38519664143ed75cae6b37a",
+      "matches": true
+    },
+    {
+      "path": "/verify-handoff.js",
+      "status": 200,
+      "bytes": 9571,
+      "sha256": "570dc33eae85459d536a17781df01e2458fa8479d795d9812d8141a8956107a6",
+      "expectedSha256": "570dc33eae85459d536a17781df01e2458fa8479d795d9812d8141a8956107a6",
+      "matches": true
+    },
+    {
+      "path": "/workspace.css",
+      "status": 200,
+      "bytes": 20995,
+      "sha256": "2e876ba4c5c0e4198d119534a750c9cc12e092132907331431473c29070bc71b",
+      "expectedSha256": "2e876ba4c5c0e4198d119534a750c9cc12e092132907331431473c29070bc71b",
+      "matches": true
+    }
+  ]
+}

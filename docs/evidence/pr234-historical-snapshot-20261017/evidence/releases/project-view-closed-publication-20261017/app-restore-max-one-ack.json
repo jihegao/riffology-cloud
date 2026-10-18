@@ -1,0 +1,56 @@
+{
+  "schema": "project-view-authorized-max-one-restore-result/v1",
+  "requestId": "b9f3b2fc-c84a-4733-a35c-0123ce4c8f2e",
+  "priorHoldPatchRequestId": "560da903-8c44-4986-b747-544687ef6e4b",
+  "startedAt": "2026-10-17T08:43:01.390Z",
+  "endedAt": "2026-10-17T08:43:04.584Z",
+  "status": 200,
+  "success": true,
+  "patchRequested": true,
+  "patchCount": 1,
+  "app": {
+    "id": "a031ae38-f967-483f-ae2e-3dbed3d35268",
+    "instances": 0,
+    "max_instances": 1,
+    "scheduling_policy": "default",
+    "namespaceId": "5bc5561f57c24146a160d2a54160277c",
+    "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-project-view-browser@sha256:742a5fd20d84f6e0d233c291e7764db8e087ba7f20d75ad102b70e788e2a5339",
+    "configurationCanonicalSha256": "e6516faf9a9cda94286394631c028c7a8a913d75ba0d9a22e0dde79eb2a9c337"
+  },
+  "errorCodes": [],
+  "readbackStillRequired": true,
+  "automaticRetry": false,
+  "requests": [
+    {
+      "method": "GET",
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/scripts/riffology-m1-gateway-staging/deployments",
+      "status": 200,
+      "success": true
+    },
+    {
+      "method": "GET",
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/scripts/riffology-m1-gateway-staging/settings",
+      "status": 200,
+      "success": true
+    },
+    {
+      "method": "GET",
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a031ae38-f967-483f-ae2e-3dbed3d35268",
+      "status": 200,
+      "success": true
+    },
+    {
+      "method": "GET",
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a031ae38-f967-483f-ae2e-3dbed3d35268/instances-v2",
+      "status": 200,
+      "success": true
+    },
+    {
+      "method": "PATCH",
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a031ae38-f967-483f-ae2e-3dbed3d35268",
+      "status": 200,
+      "success": true
+    }
+  ],
+  "containerStartOrModelTurnRunRequested": false
+}
