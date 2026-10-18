@@ -1,0 +1,83 @@
+{
+  "schema": "riffoid-ir.sdk-integration-check/v1",
+  "recordedAt": "2026-10-18T18:08:00.806102+00:00",
+  "scope": "Independent candidate branch, source not merged to main or deployed; real local Chromium/Workerd with synthetic authority.",
+  "irHeadBeforeMerge": "810f30ad67b32cbf84108f16aafacfab5f49c97e",
+  "sdkHead": "fca66cb0e1024b4e86bbbeb9a6d955b137599efa",
+  "results": [
+    {
+      "command": [
+        "npm",
+        "run",
+        "typecheck"
+      ],
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "check:ui"
+      ],
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "node",
+        "--experimental-strip-types",
+        "--test",
+        "tests/m3/project-ir-authority.test.ts",
+        "tests/m3/project-ir-broker-deadlines.test.mjs",
+        "tests/m3/project-ir-browser.test.mjs",
+        "tests/m3/project-ir-canonical.test.ts",
+        "tests/m3/project-ir-effects.test.ts",
+        "tests/m3/project-ir-gateway.test.ts",
+        "tests/m3/project-ir-heartbeat.test.mjs",
+        "tests/m3/project-ir-registration-ledger.test.mjs",
+        "tests/m3/project-ir-workerd.test.mjs",
+        "tests/m3/project-view-broker-deadlines.test.mjs",
+        "tests/m3/project-view-frame-bytes.test.mjs",
+        "tests/m3/project-view-local-browser.test.mjs",
+        "tests/m3/project-view-sdk-deadlines-browser.test.mjs",
+        "tests/m3/project-views.test.mjs"
+      ],
+      "exitCode": 0
+    }
+  ],
+  "sourceBefore": {
+    "services/web/project-views.js": "5bf9c2efb694182a5c68b9c03e0bd6fdb72b7e9a8b7b14f2474ec56a02d1f3c3",
+    "services/web/project-view-local.js": "9edc6ef02b7d8bb50c51ef27e5a7d18d700f3a9013239ffb55c89baf07b6b987",
+    "services/project-views/frame-source.mjs": "054fef58ff3fbebe2622fab0b7a605d835886bfa8edad96c8e711de11a8be704",
+    "services/project-views/frame-html.mjs": "544f0cda4db9c9ec3f7d3ce19b6c00b0b5a695c78707ad5e22b851fe009c7b4b",
+    "services/project-ir/effects.ts": "c3af531ca55d5086727e34f264ea323ea3c4ee02489b6089a91ee46541ea3f38",
+    "tests/m3/project-ir-broker-deadlines.test.mjs": "d2d06a975381c7fe5498352671d6079cb91e48b2cb506cd8e60181420acc1344",
+    "tests/m3/project-ir-registration-ledger.test.mjs": "b6bdc9dd21aa65def3bbdcd8edd2a8b36ac96f909feef80541372e7f8a38bdba"
+  },
+  "sourceAfter": {
+    "services/web/project-views.js": "5bf9c2efb694182a5c68b9c03e0bd6fdb72b7e9a8b7b14f2474ec56a02d1f3c3",
+    "services/web/project-view-local.js": "9edc6ef02b7d8bb50c51ef27e5a7d18d700f3a9013239ffb55c89baf07b6b987",
+    "services/project-views/frame-source.mjs": "054fef58ff3fbebe2622fab0b7a605d835886bfa8edad96c8e711de11a8be704",
+    "services/project-views/frame-html.mjs": "544f0cda4db9c9ec3f7d3ce19b6c00b0b5a695c78707ad5e22b851fe009c7b4b",
+    "services/project-ir/effects.ts": "c3af531ca55d5086727e34f264ea323ea3c4ee02489b6089a91ee46541ea3f38",
+    "tests/m3/project-ir-broker-deadlines.test.mjs": "d2d06a975381c7fe5498352671d6079cb91e48b2cb506cd8e60181420acc1344",
+    "tests/m3/project-ir-registration-ledger.test.mjs": "b6bdc9dd21aa65def3bbdcd8edd2a8b36ac96f909feef80541372e7f8a38bdba"
+  },
+  "sourceUnchangedDuringCheck": true,
+  "rawLog": {
+    "bytes": 18655,
+    "sha256": "7d24dda8d591e7184c516762235d37d53a53dd0d4a5fe6ab5e73a00138ba3bf9"
+  },
+  "productionChanges": 0,
+  "resultCounts": {
+    "targetedNode": {
+      "passed": 118,
+      "failed": 0,
+      "skipped": 0
+    },
+    "ui": {
+      "passed": 21,
+      "failed": 0
+    },
+    "typecheck": "passed"
+  }
+}

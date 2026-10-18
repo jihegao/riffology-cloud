@@ -1,0 +1,104 @@
+{
+  "schema": "riffoid-ir.sdk-integration-preview-evidence/v1",
+  "recordedAt": "2026-10-18T17:52:24.543304+00:00",
+  "status": "passed local candidate; copied into independent branch, main/production baseline still awaiting confirmation",
+  "irSource": "bda696a9f59135ba3c6c40f2524e8f51044e2e82",
+  "sdkSource": "fca66cb0e1024b4e86bbbeb9a6d955b137599efa",
+  "packageVersion": "0.3.1",
+  "packageSha256": "86b7a28a1b92652fb01b15ea6671414ecdd5e38c639878455e7abffb60d46ad6",
+  "scope": "Real local Chromium/WebKit and production broker/core; synthetic actor/KV/R2 authority. No online ACC or production changes.",
+  "checks": {
+    "chromium": {
+      "tests": 27,
+      "passed": 27
+    },
+    "genericAndIrBroker": {
+      "tests": 17,
+      "passed": 17
+    },
+    "newIrDeadlineCases": {
+      "tests": 7,
+      "passed": 7
+    },
+    "webkit": {
+      "tests": 17,
+      "passed": 17,
+      "version": "26.6",
+      "revision": 2359
+    }
+  },
+  "candidateSources": [
+    {
+      "path": "evidence/releases/project-view-native-sdk-deadlines-20261019.json",
+      "sha256": "51f37ba748a7cf4abb2cf8ebd8a26fffd26bd0f58751f8c547c19a7ab18607be"
+    },
+    {
+      "path": "services/project-views/frame-html.mjs",
+      "sha256": "544f0cda4db9c9ec3f7d3ce19b6c00b0b5a695c78707ad5e22b851fe009c7b4b"
+    },
+    {
+      "path": "services/project-views/frame-source.mjs",
+      "sha256": "054fef58ff3fbebe2622fab0b7a605d835886bfa8edad96c8e711de11a8be704"
+    },
+    {
+      "path": "services/web/project-view-local.js",
+      "sha256": "9edc6ef02b7d8bb50c51ef27e5a7d18d700f3a9013239ffb55c89baf07b6b987"
+    },
+    {
+      "path": "services/web/project-views.js",
+      "sha256": "5bf9c2efb694182a5c68b9c03e0bd6fdb72b7e9a8b7b14f2474ec56a02d1f3c3"
+    },
+    {
+      "path": "tests/m3/project-ir-browser.test.mjs",
+      "sha256": "c8467943d0ad44da6d620d35cbc27451467bafe35f087d964b538c7c958f1ec4"
+    },
+    {
+      "path": "tests/m3/project-view-broker-deadlines.test.mjs",
+      "sha256": "09b760b426995b09635c1c22a784544b64fda57ac2e5e82b126a993a38b4110b"
+    },
+    {
+      "path": "tests/m3/project-view-sdk-deadlines-browser.test.mjs",
+      "sha256": "17aaf5ff744ea792fe36b423a73cc94dd8a8b382166340e917120c545d817c71"
+    }
+  ],
+  "newTest": {
+    "path": "tests/m3/project-ir-broker-deadlines.test.mjs",
+    "sha256": "d2d06a975381c7fe5498352671d6079cb91e48b2cb506cd8e60181420acc1344"
+  },
+  "rawLogs": [
+    {
+      "path": "preview-chromium.log",
+      "bytes": 9179,
+      "sha256": "c64efc9ff355d336fac69b197e3d2e5bb3d46fce7cb37789ba498e3989e4dffa"
+    },
+    {
+      "path": "preview-chromium-loopback.log",
+      "bytes": 3765,
+      "sha256": "266d4a0b300ad55efec977c4a9a5703850a20a6deced8e0570aca09000db17b7"
+    },
+    {
+      "path": "project-ir-broker-cross-regressions.log",
+      "bytes": 2150,
+      "sha256": "600b273fd1a9c8215a56d8a69455340f1284a8bdf683deb0442caf2ca54a17b2"
+    },
+    {
+      "path": "project-ir-broker-new-final.log",
+      "bytes": 986,
+      "sha256": "7d05418fde87c07cabbf799b9198aca81daf1389f7d07b8ae89e6ee6f56fd3b8"
+    },
+    {
+      "path": "project-ir-sdk-webkit-cross-regressions.log",
+      "bytes": 5336,
+      "sha256": "8c01a9f1a595f89b7fa8adf2cadfd81b14e7e8bb52b6ff932298a1743304d937"
+    }
+  ],
+  "firstSandboxAttempt": "Default sandbox denied temporary loopback listen; raw failure log retained, same source passed once loopback test execution was allowed.",
+  "budgets": {
+    "genericHttpMs": 10000,
+    "irHttpMs": 25000,
+    "wholeRpcMs": 30000,
+    "outerSdkMs": 35000,
+    "moduleMs": 40000,
+    "startupMs": 45000
+  }
+}

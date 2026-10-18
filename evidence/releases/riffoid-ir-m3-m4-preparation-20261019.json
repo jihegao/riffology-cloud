@@ -107,7 +107,15 @@
       "passed": 5,
       "failed": 0,
       "evidence": "riffoid-ir-m3-m4-20261019/ci-first-run.json",
-      "correctedGitHubCheck": "pending after publication"
+      "correctedGitHubCheck": "passed run39151117118"
+    },
+    "postReviewGitHubFullCheck": {
+      "head": "810f30ad67b32cbf84108f16aafacfab5f49c97e",
+      "passed": 3430,
+      "skipped": 13,
+      "failed": 0,
+      "pythonPassed": 8,
+      "evidence": "riffoid-ir-m3-m4-20261019/ci-post-review.json"
     }
   },
   "imageExecutionProbe": {
@@ -127,5 +135,21 @@
   "selectedLocalWorkerdEvidence": "riffoid-ir-m3-m4-20261019/",
   "pluginPullRequest": "https://github.com/jihegao/riffoid-ir-plugin/pull/2",
   "hostPullRequest": "https://github.com/jihegao/riffology-cloud/pull/256",
-  "finalIntegratedFullCheck": "pending confirmed-baseline integration"
+  "finalIntegratedFullCheck": "pending confirmed-baseline integration",
+  "integrationCandidate": {
+    "sdkPullRequest": 257,
+    "sdkHead": "fca66cb0e1024b4e86bbbeb9a6d955b137599efa",
+    "mergedOnlyIntoIndependentBranch": true,
+    "mainConfirmed": false,
+    "fullIntegratedCheck": "pending",
+    "previewEvidence": "riffoid-ir-m3-m4-20261019/sdk257-integration-preview.json",
+    "targetedCheck": {
+      "passed": 118,
+      "failed": 0,
+      "uiPassed": 21,
+      "typecheck": "passed",
+      "sourcesStable": true,
+      "evidence": "riffoid-ir-m3-m4-20261019/sdk257-integration-targeted.json"
+    }
+  }
 }

@@ -1,0 +1,151 @@
+{
+  "schema": "project-view-native-sdk-deadline-source-evidence/v1",
+  "recordedAt": "2026-10-18T17:22:31.328942+00:00",
+  "issue": "https://github.com/jihegao/riffology-cloud/issues/255",
+  "baseCommit": "240378f65fee54d917b053f565087095a07244db",
+  "scope": "Align readonly native page deadlines and cancel pending/late work; source implementation and local checks only",
+  "sourcePins": {
+    "services/project-views/frame-source.mjs": {
+      "bytes": 7872,
+      "sha256": "087d88ac18426084bd236b17c0b09ea74b027a454847454bba6c00e5f7b2dbfa"
+    },
+    "services/project-views/frame-html.mjs": {
+      "bytes": 8088,
+      "sha256": "b22069f4c5899ae658ea38fd67c3e10e8c0ff51814a27bc90db79dfa18beb19b"
+    },
+    "services/web/project-view-local.js": {
+      "bytes": 4396,
+      "sha256": "9edc6ef02b7d8bb50c51ef27e5a7d18d700f3a9013239ffb55c89baf07b6b987"
+    },
+    "services/web/project-views.js": {
+      "bytes": 17054,
+      "sha256": "e420e10e0196a9b9ce5f8c6959f8c8551ee0eeae3a2f0a317d9eac8f986ea47c"
+    },
+    "tests/m3/project-view-sdk-deadlines-browser.test.mjs": {
+      "bytes": 5715,
+      "sha256": "17aaf5ff744ea792fe36b423a73cc94dd8a8b382166340e917120c545d817c71"
+    },
+    "tests/m3/project-view-broker-deadlines.test.mjs": {
+      "bytes": 6060,
+      "sha256": "09b760b426995b09635c1c22a784544b64fda57ac2e5e82b126a993a38b4110b"
+    }
+  },
+  "frame": {
+    "sha256": "63ebcd050b0ccf5019265070890bee69d99902120f2252c376678aff299d374b",
+    "path": "/project-views/63ebcd050b0ccf5019265070890bee69d99902120f2252c376678aff299d374b/frame.html"
+  },
+  "deadlinesMs": {
+    "individualHttp": 10000,
+    "wholeBrokerRpc": 30000,
+    "frameSdkRequest": 35000,
+    "moduleInstall": 40000,
+    "hostStartup": 45000
+  },
+  "preserved": [
+    "fresh authorization before and after protected reads",
+    "original scope/generation/package identity, nonce and one-port validation",
+    "eight inflight requests and monotonic liveness",
+    "no provider retry/fallback, no new write or network capability",
+    "close cancels original pending signals/timers; late results cannot deliver or subscribe"
+  ],
+  "actualChecks": {
+    "baseline": {
+      "file": "baseline-slow-authorization.receipt.json",
+      "sha256": "5eae215ade3b9fc2425852993caf059e8666416a5f1eddc2026ecac0c3153c4d",
+      "rawStdoutSha256": "78d06b8b87a7bc03aeef992e671f40d1861e96b4513fa405aad0c282a7fde0b9",
+      "nodeExitCode": 1,
+      "observed": "Real original frame/SDK with two2600ms HTTP authorizations yielded error:page request timeout rather than expected saved project data."
+    },
+    "focusedBeforeNavigationObservationRepair": {
+      "file": "focused-final.receipt.json",
+      "bytes": 2076,
+      "sha256": "b8654379d1b26b59b24d2e38e305575831aec589ea853b33c2ac3179cc7476ea",
+      "rawStdout": "focused-final.stdout",
+      "rawStdoutSha256": "55fed1a5ef12dcfc1c53059865acf0e9a68f97f2f6e0ffe428e312589dda6f31",
+      "passed": 57,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "startedAt": "2026-10-18T17:08:30.357381+00:00",
+      "endedAt": "2026-10-18T17:09:01.650174+00:00"
+    },
+    "static": {
+      "file": "final-static.receipt.json",
+      "bytes": 2124,
+      "sha256": "1ae615dc53d9cb23a05af4163f992193bfdded9dcea551559bd1db310379aa1e",
+      "typecheckPassed": true,
+      "checkUiPassed": 21,
+      "generatedFrameCheckPassed": true,
+      "diffCheckPassed": true
+    },
+    "currentBrowserTestSha256": "17aaf5ff744ea792fe36b423a73cc94dd8a8b382166340e917120c545d817c71",
+    "currentRelatedBrowserRuns": [
+      {
+        "engine": "chromium",
+        "receipt": "frame-navigation-final-chromium.receipt.json",
+        "bytes": 1336,
+        "sha256": "9faf69efc745305a791c62adfdaed877b6eb525fbabaa842a9f2ee989f3e5137",
+        "rawStdout": "frame-navigation-final-chromium.stdout",
+        "rawStdoutBytes": 618,
+        "rawStdoutSha256": "15e0c5dc461b303e364e5de1c67f1e620eb7ff93b23245a9532966523362ba18",
+        "startedAt": "2026-10-18T17:18:05.565985+00:00",
+        "endedAt": "2026-10-18T17:18:33.293731+00:00",
+        "pass": 3,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      {
+        "engine": "webkit",
+        "receipt": "frame-navigation-final-webkit.receipt.json",
+        "bytes": 1414,
+        "sha256": "f298f74cd487b67faf50622d69a3ce4f155453d9425c3fe0926bdc51c7c8cc7e",
+        "rawStdout": "frame-navigation-final-webkit.stdout",
+        "rawStdoutBytes": 616,
+        "rawStdoutSha256": "551dce6174cbf7983f4288b12f8a88fc7145ebc8e1c28de22f20c5278ce27b67",
+        "startedAt": "2026-10-18T17:17:58.516807+00:00",
+        "endedAt": "2026-10-18T17:18:26.971622+00:00",
+        "pass": 3,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    ],
+    "attribution": {
+      "prior57PassRemainsBoundToOld0aedTestAndSameProduction": true,
+      "currentTestSeparatelyPassedThreeChromiumAndThreeWebkit": true,
+      "unrelated57OrReaderChecksNotRepeated": true
+    }
+  },
+  "independentReviews": {
+    "sourceBytes": {
+      "sha256": "929bb7a0d81712c5ef2b82de531248c0cc351fd2074fcbe98cbdf069ffd83bcb",
+      "mustFix": []
+    },
+    "navigationObservationDelta": {
+      "sha256": "434545af13bf12e231527437d47b80adc40bbc8b54efaa920899796485ad7910",
+      "mustFix": []
+    }
+  },
+  "historyPreserved": [
+    "actual old five-second SDK failure with two2600ms authorizations",
+    "initial TLA observation read too early; expected saved data retained",
+    "first WebKit attempt missing runtime",
+    "next WebKit run two missing-frame TypeErrors before data assertions; original exact frame URL not recorded",
+    "test navigation fix registers exact frame event before entering panel and preserves every script/data/time expectation"
+  ],
+  "limits": [
+    "The initial production SDK request was not fully captured; concrete local budget reproduction does not establish the unique online cause.",
+    "The old57 invocation includes the old0aed test helper and identical four production files; the current17aa helper separately passed three Chromium and three WebKit cases. No all57 WebKit or new-helper full57 invocation is claimed.",
+    "Thirty seconds is the whole RPC upper bound, not a guarantee all three ten-second stages complete at their maxima.",
+    "Installation and cancellation remain cooperative; arbitrary chained SDK work and synchronously blocking JavaScript are not given an unlimited startup or hard CPU termination guarantee.",
+    "No full npm run check or production Safari acceptance on this candidate."
+  ],
+  "productionActions": {
+    "deployed": false,
+    "gateChanged": false,
+    "modelTurnRunOrCloudContainerStarted": false,
+    "billingOrSubscriptionChanged": false
+  },
+  "relatedActualFailureEvidence": "https://github.com/jihegao/riffology-cloud/blob/c9ce51772b2f614e16548c0cbed8bfa33c968589/docs/project-view-trusted-pi-native-resource-host-rollout-acceptance-result-20261018.md"
+}

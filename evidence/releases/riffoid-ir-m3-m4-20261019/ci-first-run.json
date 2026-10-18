@@ -22,7 +22,13 @@
     "passed": 5,
     "failed": 0
   },
-  "correctedGitHubRun": "pending after next public source commit",
+  "correctedGitHubRun": {
+    "runId": 39151117118,
+    "jobId": 117744790858,
+    "head": "810f30ad67b32cbf84108f16aafacfab5f49c97e",
+    "conclusion": "success",
+    "evidence": "ci-post-review.json"
+  },
   "rawLog": {
     "location": "outside repository",
     "bytes": 539029,

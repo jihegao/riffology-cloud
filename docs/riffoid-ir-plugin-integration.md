@@ -11,3 +11,5 @@
 普通保存的 draft/settings 在无 active Turn 时取 canonical Revision；Turn 内取即时登记投影以支持编译后立即运行。浏览器 heartbeat/result 不推进 canonical head。历史运行冻结模型、输入、运行时与 seed；按 sourceRunId 复跑产生新 runId 并保留来源。丢失 ACK 按原 effect 观察，不自动重放；持久化确认未知继续作为 unknown。
 
 源码基线为 main `240378f65fee54d917b053f565087095a07244db`，原工作区未重置。独立分支的离线回归与实际本地浏览器证据见 [准备记录](../evidence/releases/riffoid-ir-m3-m4-preparation-20261019.json)。完整检查与双端 ACC 结果按实际执行追加。真实 Project Tools 镜像已通过固定 Node/SDK、UID、网络隔离及 B1 check/compile 探针；该记录仍不证明生产部署或线上 Agent 验收。同一冻结 runtime/worker 已在真实本地 Chromium 与 WebKit 26.6 的 opaque 页面运行；[WebKit 兼容证据](../evidence/releases/riffoid-ir-m3-m4-20261019/webkit-compatibility/manifest.json)包含正确结果、篡改拒绝和 Worker/页面清理，仅属本地 synthetic scope。首次新项目先结束保存 Turn，用户打开已保存页面后在下一 Turn 运行；不把尚未连接的浏览器当成执行成功。线上集成需以当前进行中工作确认后的合并基线串行进行，沿用 #104/#214 原身份和发布保全约束。G5/M3/M4 云执行门禁不因本次浏览器执行开放。
+
+独立候选分支已整合公开 SDK 修复 #257（`fca66cb0`），尚未合入 main 或部署。HTTP/RPC/SDK/module/startup 分别有界；IR HTTP 为25秒，整次 RPC 为30秒、外层 SDK 为35秒，并把取消信号传入 IR 请求。心跳交付不确定仍关闭原页面。此交叉候选的 Chromium27项、WebKit17项和 broker17项本地检查见选定证据，确认最终基线后以整合源码重新完成检查及线上验收。
