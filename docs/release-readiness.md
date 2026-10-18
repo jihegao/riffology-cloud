@@ -1,3 +1,9 @@
+## 2026-10-18 c263 wire-repair push CLI reported success; complete Registry proof missing
+
+The explicitly approvede521/76df repair kept the originalc263/source/directory/tag. One export verified407961600B/dedd… and53raw blobs/49diffIDs, deriving ec8d… runnable9585B and cea… config19067B from0bb/index856. One Registry credential POST201/stdin succeeded. Push CLI exit0/reaped at12:36:38.892650Z reported the matching strict ec8d/9585 line. However remote publisher ended12:45:16.036354Z unknown-stopped/publication-local-error, local SSH ended12:48:39.599189Z exit255/reaped and final ACKfalse. registry-readback.json is absent: complete52-slot proof/current Registry state and detailed cause remain unknown. [Actual stopped result](project-view-trusted-pi-native-resource-snapshot-host-publication-wire-repair-stop-result-20261018.md) · [safe evidence](../evidence/releases/project-view-trusted-pi-native-resource-snapshot-host-publication-wire-repair-stop-20261018/inventory.json).
+
+Original-identity stop observation12:52:22Z independently bound18originalJSON/15457B to the original Ready/final by full JSON equality, found all6originalCLI+supervisor absent, authdir/config absent and7897 closed; local original2PIDs were absent at12:49:39. Archive was stat-only, no new full rehash/GET/token/route/push. This proves cleanup, not publication success; conditional253merge is not met and no merge/deployment/realTurn/old12:42:46Z extension occurred. Fees/usage and server credential expiry/revocation remain unproved, not zero. Prior wire failure,695e/T1/history/locks remain unchanged; future readback-only proposal/authorization/execution is separate. JHG-46 remains incomplete.
+
 # Current release readiness — 2026-10-18
 
 ## 2026-10-18 same-c263 grant-wire recovery prepared; not executed
