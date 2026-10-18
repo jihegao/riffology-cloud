@@ -1,0 +1,46 @@
+{
+  "actualReceiptFile": "wire-checks-first.json",
+  "actualReceiptSha256": "e0e1f66bb00b8b69ad8d373b0e8eb01b68986a59ce11a41e7bbf4408d3a5f469",
+  "cases": [
+    "compact JSON with exactly one terminal LF preserves rawSHA and actual pure consumer grant identity",
+    "pretty valid full JSON fails old first-line JSON parser and is refused before STATE/auth by repaired inputs",
+    "missingLF/doubleLF/CRLF refused before any STATE/auth/process/API"
+  ],
+  "command": [
+    "python3",
+    "-m",
+    "unittest",
+    "-v",
+    "test_recovery.GrantWireTests"
+  ],
+  "endedAt": "2026-10-18T12:24:42.459706+00:00",
+  "failed": 0,
+  "limits": [
+    "Synthetic grants only in the three new fixtures.",
+    "Separate local diagnosis used the actual grant shape privately; only counts/hash/structural two-byte prefix are public.",
+    "No original stderr traceback text is available or claimed.",
+    "Recovery remains unauthorized and unexecuted."
+  ],
+  "passed": 3,
+  "priorChecks": {
+    "notRerunOnThisRepair": true,
+    "operationFakes": 17,
+    "publicCommit": "d948b08324d288c1c88d428d5331acfff2d03121",
+    "readerFixtures": 11
+  },
+  "pythonAstFiles": 7,
+  "realOAuthReadCliSshDockerRegistryOrProvider": 0,
+  "recordedAt": "2026-10-18T12:26:39.037338+00:00",
+  "schema": "trusted-pi-c263-wire-repair-checks-safe/v1",
+  "startedAt": "2026-10-18T12:24:42.391747+00:00",
+  "streamHashes": {
+    "stderr": {
+      "bytes": 431,
+      "sha256": "d596cfee0cc3c9aa9216cbdbaa59af4fc27da9aad3c1785781651e3f14dfc049"
+    },
+    "stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}
