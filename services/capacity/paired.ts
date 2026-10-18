@@ -23,18 +23,22 @@ export type PairArchiveRecord=Pick<PairLease,'ref'|'requestId'|'status'>;
 /** The existing immutable release records are the authority; physical idle
  * state and gate rollback are never used to infer release in this reader. */
 export function readWorkspacePairArchiveResources(storage:Pick<TrustedPiCapacityStorage,'sql'>,rawScope:TurnScope,requestId?:string){
- const scope=checkedScope(rawScope);if(requestId!==undefined)id(requestId);
+ const scope=checkedScope(rawScope);return {...readWorkspacePairQuiescence(storage,scope,requestId),scope};
+}
+export function readWorkspacePairQuiescence(storage:Pick<TrustedPiCapacityStorage,'sql'>,scope:TurnScope|null=null,requestId?:string){
+ if(requestId!==undefined)id(requestId);
  const tables=new Set(storage.sql.exec<{name:string}>("SELECT name FROM sqlite_master WHERE type='table'").toArray().map(row=>row.name));let unresolved=0,pair:PairArchiveRecord|null=null;
  const family=['paired_capacity_meta','paired_capacity_owners','paired_capacity_leases','paired_capacity_queue','paired_capacity_cancelled_requests','paired_capacity_proofs','paired_capacity_bindings'];
  if(!family.some(table=>tables.has(table)))return {scope,unresolved,quiescent:true,pair};
  if(family.some(table=>!tables.has(table)))fail('paired-capacity-archive-proof-missing');
  const meta=storage.sql.exec<Row>('SELECT policy_json FROM paired_capacity_meta WHERE singleton=1').toArray()[0];if(!meta)fail('paired-capacity-archive-proof-missing');
  const policy=exact(JSON.parse(meta!.policy_json as string),['policyVersion','assignmentGuardMs','quietMs','idleMs','maxLeaseMs']);id(policy.policyVersion);integer(policy.assignmentGuardMs,0);integer(policy.quietMs,0);integer(policy.idleMs);integer(policy.maxLeaseMs);
- for(const row of storage.sql.exec<Row>('SELECT * FROM paired_capacity_leases WHERE tenant_id=?',scope.tenantId).toArray()){
+ const rows=scope?storage.sql.exec<Row>('SELECT * FROM paired_capacity_leases WHERE tenant_id=?',scope.tenantId).toArray():storage.sql.exec<Row>('SELECT * FROM paired_capacity_leases').toArray();
+ for(const row of rows){
   const lease=JSON.parse(row.record_json as string)as PairLease,reference=ref(lease.ref);
   if(lease.schemaVersion!==1||reference.scope.tenantId!==row.tenant_id||reference.scope.workspaceId!==row.workspace_id||reference.leaseId!==row.lease_id||id(lease.requestId)!==row.request_id||lease.status!==row.status)fail('paired-capacity-archive-proof-invalid');
-  if(reference.scope.projectId!==scope.projectId&&reference.scope.workspaceId!==scope.workspaceId)continue;
-  if(reference.scope.projectId!==scope.projectId||!['queued','held','bound','idle','releasing','released','cancelled'].includes(lease.status))fail('paired-capacity-archive-scope-denied');
+  if(scope&&reference.scope.projectId!==scope.projectId&&reference.scope.workspaceId!==scope.workspaceId)continue;
+  if((scope&&reference.scope.projectId!==scope.projectId)||!['queued','held','bound','idle','releasing','released','cancelled'].includes(lease.status))fail('paired-capacity-archive-scope-denied');
   if(lease.status==='released'){
    integer(lease.finishedAt);integer(lease.drainAt);binding(lease.binding!);
    for(const domain of domains){
@@ -47,7 +51,7 @@ export function readWorkspacePairArchiveResources(storage:Pick<TrustedPiCapacity
    }
   }else if(lease.status==='cancelled'){integer(lease.finishedAt);if(lease.binding!==null||lease.startClaims.project!==null||lease.startClaims.trustedPi!==null)fail('paired-capacity-archive-proof-invalid');}
   else unresolved++;
-  if(requestId===lease.requestId&&reference.scope.workspaceId===scope.workspaceId){if(!same(reference.scope,scope))fail('paired-capacity-archive-scope-denied');pair={ref:reference,requestId:lease.requestId,status:lease.status};}
+  if(scope&&requestId===lease.requestId&&reference.scope.workspaceId===scope.workspaceId){if(!same(reference.scope,scope))fail('paired-capacity-archive-scope-denied');pair={ref:reference,requestId:lease.requestId,status:lease.status};}
  }
  return {scope,unresolved,quiescent:unresolved===0,pair};
 }

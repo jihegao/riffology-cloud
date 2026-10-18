@@ -22,3 +22,28 @@ test('Private Beta controls require current operator identity and same-origin mu
   assert.equal((await call('operator','POST',{action:'pause'})).status,404);assert.equal(pauses,1);
  }finally{db.sqlite.close();}
 });
+
+test('maintenance uses the existing current-operator boundary, exact CAS input and an independent pure status port',async()=>{
+ const db=new SqliteCatalog(),now=Date.now(),calls:unknown[]=[];
+ try{
+  for(const user of ['owner','operator'])db.sqlite.prepare("INSERT INTO catalog_users(id,identity_issuer,identity_subject,normalized_email,created_at,updated_at) VALUES(?,'better-auth',?,?,?,?)").run(user,user,user+'@example.test',now,now);
+  db.sqlite.prepare("INSERT INTO catalog_platform_roles(user_id,role,status,created_at,updated_at) VALUES('operator','operator','active',?,?)").run(now,now);
+  const input={requestId:'maint_1',expectedRevision:0,expectedPolicySha256:'a'.repeat(64)};
+  const privateBeta={snapshot:async()=>{throw Error('mutating-snapshot-forbidden');},pause:async()=>{throw Error('pause-forbidden');},resume:async()=>{throw Error('resume-forbidden');},maintenanceStatus:async(...args:unknown[])=>{calls.push(['status',...args]);return {revision:0,hold:null};},beginMaintenance:async(...args:unknown[])=>{calls.push(['begin',...args]);return {receipt:{revision:1}};},endMaintenance:async(...args:unknown[])=>{calls.push(['end',...args]);throw Error('private-beta-maintenance-release-unconfirmed');}};
+  const call=(user:string|null,method='GET',body?:unknown,source=origin,query='')=>gateway(new Request(origin+'/api/admin/private-beta/maintenance'+query,{method,headers:{origin:source,'content-type':'application/json'},...(body===undefined?{}:{body:JSON.stringify(body)})}),{origin,database:db,identity:async()=>user?({subject:user,email:user+'@example.test',emailVerified:true,platformVersion:1}):null,privateBeta});
+  assert.equal((await call(null)).status,401);assert.equal((await call('owner')).status,404);
+  assert.equal((await call('owner','POST',{action:'begin',...input})).status,404);assert.equal(calls.length,0);
+  assert.equal((await call('operator','POST',{action:'begin',...input},'https://evil.test')).status,403);assert.equal(calls.length,0);
+  for(const body of [{action:'pause',...input},{action:'begin',...input,extra:true},{action:'begin',...input,expectedRevision:-1},{action:'begin',...input,expectedPolicySha256:'bad'},{action:'begin',...input,requestId:''}])assert.equal((await call('operator','POST',body)).status,400);
+  assert.equal((await call('operator','POST',{action:'begin',...input},origin,'?requestId=maint_1')).status,400);
+  for(const query of ['?other=1','?requestId=maint_1&requestId=maint_1','?requestId='])assert.equal((await call('operator','GET',undefined,origin,query)).status,400);
+  assert.equal(calls.length,0);
+  assert.equal((await call('operator','GET',undefined,origin,'?requestId=maint_1')).status,200);
+  assert.deepEqual(calls.pop(),['status','maint_1',{userId:'operator',authVersion:1}]);
+  assert.equal((await call('operator','POST',{action:'begin',...input})).status,200);
+  assert.deepEqual(calls.pop(),['begin',input,{userId:'operator',authVersion:1}]);
+  assert.equal((await call('operator','POST',{action:'end',...input,expectedRevision:1})).status,409);assert.equal(calls.length,1);
+  db.sqlite.prepare("UPDATE catalog_platform_roles SET status='revoked' WHERE user_id='operator'").run();
+  assert.equal((await call('operator')).status,404);assert.equal((await call('operator','POST',{action:'end',...input})).status,404);assert.equal(calls.length,1);
+ }finally{db.sqlite.close();}
+});

@@ -1,7 +1,7 @@
 import {DurableObject} from 'cloudflare:workers';
-import {SqlTrustedPiCapacity,readTrustedPiArchiveQuiescence,type TrustedPiCapacityDispatchReference,type TrustedPiCapacityIdentity,type TrustedPiCapacityLeaseReference,type TrustedPiCapacityStopProof,type TrustedPiCapacityTicketReference} from './core.ts';
+import {SqlTrustedPiCapacity,readTrustedPiArchiveQuiescence,readTrustedPiQuiescence,type TrustedPiCapacityDispatchReference,type TrustedPiCapacityIdentity,type TrustedPiCapacityLeaseReference,type TrustedPiCapacityStopProof,type TrustedPiCapacityTicketReference} from './core.ts';
 import {trustedPiCapacityActorName} from './client.ts';
-import {SqlWorkspacePairedCapacity,readWorkspacePairArchiveResources,type WorkspaceLeaseRef,type TurnBinding,type PairDomain,type QuiescenceProof,type PairHandoffProofs,type DomainReleaseProof} from './paired.ts';
+import {SqlWorkspacePairedCapacity,readWorkspacePairArchiveResources,readWorkspacePairQuiescence,type WorkspaceLeaseRef,type TurnBinding,type PairDomain,type QuiescenceProof,type PairHandoffProofs,type DomainReleaseProof} from './paired.ts';
 import {workspaceAgentName} from '../workspace/protocol.ts';
 import type {TurnScope} from '../turn/protocol.ts';
 export interface TrustedPiCapacityEnv{
@@ -15,6 +15,14 @@ export interface TrustedPiCapacityEnv{
 export class TrustedPiCapacity extends DurableObject<TrustedPiCapacityEnv>{
  #queue:Promise<void>=Promise.resolve();
  #core:SqlTrustedPiCapacity|null=null;#pair:SqlWorkspacePairedCapacity|null=null;
+ /** Pure original-ledger proof: do not initialize the allocator or use its
+  * mutating snapshot wrapper. This does not inspect Cloudflare instances. */
+ maintenanceQuiescence(){
+  if(!this.env.TRUSTED_PI_CAPACITY.idFromName(trustedPiCapacityActorName()).equals(this.ctx.id))throw Error('trusted-pi-capacity-actor-scope-denied');
+  const cold=readTrustedPiQuiescence(this.ctx.storage),pair=readWorkspacePairQuiescence(this.ctx.storage);
+  if(cold.policyVersion!==this.env.TRUSTED_PI_CAPACITY_POLICY_VERSION)throw Error('trusted-pi-capacity-policy-conflict');
+  return {actor:trustedPiCapacityActorName(),policyVersion:cold.policyVersion,quiescent:cold.quiescent&&pair.quiescent,coldUnresolved:cold.unresolved,pairUnresolved:pair.unresolved,actualContainerReleaseVerified:false as const};
+ }
  archiveResources(scope:TurnScope,requestId?:string){
   if(!this.env.TRUSTED_PI_CAPACITY.idFromName(trustedPiCapacityActorName()).equals(this.ctx.id))throw Error('trusted-pi-capacity-actor-scope-denied');
   const cold=readTrustedPiArchiveQuiescence(this.ctx.storage,scope),paired=readWorkspacePairArchiveResources(this.ctx.storage,scope,requestId);
