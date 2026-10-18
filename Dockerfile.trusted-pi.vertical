@@ -8,7 +8,7 @@ RUN groupadd -g 10002 trustedpi && useradd -u 10002 -g 10002 -M -s /usr/sbin/nol
     && chown trustedpi:trustedpi /var/lib/riffology/pi /var/lib/riffology/turns \
     && chmod 0700 /var/lib/riffology/pi /var/lib/riffology/turns /var/lib/riffology/runtime-control
 
-COPY --chown=root:root services/trusted-pi/package.json services/trusted-pi/package-lock.json /opt/riffology/
+COPY --chown=root:root --chmod=0444 services/trusted-pi/package.json services/trusted-pi/package-lock.json /opt/riffology/
 RUN cd /opt/riffology \
     && npm ci --omit=dev --ignore-scripts \
     && npm cache clean --force
