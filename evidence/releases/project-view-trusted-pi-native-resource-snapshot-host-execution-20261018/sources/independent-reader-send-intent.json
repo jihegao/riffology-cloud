@@ -1,0 +1,12 @@
+{
+  "requestId": "695e8875-459a-41b3-a148-2e228f2c3727",
+  "createdAt": "2026-10-18T11:47:39.117575+00:00",
+  "originalBuildExecSession": 56758,
+  "originalBuildExecExitCode": 0,
+  "originalStatus": "offline-image-compatibility-mock-passed",
+  "originalContainerId": "6bc8aab107db59fc1c67183145ac103355258ac0982866256e7993e2e8292572",
+  "imageId": "sha256:0bb9af7a5909c41187cf56402a21420100c72a8de0025b0a7152f8804e85d191",
+  "originalCleanupConfirmed": true,
+  "readerOnly": true,
+  "readOnlyDockerGets": 2
+}

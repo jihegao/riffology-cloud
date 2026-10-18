@@ -1,0 +1,138 @@
+{
+  "schema": "trusted-pi-native-resource-snapshot-host-actual-result-independent-review/v1",
+  "reviewedAt": "2026-10-18T11:52:53.109937+00:00",
+  "requestId": "695e8875-459a-41b3-a148-2e228f2c3727",
+  "mustFix": [],
+  "method": "Read-only local review of8 collected safe original JSON files, the separate frozen reader stdout, authorization/hash bindings and frozen operation/source inputs. No tests or remote checks repeated.",
+  "inputs": {
+    "originalRecordsInventory": {
+      "file": "original-safe-records-read-once/inventory.json",
+      "bytes": 1519,
+      "sha256": "0e006a649344efc5983ef4c8e04606a0e5627285c04a6eaee7b1b203b35ef941"
+    },
+    "originalRecords": {
+      "build-probe-once/base-raw-chain-binding.json": {
+        "file": "original-safe-records-read-once/records/build-probe-once/base-raw-chain-binding.json",
+        "bytes": 344,
+        "sha256": "3f8536aeb00c8f0b39d9e87394c2e237d36242dc8a2f193130eabe6e5e54594f"
+      },
+      "build-probe-once/cached-base-entry-guard.json": {
+        "file": "original-safe-records-read-once/records/build-probe-once/cached-base-entry-guard.json",
+        "bytes": 73,
+        "sha256": "3dc535ea2a88fa74d06936ed0b10eb36c3a5c233e389cb3869e78737d36b0e26"
+      },
+      "build-probe-once/derived-image-identity.json": {
+        "file": "original-safe-records-read-once/records/build-probe-once/derived-image-identity.json",
+        "bytes": 2819,
+        "sha256": "ecd37de0aecc83e1fc1d240ec15cd658f4c505445d8e3e80728eaab0a803f101"
+      },
+      "build-probe-once/original-container-cleanup.json": {
+        "file": "original-safe-records-read-once/records/build-probe-once/original-container-cleanup.json",
+        "bytes": 178,
+        "sha256": "2c379131731bd845e42a64c4dedc09e39cf0a2fddeac617130882e4f316db0dc"
+      },
+      "build-probe-once/probe-report.json": {
+        "file": "original-safe-records-read-once/records/build-probe-once/probe-report.json",
+        "bytes": 3706,
+        "sha256": "c7c9dc4cd54962eff4788e571ac117512c6c003230fdbaba84f8b0bf49017118"
+      },
+      "build-probe-once/result.json": {
+        "file": "original-safe-records-read-once/records/build-probe-once/result.json",
+        "bytes": 1093,
+        "sha256": "335ac959cee8aeb03119a014ad22c426d368e8a13f62bea9f4af9610f481affb"
+      },
+      "independent-readback-once/result.json": {
+        "file": "original-safe-records-read-once/records/independent-readback-once/result.json",
+        "bytes": 2964,
+        "sha256": "9d35ab43de3fb2ca2f9ffba5c527ce4b4258d4a6487850ad13056d0ed215f105"
+      },
+      "transfer-result.json": {
+        "file": "original-safe-records-read-once/records/transfer-result.json",
+        "bytes": 625,
+        "sha256": "d1ce857f7821cfb59829010d7216069229fef78d022346b8352168708c6ade29"
+      }
+    },
+    "readerOriginalStdout": {
+      "file": "independent-reader-original-stdout.json",
+      "bytes": 2360,
+      "sha256": "2e0b2db4fd4695b0498e516537e10c8ec226011ea188daca625714c49ddf442b"
+    },
+    "authorizationReceipt": {
+      "file": "authorization-receipt.json",
+      "bytes": 660,
+      "sha256": "76717a9935e136a2b14ac6ece938ec92958f4fb0365f907513b5d2c36c699e08"
+    },
+    "localPreflight": {
+      "file": "preflight-local-only.json",
+      "bytes": 383,
+      "sha256": "a5d8a79da501c590ef9b13c08e64f9b3c4736ff7c13ce589d0200a09c942770b"
+    },
+    "operationsManifest": {
+      "file": "operations/operations-manifest.json",
+      "bytes": 1728,
+      "sha256": "fe1ab539e48c1a19d1b48e355b63c93a7c8c1c82bdcee319a385c7aac1ef78c5"
+    }
+  },
+  "verified": {
+    "eightOriginalFilesBytes": 11802,
+    "allInventoryByteHashesMatch": true,
+    "grantBodyHashMatchesAuthorizationTransferPreflightAndBuildIntent": true,
+    "grantBodyParsedOrPublished": false,
+    "allTenOperationFilesMatch": true,
+    "actualImageReportMatchesAll12ManifestTargets": true,
+    "overlayTargets": 1,
+    "all14ChecksTrue": true,
+    "mode": "image",
+    "nodeVersion": "22.23.2",
+    "uid": 10002,
+    "gid": 10002,
+    "environmentOnlyPathAsserted": true,
+    "syntheticRequests": {
+      "ambientFetch": 0,
+      "model": 3,
+      "projectToolExecutions": 0,
+      "research": 3,
+      "sessionCreations": 3,
+      "sessionDisposals": 3
+    },
+    "realProviderRequestsWithinProbe": 0,
+    "baseRawChainHashesAndClosedConfigMatched": true,
+    "rootfs48PrefixTo49": true,
+    "independentReaderStdoutSemanticallyEqualsCollectedPrettyResult": true,
+    "originalCliLifecycles": 17,
+    "allOriginalCliReapedAndOriginalStartTicksAbsent": true,
+    "independentDockerGets": 2,
+    "originalCidNotFound": true,
+    "operationLabelAllStatesEmpty": true,
+    "cleanupConfirmed": true
+  },
+  "identityBoundary": {
+    "localEngineId": "sha256:0bb9af7a5909c41187cf56402a21420100c72a8de0025b0a7152f8804e85d191",
+    "buildIid": "sha256:0bb9af7a5909c41187cf56402a21420100c72a8de0025b0a7152f8804e85d191",
+    "descriptor": {
+      "digest": "sha256:0bb9af7a5909c41187cf56402a21420100c72a8de0025b0a7152f8804e85d191",
+      "mediaType": "application/vnd.oci.image.index.v1+json",
+      "size": 856
+    },
+    "engineAndIidRoles": "descriptor",
+    "configDigest": null,
+    "runnablePlatformManifestIndependentlyRetrieved": false,
+    "registryPublished": false
+  },
+  "limits": [
+    "Synthetic model/research counts are local fixture callbacks, not paid model requests or real user Turns.",
+    "The frozen reader attests original stream equality, exact exit/wait and process lifecycles; this reviewer did not refetch private streams or repeat its two Docker GETs.",
+    "This image probe does not prove native supervisor/capacity release, actual project_write repair or ordinary-user acceptance.",
+    "The derived index has not been exported, pushed, or independently resolved to a platform/config identity in this batch.",
+    "No current application/Gateway/gate/model authority counts were collected; no global-zero-activity, zero-VM or zero-fee claim.",
+    "Failed T1, historical locks/reservations and original real-acceptance deadline remain unchanged; no new Turn or extended window is authorized."
+  ],
+  "reviewerActions": {
+    "testReruns": 0,
+    "ssh": 0,
+    "docker": 0,
+    "cloudApi": 0,
+    "provider": 0,
+    "credentialReadOrMint": 0
+  }
+}
