@@ -1,0 +1,27 @@
+{
+  "capturedBytes": 10261,
+  "capturedSha256": "76a2bc3ffaf6cbb560a06f7ba774e07d9bd0cf23eb5a81ae7e9c28abfeca2ab6",
+  "directSmallRawByteObjectComparisonPerformed": false,
+  "endedAt": "2026-10-18T14:32:00.556950+00:00",
+  "errorCode": null,
+  "exceptionClass": null,
+  "expectedDescriptor": {
+    "digest": "sha256:76a2bc3ffaf6cbb560a06f7ba774e07d9bd0cf23eb5a81ae7e9c28abfeca2ab6",
+    "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+    "size": 10261
+  },
+  "httpStatus": 200,
+  "manifestOrBlobHeaderMatches": true,
+  "operationId": "registry-local-readback-v1",
+  "path": "blobs/sha256:76a2bc3ffaf6cbb560a06f7ba774e07d9bd0cf23eb5a81ae7e9c28abfeca2ab6",
+  "phase": "complete",
+  "proofAccepted": true,
+  "rawBodyHeadersErrorTextOrAuthPersisted": false,
+  "requestId": "c263a2f3-f445-430e-b562-2e48f1eeb637",
+  "responseCaptureComplete": true,
+  "responseClosed": true,
+  "schema": "trusted-pi-local-registry-get-terminal/v1",
+  "slot": 47,
+  "smallRawSha256EqualityPassed": null,
+  "startedAt": "2026-10-18T14:31:59.125592+00:00"
+}

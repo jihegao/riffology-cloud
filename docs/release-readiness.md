@@ -1,3 +1,9 @@
+## 2026-10-18：原 c263 全52回读与 #253 普通合并完成，镜像待上线
+
+[本机实际结果](project-view-trusted-pi-local-registry-readback-result-20261018.md)完成获批4783/16313批次：同一原归档53 blobs/49 diffIDs只读复验、52/52实际HTTP200正文407,919,377B（133.826852秒）、原main exit0/唯一ACK，以及冻结reader对source/全proof/ACK/原PID清理的独立核验。root联合原transport确认完整Registry证明；随后新鲜门禁下普通合并#253固定head0a10为240378f65fee54d917b053f565087095a07244db（14:35:00Z）。[安全证据](../evidence/releases/project-view-trusted-pi-local-registry-readback-execution-20261018/inventory.json)保存原字节及角色区分，reader168条引用=167个实际文件，不单独授权merge。
+
+本批无重push/export/Docker、Gateway/app/gate或真实项目/模型/Turn/Run。ec8 runnable已完整回读但未rollout；先前部署仅记录为Gateway9c8/version5a840、a036 v12/f18，未在本批重新线上核验。#252实现合并后人工转Acceptance，父#214仍Acceptance/blocked；原T1失败/无R1和project_write未知、旧unknown/锁/费用历史与原截止保留。后续先按原身份核终态/释放，再准备新具体上线和普通用户验收范围；JHG-46未完成。下方“待授权/未执行/发布pending”均是其各自冻结时点，不替代本次完整回读与合并结果。
+
 ## 2026-10-18：同 c263 本机 Registry 回读包已独审，执行待新授权
 
 [本机只回读固定包](project-view-trusted-pi-local-registry-readback-packet-20261018.md)已完成最终作者15/15、读取器15项fixture及独审（mustFix=[]）。ops `16313c71…`、16件 `919648f9…` 保留同一归档/tag/ec8d及52槽；AMD仅无转发SSH只读源复验，Registry凭据留在本机内存，本机既有7892完成GET，限720秒与grant剩余时间较短者。不增加scope或15分钟TTL，不把改路径当作带宽或根因证明。尚无新grant/实际认证、源SSH、凭据POST或GET；不部署、新Turn或延长旧窗口。下方fc06的4尝试/3证明、unknown与独立清理保持，完整发布/#253合并/普通用户验收仍pending。

@@ -1,0 +1,18 @@
+{
+  "at": "2026-10-18T14:29:38.608817+00:00",
+  "deadlineSeconds": 660,
+  "forwardAgent": false,
+  "forwardings": 0,
+  "operationId": "registry-local-readback-v1",
+  "remoteWrites": 0,
+  "requestId": "c263a2f3-f445-430e-b562-2e48f1eeb637",
+  "sourceInputFileHashes": {
+    "oci_verify.py": "0a23618e34b9a2acf608acc86d281ebd68f60a62ba2b102ecda92502c294acea",
+    "pub_common.py": "eea82cc2e0480485564537903260f311ff1b432d4d3ba9053341072ae3efa3a6",
+    "scope.json": "9b98ec42ae698ec18738626937ab019779a11ca145988f42b9e0dfb71118f8f4",
+    "source-verify.py": "88be50689ace6dfc69d20d5fd8d2b39273200489788f6d5bb18dec90d7383d99",
+    "verification-source.json": "76a53be45c5cd33a5b322bd5dd3dabc6b49f64aa53b739b38a6331cbe998beca"
+  },
+  "sourceProgramSha256": "9f95de9cd11edb3cb772b0066c96df27aafcaed6d7b640ee4c799f384933a78f",
+  "stdinSourceOnlyNoGrantOrCredential": true
+}

@@ -1,0 +1,17 @@
+{
+  "schema": "jhg46-independent-local-reader-invocation/v1",
+  "startedAt": "2026-10-18T14:32:59.318387+00:00",
+  "readerBytes": 44755,
+  "readerSha256": "d73b1624476eb3c7fa929bff3fd6d3d99fc4a062fa9a7229c8d09aac15be6be5",
+  "argv": [
+    "python3",
+    "operations/independent-local-readback-readonly.py",
+    "--execute-readonly",
+    "--grant-sha256",
+    "d80be132a0cba57abba491965451b0988d59e052d5f9cf16be6a5d725473a904",
+    "--operations-sha256",
+    "16313c7193782acce5cd88de7c0e2caf97c76e59c807b581b8b58ef54642eafa"
+  ],
+  "readOnly": true,
+  "networkAuthRegistryDockerCallsRequested": 0
+}

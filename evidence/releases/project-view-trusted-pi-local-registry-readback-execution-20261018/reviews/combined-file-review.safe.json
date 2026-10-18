@@ -1,0 +1,58 @@
+{
+  "actualGitHubMergeReadbackStillRequired": true,
+  "all52CompleteBodyBytes": 407919377,
+  "all52ProofAggregateAndOriginalTransportAckConjunctionVerified": true,
+  "all52ReaderSlotObservationsEqualOriginalTerminals": true,
+  "authSshApiRegistryDockerCallsByThisReview": 0,
+  "completeRegistryProofConditionsSatisfied": true,
+  "credentialReferencesClearNotRevocationExpirySecureEraseOrGlobalZeroFeesProof": true,
+  "currentPidQueriesByThisReview": 0,
+  "githubMergeStatusObservedByThisReview": "not_checked; root composite mergeExecuted:false is dated decision evidence, not an assertion of current GitHub state",
+  "mustFix": [],
+  "noAppRolloutGateOrRuntimeAcceptanceClaim": true,
+  "noRawGrantCredentialBodyConfigEnvOrProcessArgvRead": true,
+  "onlyRepeatedReference": "terminal.json (exact same bytes twice)",
+  "operationId": "registry-local-readback-v1",
+  "originalMainSourceSshOauthNodeAbsenceAndCleanupIndependentlyRecorded": true,
+  "originalReaderReceipt": {
+    "bytes": 894,
+    "file": "independent-reader-once/receipt.json",
+    "sha256": "7d1937d70bd45762627fc5e67bfb0e74f5ade3f3d52ba132b2ebadb7efa9e1e7"
+  },
+  "originalReaderStdout": {
+    "bytes": 39373,
+    "file": "independent-reader-once/observation.stdout",
+    "sha256": "e08f69de3f9022f5c1e319dc4c563a25d0509bac908940de81b6d573eede829a"
+  },
+  "originalReaderStdoutJsonEqualsPrettyInFull": true,
+  "prettyObservation": {
+    "bytes": 48405,
+    "file": "independent-reader-once/observation.json",
+    "sha256": "5b5df7b3e2c0f694c20db0b795f052df8ec09bd09870fc2ec525c974d38ade66"
+  },
+  "priorFilePartRetainedUnchanged": {
+    "bytes": 3589,
+    "file": "actual-file-review.json",
+    "sha256": "2f0b1202578e0e2a18264d1c40e1690ad76123766fbc8dcd4d91ba8425319898"
+  },
+  "readerExecutionsByThisReview": 0,
+  "readerInvocationExit0AndReapedRecorded": true,
+  "readerPublicationVerifiedFalseIsIntentionalRoleSeparation": true,
+  "readerReferenceEntriesRehashed": 168,
+  "readerSourceActualShaMatchesFrozenManifest": true,
+  "readerUniqueReferencesRehashed": 167,
+  "recordedAt": "2026-10-18T14:35:57.606059+00:00",
+  "requestId": "c263a2f3-f445-430e-b562-2e48f1eeb637",
+  "reviewFindingsDoNotAddExecutionPermission": true,
+  "reviewRole": "source author pure-file verification of root-executed operation and separately root-invoked frozen reader; not self-independent source-code approval",
+  "rootCompositeAllFixedSourceFilesAndConditionsMatched": true,
+  "rootCompositeDecision": {
+    "bytes": 2454,
+    "file": "root-publication-composite-decision.safe.json",
+    "sha256": "c3d87c56f53e3f8f22b2692f50a48645cf6f721e8d241fa5b7d4e4bafbab8c51"
+  },
+  "rootFinalCompositeConfirmsRegistryProof": true,
+  "schema": "trusted-pi-local-registry-combined-actual-result-file-review/v1",
+  "sourceImageId": "sha256:0bb9af7a5909c41187cf56402a21420100c72a8de0025b0a7152f8804e85d191",
+  "sourceOriginalArchiveAndOldStoppedRecordsRevalidationBound": true
+}

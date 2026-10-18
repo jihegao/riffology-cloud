@@ -1,0 +1,14 @@
+{
+  "bytes": 30649033,
+  "digest": "sha256:1317dd93c0c3b4562b5180bc49726f743cc1622f5fd1327aa883d8d8968012e3",
+  "headerMatches": true,
+  "operationId": "registry-local-readback-v1",
+  "originalRawSha256Matched": true,
+  "path": "blobs/sha256:1317dd93c0c3b4562b5180bc49726f743cc1622f5fd1327aa883d8d8968012e3",
+  "requestId": "c263a2f3-f445-430e-b562-2e48f1eeb637",
+  "schema": "trusted-pi-local-registry-get-proof/v1",
+  "slot": 3,
+  "smallRawSha256EqualityPassed": null,
+  "status": 200,
+  "terminalSha256": "4efeaf494243fa09b937718a252f1d2cd732110a671b08284d3400290d524fab"
+}
