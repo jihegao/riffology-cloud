@@ -1,5 +1,7 @@
 # Current release readiness — 2026-10-14
 
+> 2026-10-18 范围撤销：[#198 候选包设计产物与固定三页子标签清理边界](requirements-revision-artifact-contract.md#retirement-20261018)。#180/#182/#184/#185 的旧方案未完工作撤销，已提交专用实现标为可清理，让位于 agent plugin 与行业扩展包；本次没有删除代码或部署。下方 #182 Acceptance 是历史快照，旧方案不再继续该验收。共享保存、`unchanged` reader、通用页面和历史证据保留。
+
 > 2026-10-17 文档收口：[#235 已合并及默认关闭发布、#236 离线兼容进度、历史收据保全与后续交接](documentation-closeout-20261017.md)。下方候选/权限缺失描述保留历史语境，以较新的具名证据为准。
 
 ## 2026-10-17 JHG-46 browser-local native DOM candidate; publication and user acceptance pending

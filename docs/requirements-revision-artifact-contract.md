@@ -1,5 +1,39 @@
 # 需求、追溯与版本化模型产物合同
 
+<a id="retirement-20261018"></a>
+
+## 2026-10-18 撤销旧交付，已提交实现标为可清理
+
+用户决定本轮候选包专用设计产物与 Model / Preview / Runs 子标签方案让位于 **agent plugin 和行业扩展包**。本次范围是 [PR #198](https://github.com/jihegao/riffology-cloud/pull/198) / [#182](https://github.com/jihegao/riffology-cloud/issues/182)（[JHG-22](https://linear.app/jhgao/issue/JHG-22)），以及直接延伸的 [SysML #180](https://github.com/jihegao/riffology-cloud/issues/180)、[领域视图 #184](https://github.com/jihegao/riffology-cloud/issues/184)、[领域恢复 #185](https://github.com/jihegao/riffology-cloud/issues/185)（JHG-20/24/25）。这些旧交付的未完成开发与独立验收撤销；已提交部分标为**可清理**，不再扩展平台专用 role/renderer 枚举、固定三页子标签或沿此合同补齐完整 SysML/观测/恢复矩阵。撤销不表示验收通过，也不撤销已合并、已部署的历史事实。
+
+后续插件机制沿 [#213 / JHG-50](https://github.com/jihegao/riffology-cloud/issues/213)，行业内容按新的扩展包范围重新定义；项目技能、通用页面和公共资源能力分别沿 [#85](https://github.com/jihegao/riffology-cloud/issues/85)、[#214 / JHG-46](https://github.com/jihegao/riffology-cloud/issues/214)、[#215](https://github.com/jihegao/riffology-cloud/issues/215)。这些关联不表示新插件或行业扩展包已交付。需求/追溯/计算及 compiler 的独立事项不随本次四项撤销；旧 #198 验收也不再作为通用页面或新插件的前置。
+
+### 仓库改动与清理边界
+
+审计基线为 main `638a366d31a37f7bc1d7dcd124e0b5ba753d6401`。#198 合并 `582ed338cdf404089328f6d6e0d0ddd6edbd7701`、审阅 head `779c8488a5f9f70840224b8b3cbff2b2522ffc45`，相对第一父提交共改动 **39 个文件**。逐文件归类、合并时与审计时 blob 身份及共享消费者见[清理清单](evidence/releases/candidate-v3-retirement-inventory-20261018.json)。以下“可清理”是后续删除/迁移的候选范围；本次只改记录和文档。
+
+| 已提交部分 | 标记与实际依赖 |
+| --- | --- |
+| `services/simulation/model-artifacts.ts` 的 `model/artifacts.json`、document/sysml/graph 与专用 renderer 合同 | 可清理；先解除候选读写、模型检查和旧 Preview 消费，核对仍需读取的已保存版本。专用角色与图渲染转由行业扩展包定义，不再扩充宿主枚举。 |
+| `services/web/artifact-views.js` 的 `artifactView`、`simulation.js` / `browser-preview.js` 的旧设计/子视图接线，以及对应 CSS、翻译和静态路由 | 可清理专用部分。`createViewTabs` 当前还控制通用项目页的激活与隐藏；须先迁移其生命周期、键盘/焦点与选择恢复，再移除旧壳。不能整文件删除共享代码。 |
+| `services/turn-runtime/managed-candidate-v3.ts` 的 design/model 专用分支、旧指令、恢复与模型/Preview 适配 | 可清理专用部分；同文件后续已加入 `operation=pages` 和项目文本资源支持，不能回退整个 v3 resolver。存储、展示、运行资格仍分别判断。 |
+| `workspace-file-index.ts` 的 `overlayWorkspaceArchive` | 保留共享能力；当前被通用 pages 与 `manual-save.ts` 调用，继续保留原文件、二进制、权限位与目录，并校验安全路径。 |
+| `turn/{protocol,store,journal,dispatcher}.ts`、`managed-product.ts` 及 `app.js` 的 answer/unchanged 处理 | 保留共享能力与持久数据兼容。`persistenceOutcome=unchanged` 已进入 reader/终态约束；仅回答不制造 Revision 是仍可复用的行为。移除旧候选格式不能破坏历史记录、base/CAS、原请求终态和资源释放判定。 |
+| `simulation/source.ts` 的完整文件摘要检查、`research-context.ts` 的内容预算与证据边界 | 保留通用保护；设计 payload 专用字段可随其消费者迁移清理，不放松摘要校验或让设计文本挤掉 Run/Evidence 记录。 |
+| #198 中的测试、package/i18n 脚本登记与两份文档 | 专用用例/脚本登记随实现清理；共享保存、终态、身份、无重放、焦点/释放等回归继续保留。历史合同、提交和发布收据留作证据。 |
+
+不能整体 revert #198：后续通用页面、手工保存与终态恢复已经复用其中代码。实际清理应先在当前 main 分离专用和共享调用，再以相关回归验证迁移；无引用和持久数据兼容证据不足时保留 reader。数据、账本、模型/Session/Revision 及历史发布证据的删除不包含在本次标记内。
+
+### 历史事实与验证范围
+
+#198 已于 2026-10-14 合并，并随 main `eba528f7` 部署，见 [#182 部署回填](https://github.com/jihegao/riffology-cloud/issues/182#issuecomment-6164913633)和[发布记录](main-integration-release-20261014.md)。当时真实普通受邀身份的 design/answer/子标签验收仍 pending；本次将该旧方案的未完验收撤销，不能把历史 pending 改成通过。JHG-56 保留通用页面的保存、版本身份、无重放和隔离验收，移除对旧 design/固定三页的专门验收要求。
+
+本次仅核对 Issue/Linear、合并差异、当前源码调用与文档链接，并运行 JSON/清单完整性和 `git diff --check`。未删除实现、部署或运行模型/Turn/Run；未重新确认当前生产版本。原 CI 额度豁免及其他历史检查仍只属于原版本。
+
+---
+
+## 以下为历史设计与实现快照
+
 日期：2026-10-12。负责人：@jihegao。对应 [#179](https://github.com/jihegao/riffology-cloud/issues/179) 完成条件第 6 项的第一阶段设计，评审载体为 [PR #189](https://github.com/jihegao/riffology-cloud/pull/189)，父项 [#177](https://github.com/jihegao/riffology-cloud/issues/177)。第 0 节记录 #182 的最小实现契约；第 1–8 节保留 2026-10-12 的完整能力提案，尚未完整实现、部署或验收。设计评审通过不能关闭需求功能 Issue。范围、依赖和交付阶段以 Issue / [Delivery Project](https://github.com/users/jihegao/projects/1) 为准，本文不另建任务状态表。
 
 源码基线：Cloud `25609953f5c3b69dcb44e520d7e7ed1253d18fe4`；compiler GitHub main `ee6a2aa7a66d8bf2609059aaf8a7c0fe22fe8683`。2026-10-12 复核两个 GitHub main 仍是这些 SHA；本地 clone 的 origin 指向本地仓库，不作为远端状态证据。最初本地 compiler `a1a44c7` 落后远端；补读了远端 bounded profile、IR/layout/runtime、ABM 版本及 Rust result/request 类型。第 1–8 节的新 schema、类型、函数、路径是该日提议；当前已接线子集见第 0 节，未部署。未全面复审这八个远端提交，也未重新执行它们的测试。
