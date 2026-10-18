@@ -1,0 +1,38 @@
+{
+  "schema": "riffoid-ir.native-build-context-check/v1",
+  "recordedAt": "2026-10-18T17:41:18.123881+00:00",
+  "scope": "Actual Docker CLI client context filtering against an owned temporary loopback capture API; no daemon build/image execution or online ACC.",
+  "sourceHeadBeforeFix": "bda696a9f59135ba3c6c40f2524e8f51044e2e82",
+  "contextFix": {
+    "finding": "The existing default ** ignore excluded both new root vendor COPY sources. Re-including the vendor directory also re-included unrelated descendants in actual Docker CLI packing.",
+    "resolution": "46 literal leaf exceptions: all 45 frozen package files and the adjacent lock; no directory exception.",
+    "test": "tests/m2/trusted-pi-build-context.test.mjs",
+    "nativeClient": "Docker version 29.9.0, build f415da838b",
+    "transport": "fresh --config containing only a synthetic empty nonsecret auth entry to suppress host credential-helper discovery; explicit loopback --host and DOCKER_HOST; environment excludes DOCKER_CONTEXT and inherited credential/TLS/proxy settings; DOCKER_BUILDKIT=0",
+    "captureApi": "temporary loopback fake Docker API, no engine; <=8MiB body, <=12 requests, child20s/test30s, temporary fixture cleanup",
+    "assertions": [
+      "45 package files and lock match actual client tar bytes/SHA256",
+      "unrelated vendor roots and similarly named lock excluded",
+      "unlisted file and node_modules/.npmrc/session decoys inside package excluded",
+      "root node_modules/credential/session/Git decoys excluded",
+      "one POST /build only; no daemon build or image execution"
+    ],
+    "command": "node --test tests/m2/trusted-pi-build-context.test.mjs tests/m2/trusted-pi-image.test.mjs tests/m2/ir-package-pin.test.mjs",
+    "exitCode": 0,
+    "testsPassed": 7,
+    "testsSkipped": 0,
+    "diffCheck": "passed"
+  },
+  "sourceObservedAfterAgentCheck": {
+    ".dockerignore": "8c73cf32460ce45fe0412b123ef12bec5dbe463f31117754620728751a21ca6f",
+    "tests/m2/trusted-pi-build-context.test.mjs": "2906e7982a55504518dd4586278eb1efe985dc83b0676cd4cdb032e702694097",
+    "vendor/riffoid-ir-plugin.lock.json": "7c376d888134915642ed1bf939f810d244764b75f11646cb8337986d2e9843f3"
+  },
+  "frozenPackageChanged": false,
+  "privateReview": {
+    "location": "outside repository",
+    "bytes": 8944,
+    "sha256": "6f5e507edd1d88d5f263091cf18a438e035d6ea6f27da42dfee2d7ef93fd210a"
+  },
+  "productionChanges": 0
+}

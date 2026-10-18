@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
-import {readFile} from 'node:fs/promises';
+import {readFile,mkdir} from 'node:fs/promises';
 import {resolve} from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {createProjectViewBroker} from '../../services/web/project-views.js';
@@ -73,7 +73,12 @@ test('opaque native IR page executes the actual shared frozen B1 Worker and pers
   finally{worker.terminate();URL.revokeObjectURL(url);}
  },{workerSource,runtimeSource,run:record,artifact:graph.artifact});
  assert.deepEqual(tampered,{error:'Saved browser runtime checksum mismatch'});
- await frame.locator('#run-status').scrollIntoViewIfNeeded();await f.page.screenshot({path:'/private/tmp/riffoid-ir-native-shared-worker-20261018.png'});await f.page.evaluate(()=>panel.leave());
+ // Binary capture is explicit local evidence, never a default CI side effect.
+ if(process.env.RIFFOID_IR_BROWSER_EVIDENCE_DIR){
+  const directory=resolve(process.env.RIFFOID_IR_BROWSER_EVIDENCE_DIR);await mkdir(directory,{recursive:true});
+  await frame.locator('#run-status').scrollIntoViewIfNeeded();await f.page.screenshot({path:resolve(directory,'native-shared-worker.png')});
+ }
+ await f.page.evaluate(()=>panel.leave());
 });
 
 test('same shared page keeps local PiWeb editing and module-Worker execution paths',{timeout:15000},async t=>{

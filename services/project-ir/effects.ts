@@ -30,6 +30,16 @@ function bounded(value:unknown){
  if(encoder.encode(text).length>384*1024||text.includes('"__proto__"'))throw Error('project-ir-response-too-large');
  return JSON.parse(text) as Record<string,unknown>;
 }
+function registrationFailure(value:Record<string,unknown>){
+ const raw=value.diagnostics;
+ if(!Array.isArray(raw)||raw.length<1||raw.length>8)throw Error('project-ir-registration-diagnostic-invalid');
+ const diagnostics=raw.map(item=>{
+  const diagnostic=object(item),{code,stage,message}=diagnostic;
+  if(typeof code!=='string'||! /^[A-Za-z0-9_-]{1,128}$/.test(code)||typeof stage!=='string'||! /^[A-Za-z0-9_-]{1,128}$/.test(stage)||typeof message!=='string'||!message||encoder.encode(message).length>4096)throw Error('project-ir-registration-diagnostic-invalid');
+  return {code,stage,message};
+ });
+ return bounded({status:'failed',diagnostics});
+}
 function receipt(command:ToolCommand,effectId:string,now:number,result:Record<string,unknown>|null):ToolEffectReceipt{
  return {schemaVersion:1,scope:command.scope,turnId:command.turnId,dispatchId:command.dispatchId,commandId:command.commandId,effectId,phase:result===null?'absent':'terminal',outcome:result===null?null:'completed',errorCode:null,result,observedAt:now};
 }
@@ -99,6 +109,14 @@ export async function projectIrRegisterEffect(context:Context,input:{command:Too
  if(registration!==undefined){
   const authority=new ProjectIrAuthority(context.storage,context.bucket,context.scope,context.clock??Date.now,context.authorize,context.actor);
   const registered=await authority.register({effectId,registration});
+  if(registered.status==='failed'){
+   // Core diagnostics are determinate pre-publication failures. Preserve the
+   // original native effect, but expose no unregistered success references or
+   // graph. Commit-unknown and post-action errors escape the await above.
+   const terminal={...source,result:registrationFailure(registered)};
+   await publish(context,key,{digest,sourceDigest,receipt:terminal});
+   await context.authorize();return terminal;
+  }
   if(registered.status!=='succeeded')throw Error('project-ir-registration-failed');
   if(command.arguments.operation==='project_ir_compile'&&rest.status==='succeeded'&&(!Array.isArray(registered.browserArtifactRefs)||!registered.browserArtifactRefs.includes(rest.browserArtifactRef)))throw Error('project-ir-registration-conflict');
  }

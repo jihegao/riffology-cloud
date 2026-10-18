@@ -1,0 +1,55 @@
+{
+  "schema": "riffoid-ir.registration-ledger-regression/v1",
+  "scope": "real in-memory SQLite SqlToolLedger, ToolDispatcher, ProductToolBridge, IR routing and core; synthetic native receipts, actor and KV/R2; real compiler B1 graph; no provider/cloud/online-ACC claim",
+  "command": [
+    "node",
+    "--test",
+    "tests/m3/project-ir-registration-ledger.test.mjs",
+    "tests/m3/project-ir-effects.test.ts",
+    "tests/m2/ir-tool-routing.test.ts"
+  ],
+  "sourceBefore": {
+    "services/project-ir/effects.ts": "c3af531ca55d5086727e34f264ea323ea3c4ee02489b6089a91ee46541ea3f38",
+    "services/project-ir/authority.ts": "dae8e5d0632c46645428f79853a09ea62ffd333fad0af5755d5d73edb17469d0",
+    "services/project-tools/ir-routing.ts": "5da8e5306f2c6d3ce7335be6a42529aabd22524a14996d19e1b5e9984627709c",
+    "services/tools/dispatcher.ts": "fecae778cf72877600ea318fe2f276bb6960982dd4ef56c1c92e03a5668e5fa0",
+    "services/tools/ledger.ts": "f077444064e1616a3c9cb722260c563a24e8418ba139abb0950d029e41089692",
+    "services/trusted-pi/product-tool-bridge.mjs": "9b65fe15a806ca6cd24bd561de172282b7c852b3f18f96dd7568406ccbfe2289",
+    "tests/m3/project-ir-effects.test.ts": "d67c494ca2cd9c521cb5c1347ce35d856e3b5a5958557983b476d582019eb0cc",
+    "tests/m3/project-ir-registration-ledger.test.mjs": "b6bdc9dd21aa65def3bbdcd8edd2a8b36ac96f909feef80541372e7f8a38bdba",
+    "vendor/riffoid-ir-plugin.lock.json": "7c376d888134915642ed1bf939f810d244764b75f11646cb8337986d2e9843f3"
+  },
+  "exitCode": 0,
+  "sourceAfter": {
+    "services/project-ir/effects.ts": "c3af531ca55d5086727e34f264ea323ea3c4ee02489b6089a91ee46541ea3f38",
+    "services/project-ir/authority.ts": "dae8e5d0632c46645428f79853a09ea62ffd333fad0af5755d5d73edb17469d0",
+    "services/project-tools/ir-routing.ts": "5da8e5306f2c6d3ce7335be6a42529aabd22524a14996d19e1b5e9984627709c",
+    "services/tools/dispatcher.ts": "fecae778cf72877600ea318fe2f276bb6960982dd4ef56c1c92e03a5668e5fa0",
+    "services/tools/ledger.ts": "f077444064e1616a3c9cb722260c563a24e8418ba139abb0950d029e41089692",
+    "services/trusted-pi/product-tool-bridge.mjs": "9b65fe15a806ca6cd24bd561de172282b7c852b3f18f96dd7568406ccbfe2289",
+    "tests/m3/project-ir-effects.test.ts": "d67c494ca2cd9c521cb5c1347ce35d856e3b5a5958557983b476d582019eb0cc",
+    "tests/m3/project-ir-registration-ledger.test.mjs": "b6bdc9dd21aa65def3bbdcd8edd2a8b36ac96f909feef80541372e7f8a38bdba",
+    "vendor/riffoid-ir-plugin.lock.json": "7c376d888134915642ed1bf939f810d244764b75f11646cb8337986d2e9843f3"
+  },
+  "sourcesUnchangedDuringTest": true,
+  "sharedPackage": {
+    "name": "riffoid-ir-plugin",
+    "version": "0.3.1",
+    "packageSha256": "86b7a28a1b92652fb01b15ea6671414ecdd5e38c639878455e7abffb60d46ad6",
+    "files": 45
+  },
+  "result": {
+    "passed": 20,
+    "failed": 0,
+    "combinedFocusedChecks": {
+      "passed": 71,
+      "failed": 0
+    },
+    "typecheck": "passed"
+  },
+  "rawLog": {
+    "location": "outside repository",
+    "bytes": 2243,
+    "sha256": "4bf1140f699a1d10f0deb23110e44f853fbe26efc44c9c98bbe657cd1d5995fc"
+  }
+}

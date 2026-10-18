@@ -42,8 +42,12 @@ test('bad graph and unavailable R2 cannot turn native compile success into a pub
   const x=await setup(),command=x.command('project_ir_compile',{sealedRef:x.f.artifact.modelRef});
   const registration=structuredClone(x.f.registration);
   if(badGraph)registration.files[0]!.sha256='0'.repeat(64);else x.bucket.fail=true;
-  await assert.rejects(projectIrRegisterEffect(x.context,{command,effectId:'effect-compile',receipt:x.native(command,'effect-compile',registration)}),/registration-failed/);
-  assert.equal([...x.storage.values.keys()].some(k=>k.startsWith('project-ir:host-effect:')),false);
+  const failed=await projectIrRegisterEffect(x.context,{command,effectId:'effect-compile',receipt:x.native(command,'effect-compile',registration)});
+  assert.equal(failed.outcome,'completed');assert.equal(failed.result?.status,'failed');
+  assert.deepEqual(Object.keys(failed.result!).sort(),['diagnostics','status']);
+  assert.equal((failed.result!.diagnostics as Array<{code:string}>)[0]!.code,badGraph?'artifact_integrity':'storage_failed');
+  assert.equal([...x.storage.values.keys()].some(k=>k.startsWith('project-ir:host-effect:')),true,'only the determinate failure receipt is published');
+  assert.equal([...x.storage.values.keys()].some(k=>k.startsWith('project-ir/v1/')),false,'no artifact or registration metadata is published');
  }
 });
 test('fresh authorization is required even for original effect readback and observe-only absence',async()=>{
@@ -55,7 +59,7 @@ test('fresh authorization is required even for original effect readback and obse
 });
 test('authorization lost during R2 writes prevents a visible compile receipt',async()=>{
  const x=await setup(),command=x.command('project_ir_compile',{sealedRef:x.f.artifact.modelRef});x.bucket.onPut=()=>x.revoke();
- await assert.rejects(projectIrRegisterEffect(x.context,{command,effectId:'effect-compile',receipt:x.native(command)}),/registration-failed/);
+ await assert.rejects(projectIrRegisterEffect(x.context,{command,effectId:'effect-compile',receipt:x.native(command)}),/access-denied/);
  assert.equal([...x.storage.values.keys()].some(k=>k.startsWith('project-ir:host-effect:')),false);
 });
 test('run ACK-loss reconciliation uses the original effect and never allocates a second run',async()=>{

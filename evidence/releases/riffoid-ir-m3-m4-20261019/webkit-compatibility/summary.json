@@ -1,0 +1,65 @@
+{
+  "schema": "riffoid-ir.webkit-local-compatibility/v1",
+  "scope": "Local synthetic project/RPC authority and committed compiler B1 simpack. Real headless WebKit executes the actual frozen shared page, Worker and ESM runtime. This is compatibility evidence, not online Riffoid ACC or production persistence.",
+  "testedAt": "2026-10-18T17:26:31.584Z",
+  "status": "passed",
+  "testCount": 2,
+  "hostCommit": "bda696a9f59135ba3c6c40f2524e8f51044e2e82",
+  "engine": {
+    "name": "Playwright WebKit",
+    "playwrightVersion": "1.63.0",
+    "reportedBrowserVersion": "26.6",
+    "revision": "2359",
+    "source": "Existing local cache [EXISTING_WEBKIT_CACHE]/webkit-2359; a separate headless test process was launched.",
+    "launcherSha256": "a85baad3d8c07173ac387a59b41500c382b21ed692afe0964d29aac247ccc63b",
+    "browserDownloaded": false
+  },
+  "package": {
+    "version": "0.3.1",
+    "sha256": "86b7a28a1b92652fb01b15ea6671414ecdd5e38c639878455e7abffb60d46ad6",
+    "vendoredFileCount": 45,
+    "vendorExactFileMatch": true,
+    "workerSha256": "5905881426fc6e21310f880b07cd7a840981883e9544922bb8fd6f47e3802e0f",
+    "runtimeSha256": "54cf8400a889748d6a796b10a3a1789ff6f622fd5fd986429ab28e2995d839ef"
+  },
+  "productSourceModified": false,
+  "fixtureSourceModified": false,
+  "cspModified": false,
+  "existingBrowserTabsTouched": false,
+  "privateLog": {
+    "path": "[EVIDENCE_HOME]/results/m3-m4-webkit-native-ir-compat-20261019.log",
+    "bytes": 2224,
+    "sha256": "5e02eb6242a4a622a40abd2dd776454db0adad80cf66d1325aa6dd46fba19214"
+  },
+  "cases": [
+    {
+      "id": "opaque-native-frame",
+      "status": "passed",
+      "engineVersion": "26.6",
+      "workerCount": 2,
+      "workerUrlKinds": [
+        "blob",
+        "blob"
+      ],
+      "allWorkersClosedBeforeBrowserClose": true,
+      "remainingIframesBeforeBrowserClose": 0,
+      "cleanupProbe": "The existing test invokes panel.leave; the opaque frame is removed and no Worker remains active.",
+      "tamperedRuntimeRejected": true,
+      "recordFile": "opaque-native-frame-record.json"
+    },
+    {
+      "id": "local-piweb-module",
+      "status": "passed",
+      "engineVersion": "26.6",
+      "workerCount": 1,
+      "workerUrlKinds": [
+        "/assets/worker.js"
+      ],
+      "allWorkersClosedBeforeBrowserClose": true,
+      "remainingIframesBeforeBrowserClose": 0,
+      "cleanupProbe": "An explicit local pagehide event after the saved result exercises the existing product cleanup handler.",
+      "detachObserved": true,
+      "recordFile": "local-piweb-module-record.json"
+    }
+  ]
+}

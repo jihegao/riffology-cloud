@@ -1,6 +1,6 @@
 {
   "schema": "riffoid.ir-plugin-preparation/v1",
-  "recordedAt": "2026-10-18T16:29:50.953138+00:00",
+  "recordedAt": "2026-10-18T17:44:34.291043+00:00",
   "issue": "https://github.com/jihegao/riffology-cloud/issues/254",
   "hostBaseCommit": "240378f65fee54d917b053f565087095a07244db",
   "pluginContractCommit": "f1f6762e774b5eba63b788a2baacde56d491c0fe",
@@ -46,7 +46,9 @@
         "Uncertain heartbeat closes original broker rather than renewing an unseen claim.",
         "First empty project follows explicit save/open/continue boundary."
       ],
-      "precedingFullCheck": "host-check.json"
+      "precedingFullCheck": "host-check.json",
+      "testedHead": "bda696a9f59135ba3c6c40f2524e8f51044e2e82",
+      "scope": "Prior published IR source, before the subsequent context-filter and determinate-registration-failure fixes. Final integrated full check remains pending."
     },
     "precedingHostFullCheck": {
       "command": "npm run check",
@@ -74,6 +76,38 @@
       },
       "previousFailuresPreserved": "Outside repository: missing default Chrome, missing browser assets, system LibreSSL pkey -check support, fixture favicon 404 and old fixed-skill assertion. No failure output was overwritten.",
       "evidence": "riffoid-ir-m3-m4-20261019/host-check.json"
+    },
+    "webkitCompatibility": {
+      "status": "passed",
+      "tests": 2,
+      "engine": "Playwright WebKit 26.6 / revision 2359",
+      "hostCommit": "bda696a9f59135ba3c6c40f2524e8f51044e2e82",
+      "evidence": "riffoid-ir-m3-m4-20261019/webkit-compatibility/manifest.json",
+      "manifestSha256": "0868292d1d4c59a3cf150e7261e0f625e62ce2554905ec0c63a606ace11f98df",
+      "executionBoundary": "Real local headless WebKit, synthetic project/RPC authority. Not online ACC.",
+      "sourceModified": false,
+      "cspModified": false
+    },
+    "buildContext": {
+      "passed": 7,
+      "failed": 0,
+      "skipped": 0,
+      "dockerClient": "29.9.0",
+      "daemonBuild": false,
+      "evidence": "riffoid-ir-m3-m4-20261019/trusted-pi-build-context.json"
+    },
+    "registrationFailureRecovery": {
+      "passed": 71,
+      "failed": 0,
+      "typecheck": "passed",
+      "evidence": "riffoid-ir-m3-m4-20261019/registration-failure-recovery.json",
+      "scope": "real SQLite Ledger/Dispatcher/ProductToolBridge/Core with synthetic receipt/actor/KV/R2; not online ACC"
+    },
+    "nativeBrowserCapturePortability": {
+      "passed": 5,
+      "failed": 0,
+      "evidence": "riffoid-ir-m3-m4-20261019/ci-first-run.json",
+      "correctedGitHubCheck": "pending after publication"
     }
   },
   "imageExecutionProbe": {
@@ -91,5 +125,7 @@
     "Perform actual dual-host ACC-01 through ACC-05 with same package; retain selected session/tool/run/reference evidence."
   ],
   "selectedLocalWorkerdEvidence": "riffoid-ir-m3-m4-20261019/",
-  "pluginPullRequest": "https://github.com/jihegao/riffoid-ir-plugin/pull/2"
+  "pluginPullRequest": "https://github.com/jihegao/riffoid-ir-plugin/pull/2",
+  "hostPullRequest": "https://github.com/jihegao/riffology-cloud/pull/256",
+  "finalIntegratedFullCheck": "pending confirmed-baseline integration"
 }
