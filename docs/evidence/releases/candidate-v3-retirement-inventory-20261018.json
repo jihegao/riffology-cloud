@@ -1,0 +1,394 @@
+{
+  "schema": "riffology.candidate-retirement-inventory/v1",
+  "date": "2026-10-18",
+  "timezone": "Asia/Shanghai",
+  "decision": "Retire the PR #198 dedicated design/subtab delivery in favor of agent plugins and industry extension packs. Cancel unfinished work; mark submitted scope cleanup-eligible without deleting code or data.",
+  "source": {
+    "repository": "jihegao/riffology-cloud",
+    "auditCommit": "638a366d31a37f7bc1d7dcd124e0b5ba753d6401",
+    "pullRequest": 198,
+    "mergeCommit": "582ed338cdf404089328f6d6e0d0ddd6edbd7701",
+    "reviewedHead": "779c8488a5f9f70840224b8b3cbff2b2522ffc45",
+    "comparison": "merge first parent to merge tree",
+    "fileCount": 39
+  },
+  "scope": {
+    "retiredIssues": [
+      180,
+      182,
+      184,
+      185
+    ],
+    "retiredLinear": [
+      "JHG-20",
+      "JHG-22",
+      "JHG-24",
+      "JHG-25"
+    ],
+    "successorPluginIssue": 213,
+    "genericPagesIssue": 214,
+    "resourcePolicyIssue": 215,
+    "notCanceled": [
+      "independent requirements/traceability/execution tasks",
+      "sim_engine_compiler tasks",
+      "generic project pages and acceptance",
+      "existing capacity, accounting and release safeguards"
+    ]
+  },
+  "execution": {
+    "kind": "read-only-source-and-record-audit",
+    "implementationDeleted": false,
+    "deployed": false,
+    "providerOrSimulationAcceptanceRun": false,
+    "currentProductionVersionRevalidated": false
+  },
+  "consumerEvidence": [
+    {
+      "producer": "services/turn-runtime/workspace-file-index.ts#overlayWorkspaceArchive",
+      "consumers": [
+        "services/turn-runtime/managed-candidate-v3.ts",
+        "services/turn-runtime/manual-save.ts"
+      ]
+    },
+    {
+      "producer": "services/web/artifact-views.js#createViewTabs",
+      "consumers": [
+        "services/web/simulation.js",
+        "services/web/browser-preview.js"
+      ],
+      "note": "simulation.js generic projectPages onActive is a current shared lifecycle dependency."
+    },
+    {
+      "producer": "services/turn-runtime/managed-candidate-v3.ts#resolveManagedCandidate",
+      "consumers": [
+        "services/turn-runtime/managed-product.ts"
+      ],
+      "note": "Current file additionally implements operation=pages and project text resources."
+    },
+    {
+      "producer": "services/turn/protocol.ts#persistenceOutcome",
+      "consumers": [
+        "services/turn/store.ts",
+        "services/turn/journal.ts",
+        "services/turn/dispatcher.ts",
+        "services/turn-runtime/managed-product.ts",
+        "services/web/app.js"
+      ],
+      "note": "Persisted unchanged receipts remain valid; removing the old delivery is not permission to break readers."
+    }
+  ],
+  "files": [
+    {
+      "path": "docs/release-readiness.md",
+      "disposition": "retain-historical-evidence",
+      "reason": "Add supersession notice; preserve original design, implementation and release facts.",
+      "mergeBlob": "458941f7f3677361096e26817127a717f8ab9037",
+      "auditBlob": "af87c00a893267b450d50b7447325526932c2491",
+      "changedAfterMerge": true
+    },
+    {
+      "path": "docs/requirements-revision-artifact-contract.md",
+      "disposition": "retain-historical-evidence",
+      "reason": "Add supersession notice; preserve original design, implementation and release facts.",
+      "mergeBlob": "7745e9240e70e5eb182275c89de7279d0a69a481",
+      "auditBlob": "7745e9240e70e5eb182275c89de7279d0a69a481",
+      "changedAfterMerge": false
+    },
+    {
+      "path": "package.json",
+      "disposition": "cleanup-registration-after-consumers",
+      "reason": "Remove dedicated test or i18n registrations only after associated implementation/test migration.",
+      "mergeBlob": "287fb45240c713bd427d9001a674ce86dbe766d7",
+      "auditBlob": "fadee0785fe0412aaa71ca06cff6c18a76ee41d6",
+      "changedAfterMerge": true
+    },
+    {
+      "path": "scripts/i18n-check.mjs",
+      "disposition": "cleanup-registration-after-consumers",
+      "reason": "Remove dedicated test or i18n registrations only after associated implementation/test migration.",
+      "mergeBlob": "b3f5ae1fe73be52deec3e3f4924e991a027b80ce",
+      "auditBlob": "53766aece14c7cc3fb0475c9c023a9a683044301",
+      "changedAfterMerge": true
+    },
+    {
+      "path": "scripts/i18n-technical-literals.json",
+      "disposition": "cleanup-registration-after-consumers",
+      "reason": "Remove dedicated test or i18n registrations only after associated implementation/test migration.",
+      "mergeBlob": "dd6a6889086361dc5465dc955064d13035d1039f",
+      "auditBlob": "30ce2cd78b836c7f7bca3040515adae0adbd95b3",
+      "changedAfterMerge": true
+    },
+    {
+      "path": "services/browser-preview/orchestrator.ts",
+      "disposition": "cleanup-eligible-scoped",
+      "reason": "Remove legacy artifact views only with the old consumer; preserve archive verification and applicable runtime ownership.",
+      "mergeBlob": "fb732ec4cfbea046986f32a571c1a7a87d217e45",
+      "auditBlob": "fb732ec4cfbea046986f32a571c1a7a87d217e45",
+      "changedAfterMerge": false
+    },
+    {
+      "path": "services/gateway/index.ts",
+      "disposition": "cleanup-eligible-scoped",
+      "reason": "Legacy artifact-views asset routing can retire after consumers migrate; preserve generic routes and authentication.",
+      "mergeBlob": "3d2d9b142c1c5b0fbec73f0123e89bb325ae3c21",
+      "auditBlob": "f4be3f091458e47fe7950391f57f2d40e04085cd",
+      "changedAfterMerge": true
+    },
+    {
+      "path": "services/simulation/model-artifacts.ts",
+      "disposition": "cleanup-eligible-scoped",
+      "reason": "Dedicated model-artifacts/design-graph schema is cleanup-eligible after readers/writers and saved-data dependencies are resolved.",
+      "mergeBlob": "901ef99fd8bbefff69dce9264081d5b423580922",
+      "auditBlob": "901ef99fd8bbefff69dce9264081d5b423580922",
+      "changedAfterMerge": false
+    },
+    {
+      "path": "services/simulation/research-context.ts",
+      "disposition": "cleanup-eligible-scoped",
+      "reason": "Design-content omission can retire with its payload; retain bounded context, provenance and evidence records.",
+      "mergeBlob": "242d1f2bcc810daab3f2c9f067f49d5c9a7517c9",
+      "auditBlob": "747a46eef27397a24a0e13d0391a6ff2ab019c72",
+      "changedAfterMerge": true
+    },
+    {
+      "path": "services/simulation/source.ts",
+      "disposition": "cleanup-eligible-scoped",
+      "reason": "Design payload wiring is cleanup-eligible; preserve complete archive digest verification and current page/model identities.",
+      "mergeBlob": "bb7b965b522dd882e17ca1ae2f146b7fb67d1761",
+      "auditBlob": "25f951d99d143d6c1f5761cedf9525ceac303701",
+      "changedAfterMerge": true
+    },
+    {
+      "path": "services/turn-runtime/managed-candidate-v3.ts",
+      "disposition": "cleanup-eligible-scoped",
+      "reason": "Only design/model-specific artifact branches are cleanup-eligible; later pages operation, project resources, answer and safe overlay remain shared.",
+      "mergeBlob": "435f748b9dd81335d2145db0d9568e3ef767b41c",
+      "auditBlob": "58cced31a2bf4c1e9aad9eb5930cc115f1fb5beb",
+      "changedAfterMerge": true
+    },
+    {
+      "path": "services/turn-runtime/managed-candidate.ts",
+      "disposition": "cleanup-eligible-scoped",
+      "reason": "Design manifest recovery is cleanup-eligible; current project page/resource cold recovery and existing candidate validation remain.",
+      "mergeBlob": "f8094222d068479cf0dd59404ad21517411c40bc",
+      "auditBlob": "6fb373ef51fdab8c0a562f5ef1b91069f61de9c2",
+      "changedAfterMerge": true
+    },
+    {
+      "path": "services/turn-runtime/managed-product.ts",
+      "disposition": "retain-shared",
+      "reason": "Retain completed-answer/no-checkpoint handling, current pages resolver and original identity/release reconciliation.",
+      "mergeBlob": "956930fef7655348fc01ea31a200b22b8127f374",
+      "auditBlob": "adcf0a2a82ffef5676e6e34601d60187c9390eda",
+      "changedAfterMerge": true
+    },
+    {
+      "path": "services/turn-runtime/managed-testing-instructions.ts",
+      "disposition": "cleanup-eligible-scoped",
+      "reason": "Retire old design/role/tab instructions with their authoring path; preserve current generic pages and text-resource instructions.",
+      "mergeBlob": "ed59db1aeaa1cf1eb398d9daf16155988c91e5b6",
+      "auditBlob": "cb8e08fbcd0ce45bdddc7217b1cdef7012a916e6",
+      "changedAfterMerge": true
+    },
+    {
+      "path": "services/turn-runtime/workspace-file-index.ts",
+      "disposition": "retain-shared",
+      "reason": "Archive overlay is also consumed by pages authoring and manual-save; preserve byte identity, opaque files, modes and directories.",
+      "mergeBlob": "2f780d4b306dabc5bb354e6ec91767ce3b6faa46",
+      "auditBlob": "2f780d4b306dabc5bb354e6ec91767ce3b6faa46",
+      "changedAfterMerge": false
+    },
+    {
+      "path": "services/turn/dispatcher.ts",
+      "disposition": "retain-shared",
+      "reason": "Original terminal proof, unchanged handling and resource disposition remain shared.",
+      "mergeBlob": "cb5308b8e125f3d9301f66b0bdbd1d51adbd2c9b",
+      "auditBlob": "cb5308b8e125f3d9301f66b0bdbd1d51adbd2c9b",
+      "changedAfterMerge": false
+    },
+    {
+      "path": "services/turn/journal.ts",
+      "disposition": "retain-shared",
+      "reason": "Retain unchanged terminal, frozen base, head/CAS and release semantics.",
+      "mergeBlob": "a5a3ff008b7e5e861575470b6ab1bb221958ab1f",
+      "auditBlob": "dcf8c6d93bf1ea51e12a182154c4a2e7b853899e",
+      "changedAfterMerge": true
+    },
+    {
+      "path": "services/turn/protocol.ts",
+      "disposition": "retain-shared",
+      "reason": "Persisted unchanged outcome remains a readable protocol value.",
+      "mergeBlob": "fcdce4f0286f7075a84916f8b0650599d5231286",
+      "auditBlob": "750fc3c3249057355e708019df147918e68df41e",
+      "changedAfterMerge": true
+    },
+    {
+      "path": "services/turn/store.ts",
+      "disposition": "retain-shared",
+      "reason": "Retain persisted unchanged reader and transition validation.",
+      "mergeBlob": "473ac0e0bf2914fbce4fa42d40ebd045a204afef",
+      "auditBlob": "9cab27bbd56074110078bbb233b5291024b2cdda",
+      "changedAfterMerge": true
+    },
+    {
+      "path": "services/web/app.js",
+      "disposition": "retain-shared",
+      "reason": "Continue displaying existing unchanged receipts accurately.",
+      "mergeBlob": "5d24e864ac9cf09818925e82ee6a287459b3e5fc",
+      "auditBlob": "801ecf13858d189293f2464edac4e14fd958e67b",
+      "changedAfterMerge": true
+    },
+    {
+      "path": "services/web/artifact-views.js",
+      "disposition": "cleanup-eligible-scoped",
+      "reason": "artifactView is cleanup-eligible; createViewTabs also activates the generic project-page host and needs migration before removal.",
+      "mergeBlob": "d19ed4b81f825bc1d8d3b8617aecb3c2831b383c",
+      "auditBlob": "85277f200f736b6b77562c8009801bd84cbe7dbd",
+      "changedAfterMerge": true
+    },
+    {
+      "path": "services/web/browser-preview.js",
+      "disposition": "cleanup-eligible-scoped",
+      "reason": "Legacy Preview subtabs are cleanup-eligible; preserve independent runtime, package/input identity and local result boundaries while still served.",
+      "mergeBlob": "80b850e54ce332192f80b877327ed87595f150af",
+      "auditBlob": "e005d9a2f3b3f427466173a2dbfb9bb2a934aca4",
+      "changedAfterMerge": true
+    },
+    {
+      "path": "services/web/i18n.js",
+      "disposition": "cleanup-eligible-scoped",
+      "reason": "Remove only unused design/subtab messages after consumers migrate; unchanged and shared messages remain.",
+      "mergeBlob": "3488bd5c17c10975573fd99a580bec1c22ff1942",
+      "auditBlob": "5aa4b62942a43dac51cee6ef2627b4f2f4d88ddb",
+      "changedAfterMerge": true
+    },
+    {
+      "path": "services/web/simulation.js",
+      "disposition": "cleanup-eligible-scoped",
+      "reason": "Legacy design and Runs subviews are cleanup-eligible; retain generic project pages, onActive lifecycle and recorded Run identities.",
+      "mergeBlob": "10cc57b02404ceba4f24771bb809c4d1496971d5",
+      "auditBlob": "0872f65ba527839743ee512013b38f9be3c6e479",
+      "changedAfterMerge": true
+    },
+    {
+      "path": "services/web/workspace.css",
+      "disposition": "cleanup-eligible-scoped",
+      "reason": "Remove only unused design/subtab styles after shared navigation migration.",
+      "mergeBlob": "3b4c7c4b0a70340e6d0ee75a78f6b6e1c28846d8",
+      "auditBlob": "0166712b4b09b52267bae8807b106d987e48b6b4",
+      "changedAfterMerge": true
+    },
+    {
+      "path": "tests/m1/web.test.mjs",
+      "disposition": "migrate-tests-with-consumers",
+      "reason": "Only obsolete design/tab assertions may retire; retain shared identity, archive, no-replay, terminal and lifecycle regressions.",
+      "mergeBlob": "751eaf9f7e7c00c19d5e30214852c5221066b773",
+      "auditBlob": "24a2a4dfc8ae45ee172a9176b48d563a81c7e18a",
+      "changedAfterMerge": true
+    },
+    {
+      "path": "tests/m2/managed-candidate-v3.test.ts",
+      "disposition": "migrate-tests-with-consumers",
+      "reason": "Only obsolete design/tab assertions may retire; retain shared identity, archive, no-replay, terminal and lifecycle regressions.",
+      "mergeBlob": "18b8c47c714ba4229d15644a20d48ff941f357b8",
+      "auditBlob": "24ce8c54943bbc76376d7625a9640f26c451fcc1",
+      "changedAfterMerge": true
+    },
+    {
+      "path": "tests/m2/managed-candidate.test.ts",
+      "disposition": "migrate-tests-with-consumers",
+      "reason": "Only obsolete design/tab assertions may retire; retain shared identity, archive, no-replay, terminal and lifecycle regressions.",
+      "mergeBlob": "78ed5ec90ac6d63d4d6ac119b7eaf8af70983f65",
+      "auditBlob": "78ed5ec90ac6d63d4d6ac119b7eaf8af70983f65",
+      "changedAfterMerge": false
+    },
+    {
+      "path": "tests/m2/managed-dispatcher.test.ts",
+      "disposition": "migrate-tests-with-consumers",
+      "reason": "Only obsolete design/tab assertions may retire; retain shared identity, archive, no-replay, terminal and lifecycle regressions.",
+      "mergeBlob": "8d8bc494f1859169394082d5a656a8f4fc2d2984",
+      "auditBlob": "357f00a3f0d839b6413afb833870b973e01cbfa5",
+      "changedAfterMerge": true
+    },
+    {
+      "path": "tests/m2/managed-product.test.ts",
+      "disposition": "migrate-tests-with-consumers",
+      "reason": "Only obsolete design/tab assertions may retire; retain shared identity, archive, no-replay, terminal and lifecycle regressions.",
+      "mergeBlob": "43e5fcf8a5cbfe97760fcaabfbe7f376a4144228",
+      "auditBlob": "48ce9c8c7271da485ecc474d626194ca423f842d",
+      "changedAfterMerge": true
+    },
+    {
+      "path": "tests/m2/workspace-file-index.test.mjs",
+      "disposition": "migrate-tests-with-consumers",
+      "reason": "Only obsolete design/tab assertions may retire; retain shared identity, archive, no-replay, terminal and lifecycle regressions.",
+      "mergeBlob": "708c69c1c50f6b511d6ef4657986bcb8ec51f40c",
+      "auditBlob": "708c69c1c50f6b511d6ef4657986bcb8ec51f40c",
+      "changedAfterMerge": false
+    },
+    {
+      "path": "tests/m3/artifact-views.test.mjs",
+      "disposition": "migrate-tests-with-consumers",
+      "reason": "Only obsolete design/tab assertions may retire; retain shared identity, archive, no-replay, terminal and lifecycle regressions.",
+      "mergeBlob": "64f93cfb7719bf0fe92c8eecdf5476230e430ffa",
+      "auditBlob": "a81be49b52921227e1c57af72055ea7a9de0de0d",
+      "changedAfterMerge": true
+    },
+    {
+      "path": "tests/m3/browser-preview-panel.test.mjs",
+      "disposition": "migrate-tests-with-consumers",
+      "reason": "Only obsolete design/tab assertions may retire; retain shared identity, archive, no-replay, terminal and lifecycle regressions.",
+      "mergeBlob": "2ab5d93b02b2c8808b23eb897a78e70c366e55c4",
+      "auditBlob": "e141464c46d83916683fd1a3fe5c9a12d2e8ced1",
+      "changedAfterMerge": true
+    },
+    {
+      "path": "tests/m3/invited-runs-ui.test.mjs",
+      "disposition": "migrate-tests-with-consumers",
+      "reason": "Only obsolete design/tab assertions may retire; retain shared identity, archive, no-replay, terminal and lifecycle regressions.",
+      "mergeBlob": "65c9e990750314963c702b44ea4cb88854e5b727",
+      "auditBlob": "7d4fb6f94f3ef0501ce7bc44a26787b9f196908d",
+      "changedAfterMerge": true
+    },
+    {
+      "path": "tests/m3/local-runs-ui.test.mjs",
+      "disposition": "migrate-tests-with-consumers",
+      "reason": "Only obsolete design/tab assertions may retire; retain shared identity, archive, no-replay, terminal and lifecycle regressions.",
+      "mergeBlob": "06959307ab2ab7862090a421ef81e1afe6343e63",
+      "auditBlob": "28531471587200a03e7e391d969d471b2b200e7c",
+      "changedAfterMerge": true
+    },
+    {
+      "path": "tests/m3/research-evidence-context.test.ts",
+      "disposition": "migrate-tests-with-consumers",
+      "reason": "Only obsolete design/tab assertions may retire; retain shared identity, archive, no-replay, terminal and lifecycle regressions.",
+      "mergeBlob": "deaedb68a0a3fb18689bdde7f07caa8968152002",
+      "auditBlob": "deaedb68a0a3fb18689bdde7f07caa8968152002",
+      "changedAfterMerge": false
+    },
+    {
+      "path": "tests/m3/simulation-ui.test.mjs",
+      "disposition": "migrate-tests-with-consumers",
+      "reason": "Only obsolete design/tab assertions may retire; retain shared identity, archive, no-replay, terminal and lifecycle regressions.",
+      "mergeBlob": "3d8e852de87a47e3a98abcb30de208845de89557",
+      "auditBlob": "5c7e16f58c9d95811ddcf1e1eaab6dc51db2e7f2",
+      "changedAfterMerge": true
+    },
+    {
+      "path": "tests/m3/verify-handoff-boundary.test.mjs",
+      "disposition": "migrate-tests-with-consumers",
+      "reason": "Only obsolete design/tab assertions may retire; retain shared identity, archive, no-replay, terminal and lifecycle regressions.",
+      "mergeBlob": "6f462b70ff88886054c0357ea80e25eaa3ec9254",
+      "auditBlob": "6f462b70ff88886054c0357ea80e25eaa3ec9254",
+      "changedAfterMerge": false
+    },
+    {
+      "path": "tests/m3/workspace-layout.test.mjs",
+      "disposition": "migrate-tests-with-consumers",
+      "reason": "Only obsolete design/tab assertions may retire; retain shared identity, archive, no-replay, terminal and lifecycle regressions.",
+      "mergeBlob": "c75ffc6ad7d80a688ac7c21ff30e30cc19587a57",
+      "auditBlob": "19f128f1a21c6aeb5228ea1b86a361c470d19b84",
+      "changedAfterMerge": true
+    }
+  ]
+}
