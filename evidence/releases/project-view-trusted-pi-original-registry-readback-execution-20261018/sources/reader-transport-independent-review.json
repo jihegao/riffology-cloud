@@ -1,0 +1,63 @@
+{
+  "schema": "jhg46-registry-readback-reader-transport-independent-static-review/v1",
+  "reviewedAt": "2026-10-18T13:15:37.608715Z",
+  "reviewOnly": true,
+  "requestId": "c263a2f3-f445-430e-b562-2e48f1eeb637",
+  "operationId": "registry-readback-recovery-v1",
+  "transport": {
+    "file": "run-independent-reader-once.py",
+    "bytes": 9800,
+    "sha256": "948db1094a692591e51d3d6df00ca8bd7eb1c3c306b7c7ce8fadf31449b809e8"
+  },
+  "pins": {
+    "independent-readback-readonly.py": {
+      "bytes": 29295,
+      "sha256": "ad6f018ff89af088a0a04d5748ca71bf056f6a8deb1b3beb2063a190b82dc1f3"
+    },
+    "operations-manifest.json": {
+      "bytes": 2058,
+      "sha256": "59fd2dd0f464e38b50b56e7c1d65229b6d81d86b12c935a822d5eeefead74342"
+    }
+  },
+  "newGrantSHA256": "eb6294d0b9dd1344e8717f5a8dd6ac879e7a41ed9455c0c2cb703f0ffbb2f97f",
+  "mustFix": [],
+  "checks": {
+    "fixedExpectedExecutionDirectory": true,
+    "fixedOpsManifestAndUnchangedReaderBytes": true,
+    "newGrantHashAndOriginalLocalIntentBound": true,
+    "localTerminalRequiredBeforeNewSSH": true,
+    "localOriginalSSHRecordedReapedAndNoStopErrorsRequired": true,
+    "partialOrMissingAckAllowedForReadOnlyDiagnosis": true,
+    "newReadOnlyOnceDirectory": true,
+    "unchangedReaderSentThroughStdinByteExact": true,
+    "fixedReaderCLIArguments": true,
+    "noReverseOrOtherForwarding": true,
+    "agentDisabledAllForwardsClearedAndMultiplexDisabled": true,
+    "noOAuthOrDriverOrRegistryDockerOrNewRouteInvocation": true,
+    "nonblockingBoundedStdinStdoutStderrAndDeadline": true,
+    "ownedChildProcessGroupStoppedAndReapedBeforeOutputFinalization": true,
+    "privateOExclusiveNoLinkLocalOutputs": true,
+    "safeReaderObservationOrWhitelistedHeldDiagnosticOnly": true,
+    "partialExitZeroNotPromotedToRegistrySuccess": true,
+    "publicationAndMergeAlwaysFalse": true,
+    "localOriginalAckStillRequiredAlwaysTrue": true
+  },
+  "ioBounds": {
+    "stdoutMaximumBytes": 524288,
+    "stderrMaximumBytes": 32768,
+    "ioDeadlineSeconds": 75
+  },
+  "limitations": [
+    "Static review only; this transport and reader were not executed by the reviewer.",
+    "Original driver is separately running. This review does not assert its current terminal, ACK, 52 GET completion, local PID absence or fresh remote cleanup.",
+    "An observation-collected transport result can contain partial diagnostics. Root must combine exact original local ACK, all52 proof/terminal/file hash bindings and fresh independent cleanup; publicationVerified=false is intentional.",
+    "This review does not permit retrying the original driver or any authentication/Registry/paid-runtime action."
+  ],
+  "actualReviewerActions": {
+    "sourceReadHashASTOnly": true,
+    "rawGrantCredentialOAuthOrConfigRead": false,
+    "SSHAuthAPIRegistryDockerProviderCalls": 0,
+    "testsRepeated": 0,
+    "candidateSourceModified": false
+  }
+}

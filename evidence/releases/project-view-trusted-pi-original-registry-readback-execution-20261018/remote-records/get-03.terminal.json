@@ -1,0 +1,26 @@
+{
+  "capturedBytes": 11337728,
+  "capturedSha256": "2835b851f8588e7a2686327ffca2bfcf8d854a8eadd8f07092d983b5a560a64b",
+  "endedAt": "2026-10-18T13:25:05.127982+00:00",
+  "errorCode": "readback-original-identity-interrupted",
+  "exceptionClass": "ScopeGuard",
+  "expectedDescriptor": {
+    "digest": "sha256:1317dd93c0c3b4562b5180bc49726f743cc1622f5fd1327aa883d8d8968012e3",
+    "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+    "size": 30649033
+  },
+  "httpStatus": 200,
+  "manifestOrBlobHeaderMatches": null,
+  "operationId": "registry-readback-recovery-v1",
+  "path": "blobs/sha256:1317dd93c0c3b4562b5180bc49726f743cc1622f5fd1327aa883d8d8968012e3",
+  "phase": "read",
+  "proofAccepted": false,
+  "rawBodyHeadersErrorTextOrAuthPersisted": false,
+  "requestId": "c263a2f3-f445-430e-b562-2e48f1eeb637",
+  "responseCaptureComplete": false,
+  "responseClosed": true,
+  "schema": "trusted-pi-registry-get-terminal/v1",
+  "slot": 3,
+  "smallRawEqualityPassed": null,
+  "startedAt": "2026-10-18T13:13:14.284361+00:00"
+}

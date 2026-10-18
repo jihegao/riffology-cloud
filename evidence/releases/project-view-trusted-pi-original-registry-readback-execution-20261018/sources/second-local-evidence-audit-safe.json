@@ -1,0 +1,135 @@
+{
+  "schema": "jhg46-second-local-evidence-audit-public-projection/v1",
+  "originalFile": "local-independent-partial-readback-audit.json",
+  "originalBytes": 5248,
+  "originalSHA256": "65849b28e957f9f7adf08aa7dda256fc719c32602905d47c54915f4041c0f6a3",
+  "projectionNote": "Factual audit and limitations only; generic default-publication guidance omitted. The original authorized fixed identifiers are preserved in14original safe records. Original audit remains unchanged locally.",
+  "data": {
+    "schema": "jhg46-c263-independent-partial-readback-safe-audit/v1",
+    "at": "2026-10-18T13:30:50.570566+00:00",
+    "scope": {
+      "readOnlyLocalArtifactReview": true,
+      "networkApiAuthenticationSshDockerModelCalls": 0,
+      "testsRun": 0,
+      "existingFilesModified": 0,
+      "privateHumanReplyOAuthEnvRawConfigStreamsRead": false,
+      "archiveIndependentlyReadByThisAudit": false
+    },
+    "artifactBinding": {
+      "recordCount": 14,
+      "totalRecordBytes": 10670,
+      "actualNamesBytesSha256EqualInventory": true,
+      "actualNamesBytesSha256EqualReaderFileRecords": true,
+      "localTerminalJsonEqualsDriverStdoutJson": true,
+      "archiveRevalidationJsonEqualsLocalSafeEvent": true,
+      "remoteTerminalJsonEqualsLocalSafeEvent": true,
+      "proofTerminalHashBindings": {
+        "0": true,
+        "1": true,
+        "2": true
+      },
+      "records": {
+        "archive-revalidation.json": {
+          "bytes": 1187,
+          "sha256": "f13bd19ade8d90889935d96ece7136b0c786df34e77695fbfa51a414026198a8"
+        },
+        "get-00.intent.json": {
+          "bytes": 507,
+          "sha256": "b8b935c41338281e9fd322e826b4fee47b15f77d5c612b68db77e07b554126ab"
+        },
+        "get-00.proof.json": {
+          "bytes": 505,
+          "sha256": "a559ff5617fb51598ef34d01b8aeae5410608a4f72c05c07a07babcc4fddb019"
+        },
+        "get-00.terminal.json": {
+          "bytes": 954,
+          "sha256": "73e427c9a8bfe3a76aa3f73df6952e92662bdf16c89c2e8a2d39351ebbfc9743"
+        },
+        "get-01.intent.json": {
+          "bytes": 534,
+          "sha256": "4c423b3ffe1a1320334d1aa3ec029c9729eb90c38ebfbd4e02298697f59d4848"
+        },
+        "get-01.proof.json": {
+          "bytes": 532,
+          "sha256": "7b6baee20a609efd8d16fe763d6aaa0178f64086e7ceed0bc19186acc33d1378"
+        },
+        "get-01.terminal.json": {
+          "bytes": 981,
+          "sha256": "fdf4e522bfb27508a000f4e10951ca0494d8a8f1de2b522ee8199fcffd38517a"
+        },
+        "get-02.intent.json": {
+          "bytes": 529,
+          "sha256": "82ad7d346f017786aceaaf237b4d4a2b1692e57c9b3e15d3affa0a074d8d6be1"
+        },
+        "get-02.proof.json": {
+          "bytes": 529,
+          "sha256": "748f39ebbe71f42be3fb502bc271997af47c3311da75871c6e778c6e9ea6ed2e"
+        },
+        "get-02.terminal.json": {
+          "bytes": 977,
+          "sha256": "fc3abf190520cc15720e5b466ca8a10cea2cf4a3088d93311e687705f34db551"
+        },
+        "get-03.intent.json": {
+          "bytes": 535,
+          "sha256": "9338a2abc2d04d2004ffc0b418230cdd9d00b23976199d95f32c74527b740a54"
+        },
+        "get-03.terminal.json": {
+          "bytes": 1028,
+          "sha256": "8ce2d7fd664a1221a4b4fe5d7cb95d7ee8229528d022766e6a6305542be4b272"
+        },
+        "intent.json": {
+          "bytes": 986,
+          "sha256": "a72b05486bfffbfc19a971848c41e67768ca13efe508477d58fd40398f8188dc"
+        },
+        "terminal.json": {
+          "bytes": 886,
+          "sha256": "224109713d9eb7dc3585ebd8d5f119ba3f3fd2acf96d4d56802c525f8d6b90da"
+        }
+      }
+    },
+    "readback": {
+      "attempts": 4,
+      "proofs": 3,
+      "slotDurationSeconds": [
+        3.241632,
+        1.518016,
+        4.341787,
+        710.843621
+      ],
+      "firstGetStartToSlot3EndSeconds": 720.000108,
+      "slot3": {
+        "httpStatus": 200,
+        "phase": "read",
+        "capturedBytes": 11337728,
+        "capturedSha256": "2835b851f8588e7a2686327ffca2bfcf8d854a8eadd8f07092d983b5a560a64b",
+        "errorCode": "readback-original-identity-interrupted",
+        "exceptionClass": "ScopeGuard",
+        "responseCaptureComplete": false,
+        "responseClosed": true,
+        "proofAccepted": false
+      },
+      "slot3ExpectedBytes": 30649033,
+      "rootCauseProved": false,
+      "all52ProofsAndTerminalVerified": false,
+      "originalFinalAckVerified": false,
+      "publicationVerified": false,
+      "mergeAllowed": false
+    },
+    "cleanupObserved": {
+      "cleanupConfirmed": true,
+      "originalSupervisorAbsent": true,
+      "credentialOrDockerConfigPathsAbsent": true,
+      "credentialMemoryClearedRecorded": true,
+      "credentialRevocationOrExpiryProved": false,
+      "route7897Absent": true,
+      "routeConnectErrno": 111
+    },
+    "localOriginalProcesses": {
+      "allOriginalPidsAbsent": true,
+      "observations": 2,
+      "argvOrEnvRead": false,
+      "originalSshReaped": true,
+      "readerTransportSshReaped": true
+    }
+  }
+}

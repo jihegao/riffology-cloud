@@ -1,0 +1,282 @@
+{
+  "schema": "jhg46-original-registry-readback-actual-result/v1",
+  "draft": false,
+  "preparedAt": "2026-10-18T13:33:34.024433Z",
+  "requestId": "c263a2f3-f445-430e-b562-2e48f1eeb637",
+  "parentRequestId": "695e8875-459a-41b3-a148-2e228f2c3727",
+  "operationId": "registry-readback-recovery-v1",
+  "frozenPreparationCommit": "3fd5a29a1acfb198788b53688ed02130edebfeb5",
+  "status": "partial-readback-stopped",
+  "publicationVerified": false,
+  "mergeAllowed": false,
+  "authorization": {
+    "newSpecificApprovalObserved": true,
+    "humanGrantSHA256": "eb6294d0b9dd1344e8717f5a8dd6ac879e7a41ed9455c0c2cb703f0ffbb2f97f",
+    "window": {
+      "approvedAt": "2026-10-18T13:10:39+00:00",
+      "expiresAt": "2026-10-18T14:10:39+00:00"
+    },
+    "newRuntimeAuthorization": false,
+    "originalRuntimeWindowExtended": false,
+    "preExecutionReceiptStartedFlagDoesNotDescribeFinalResult": true
+  },
+  "inputIdentity": {
+    "sourceIndex": {
+      "digest": "sha256:0bb9af7a5909c41187cf56402a21420100c72a8de0025b0a7152f8804e85d191",
+      "mediaType": "application/vnd.oci.image.index.v1+json",
+      "size": 856
+    },
+    "runnableManifest": {
+      "digest": "sha256:ec8dbe9efe229a1626ea3202b618653f82f8d29d9da8b19310c3b3838f2a2623",
+      "mediaType": "application/vnd.oci.image.manifest.v1+json",
+      "size": 9585
+    },
+    "config": {
+      "digest": "sha256:cea60e390b6726ec0147153e1318b3655c8386460e98d02e35bb571768e49da5",
+      "mediaType": "application/vnd.oci.image.config.v1+json",
+      "size": 19067
+    },
+    "originalArchiveBytes": 407961600,
+    "originalArchiveSHA256": "deddc21059715d3d63fc9c652e84e510be7117cda315102c3b1fd0f0bcf2f6d8",
+    "originalVerificationSHA256": "76a53be45c5cd33a5b322bd5dd3dabc6b49f64aa53b739b38a6331cbe998beca",
+    "operationsManifestSHA256": "59fd2dd0f464e38b50b56e7c1d65229b6d81d86b12c935a822d5eeefead74342",
+    "complete16SourceBindingSHA256": "1dc5e1dbadd9c7496a2f6ac0ed609240df1f9fc48f486c2d4e43445eb76488ab"
+  },
+  "actual": {
+    "normalSameSixScopeTokenCommand": {
+      "attempts": 1,
+      "exitCode": 0,
+      "outputPersisted": false,
+      "newConsentOrScopeExpansion": false,
+      "oauthTransferredToAMD": false
+    },
+    "identityCheckRecorded": true,
+    "newCredential": {
+      "attempts": 1,
+      "httpStatus": 201,
+      "acceptedStatusAndSuccess": true,
+      "expirationMinutesRequested": 15,
+      "permissions": [
+        "pull"
+      ],
+      "accountScopedNotRepositoryScoped": true,
+      "stdinSent": true,
+      "responseBodyPersisted": false,
+      "credentialFilesWritten": 0
+    },
+    "ownedReverseLoopbackRouteAttempts": 1,
+    "archiveReadRevalidations": 1,
+    "archiveBlobsVerified": 53,
+    "rootfsLayerSlotsVerified": 49,
+    "exportsAttempted": 0,
+    "pushesAttempted": 0,
+    "dockerCommands": 0,
+    "registryGetAttempts": 4,
+    "registryGetProofCount": 3,
+    "plannedRegistrySlots": 52,
+    "slotResults": [
+      {
+        "slot": 0,
+        "path": "manifests/jhg46-native-resource-host-20261018-0bb9af7a",
+        "expectedDescriptor": {
+          "digest": "sha256:ec8dbe9efe229a1626ea3202b618653f82f8d29d9da8b19310c3b3838f2a2623",
+          "mediaType": "application/vnd.oci.image.manifest.v1+json",
+          "size": 9585
+        },
+        "httpStatus": 200,
+        "capturedBytes": 9585,
+        "capturedSHA256": "ec8dbe9efe229a1626ea3202b618653f82f8d29d9da8b19310c3b3838f2a2623",
+        "captureComplete": true,
+        "responseClosed": true,
+        "proofAccepted": true,
+        "phase": "complete",
+        "errorCode": null,
+        "exceptionClass": null,
+        "startedAt": "2026-10-18T13:13:05.127874+00:00",
+        "endedAt": "2026-10-18T13:13:08.369506+00:00"
+      },
+      {
+        "slot": 1,
+        "path": "manifests/sha256:ec8dbe9efe229a1626ea3202b618653f82f8d29d9da8b19310c3b3838f2a2623",
+        "expectedDescriptor": {
+          "digest": "sha256:ec8dbe9efe229a1626ea3202b618653f82f8d29d9da8b19310c3b3838f2a2623",
+          "mediaType": "application/vnd.oci.image.manifest.v1+json",
+          "size": 9585
+        },
+        "httpStatus": 200,
+        "capturedBytes": 9585,
+        "capturedSHA256": "ec8dbe9efe229a1626ea3202b618653f82f8d29d9da8b19310c3b3838f2a2623",
+        "captureComplete": true,
+        "responseClosed": true,
+        "proofAccepted": true,
+        "phase": "complete",
+        "errorCode": null,
+        "exceptionClass": null,
+        "startedAt": "2026-10-18T13:13:08.387332+00:00",
+        "endedAt": "2026-10-18T13:13:09.905348+00:00"
+      },
+      {
+        "slot": 2,
+        "path": "blobs/sha256:cea60e390b6726ec0147153e1318b3655c8386460e98d02e35bb571768e49da5",
+        "expectedDescriptor": {
+          "digest": "sha256:cea60e390b6726ec0147153e1318b3655c8386460e98d02e35bb571768e49da5",
+          "mediaType": "application/vnd.oci.image.config.v1+json",
+          "size": 19067
+        },
+        "httpStatus": 200,
+        "capturedBytes": 19067,
+        "capturedSHA256": "cea60e390b6726ec0147153e1318b3655c8386460e98d02e35bb571768e49da5",
+        "captureComplete": true,
+        "responseClosed": true,
+        "proofAccepted": true,
+        "phase": "complete",
+        "errorCode": null,
+        "exceptionClass": null,
+        "startedAt": "2026-10-18T13:13:09.920525+00:00",
+        "endedAt": "2026-10-18T13:13:14.262312+00:00"
+      },
+      {
+        "slot": 3,
+        "path": "blobs/sha256:1317dd93c0c3b4562b5180bc49726f743cc1622f5fd1327aa883d8d8968012e3",
+        "expectedDescriptor": {
+          "digest": "sha256:1317dd93c0c3b4562b5180bc49726f743cc1622f5fd1327aa883d8d8968012e3",
+          "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+          "size": 30649033
+        },
+        "httpStatus": 200,
+        "capturedBytes": 11337728,
+        "capturedSHA256": "2835b851f8588e7a2686327ffca2bfcf8d854a8eadd8f07092d983b5a560a64b",
+        "captureComplete": false,
+        "responseClosed": true,
+        "proofAccepted": false,
+        "phase": "read",
+        "errorCode": "readback-original-identity-interrupted",
+        "exceptionClass": "ScopeGuard",
+        "startedAt": "2026-10-18T13:13:14.284361+00:00",
+        "endedAt": "2026-10-18T13:25:05.127982+00:00"
+      }
+    ],
+    "firstLayerInterrupted": {
+      "slot": 3,
+      "expectedBytes": 30649033,
+      "capturedBytes": 11337728,
+      "elapsedSeconds": 710.843621,
+      "firstGETToInterruptedEndSameRemoteClockSeconds": 720.000108,
+      "totalGETAlarmSeconds": 720,
+      "cause": "interrupted-near-total-deadline",
+      "networkProxyOrServiceCauseEstablished": false
+    },
+    "remoteTerminal": {
+      "status": "unknown-stopped",
+      "errorCode": "original-registry-readback-slot-failed-no-retry",
+      "endedAt": "2026-10-18T13:25:05.143455+00:00"
+    },
+    "localTerminal": {
+      "sshExitCode": 1,
+      "errorCode": "original-readback-ssh-nonzero",
+      "endedAt": "2026-10-18T13:25:34.366666+00:00",
+      "originalSSHReaped": true,
+      "stopErrors": []
+    },
+    "complete52RecordPresent": false,
+    "uniqueFinalReadbackACKVerified": false,
+    "laterSlots4To51Attempted": false,
+    "auxiliaryReadOnlyProgressObservations": 1,
+    "progressUsedAsAcceptanceProof": false
+  },
+  "independentEvidence": {
+    "originalSafeJSONCount": 14,
+    "originalSafeJSONBytes": 10670,
+    "allOriginalRecordsMatchReaderReferencesAndCollectorInventory": true,
+    "archiveAndRemoteTerminalFullJSONEqualOriginalLocalSafeEvents": true,
+    "readerCleanupConfirmed": true,
+    "all52ProofsAndTerminalVerified": false,
+    "registryReadbackRecordsAndCleanupVerified": false,
+    "localOriginalAckStillRequired": true,
+    "originalSupervisorAbsent": true,
+    "fixedCredentialOrDockerConfigPathsAbsent": true,
+    "route7897Absent": true,
+    "routeConnectErrno": 111,
+    "credentialMemoryClearedRecorded": true,
+    "originalLocalCLIAndSSHAbsent": true,
+    "readerTransportEndedAt": "2026-10-18T13:26:02.462628+00:00",
+    "collectorTransportEndedAt": "2026-10-18T13:26:27.202941+00:00",
+    "localOriginalProcessObservationAt": "2026-10-18T13:26:14.965436+00:00",
+    "credentialRevocationOrExpiryProved": false,
+    "persistentOAuthGrantRevoked": false,
+    "archiveIndependentlyReadByReader": false
+  },
+  "history": {
+    "previousPublicationUnknownRetained": true,
+    "previous695eOfflinePassedRetained": true,
+    "oldTwoLocalStatesPreservedAtPreflightAndProcessReadback": true,
+    "oldOnceLocksNotRemovedOrReplayed": true,
+    "ordinaryT1FailureAndReleaseHistoryRetained": true,
+    "noPR253MergeDeploymentOrNewTurn": true,
+    "noOriginalRuntimeWindowExtension": true
+  },
+  "timeBasis": "Each host records its own UTC wall clock. Durations above use the same remote clock only; cross-host ordering/skew not independently measured.",
+  "coverageLimits": [
+    "Three complete proofs establish the approved tag manifest, digest manifest and config raw bodies at their recorded times. They do not establish all49 layer bodies or complete image pullability.",
+    "First layer response was HTTP200 and partially read, but lacked complete size/hash verification and proof. Interruption reason does not establish network, proxy, permission or arrears cause.",
+    "Cleanup confirms the listed original process identities, configured credential paths and route at recorded observations; not global zero VM/usage or credential revocation/expiry.",
+    "No ordinary-user paid runtime acceptance was resumed. JHG46/JHG56 remain incomplete; usage and fees remain unknown, not zero."
+  ],
+  "privacy": {
+    "original14JSONByteExact": true,
+    "approvedFixedRepositoryDigestGrantHashAndOriginalProcessIdentityFieldsRetained": true,
+    "rawGrantHumanReplyCredentialOAuthConfigEnvBodyHeadersOrPrivateStreamsPublished": false,
+    "privateLocalPathsProjected": true
+  },
+  "sources": {
+    "remoteRecords": "remote-records/",
+    "localTerminal": "sources/local-terminal.json",
+    "driverCompactStdout": "sources/original-driver-stdout.json",
+    "readerObservation": "sources/independent-reader-observation.json",
+    "collectorInventory": "sources/collector-inventory.json",
+    "semanticBinding": "sources/independent-record-semantic-binding.json",
+    "actualIndependentReview": "sources/actual-independent-review.json",
+    "secondIndependentAudit": "sources/second-local-evidence-audit-safe.json"
+  },
+  "additionalPublicNetworkDiagnosis": {
+    "source": "public-network-diagnosis/analysis.json",
+    "analysisSHA256": "dd08bb05c6ad036c640064470d7a31a88f67b31103de77838af7da3d021b53d0",
+    "publicGETAttempts": 4,
+    "macExistingProxy1MiB": {
+      "httpStatus": 200,
+      "fullBytes": 1048576,
+      "seconds": 2.823732
+    },
+    "AMDDirectNoProxy": {
+      "exitCode": 6,
+      "httpStatus": 0,
+      "capturedBytes": 0
+    },
+    "macExistingProxy16MiB": {
+      "httpStatus": 403,
+      "capturedBytes": 1,
+      "fullTransferProved": false
+    },
+    "stderrContentPersisted": false,
+    "newRegistryGETOrCredentialOrRoute": false,
+    "registryBandwidthOrCauseOrArrearsProved": false,
+    "registryMainAttemptProofCountsRemain": [
+      4,
+      3
+    ],
+    "noAutomaticRetry": true,
+    "fixedPublic14MBAsset": {
+      "expectedBytes": 14029768,
+      "httpStatus": 403,
+      "capturedBytes": 0,
+      "responseClosed": true,
+      "bytesAndHashMatched": false,
+      "bodyStoredOrExecuted": false,
+      "sustainedThroughputProved": false
+    },
+    "bodyHandling": {
+      "speedtest": "/dev/null",
+      "fixedAsset": "not-stored-or-executed"
+    }
+  }
+}

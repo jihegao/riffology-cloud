@@ -1,0 +1,166 @@
+{
+  "all52ProofsAndTerminalVerified": false,
+  "cleanupConfirmed": true,
+  "config": {
+    "digest": "sha256:cea60e390b6726ec0147153e1318b3655c8386460e98d02e35bb571768e49da5",
+    "mediaType": "application/vnd.oci.image.config.v1+json",
+    "size": 19067
+  },
+  "credentialFilesRead": false,
+  "credentialMemoryClearedRecorded": true,
+  "credentialOrDockerConfigPathsAbsent": true,
+  "credentialRevocationOrExpiryProved": false,
+  "dockerOrRegistryCalls": 0,
+  "fileRecords": [
+    {
+      "bytes": 986,
+      "path": "intent.json",
+      "sha256": "a72b05486bfffbfc19a971848c41e67768ca13efe508477d58fd40398f8188dc"
+    },
+    {
+      "bytes": 886,
+      "path": "terminal.json",
+      "sha256": "224109713d9eb7dc3585ebd8d5f119ba3f3fd2acf96d4d56802c525f8d6b90da"
+    },
+    {
+      "bytes": 1187,
+      "path": "archive-revalidation.json",
+      "sha256": "f13bd19ade8d90889935d96ece7136b0c786df34e77695fbfa51a414026198a8"
+    },
+    {
+      "bytes": 507,
+      "path": "get-00.intent.json",
+      "sha256": "b8b935c41338281e9fd322e826b4fee47b15f77d5c612b68db77e07b554126ab"
+    },
+    {
+      "bytes": 954,
+      "path": "get-00.terminal.json",
+      "sha256": "73e427c9a8bfe3a76aa3f73df6952e92662bdf16c89c2e8a2d39351ebbfc9743"
+    },
+    {
+      "bytes": 505,
+      "path": "get-00.proof.json",
+      "sha256": "a559ff5617fb51598ef34d01b8aeae5410608a4f72c05c07a07babcc4fddb019"
+    },
+    {
+      "bytes": 534,
+      "path": "get-01.intent.json",
+      "sha256": "4c423b3ffe1a1320334d1aa3ec029c9729eb90c38ebfbd4e02298697f59d4848"
+    },
+    {
+      "bytes": 981,
+      "path": "get-01.terminal.json",
+      "sha256": "fdf4e522bfb27508a000f4e10951ca0494d8a8f1de2b522ee8199fcffd38517a"
+    },
+    {
+      "bytes": 532,
+      "path": "get-01.proof.json",
+      "sha256": "7b6baee20a609efd8d16fe763d6aaa0178f64086e7ceed0bc19186acc33d1378"
+    },
+    {
+      "bytes": 529,
+      "path": "get-02.intent.json",
+      "sha256": "82ad7d346f017786aceaaf237b4d4a2b1692e57c9b3e15d3affa0a074d8d6be1"
+    },
+    {
+      "bytes": 977,
+      "path": "get-02.terminal.json",
+      "sha256": "fc3abf190520cc15720e5b466ca8a10cea2cf4a3088d93311e687705f34db551"
+    },
+    {
+      "bytes": 529,
+      "path": "get-02.proof.json",
+      "sha256": "748f39ebbe71f42be3fb502bc271997af47c3311da75871c6e778c6e9ea6ed2e"
+    },
+    {
+      "bytes": 535,
+      "path": "get-03.intent.json",
+      "sha256": "9338a2abc2d04d2004ffc0b418230cdd9d00b23976199d95f32c74527b740a54"
+    },
+    {
+      "bytes": 1028,
+      "path": "get-03.terminal.json",
+      "sha256": "8ce2d7fd664a1221a4b4fe5d7cb95d7ee8229528d022766e6a6305542be4b272"
+    }
+  ],
+  "localOriginalAckStillRequired": true,
+  "mergeAllowed": false,
+  "operationId": "registry-readback-recovery-v1",
+  "originalArchiveIndependentlyReadByThisReader": false,
+  "originalPublicationTerminalOverwritten": false,
+  "originalSupervisorAbsent": true,
+  "platformManifest": {
+    "digest": "sha256:ec8dbe9efe229a1626ea3202b618653f82f8d29d9da8b19310c3b3838f2a2623",
+    "mediaType": "application/vnd.oci.image.manifest.v1+json",
+    "size": 9585
+  },
+  "publicationVerified": false,
+  "rawBodyHeadersConfigEnvOrAuthReturned": false,
+  "registryGetAttempts": 4,
+  "registryGetProofCount": 3,
+  "registryReadbackRecordsAndCleanupVerified": false,
+  "remoteWrites": 0,
+  "requestId": "c263a2f3-f445-430e-b562-2e48f1eeb637",
+  "route7897Absent": true,
+  "routeConnectErrno": 111,
+  "schema": "trusted-pi-original-registry-readback-independent-observation/v1",
+  "slotObservations": [
+    {
+      "capturedBytes": 9585,
+      "capturedSha256": "ec8dbe9efe229a1626ea3202b618653f82f8d29d9da8b19310c3b3838f2a2623",
+      "errorCode": null,
+      "exceptionClass": null,
+      "httpStatus": 200,
+      "intentPresent": true,
+      "phase": "complete",
+      "proofPresent": true,
+      "responseCaptureComplete": true,
+      "responseClosed": true,
+      "slot": 0,
+      "terminalPresent": true
+    },
+    {
+      "capturedBytes": 9585,
+      "capturedSha256": "ec8dbe9efe229a1626ea3202b618653f82f8d29d9da8b19310c3b3838f2a2623",
+      "errorCode": null,
+      "exceptionClass": null,
+      "httpStatus": 200,
+      "intentPresent": true,
+      "phase": "complete",
+      "proofPresent": true,
+      "responseCaptureComplete": true,
+      "responseClosed": true,
+      "slot": 1,
+      "terminalPresent": true
+    },
+    {
+      "capturedBytes": 19067,
+      "capturedSha256": "cea60e390b6726ec0147153e1318b3655c8386460e98d02e35bb571768e49da5",
+      "errorCode": null,
+      "exceptionClass": null,
+      "httpStatus": 200,
+      "intentPresent": true,
+      "phase": "complete",
+      "proofPresent": true,
+      "responseCaptureComplete": true,
+      "responseClosed": true,
+      "slot": 2,
+      "terminalPresent": true
+    },
+    {
+      "capturedBytes": 11337728,
+      "capturedSha256": "2835b851f8588e7a2686327ffca2bfcf8d854a8eadd8f07092d983b5a560a64b",
+      "errorCode": "readback-original-identity-interrupted",
+      "exceptionClass": "ScopeGuard",
+      "httpStatus": 200,
+      "intentPresent": true,
+      "phase": "read",
+      "proofPresent": false,
+      "responseCaptureComplete": false,
+      "responseClosed": true,
+      "slot": 3,
+      "terminalPresent": true
+    }
+  ],
+  "sourceImageId": "sha256:0bb9af7a5909c41187cf56402a21420100c72a8de0025b0a7152f8804e85d191"
+}
