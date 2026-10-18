@@ -1,0 +1,52 @@
+{
+  "schema": "jhg46-independent-original-t1-fresh-owner-file-review/v1",
+  "reviewedAt": "2026-10-18T14:47:52.719188+00:00",
+  "decision": "pass-safe-current-product-projection-summary",
+  "mustFix": [],
+  "summary": {
+    "file": "fresh-owner-summary.safe.json",
+    "bytes": 2876,
+    "sha256": "c8d6efa4b26badc85543806f8508368fc065fdd08b8616ffcd70cadbac3a7547"
+  },
+  "sources": {
+    "intent.private.json": {
+      "bytes": 1117,
+      "sha256": "318376b6b8668b3533c5e46b3297fbeed86d5e3f7e9433712389bfce49203fe8"
+    },
+    "observation-original.private.json": {
+      "bytes": 3089,
+      "sha256": "525efa95966dfb23dc1a57d9efd8e8402c441f8c9779dc68741641d15276762e"
+    },
+    "observation-semantic.private.json": {
+      "bytes": 3884,
+      "sha256": "42eb5996f9663d42090c903397ce7e978956768ebea4359ec897dddb276b38e9"
+    },
+    "capture-receipt.safe.json": {
+      "bytes": 918,
+      "sha256": "f4dddd2323edb062966df1741d8a87a227af2cbd015be7147c30d091a48b0fbb"
+    }
+  },
+  "checks": {
+    "originalBrowserProjectionBytesShaMatched": true,
+    "originalAndPrettySemanticJsonEqual": true,
+    "intentFiveExactGetPathsMatchObservedTrace": true,
+    "allHttp200AndChronological": true,
+    "ownerBracketExactExpectedOriginalHash": true,
+    "oneOriginalSessionOneOriginalTurnAndScopeGenerationMatched": true,
+    "originalReceiptTurnExactlyEqualsWorkspaceTurn": true,
+    "failedExecutionAndPersistenceUnknownNullCheckpointPreserved": true,
+    "activeAndThreeHoldsClearCapacityAvailableAsProductProjectionOnly": true,
+    "bothPriorCaptureFailuresPreservedAndNotCollapsedIntoFinalFiveGets": true,
+    "noRawResponseBodyCookieIdentityOrPromptCopied": true
+  },
+  "reviewerBrowserNetworkSqlAuthOrRuntimeActions": 0,
+  "reviewerTestsOrFixturesRun": false,
+  "originalSourceFilesModified": false,
+  "limits": [
+    "This is an independent pure-file check of root-captured browser projection, not a second HTTP observation.",
+    "Sameoriginalowner hash bracket is not a freshauthVersion/catalogrole proof.",
+    "Currentproductterminal/clearedhold/available are dated scoped evidence; rawstop/nativecapacity/physicalauthorities are not inferred.",
+    "Oldfailedcheckpoint remainsunknown/null; noR1 orproject_writefix is fabricated.",
+    "Futurecontract stillneeds actualfreshguard checks,newfiniteauthorization and explicitplatformdifference choices before newmutation."
+  ]
+}

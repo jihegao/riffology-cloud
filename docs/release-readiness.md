@@ -1,3 +1,9 @@
+## 2026-10-18：ec8 上线与新三次 Turn 验收包已独审，等待具体授权
+
+[下一批固定包](project-view-trusted-pi-native-resource-host-rollout-acceptance-packet-20261018.md)冻结26项输入（manifest2937a30e…），最终独审 mustFix=[]。仅提议原a036一次ec8 rollout、同原operator维护hold/释放、一个全新普通受邀项目/两Session/三显式Turn，以及R2和释放后唯一有限browser gate PUT/DELETE。Gateway9c8、Registry全52回读与#253普通合并不重复。[公开文件索引](../evidence/releases/project-view-trusted-pi-native-resource-host-rollout-acceptance-preparation-20261018/inventory.json)保留作者字节、来源绑定及独审；无新授权、grant、执行锁或线上调用。
+
+新≤4小时窗口及目标版本滚动列表/最多一份已知idle VM两项差异仍须明确接受；旧12:42:46Z窗口不延长，Oct20人类授权上限和原硬边界保留。原owner14:44五GET只证明失败T1及产品释放投影，不能代替新hold下原native/物理资源核对或当前受邀角色。#252/#214仍Acceptance/blocked，project_write及普通用户验收待验证；JHG-46未完成。下方242f实际结果与所有旧失败、费用和锁历史逐字保留。
+
 ## 2026-10-18：原 c263 全52回读与 #253 普通合并完成，镜像待上线
 
 [本机实际结果](project-view-trusted-pi-local-registry-readback-result-20261018.md)完成获批4783/16313批次：同一原归档53 blobs/49 diffIDs只读复验、52/52实际HTTP200正文407,919,377B（133.826852秒）、原main exit0/唯一ACK，以及冻结reader对source/全proof/ACK/原PID清理的独立核验。root联合原transport确认完整Registry证明；随后新鲜门禁下普通合并#253固定head0a10为240378f65fee54d917b053f565087095a07244db（14:35:00Z）。[安全证据](../evidence/releases/project-view-trusted-pi-local-registry-readback-execution-20261018/inventory.json)保存原字节及角色区分，reader168条引用=167个实际文件，不单独授权merge。
