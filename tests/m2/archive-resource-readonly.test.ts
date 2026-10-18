@@ -4,7 +4,7 @@ import {DatabaseSync} from 'node:sqlite';
 import {ProductTurnRuntimeCore,turnCheckpointOperationId,type ProductTurnRuntimeStorage} from '../../services/turn-runtime/core.ts';
 import {ProductTurnRuntimeHost} from '../../services/turn-runtime/host.ts';
 import {turnRuntimeActorName,type TurnRuntimeIdentity} from '../../services/turn-runtime/identity.ts';
-import {SqlTrustedPiCapacity,readTrustedPiArchiveQuiescence,trustedPiCapacityDispatchReference,trustedPiCapacityLeaseReference} from '../../services/capacity/core.ts';
+import {SqlTrustedPiCapacity,readTrustedPiArchiveQuiescence,readTrustedPiQuiescence,trustedPiCapacityDispatchReference,trustedPiCapacityLeaseReference} from '../../services/capacity/core.ts';
 import {SqlWorkspacePairedCapacity,readWorkspacePairArchiveResources} from '../../services/capacity/paired.ts';
 import {WorkspaceRuntimeLeases} from '../../services/workspace/runtime-leases.ts';
 
@@ -49,7 +49,7 @@ test('legacy release proof retains its original operation identity and confirmat
 test('original cold capacity scope quiet is SELECT-only, preserves held/dispatched and denies missing/corrupt proof',async()=>{
  const f=sqlite();assert.throws(()=>readTrustedPiArchiveQuiescence(f.storage,scope),/proof-missing/);let next=0;const cold=new SqlTrustedPiCapacity(f.storage,'original-v1',()=>1000,()=>`id-${++next}`),input={tenantId:scope.tenantId,projectId:scope.projectId,workspaceId:scope.workspaceId,sessionId:identity.sessionId,operationId:'original-operation',turnId:identity.turnId,generation:1};const held=(await cold.request(input)).ticket;
  assert.equal(readTrustedPiArchiveQuiescence(f.storage,scope).unresolved,1);const dispatched=(await cold.dispatch(trustedPiCapacityDispatchReference(held,identity.dispatchId))).ticket;assert.equal(readTrustedPiArchiveQuiescence(f.storage,scope).unresolved,1);await cold.confirmReleased(trustedPiCapacityDispatchReference(dispatched),{kind:'runtime-released',proofId:'original-stop',observedAt:1000});
- await cold.request({...input,projectId:'other-project',workspaceId:'other-workspace',turnId:'other-turn',operationId:'other-operation'});const before=f.snapshot();f.onlyRead();assert.equal(readTrustedPiArchiveQuiescence(f.storage,scope).quiescent,true);assert.deepEqual(f.snapshot(),before);f.db.close();
+ await cold.request({...input,tenantId:'other-tenant',projectId:'other-project',workspaceId:'other-workspace',turnId:'other-turn',operationId:'other-operation'});const before=f.snapshot();f.onlyRead();assert.equal(readTrustedPiArchiveQuiescence(f.storage,scope).quiescent,true);assert.equal(readTrustedPiQuiescence(f.storage).unresolved,1,'maintenance checks all original tenants');assert.deepEqual(f.snapshot(),before);f.db.close();
  const corrupt=sqlite(),c=new SqlTrustedPiCapacity(corrupt.storage,'original-v1',()=>1000,()=>`id-${++next}`),ticket=(await c.request(input)).ticket;await c.cancelNeverStarted(trustedPiCapacityLeaseReference(ticket),{kind:'never-started',proofId:'never-started',observedAt:1000});corrupt.db.exec("UPDATE trusted_pi_capacity_tickets SET proof_json='{}'");corrupt.onlyRead();assert.throws(()=>readTrustedPiArchiveQuiescence(corrupt.storage,scope),/invalid-capacity-stop-proof/);corrupt.db.close();
 });
 test('warm archive reads do not retire held/idle pairs; exact immutable releases survive a disabled gate',async()=>{

@@ -5,6 +5,8 @@ import {scope as checkedScope,turnDigest,turnId,type TurnScope,type TurnActor} f
 import {workspaceAgentName} from '../workspace/protocol.ts';
 import {modelCallRequest,modelBudgetCallKey,type ModelCallRequest,type ModelCallRecord,modelBudgetTenantName} from './core.ts';
 import {productionProfile,profileDigest,conservativeCost} from '../model-proxy/production-profile.ts';
+import {trustedPiCapacityActorName} from '../capacity/client.ts';
+import {betaMaintenanceInput,betaMaintenanceState,betaMaintenanceHeld,betaMaintenanceBarrier,beginBetaMaintenance,endBetaMaintenance,betaMaintenanceEndReplay,type BetaMaintenanceInput,type BetaMaintenanceControl} from './private-beta-maintenance.ts';
 
 async function bounded<T>(operation:Promise<T>):Promise<T>{
   let timer:ReturnType<typeof setTimeout>|undefined;
@@ -17,6 +19,8 @@ type Slot={key:string;user_id:string;document:string;created_at:number;turn_id:s
 interface Env {
   PRIVATE_BETA_POLICY_JSON?:string; PRODUCTION_MODEL_PROFILE_JSON:string; CATALOG:D1Database;
   PRIVATE_BETA_CAPACITY:DurableObjectNamespace<PrivateBetaCapacity>;
+  TRUSTED_PI_CAPACITY?:{getByName(name:string):{maintenanceQuiescence():Promise<{actor:string;policyVersion:string;quiescent:boolean;coldUnresolved:number;pairUnresolved:number;actualContainerReleaseVerified:false}>}};
+  TRUSTED_PI_CAPACITY_POLICY_VERSION?:string;
   TENANT_MODEL_BUDGET?:PrivateBetaHistoricalLedger;G5_TOKEN_BUDGET?:PrivateBetaHistoricalLedger;
   PI_DEVELOPER_BUDGET:{getByName(name:string):{privateBetaCall(identity:ModelCallRequest['identity'],callId:string):Promise<ModelCallRecord|null>}};
   WORKSPACE_AGENT:{getByName(name:string):{
@@ -111,11 +115,12 @@ export class PrivateBetaCapacity extends DurableObject<Env> {
     const key=await turnDigest({purpose:'private-beta-admission',...input});
     const prior=this.ctx.storage.sql.exec<Slot>('SELECT * FROM beta_slots WHERE key=?',key).toArray()[0];
     if(prior){if(prior.document!==JSON.stringify(input))throw Error('private-beta-identity-conflict');return {key,replayed:true};}
+    if(betaMaintenanceHeld(this.ctx.storage))throw Error('private-beta-maintenance-held');
     await this.#reconcile(p);
     const slots=this.#slots();
     if(slots.some(s=>s.user_id===input.actor.userId))throw Error('private-beta-user-busy');
     if(slots.length>=p.maxActiveTurns)throw Error('private-beta-capacity-full');
-    this.#policy();this.#checkLimits(p,input.actor.userId,0,null);
+    this.#policy();if(betaMaintenanceHeld(this.ctx.storage))throw Error('private-beta-maintenance-held');this.#checkLimits(p,input.actor.userId,0,null);
     this.ctx.storage.sql.exec("INSERT INTO beta_slots VALUES(?,?,?,?,NULL,'admitting')",key,input.actor.userId,JSON.stringify(input),Date.now());
     await this.ctx.storage.sync();await this.ctx.storage.setAlarm(Date.now()+p.monitorIntervalMs);
     return {key,replayed:false};
@@ -162,6 +167,54 @@ export class PrivateBetaCapacity extends DurableObject<Env> {
   }
   async pause(actor?:TurnActor){this.#policy(false);this.ctx.storage.sql.exec('INSERT INTO beta_operations(action,actor_json,at) VALUES(?,?,?)','pause',actor?JSON.stringify(actor):null,Date.now());this.ctx.storage.kv.put('beta-paused',true);await this.ctx.storage.sync();await this.ctx.storage.setAlarm(Date.now()+1);return {paused:true};}
   async resume(actor?:TurnActor){return this.#serial(async()=>{const p=this.#policy(false);await this.#pin(p);await this.#reconcile(p,true);if(this.#slots().length)throw Error('private-beta-release-unconfirmed');this.ctx.storage.sql.exec('INSERT INTO beta_operations(action,actor_json,at) VALUES(?,?,?)','resume',actor?JSON.stringify(actor):null,Date.now());this.ctx.storage.kv.put('beta-paused',false);await this.ctx.storage.sync();return {paused:false};});}
+
+  async #maintenanceControl():Promise<BetaMaintenanceControl>{
+    const p=this.#policy(false),policySha256=await turnDigest({...p,enabled:false});
+    if(JSON.stringify(p)!==JSON.stringify(this.#policy(false)))throw Error('private-beta-policy-conflict');
+    return {policySha256,pinnedPolicySha256:this.ctx.storage.sql.exec<{digest:string}>('SELECT digest FROM beta_policy WHERE singleton=1').toArray()[0]?.digest??null,
+      enabled:p.enabled&&Date.now()>=p.startsAt&&Date.now()<p.reviewAt,paused:this.ctx.storage.kv.get('beta-paused')===true,
+      revision:this.ctx.storage.sql.exec<{revision:number}>("SELECT coalesce(max(id),0) revision FROM beta_operations WHERE action IN ('pause','resume')").one().revision};
+  }
+  #maintenanceLedger(){
+    const slots=this.#slots(),unresolvedCalls=this.ctx.storage.sql.exec<{count:number}>("SELECT count(*) count FROM beta_calls WHERE status NOT IN ('observed','not-dispatched','billing-pending')").one().count;
+    return {scope:'original-beta-ledger-only' as const,activeSlots:slots.length,quarantinedSlots:slots.filter(s=>s.status==='quarantined').length,unresolvedCalls,quiescent:slots.length===0&&unresolvedCalls===0};
+  }
+  /** No pin, monitor, reconcile, alarm, release or native call. Constructor
+   * schema initialization is separate from the work performed by this read. */
+  maintenanceStatus(requestId?:string,actor?:TurnActor){return this.#serial(async()=>({
+    ...betaMaintenanceState(this.ctx.storage,await this.#maintenanceControl(),requestId,actor),ledger:this.#maintenanceLedger(),
+    actualContainerReleaseVerified:false as const,
+  }));}
+  /** Fresh logical ledger proof while the original barrier remains held.
+   * Read-only across both actors; not a physical Cloudflare instance proof. */
+  maintenanceQuiescence(requestId:string,actor:TurnActor){return this.#serial(async()=>{
+    const before=betaMaintenanceBarrier(this.ctx.storage,requestId,actor,await this.#maintenanceControl()),ledgerBefore=this.#maintenanceLedger();
+    const native=this.env.TRUSTED_PI_CAPACITY;
+    if(!native||!this.env.TRUSTED_PI_CAPACITY_POLICY_VERSION)throw Error('private-beta-maintenance-proof-unavailable');
+    const proof=await bounded(native.getByName(trustedPiCapacityActorName()).maintenanceQuiescence());
+    if(proof?.actor!==trustedPiCapacityActorName()||proof.policyVersion!==this.env.TRUSTED_PI_CAPACITY_POLICY_VERSION||typeof proof.quiescent!=='boolean'||!Number.isSafeInteger(proof.coldUnresolved)||proof.coldUnresolved<0||!Number.isSafeInteger(proof.pairUnresolved)||proof.pairUnresolved<0||proof.quiescent!==(proof.coldUnresolved===0&&proof.pairUnresolved===0)||proof.actualContainerReleaseVerified!==false)throw Error('private-beta-maintenance-proof-unavailable');
+    const control=await this.#maintenanceControl(),current=betaMaintenanceBarrier(this.ctx.storage,requestId,actor,control),ledger=this.#maintenanceLedger();
+    if(JSON.stringify(current)!==JSON.stringify(before))throw Error('private-beta-maintenance-conflict');
+    return {schemaVersion:1 as const,requestId,checkedAt:Date.now(),...current,control,ledgerBefore,ledger,native:proof,
+      quiescent:ledgerBefore.quiescent&&ledger.quiescent&&proof.quiescent,actualContainerReleaseVerified:false as const};
+  });}
+  beginMaintenance(raw:BetaMaintenanceInput,actor:TurnActor){return this.#serial(async()=>{
+    const input=betaMaintenanceInput(raw),control=await this.#maintenanceControl();
+    const result=beginBetaMaintenance(this.ctx.storage,input,actor,control);
+    if(!result.replayed)await this.ctx.storage.sync();return result;
+  });}
+  endMaintenance(raw:BetaMaintenanceInput,actor:TurnActor){return this.#serial(async()=>{
+    const input=betaMaintenanceInput(raw),prior=betaMaintenanceEndReplay(this.ctx.storage,input,actor);
+    if(prior)return {...prior,replayed:true};
+    if(!betaMaintenanceHeld(this.ctx.storage)||!this.#maintenanceLedger().quiescent)throw Error('private-beta-maintenance-release-unconfirmed');
+    const native=this.env.TRUSTED_PI_CAPACITY;
+    if(!native||!this.env.TRUSTED_PI_CAPACITY_POLICY_VERSION)throw Error('private-beta-maintenance-release-unconfirmed');
+    const proof=await bounded(native.getByName(trustedPiCapacityActorName()).maintenanceQuiescence());
+    if(proof?.actor!==trustedPiCapacityActorName()||proof.policyVersion!==this.env.TRUSTED_PI_CAPACITY_POLICY_VERSION||proof.quiescent!==true)throw Error('private-beta-maintenance-release-unconfirmed');
+    const control=await this.#maintenanceControl();
+    if(!this.#maintenanceLedger().quiescent)throw Error('private-beta-maintenance-release-unconfirmed');
+    const result=endBetaMaintenance(this.ctx.storage,input,actor,control);await this.ctx.storage.sync();return result;
+  });}
 
   /** Deployment-only RPC: explicitly accept a later review date from the new
    * trusted configuration. No public route, reconciliation, release or dispatch.

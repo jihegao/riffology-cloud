@@ -22,6 +22,7 @@ import { LocalePreferences } from '../catalog/locale-preferences.ts';
 import { statement as sql, type Database } from '../catalog/database.ts';
 import { HttpError, json, readJson, requireOrigin } from './http.ts';
 import {sameScope,type TurnActor,type TurnScope} from '../turn/protocol.ts';
+import {betaMaintenanceInput,type BetaMaintenanceInput} from '../model-budget/private-beta-maintenance.ts';
 import { turnEventStream } from './events.ts';
 import { toolArtifactReceipt } from '../artifacts/protocol.ts';
 import type {GatewayServiceRuns,ServiceCursor} from './service-services.ts';
@@ -46,7 +47,8 @@ export interface GatewayServices {
   publicationArtifacts?:PublicationArtifacts;
   researchExports?:GatewayResearchExports;
   simulations?:GatewaySimulations;
-  privateBeta?:{snapshot():Promise<unknown>;pause(actor:TurnActor):Promise<unknown>;resume(actor:TurnActor):Promise<unknown>;userStatus?(scope:TurnScope,actor:TurnActor):Promise<unknown>};
+  privateBeta?:{snapshot():Promise<unknown>;pause(actor:TurnActor):Promise<unknown>;resume(actor:TurnActor):Promise<unknown>;userStatus?(scope:TurnScope,actor:TurnActor):Promise<unknown>;
+    maintenanceStatus?(requestId?:string,actor?:TurnActor):Promise<unknown>;maintenanceQuiescence?(requestId:string,actor:TurnActor):Promise<{quiescent:boolean}>;beginMaintenance?(input:BetaMaintenanceInput,actor:TurnActor):Promise<unknown>;endMaintenance?(input:BetaMaintenanceInput,actor:TurnActor):Promise<unknown>};
   origin:string;
   transportOrigin?:string;
   database:Database;
@@ -86,7 +88,7 @@ async function serviceCall<T>(operation:()=>Promise<T>):Promise<T>{
 }
 async function turnCall<T>(operation:()=>Promise<T>):Promise<T>{
   try{return await operation();}catch(error){const code=error instanceof Error?error.message:'';
-    if(['project_archived','project_busy'].includes(code))throw new HttpError(code,409);
+    if(['project_archived','project_busy'].includes(code)||/^private-beta-maintenance-[a-z-]+$/.test(code))throw new HttpError(code,409);
     if(code.includes('idempotency-conflict'))throw new CatalogError('idempotency_conflict');
     if(['pi-developer-execution-unconfirmed','pi-developer-execution-isolation-unconfirmed','pi-developer-historical-execution-unconfirmed','pi-developer-historical-g5-denied','pi-developer-admission-denied','pi-developer-budget-unavailable','pi-developer-historical-ledger-unavailable','pi-developer-packet-limit','pi-developer-policy-conflict','pi-developer-usage-missing','pi-developer-usage-invalid'].includes(code))throw new HttpError(code,409);
     if(['private-beta-paused','private-beta-user-busy','private-beta-capacity-full','private-beta-budget-limit','private-beta-admission-denied','private-beta-policy-conflict','private-beta-turn-denied','private-beta-time-limit','private-beta-unconfigured','private-beta-release-unconfirmed'].includes(code))throw new HttpError(code,409);
@@ -193,6 +195,32 @@ export async function gateway(request:Request, services:GatewayServices):Promise
     if(url.pathname==='/api/models'&&request.method==='GET')return json({models:(await models.published()).map(publicModel)});
     const modelDetail=/^\/api\/models\/([A-Za-z0-9._-]{1,128})\/versions\/([A-Za-z0-9._-]{1,64})$/.exec(url.pathname);
     if(modelDetail&&request.method==='GET')return json(publicModel(await models.getPublished(modelDetail[1],modelDetail[2])));
+    if(url.pathname==='/api/admin/private-beta/maintenance/quiescence'){
+      await admin.require(principal);
+      if(request.method!=='GET'||[...url.searchParams.keys()].some(k=>k!=='requestId')||url.searchParams.getAll('requestId').length!==1)throw new CatalogError('invalid_input');
+      const requestId=url.searchParams.get('requestId')!;
+      if(!/^[A-Za-z0-9_-]{1,128}$/.test(requestId))throw new CatalogError('invalid_input');
+      if(!services.privateBeta?.maintenanceQuiescence)throw new HttpError('private-beta-unconfigured',503);
+      const result=await turnCall(()=>services.privateBeta!.maintenanceQuiescence!(requestId,{userId:principal.userId,authVersion:principal.authVersion}));
+      return json(result,result.quiescent===true?200:409);
+    }
+    if(url.pathname==='/api/admin/private-beta/maintenance'){
+      await admin.require(principal);
+      const beta=services.privateBeta,by={userId:principal.userId,authVersion:principal.authVersion};
+      if(!beta?.maintenanceStatus||!beta.beginMaintenance||!beta.endMaintenance)throw new HttpError('private-beta-unconfigured',503);
+      if(request.method==='GET'){
+        if([...url.searchParams.keys()].some(k=>k!=='requestId')||url.searchParams.getAll('requestId').length>1)throw new CatalogError('invalid_input');
+        const requestId=url.searchParams.get('requestId')??undefined;
+        if(requestId!==undefined&&!/^[A-Za-z0-9_-]{1,128}$/.test(requestId))throw new CatalogError('invalid_input');
+        return json(await turnCall(()=>beta.maintenanceStatus!(requestId,by)));
+      }
+      if(request.method!=='POST'||url.search)throw new CatalogError('invalid_input');
+      const raw=await readJson(request);
+      if(!raw||typeof raw!=='object'||Array.isArray(raw)||Object.keys(raw).sort().join()!=='action,expectedPolicySha256,expectedRevision,requestId')throw new CatalogError('invalid_input');
+      const body=raw as Record<string,unknown>;
+      if(body.action!=='begin'&&body.action!=='end')throw new CatalogError('invalid_input');
+      return json(await turnCall(()=>{const input=betaMaintenanceInput({requestId:body.requestId,expectedRevision:body.expectedRevision,expectedPolicySha256:body.expectedPolicySha256});return body.action==='begin'?beta.beginMaintenance!(input,by):beta.endMaintenance!(input,by);}));
+    }
     if(url.pathname==='/api/admin/private-beta'){
       await admin.require(principal);
       if(url.search)throw new CatalogError('invalid_input');
