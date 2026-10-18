@@ -1,0 +1,46 @@
+{
+  "schema": "jhg46-future-sdk-contract-independent-draft-review/v1",
+  "recordedAt": "2026-10-18T17:38:34.494169+00:00",
+  "manifest": {
+    "bytes": 3890,
+    "sha256": "e685fd08be4bbacf4828d86a27ebad64ab7bb332f22a6ba41da1a68e260db347"
+  },
+  "publicDraft": {
+    "bytes": 8674,
+    "sha256": "4cc6a4edd0032337fe094cf3d5c252245d7994da1f7ffb5f30f29e5864b01651"
+  },
+  "operationsSha256": "648a930aba6558ceec13a1c724dbb6eb28c2b1ac150b2b98c37f592bb237f654",
+  "checks": {
+    "all11ManifestFilesExact": true,
+    "notReadyOrAuthorised": true,
+    "fixedHeadAndBundle": true,
+    "noRegistryAmdHoldRollout": true,
+    "ordinaryLimits": true,
+    "futureWindowNullBounded": true,
+    "feesNoPayment": true,
+    "sixScopesNoExpansion": true,
+    "missingPinsExplicit": true,
+    "nativeDomAcceptedAndNoOldReuse": true,
+    "stageStopReleaseAndOwnedCleanup": true,
+    "knownIdleNotGeneralised": true,
+    "eightSyntheticNotActual": true
+  },
+  "mustFix": [],
+  "scopeAssessment": "No substantive scope gap found in this non-ready draft. Remaining items are concrete mechanical pins, original grant and future actual evidence; not a reason to treat draft as executable.",
+  "requiredBeforeExecutable": [
+    "Final build source binding and independent build review; guarded publisher source/manifest/metadata/body/plan seal.",
+    "Actual normal fixed-head merge/tree proof; original fresh baseline and actual grant/window.",
+    "Actual publication ACK/source/assets/preservation; new UI scope/keys/R1-R3/owned gate receipts must derive from actual execution."
+  ],
+  "boundaries": [
+    "Two existing account identities and exact six OAuth scopes only; no new login/consent/scope or unknown fallback.",
+    "New Gateway/assets default closed then one fresh project/two Sessions/planned three Turns, stage stop and original release before each next action.",
+    "Original a25f failures/oneSession-twoTurns/release/closed gate retained, not future authorisation or oldT3 replay.",
+    "Known d03b/8ef5 idleVM is a narrow dated exception, no unknown placement absorption or zero fee claim."
+  ],
+  "reviewerActions": {
+    "network": 0,
+    "testsRepeated": 0,
+    "authorInputsEdited": 0
+  }
+}

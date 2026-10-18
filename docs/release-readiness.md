@@ -1,3 +1,17 @@
+## 2026-10-19：SDK 固定发布与全新项目验收包准备完成，等待新批授权
+
+[可审固定包](project-view-native-sdk-publication-acceptance-packet-20261019.md)已冻结总输入11,160 B / `c65b9f38…e657`，[公开清单](../evidence/releases/project-view-native-sdk-publication-acceptance-preparation-20261019/inventory.json)绑定93项证据；[最终公开包独审](../evidence/releases/project-view-native-sdk-publication-acceptance-preparation-20261019/reviews/independent-final-public-packet-review.safe.json)无 must-fix。拟普通合并固定 #257/fca66、一次发布 Gateway304373a5及96资产并先保持页面关闭；使用普通受邀身份创建全新项目、两Session、计划三次OpenAI/gpt-5.6-luna Turn，R2和释放后开唯一有限门禁，按原 owned ACK 清理。阶段失败即停，新窗口从实际新授权起≤4小时且不越10月20日上限。
+
+本段仅记录准备完成：没有新授权、合并、部署、项目、Turn或门禁执行。不重复 Registry/AMD/maintenance hold/image rollout；沿用现有ec8/v13及已接受的已知空闲VM差异。原a25f在V1超时后已结束，不能续用旧项目/剩余T3/旧窗口。当前 #255/#257 In review，父 #214仍Acceptance/blocked、未完成JHG-46；下方源码验证与实际停止结果及原时点准备稿均完整保留。
+
+## 2026-10-19：原生页面 SDK 时限修复已提交 PR，尚未部署
+
+[#255](https://github.com/jihegao/riffology-cloud/issues/255) 的最小修复已提交 [PR #257](https://github.com/jihegao/riffology-cloud/pull/257)，固定 head `fca66cb0e1024b4e86bbbeb9a6d955b137599efa`，Delivery Project 为 In review。HTTP／broker RPC／frame SDK／模块安装／host 启动预算为 10／30／35／40／45 秒；保留前后授权、身份及并发限制，并取消过期、关闭及迟到工作。源码、导航测试变化与脱敏公开投影均独审通过。
+
+旧实现通过真实本地 frame／HTTP／MessageChannel 复现两次 2.6 秒授权导致的 5 秒 timeout；相同生产源码通过 57 项相关检查、typecheck、UI 21/21 和生成 frame 一致性。最终导航观察测试的三项相关用例分别通过 Chromium 3/3、WebKit 3/3；57 项仍绑定其原测试 helper。详见[固定源码与验证证据](https://github.com/jihegao/riffology-cloud/blob/fca66cb0e1024b4e86bbbeb9a6d955b137599efa/evidence/releases/project-view-native-sdk-deadlines-20261019.json)。固定 head 的 [CI run 39149750214](https://github.com/jihegao/riffology-cloud/actions/runs/39149750214) 随后于 2026-10-18T17:41:30Z 成功。当前生产 Safari 验收及唯一线上根因仍未证实。
+
+本段记录源码交付，未合并或部署修复、重试旧页面或新增项目／Turn／gate。#252 已按 host 兼容自身条件人工 Done 且 Issue 保持 OPEN；父 #214 的页面及完整 artifact 验收仍未完成。下方实际停止结果及所有冻结历史保留。
+
 ## 2026-10-19 JHG-46 ec8 rollout and two saved Turns; first page failed, gate closed
 
 The approved a25f batch completed the original maintenance begin/end and one a036 rollout to v13 / `ec8dbe9e…`. One new ordinary invited project and one Session completed T1/R1 and T2/R2 with product-level save and release evidence. The first observed Dashboard showed `Load error: page request timeout`; acceptance stopped before Report, artifact body/chunks, Session2, T3 or V2. The five delivered page assets match their actual T2 write receipts, which does not establish functional acceptance.

@@ -1,0 +1,386 @@
+{
+  "/admin.css": {
+    "hash": "57a949dd0c3ec9a8d2232dc19b667a3a",
+    "size": 2470
+  },
+  "/admin.html": {
+    "hash": "f8693a085ed2abf74d47ff4305e35208",
+    "size": 8256
+  },
+  "/admin.js": {
+    "hash": "9e5a5d96d8ab75abbb1d07645af9d93c",
+    "size": 20477
+  },
+  "/app.js": {
+    "hash": "0c444ed300535cfb2533c64c2bf407a2",
+    "size": 83635
+  },
+  "/artifact-views.js": {
+    "hash": "a3a9fae886073f847df4bec47b6c667f",
+    "size": 5694
+  },
+  "/browser-preview-assets/05934c2186c5f8bc7ddb4c9bb778400a2e5b8defe33f679da455e60b725c31a5/renderer.bundle.mjs": {
+    "hash": "e7fdea98a15938d37fdfc2122ca976af",
+    "size": 7224
+  },
+  "/browser-preview-assets/0ad7104a3cde648e5486a718799f3852f1d782ff19d4bfc13db9dc631df083f8/assets/micropip-0.11.1-py3-none-any.whl": {
+    "hash": "ba82511b64c4b8174ea7548ba6160b94",
+    "size": 115486
+  },
+  "/browser-preview-assets/0c45554ec2ea09d0e18d3639d7cc13306fa61ba917f40d3ed2c1cd6ce60c012e/delivery/worker.bundle.mjs": {
+    "hash": "4211fb4cfcd4de376410f046ed776eb4",
+    "size": 1651861
+  },
+  "/browser-preview-assets/16d292a3615a4326f9c7706e857aa4a4339352d09bcc6aa8eb47fbce85b987c0/delivery/frame.bundle.mjs": {
+    "hash": "49c36847e83080874aefcf8a36ff31a9",
+    "size": 11942
+  },
+  "/browser-preview-assets/18b0c6a423b9b9ffe0b6679f8ebe9dc619d557c5647bfda449583d276d79d422/assets/pillow-12.2.0-cp314-cp314-pyemscripten_2026_0_wasm32.whl": {
+    "hash": "a75d2c709d1373c27fe3f5ae9beaeead",
+    "size": 1037807
+  },
+  "/browser-preview-assets/19888142cc5f4891ff48b39439097d13f2144cbf46181d134623dae254f99632/runtime/js-frame.mjs": {
+    "hash": "4e773cbd7105a20a028ba02f943f14fa",
+    "size": 8239
+  },
+  "/browser-preview-assets/288a822e2533bd89fc1de6f786961fc9f261a89d29f29eb46d4e281d29bb52bf/delivery/frame.bundle.mjs": {
+    "hash": "e3e84b8ea6203255fe5c2a32722cbfa1",
+    "size": 5811
+  },
+  "/browser-preview-assets/29edb1e328c61cad6ac21a2ff92c7d274a2b662eb7c12b2d147f04917b765ad6/assets/six-1.17.0-py2.py3-none-any.whl": {
+    "hash": "7b5e219f3915e7fafa2d2ab609a54a5b",
+    "size": 11050
+  },
+  "/browser-preview-assets/2ac5eba365ec12839c75c03b39b3be1dd63b798852cc460b014b52238be042f7/assets/pyodide.asm.mjs": {
+    "hash": "152de6b59c5457b730d1c9a8e518765e",
+    "size": 1250344
+  },
+  "/browser-preview-assets/2cef6d67f81af46c196b75d0c7df18db2f3d7276eb1cb068b05e2a774a54bde8/source/package-lock.json": {
+    "hash": "8aece0a79949b12185aef80021bafd64",
+    "size": 214212
+  },
+  "/browser-preview-assets/2d127e0fbdfdd139b90c2eb487950913771846991330460fce3b183ba79d8ddb/assets/matplotlib-3.10.8-cp314-cp314-pyemscripten_2026_0_wasm32.whl": {
+    "hash": "1d721b04b66afa270b1c13e635aac2bf",
+    "size": 6982033
+  },
+  "/browser-preview-assets/2d445184bcea93f59dc0b2e650c96d418b6e08fae1c17d7f7ba648c6ab694f04/runtime/renderer.mjs": {
+    "hash": "46539da6c2c3378fb7821d8e2e5ad6b5",
+    "size": 3366
+  },
+  "/browser-preview-assets/2db2237783cbaabd16abd941a459784543ae95879c052efc429f90b4777b595f/source/contract.ts": {
+    "hash": "2a91b2e4741d043803c6d37e9647ffa1",
+    "size": 8961
+  },
+  "/browser-preview-assets/32959d4137cec8143d75016d029281df3d2e80a232896ed903c2b59e1c44ee9f/assets/numpy-2.4.6-cp314-cp314-pyemscripten_2026_0_wasm32.whl": {
+    "hash": "6ab7eba2e9a1ddc3af57874a2c250853",
+    "size": 2918760
+  },
+  "/browser-preview-assets/38992bdaf7ee874e4f39395485e7341347181373c45f66c998bbcfd9fe1bcea1/host.bundle.mjs": {
+    "hash": "130b053d8829a204a23dc77a6e23a1ea",
+    "size": 41203
+  },
+  "/browser-preview-assets/3a0a00dfeaa348ac20f9ef09904233d32d33f644339662d4af368f8a2010f37a/assets/pyodide.asm.wasm": {
+    "hash": "164a7420c4f896b1cfc4b8afa908e662",
+    "size": 9598218
+  },
+  "/browser-preview-assets/3fdaef09e9e365c85e002737720f8d0ab8f278c1c244a2dde6a37663cf488ad4/assets/pyodide-lock.json": {
+    "hash": "62d69bd9bf2498d71da8383e2d786cd2",
+    "size": 114440
+  },
+  "/browser-preview-assets/4875e2d9e8db8bf82f15d1eb950c0327377c5651efafbae42f0e5c94eadb026e/source/contract.ts": {
+    "hash": "69f850af32cdef1135eeb9bdbea536b7",
+    "size": 10215
+  },
+  "/browser-preview-assets/49e63ea216c19622ce8a61b7ecfa1d570dad714da4438503e95aab6e11977b52/runtime/frame.mjs": {
+    "hash": "774d8e407120d6114e9c66ecae5136e9",
+    "size": 2276
+  },
+  "/browser-preview-assets/4c0cec31da970cc4c3f547be87c792de128831e6f0269a7b81428596c8be46ac/runtime/frame.html": {
+    "hash": "fe873adfe03b531a0c65a8f06b7d14d0",
+    "size": 161
+  },
+  "/browser-preview-assets/5139f59cfb287705c920e147f5abe2a02f6b018db775b7331eb18f5f6a045044/runtime/renderer.mjs": {
+    "hash": "d73694640d4f45898bd10beaea1580b8",
+    "size": 2992
+  },
+  "/browser-preview-assets/528f14add1b13f86f4780cf2cf067aea019885b2628720e352447cd0571234f7/assets/mesa-3.5.1-py3-none-any.whl": {
+    "hash": "5dbef025a91aaca79db27eee48380762",
+    "size": 275085
+  },
+  "/browser-preview-assets/5dc47f9c9e9da126476870464a9608a63134ed23a2fa587966e5091b736a338f/assets/setuptools-82.0.1-py3-none-any.whl": {
+    "hash": "ab408a3e19154fce4cce1652cec62e4c",
+    "size": 756856
+  },
+  "/browser-preview-assets/678fa6971794b1f5d9cd5ce83b7e4cb99902d80326d933acddc7426ed87acbc2/host.bundle.mjs": {
+    "hash": "7e1846791bafacf4d3621ce5fff3bd36",
+    "size": 53165
+  },
+  "/browser-preview-assets/69e3f6ccec3e14b465df60be577ca62f536251406b9a00cce019eac5252a2495/assets/pyodide.mjs": {
+    "hash": "5428ed0ab800d33b8af8c7a42fff36e0",
+    "size": 17931
+  },
+  "/browser-preview-assets/6b3c56af12009b9b053d0ce097ea9633b47123950e891baa83e71a07773dbf05/runtime/js-scene.mjs": {
+    "hash": "8004866aba8e2c9f0c017acf653df6b2",
+    "size": 5363
+  },
+  "/browser-preview-assets/6e2e0a600f43cf1cf418095e7666a573d7c6142ac179ccc3de0c513635fcfba8/runtime/host.mjs": {
+    "hash": "502f65bc6275ac27f2f0758ae9155ba3",
+    "size": 5395
+  },
+  "/browser-preview-assets/6e84d6d066a91819769093d7d5bf6cf67339a2c708087dc5b41934f5bc9fd931/runtime/host.mjs": {
+    "hash": "aec0619235db463998aeaec1872f3615",
+    "size": 8382
+  },
+  "/browser-preview-assets/70682ba25f1503dde0d9d3d98a889480b42b903a5d863b0a7118bc4173aa02c8/assets/cycler-0.12.1-py3-none-any.whl": {
+    "hash": "f6a6f6a5db5c955120cb60e562e3437c",
+    "size": 8321
+  },
+  "/browser-preview-assets/70c5b218495d55cd610752b01dc3d9f593dfd720bec271b5bebe4d86b51ae3c0/assets/decorator-5.2.1-py3-none-any.whl": {
+    "hash": "bcdcd429f463a18f0711791425746f9c",
+    "size": 9167
+  },
+  "/browser-preview-assets/7af5d4677757a6ef5bfa886fa9e4578e0aa3a59595bb3395083b7cdeeb064ffb/runtime/host.mjs": {
+    "hash": "37570e0ad0e8330f9bf527cc581c0f06",
+    "size": 11844
+  },
+  "/browser-preview-assets/80c5be6babfe03297069703410c3c29404dcf2525d2b128746bae5536f94831f/assets/python_stdlib.zip": {
+    "hash": "fbb0441459d9579124e7309826f768c6",
+    "size": 2545564
+  },
+  "/browser-preview-assets/831ec2706b7c113a456bf413d7df96b82aafbbf4a20ec7de8bbe91908d8dd878/source/prepare-assets.mjs": {
+    "hash": "9c30689d2bd7685794e063a8905148b6",
+    "size": 5809
+  },
+  "/browser-preview-assets/8512aee3e4b36b5a79523628d97d0d34612a366aecbb5b44a08c7ae45dd50d57/assets/scipy-1.18.0-cp314-cp314-pyemscripten_2026_0_wasm32.whl": {
+    "hash": "0c3f97d8635aebd7d891e540ef65d61d",
+    "size": 14029768
+  },
+  "/browser-preview-assets/85da435e9edaf4dca3411cf5f86fa45a95fe15c78060849d11f7eb0344b5bd24/runtime/sha256.mjs": {
+    "hash": "d99d6f1c06dfa1acd891da2ad70820d6",
+    "size": 2241
+  },
+  "/browser-preview-assets/86218f40282014072b1850363814edd71bb9f7d604f641d79dc5682fd837cb3c/runtime/worker.mjs": {
+    "hash": "989b88fb288b02a521e2f777e6b13bcc",
+    "size": 9168
+  },
+  "/browser-preview-assets/8c3e4bb64e23a66a4c9effc4a5a09a2aafc1db7d70b8451ba3ba5b7fe6d18dd2/assets/pyparsing-3.3.2-py3-none-any.whl": {
+    "hash": "6f253f621d00ad48e3d6852b7f2897ea",
+    "size": 122781
+  },
+  "/browser-preview-assets/91011f6d694a70939f901eb918a1cc5a72aeef08eda0339d7fce54fb93d41d14/runtime/package-loader.mjs": {
+    "hash": "1212f35989b08421afa210f337d13d15",
+    "size": 4861
+  },
+  "/browser-preview-assets/91f2bbd0ce334a8ce2144e6f26728cf292c5dfd3fa7943864cdd2d2e1ef30d57/source/prepare-assets.mjs": {
+    "hash": "e4459bffcd4d0906e9c1ef3a22f7454f",
+    "size": 5796
+  },
+  "/browser-preview-assets/9243ccf1179d9a487059ed507474543c2dc3c7beb9c1456f93ee94d77aaaa4cd/source/package-lock.json": {
+    "hash": "332d390349d57e0fd65eb8621861507c",
+    "size": 214930
+  },
+  "/browser-preview-assets/94f246abe8cd46f0695dc9256cde3966bc637b80148fe72a1e7b0e6623d62144/assets/fonttools-4.62.1-py3-none-any.whl": {
+    "hash": "005345e0b7866dda8c584e1f1aff87f6",
+    "size": 1152647
+  },
+  "/browser-preview-assets/99cef063109bb03956af3987b2351c4d6615060732597e224e9fc49ecd345392/assets/pandas-3.0.2-cp314-cp314-pyemscripten_2026_0_wasm32.whl": {
+    "hash": "7109b884470d92935df09f0251071fa8",
+    "size": 4177814
+  },
+  "/browser-preview-assets/9c1d350424840e15c16450ac0b0d6007e908d266746b61d64760dd77263085af/assets/python_dateutil-2.9.0.post0-py2.py3-none-any.whl": {
+    "hash": "7230612e43dd5af0e673fec586191968",
+    "size": 229892
+  },
+  "/browser-preview-assets/9f522e756ee4de1eac5dfb93eea6f6f699c5f3bbc59f647cd4358d79049585d0/host.bundle.mjs": {
+    "hash": "c6958f2e6fad1519e5281c97ec7af8b0",
+    "size": 41203
+  },
+  "/browser-preview-assets/a71a8543a100e9256049a91bc1ceecae78524e2dfc69121245a1c63aee15b717/delivery/worker.bundle.mjs": {
+    "hash": "0fd553a20f8b5e1524dd99e15b14788d",
+    "size": 1646213
+  },
+  "/browser-preview-assets/a8324250c1d0268eab9915ec62491ba9fce266b50d7069030507b7ef8bdf3a16/delivery/worker.bundle.mjs": {
+    "hash": "7cd756e40b63a3a18836409561493e45",
+    "size": 1654476
+  },
+  "/browser-preview-assets/a86cb7e6e748499e673303ba621ec011850ba9f3e7743f8e27162039ce5f47b5/source/package-lock.json": {
+    "hash": "50ab49b9d99d5b8ae9ac1c91c0975d03",
+    "size": 214516
+  },
+  "/browser-preview-assets/adaee63a7a2088b1bad68ceb2486a8e7fa7dc43b8a90d27de91dd36e2f058126/assets/networkx-3.6.1-py3-none-any.whl": {
+    "hash": "a25b1b6cfc899215eac2ba8e13dc6c95",
+    "size": 1084840
+  },
+  "/browser-preview-assets/b5605ae3086c650fa0124c0c4fc571ade2ee3910d12554a86443c5f171224e54/runtime/renderer.mjs": {
+    "hash": "b9099b5a43701eb603cc851d64a78d64",
+    "size": 3275
+  },
+  "/browser-preview-assets/b625401e119d9fd6c8188c204059fe8fdaf78a7ea5cb3e1e3517eef2b3d9c798/source/model-spec.ts": {
+    "hash": "7bd1558c48af1d17375e08ef671ead38",
+    "size": 8464
+  },
+  "/browser-preview-assets/bd3a0c065e226cbe7d6c5755b80d24c2c4248c60e17cb205ca59bf707471f888/runtime/js-frame.html": {
+    "hash": "cd0472d9938e02910105da76f26b26dc",
+    "size": 229
+  },
+  "/browser-preview-assets/c1e77f046229eef182b4ab91531f092772efc21dcdaa1adc13c4702f4ad8eadd/source/prepare-assets.mjs": {
+    "hash": "a543f55f5b8cf45adc760931c3a8bb8d",
+    "size": 5866
+  },
+  "/browser-preview-assets/c4d8fdd9fdafb055b48ee035c271806156187e8be109e14ebb8edb80c4dacf80/renderer.bundle.mjs": {
+    "hash": "a9ed1ee068ebc3b28fa0a3d987396bc8",
+    "size": 6909
+  },
+  "/browser-preview-assets/c8eaf8e55b79c2a7e765bdce5c1b84e05a43a585a16a00efadd96a0b7913914e/assets/pytz-2026.1.post1-py2.py3-none-any.whl": {
+    "hash": "668a6100b3e226cc62e2101073fc065c",
+    "size": 510489
+  },
+  "/browser-preview-assets/d0a6afcbb85b92d2ff5924a70b32b1e44ce691752cdbd1bf45d3cd8c9a4866a8/runtime/frame.mjs": {
+    "hash": "c3e9e08c906f6df030e2d4245d559220",
+    "size": 7619
+  },
+  "/browser-preview-assets/d1270323c10ab24141e40a854dcd407625cb4341c9b83301f1111e7db037b57f/assets/contourpy-1.3.3-cp314-cp314-pyemscripten_2026_0_wasm32.whl": {
+    "hash": "71a808ed3c6c884704e8d3a66cbb49d8",
+    "size": 118875
+  },
+  "/browser-preview-assets/ddc80a8321dec64e3373312dc4cbc709eec9d0d34477d7fe61e4b09378c7a197/runtime/protocol.mjs": {
+    "hash": "2d5b4a3ddd5161af02c0a138f67369bb",
+    "size": 5356
+  },
+  "/browser-preview-assets/df80d6f6218da064a00eae059e468ccf7e258b0c69f58dcaa256df56b97597e8/source/model-spec.ts": {
+    "hash": "6e0aa442a09f7217385d4be8ce8c4816",
+    "size": 7670
+  },
+  "/browser-preview-assets/e4be32b2e90c487509fbc0ba30644db87865670e812dd9fc85e153deaf3a058e/host.bundle.mjs": {
+    "hash": "819a9c12490ccc99914ca6b9af0d9f8a",
+    "size": 45189
+  },
+  "/browser-preview-assets/e640951bbc86715d41994d1b11f363ac60bf818cfabbf577770bad4bc8e4c23a/renderer.bundle.mjs": {
+    "hash": "1bf831ab711a7785723724ef2f23ac26",
+    "size": 7312
+  },
+  "/browser-preview-assets/e848f7d59438be4745473308d7d0d7caca5585fa741cf25ec47f3e7ac129f950/runtime/package-loader.mjs": {
+    "hash": "787aa09bb1553f29845f651e962943f6",
+    "size": 5952
+  },
+  "/browser-preview-assets/ebbb126a44583b8d619b7100eab233f3f0810acaaa232850826ad3621f78b3eb/delivery/js-frame.bundle.mjs": {
+    "hash": "f689f913a366b7a0830223b8ba04d59f",
+    "size": 20535
+  },
+  "/browser-preview-assets/ecc8d10e925d552eae08bca0a43c6ad5cdc53a1f83889b71c2d56eecf1cc3aeb/runtime/canvas.mjs": {
+    "hash": "e0c403c8a37eeba33f0753663bea8dbd",
+    "size": 2106
+  },
+  "/browser-preview-assets/f08716f1e1307718c01c03748408ffed22cbbe3c2a098a0d0cb8f616e0642a63/assets/tqdm-4.67.3-py3-none-any.whl": {
+    "hash": "08f68ff20afd2d65842209ec3dd16044",
+    "size": 78374
+  },
+  "/browser-preview-assets/f420e78080ca2310ed591ccc990d67809914e5acfb819ee34559bebde65a61cc/runtime/worker.mjs": {
+    "hash": "81c8ebb7965c0a5421506f272519f498",
+    "size": 5994
+  },
+  "/browser-preview-assets/f58ad9d3cde3f3051e3bc82df1db19ff0aa940439dfd5f5d470da61c5ea033bf/assets/packaging-26.1-py3-none-any.whl": {
+    "hash": "a7d6b4ef324f89f12380b0859833fc79",
+    "size": 95852
+  },
+  "/browser-preview-assets/f8b19816e2cf8e36fc2adfabb60ad24dad422dfaffa6087173d829d9924fcc07/assets/kiwisolver-1.5.0-cp314-cp314-pyemscripten_2026_0_wasm32.whl": {
+    "hash": "5afe00e1537a11cb5ba4652f6ec0ae61",
+    "size": 36616
+  },
+  "/browser-preview-assets/fdfd36964c9415369daa78869c749c0ff72e04fa6165ecbd0c79b3ba7afdc396/runtime/package-loader.mjs": {
+    "hash": "5decacc3c4b75b31bca4244a444a35d6",
+    "size": 4845
+  },
+  "/browser-preview.js": {
+    "hash": "ad3c2e24992b6b961321fec504568de1",
+    "size": 24485
+  },
+  "/comparison.js": {
+    "hash": "acefc2abe872c84f2569bb6eb096f660",
+    "size": 18964
+  },
+  "/evidence.css": {
+    "hash": "ed85585aa2f607fc5232b7827d104f9d",
+    "size": 1002
+  },
+  "/evidence.js": {
+    "hash": "d713f1147ef0f8572b45f2270b1d5ec3",
+    "size": 11359
+  },
+  "/export.js": {
+    "hash": "b6188787292e5875fd7de856a5a95020",
+    "size": 4767
+  },
+  "/i18n-bindings.js": {
+    "hash": "1f1f5cc7539f95efb943ad69460898e4",
+    "size": 2559
+  },
+  "/i18n.js": {
+    "hash": "6041733719c0cc5925e9e7370204b17e",
+    "size": 150342
+  },
+  "/index.html": {
+    "hash": "5239819b361cf5d0d5edab220e47243a",
+    "size": 14439
+  },
+  "/layout.js": {
+    "hash": "918ccedd987aef8d024d85bdf66274aa",
+    "size": 4859
+  },
+  "/local-runs.js": {
+    "hash": "a97982dc24e036c58514832a8cb290d8",
+    "size": 16574
+  },
+  "/locale-preference.js": {
+    "hash": "55b3fb918f059f9803ffb53f75ab661f",
+    "size": 2182
+  },
+  "/manual-save.js": {
+    "hash": "cb7668a679bd7d2a7c8a91fb491269ea",
+    "size": 11484
+  },
+  "/previews.js": {
+    "hash": "c6f75fc539ca27a59dd58ff296499655",
+    "size": 15111
+  },
+  "/project-status.js": {
+    "hash": "49f9a817a1d83d912db2994f0cd5b204",
+    "size": 940
+  },
+  "/project-view-local.js": {
+    "hash": "2e6a7c023925caf9551c8951f72c9d04",
+    "size": 4396
+  },
+  "/project-view-remote.js": {
+    "hash": "34f77c300739da874286b724b52781b3",
+    "size": 9888
+  },
+  "/project-views.js": {
+    "hash": "c8fb54772ae5b503c0466ac51584e751",
+    "size": 17054
+  },
+  "/publication.js": {
+    "hash": "f8e8306fa75ccde4b23f07ee1db7205e",
+    "size": 9756
+  },
+  "/services.js": {
+    "hash": "e141f9bf5d065d0e7c255f785dc4e48c",
+    "size": 17559
+  },
+  "/simulation.js": {
+    "hash": "53f554d7b727dfe851568c54bd765ece",
+    "size": 23498
+  },
+  "/styles.css": {
+    "hash": "cf36ac86a5ca41dba7378e22a8342a93",
+    "size": 4283
+  },
+  "/verify-handoff.js": {
+    "hash": "06955e397bd1532d4adc8e14d24b4970",
+    "size": 9571
+  },
+  "/workspace.css": {
+    "hash": "a0a3546ce4fc910a902ac124924b9d8e",
+    "size": 20995
+  }
+}

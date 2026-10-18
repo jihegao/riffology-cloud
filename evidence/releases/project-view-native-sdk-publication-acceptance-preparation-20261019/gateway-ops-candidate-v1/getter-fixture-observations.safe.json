@@ -1,0 +1,30 @@
+{
+  "schema": "jhg46-sdk-gateway-getter-local-fixtures/v1",
+  "recordedAt": "2026-10-18T17:48:50.283Z",
+  "syntheticGetOnly": true,
+  "metrics": [
+    {
+      "phase": "before-worker-put",
+      "requestCount": 39,
+      "compactBytes": 12001,
+      "prettyBytes": 12594,
+      "complete": true,
+      "sourceSha256": "9c8e4b6b763e9887d1624f00ed3a8efb2a8a24d984d96bc68fdb289cb4d362c3",
+      "actualDataSource": "dated current raw families; actual9c8 and3043 module bytes; dummy GET-only connector",
+      "actualNetworkCalls": 0
+    },
+    {
+      "phase": "after-worker-put",
+      "requestCount": 39,
+      "compactBytes": 12000,
+      "prettyBytes": 12593,
+      "complete": true,
+      "sourceSha256": "304373a50d7a9ca8a99cdfbda0dcae261aa34d53727b757dfeb099c88efb5e0b",
+      "actualDataSource": "dated current raw families; actual9c8 and3043 module bytes; dummy GET-only connector",
+      "actualNetworkCalls": 0
+    }
+  ],
+  "credentialsRead": false,
+  "realNetworkCalls": 0,
+  "cloudWrites": 0
+}

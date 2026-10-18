@@ -1,0 +1,26 @@
+{
+  "schema": "jhg46-sdk-gate-final-local-checks/v1",
+  "argv": [
+    "node",
+    "--test",
+    ".local/jhg46-native-sdk-acceptance-preparation-20261019/browser-gate-ops-candidate-v1/gate-transitions.test.mjs",
+    ".local/jhg46-native-sdk-acceptance-preparation-20261019/browser-gate-ops-candidate-v1/gate-witness-fixtures.test.mjs"
+  ],
+  "startedAt": "2026-10-18T17:54:07.756197+00:00",
+  "endedAt": "2026-10-18T17:54:08.169370+00:00",
+  "exitCode": 0,
+  "tests": 9,
+  "pass": 9,
+  "fail": 0,
+  "stdout": {
+    "bytes": 1045,
+    "sha256": "f1a045d67de2c677df05531893f7f9edf8139082905fd85d1e1fb4bdd89019a3"
+  },
+  "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "authorNotIndependentReview": true,
+  "networkOrCredentialOrCloudActions": 0,
+  "rerunReason": "Canonical original policy body hash now uses the same product parser as actual factory; added reordered-input assertion. Previous9case run remains checks-final unchanged."
+}

@@ -1,0 +1,16 @@
+{
+  "schema": "jhg46-sdk-publisher-parent-source/v1",
+  "mode": "new local author adaptation, not independent review",
+  "parentExecutedSender": {
+    "file": "/Users/jihegao/.codex/worktrees/jhg46-pi-maintenance-admission/riffology-cloud/.local/jhg46-next-stage-preparation-20261018/gateway-ops-execution-v1/publish-gateway-replacement.mjs",
+    "bytes": 38113,
+    "sha256": "4f53f3ad9830685eff339a4554e5e11d31067b2c13d7019992a627998f1ade1a"
+  },
+  "fivePurePrimitives": {
+    "file": "reviewed-publication-primitives.mjs",
+    "bytes": 3711,
+    "sha256": "2c1e96b10dc38799a7115d071acaff576466c35bce7888db96b3c1f0e4ef9ea1",
+    "byteExactCopied": true
+  },
+  "parentOldRequestAndLockCopied": false
+}

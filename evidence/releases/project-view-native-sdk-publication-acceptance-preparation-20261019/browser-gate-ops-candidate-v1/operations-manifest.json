@@ -1,0 +1,166 @@
+{
+  "schema": "jhg46-sdk-offline-operation-candidate-manifest/v1",
+  "recordedAt": "2026-10-18T17:55:03.932045+00:00",
+  "authorPreparationNotIndependentReview": true,
+  "batchRequestId": "fb07e239-2cb4-4379-9581-5711d86a0f30",
+  "gateRequestId": "95b9b8c6-8d52-566d-8476-dfa3e02f6b79",
+  "publisherRequestId": "1feadf24-3eb8-58be-abd7-872c68ab45e6",
+  "fixedImplementation": "fca66cb0e1024b4e86bbbeb9a6d955b137599efa",
+  "fixedBundleSha256": "304373a50d7a9ca8a99cdfbda0dcae261aa34d53727b757dfeb099c88efb5e0b",
+  "executionAuthorized": false,
+  "files": [
+    {
+      "file": "browser-gate-ops-candidate-v1/requests.mjs",
+      "bytes": 5271,
+      "sha256": "3280a2da6e09c8d4e52729c8bfa3571da6873c217e32b53b078b97e7f074ce0e"
+    },
+    {
+      "file": "browser-gate-ops-candidate-v1/publication-binding.mjs",
+      "bytes": 3500,
+      "sha256": "9fcf29854413171fda9b63a8207a103725d12f7d828d435f3a34e722d659df22"
+    },
+    {
+      "file": "browser-gate-ops-candidate-v1/gate-transition-binding.mjs",
+      "bytes": 8829,
+      "sha256": "ba8c253ec1bb34b02f8da598c79af4d87580e531b8c8772f4c4c493b1c3a7f23"
+    },
+    {
+      "file": "browser-gate-ops-candidate-v1/make-gate-witness-source.mjs",
+      "bytes": 9902,
+      "sha256": "5ff00f15596f43fba337616b6fb7b6e5d1b4e8a0b0aff5e3efe2df8ca034c679"
+    },
+    {
+      "file": "browser-gate-ops-candidate-v1/projection.mjs",
+      "bytes": 949,
+      "sha256": "6554f7b22b63364ff6871d5f20a11da3ac48105060b8cb5e29d2e2cc60b5f40c"
+    },
+    {
+      "file": "browser-gate-ops-candidate-v1/readonly-kernel.original.txt",
+      "bytes": 18335,
+      "sha256": "ed0c61b156bc002db484343aac06f88a521e40a5ba0f1531847b1fe10287d000"
+    },
+    {
+      "file": "browser-gate-ops-candidate-v1/preparation.json",
+      "bytes": 1065,
+      "sha256": "bebe7700bf1617cb6b411da94a59c88d0d231a3b2c4d4a39a5f259e59300dc46"
+    },
+    {
+      "file": "browser-gate-ops-candidate-v1/README.md",
+      "bytes": 7289,
+      "sha256": "72f851461766446fdc9c5b7552e1060caa74824c6cadf418969ae119be35954d"
+    },
+    {
+      "file": "browser-gate-ops-candidate-v1/gate-transitions.test.mjs",
+      "bytes": 5938,
+      "sha256": "98b98bfd54b691312bf2a2758be3a9b9e2ca58e62ce771c7f2f8499bdd0f4cc8"
+    },
+    {
+      "file": "browser-gate-ops-candidate-v1/transition-fixtures.mjs",
+      "bytes": 5438,
+      "sha256": "2d1cd1a36b31c9e1d48b54082cf1d435e3d8f48ee2f481a7aa9e1441659363bb"
+    },
+    {
+      "file": "browser-gate-ops-candidate-v1/gate-witness-fixtures.test.mjs",
+      "bytes": 5900,
+      "sha256": "4b3217604f4b24b1cbfbabbaa0146fa8cd9649a85a30b1963c346c06a155196c"
+    },
+    {
+      "file": "browser-gate-ops-candidate-v1/checks-final-v2/receipt.safe.json",
+      "bytes": 1003,
+      "sha256": "b5e18b60cfb6725b9f85f69a80a2465f7ad0c19de7bccd46f7a47346049de11d"
+    },
+    {
+      "file": "browser-gate-ops-candidate-v1/checks-final-v2/stdout",
+      "bytes": 1045,
+      "sha256": "f1a045d67de2c677df05531893f7f9edf8139082905fd85d1e1fb4bdd89019a3"
+    },
+    {
+      "file": "browser-gate-ops-candidate-v1/checks-final-v2/stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "browser-gate-ops-candidate-v1/checks-final-v2/gate-witness-observations.safe.json",
+      "bytes": 1290,
+      "sha256": "f719000dac585b3ab75219e832a9b8ee05134bd1541181efe9af48f1097051c6"
+    },
+    {
+      "file": "browser-gate-ops-candidate-v1/checks-final/receipt.safe.json",
+      "bytes": 772,
+      "sha256": "6af2e6faf519f67433d10b8fe02184d077e50ad469e193a66e1a9b6d2d9c9602"
+    },
+    {
+      "file": "browser-gate-ops-candidate-v1/checks-final/stdout",
+      "bytes": 1049,
+      "sha256": "a2caf246eff02d3cc4e494e792e9c47b4952f6075a6e504a35170089a2e51f56"
+    },
+    {
+      "file": "browser-gate-ops-candidate-v1/checks-final/stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "browser-gate-ops-candidate-v1/gate-witness-observations.safe.json",
+      "bytes": 1290,
+      "sha256": "cc5930b55dfb88497080006be4db4d5096cad256fdd04514ed72df2ee948169a"
+    },
+    {
+      "file": "browser-gate-ops-candidate-v1/history/first-transition-check/result.safe.json",
+      "bytes": 459,
+      "sha256": "6f45e85b2a7b4da6f609a77afc4b3580eb6ef1e2ed39e2b3d93fefdd00f8f52b"
+    },
+    {
+      "file": "browser-gate-ops-candidate-v1/history/first-transition-check/gate-transitions.test.mjs",
+      "bytes": 9892,
+      "sha256": "5495dbde91c753ea368955a038a937e655ff13051220399c31c8f052188e904c"
+    }
+  ],
+  "externalSourceClosure": {
+    "validatedByGatewayPreparation": {
+      "file": "gateway-ops-candidate-v1/operations-manifest.json",
+      "bytes": 4317,
+      "sha256": "1f91432d7546a7dfce12aee5345b58048314590aa2c2e0881bd8372b17419598"
+    },
+    "datedProjectionHelper": {
+      "file": "gateway-ops-candidate-v1/dated-baseline.mjs",
+      "bytes": 5954,
+      "sha256": "8343bea6953e6854ed7145d41092cce1521315cf9d16d380405f941088a206da"
+    },
+    "all477SelectedSourceFiles": {
+      "file": "build-candidate-v2/source-input-inventory.json",
+      "bytes": 159809,
+      "sha256": "d3c793dc1e2fd29bc91b8b93a39825827a3c9f8a737c5d805642c1a45988624a"
+    },
+    "moduleGraph1124": {
+      "file": "build-candidate-v2/output/source-graph.json",
+      "bytes": 879161,
+      "sha256": "ee731e078e47ab8a6e67e316e3b66ee53828022267937214197a98c6a98d6fab"
+    },
+    "sourceBinding": {
+      "file": "build-candidate-v2/source-content-binding.json",
+      "bytes": 13060,
+      "sha256": "4f5bcd14f20e06b810405a730c3d57d8cbfe0905bbffa95f9696535243f6ce06"
+    },
+    "importRoots": [
+      "build-candidate-v2/source/services/project-views/browser-policy.ts",
+      "build-candidate-v2/source/services/turn/protocol.ts"
+    ],
+    "note": "The full frozen selected-source/dependency closure, not only direct TypeScript imports, is the guard. Root must retain/check the frozen operation/build closure before invoking these pure factories; no auth/HTTP sender is present."
+  },
+  "actualFutureInputsNull": [
+    "single257 normal merge",
+    "same new direct batch grant/window",
+    "actual SDK publication ACK/full independent after snapshot",
+    "actual new ordinary project/actor/quartet",
+    "original owned gate PUT/DELETE intents/ACKs/current GET records"
+  ],
+  "finalFocusedChecks": {
+    "run": "checks-final-v2/receipt.safe.json",
+    "tests": 9,
+    "pass": 9,
+    "fail": 0,
+    "firstFixtureFailureRetained": true,
+    "uniqueCasesNotSummedAcrossReruns": true
+  },
+  "networkCredentialCloudWritesDuringPreparation": 0
+}

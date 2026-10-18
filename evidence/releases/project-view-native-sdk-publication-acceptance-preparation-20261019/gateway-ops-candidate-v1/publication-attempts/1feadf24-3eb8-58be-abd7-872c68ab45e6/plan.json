@@ -1,0 +1,50 @@
+{
+  "schema": "jhg46-native-sdk-gateway-replacement-plan/v1",
+  "createdAt": "2026-10-18T17:44:28.064Z",
+  "accountId": "8b0d70250211aa10d89e20605a1c7e5e",
+  "worker": "riffology-m1-gateway-staging",
+  "requestId": "1feadf24-3eb8-58be-abd7-872c68ab45e6",
+  "reviewOnly": true,
+  "authorizationPresent": false,
+  "blocked": [
+    "actual normal merge of fixed257/fca head and source verification",
+    "root-reviewed new finite human grant",
+    "same-request fresh Personal before/after preservation witnesses"
+  ],
+  "publisherSha256": "8d6d554f7579d87d3f7edb5279353833aeeed0a9cd1799f2d83735ea9725a9ef",
+  "preparerSha256": "7da498c0d050cb572e8ae301204b11b1df3fd8c85bc6a4faaa353fed4cd463c8",
+  "reviewedPrimitivesSha256": "2c1e96b10dc38799a7115d071acaff576466c35bce7888db96b3c1f0e4ef9ea1",
+  "pullRequestHeads": {
+    "257": "fca66cb0e1024b4e86bbbeb9a6d955b137599efa"
+  },
+  "sourceInventorySha256": "d3c793dc1e2fd29bc91b8b93a39825827a3c9f8a737c5d805642c1a45988624a",
+  "sourceBindingSha256": "4f5bcd14f20e06b810405a730c3d57d8cbfe0905bbffa95f9696535243f6ce06",
+  "moduleGraphSha256": "ee731e078e47ab8a6e67e316e3b66ee53828022267937214197a98c6a98d6fab",
+  "buildManifestSha256": "c4289bb276ed6ede021acd6c8d2c439aeb007ea8ca5b15b582bf4b1aa7564e20",
+  "finalized": true,
+  "executionSealed": false,
+  "bundleSha256": "304373a50d7a9ca8a99cdfbda0dcae261aa34d53727b757dfeb099c88efb5e0b",
+  "bundleBytes": 5774988,
+  "metadataSha256": "deaebd8cb6eefe25098b7cb3e48223e760df9b6456b287b6a4c1bd988d68f636",
+  "completeBaselineSha256": "24a04f3d44b01788dbb3157f07b83d2614f16dbee9622ed5ec5f7906d9a61f2a",
+  "safeBaselineSha256": "909173b4f60e93ea956700822c56f886077a6cd4f66303f6ae1e1f1f01cc8702",
+  "mergeProof": null,
+  "operations": [
+    "asset-session",
+    "server-requested-asset-uploads",
+    "single-worker-put"
+  ],
+  "bindings": 106,
+  "wireBindings": 95,
+  "retainedSecrets": 11,
+  "exports": 25,
+  "containerAssociations": 6,
+  "namespaces": 50,
+  "apps": 16,
+  "assets": 96,
+  "defaultClosed": true,
+  "applicationOrPolicyChanges": false,
+  "cloudWritesDuringPreparation": 0,
+  "credentialReadsDuringPreparation": 0,
+  "networkRequestsDuringPreparation": 0
+}
