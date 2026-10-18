@@ -1,0 +1,17 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "--test-name-pattern=rewritten aggregate|Managed pages|exact delivered",
+    "tests/m3/project-view-package-budget.test.mjs"
+  ],
+  "cwd": "/Users/jihegao/.codex/worktrees/jhg46-package-response-budget/riffology-cloud",
+  "startedAt": "2026-10-18T00:04:30.860129+00:00",
+  "endedAt": "2026-10-18T00:04:31.471064+00:00",
+  "exitCode": 1,
+  "stdoutFile": "before-regression.stdout.log",
+  "stdoutBytes": 2953,
+  "stdoutSha256": "cc350c60bc14540dc21ae04e70ab3e249b1c16bf174a43046b7196b8c520a1cc",
+  "productionSourceUnmodified": true
+}

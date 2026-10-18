@@ -1,0 +1,208 @@
+{
+  "schema": "project-view-package-budget-implementation-check/v1",
+  "recordedAt": "2026-10-18T00:08:34.738525+00:00",
+  "issue": "https://github.com/jihegao/riffology-cloud/issues/245",
+  "worktree": "/Users/jihegao/.codex/worktrees/jhg46-package-response-budget/riffology-cloud",
+  "branch": "codex/jhg46-package-response-budget-20261018",
+  "base": "638a366d31a37f7bc1d7dcd124e0b5ba753d6401",
+  "productionFilesChanged": [
+    "services/project-views/package.ts"
+  ],
+  "sourceFiles": [
+    {
+      "path": "services/project-views/package.ts",
+      "bytes": 7776,
+      "sha256": "1d7683036c31ff238367f5f16e72b7f1381acf214cda97cf7fc032802b4a1d41"
+    },
+    {
+      "path": "tests/m3/project-view-package-budget-fixture.mjs",
+      "bytes": 2147,
+      "sha256": "6908f8d1a67488af1d9e8aaa9a88c2304fc4d4bdceac23b428ed863a3061dfdf"
+    },
+    {
+      "path": "tests/m3/project-view-package-budget.test.mjs",
+      "bytes": 5589,
+      "sha256": "6822ea58b3c95361d2a9d58d075666a68850cb09c11c8060ae776a31c7040027"
+    }
+  ],
+  "fullDiff": {
+    "file": "review-ready.patch",
+    "bytes": 10655,
+    "sha256": "73474cc1d7b0529480980d46105615cf709b36976ce43cfa3d187b787beea33b"
+  },
+  "beforeFixActualObservation": {
+    "schema": "project-view-package-budget-before/v1",
+    "serverAccepted": true,
+    "archiveBytes": 276480,
+    "sourceAssetBytes": 230620,
+    "transformedAssetBytes": 2240220,
+    "bodyBytes": 3004353,
+    "packageIdentity": "6eeaebda305ede8783f7bd447d5bb6d87da5b80045e33d8ace5446732ad03231",
+    "clientRejected": true,
+    "clientError": "project-view-asset-digest",
+    "managedAccepted": true,
+    "candidateBytes": 253312,
+    "coldBytes": 253362,
+    "near": {
+      "assetBytes": 2097152,
+      "packageIdentity": "9665b73e0bf80e0246c94b75f3f1cfd841d568d5057061c146d856e94d204a0a",
+      "bodyBytes": 2812334,
+      "clientAccepted": true
+    }
+  },
+  "implementation": {
+    "preservesOriginalArchiveAssetBudgets": true,
+    "checksDeliveredAssetAggregateBytes": 2097152,
+    "checksFinalUtf8JsonBodyBytesExcludingPackageIdentity": 3145728,
+    "hashUsesSameFinalBodyBytes": true,
+    "clientUnchanged": true,
+    "acceptedNearBoundaryPackageIdentityUnchanged": "9665b73e0bf80e0246c94b75f3f1cfd841d568d5057061c146d856e94d204a0a"
+  },
+  "checks": [
+    {
+      "name": "before-builder-client",
+      "file": "before-builder-client.receipt.json",
+      "bytes": 2695,
+      "sha256": "f166593300b1d22d150d4646e353644970de0a9a0a661659bdc2f66c9aced621",
+      "startedAt": "2026-10-18T00:04:20.805233+00:00",
+      "endedAt": "2026-10-18T00:04:21.269769+00:00",
+      "exitCode": 0,
+      "command": [
+        "node",
+        "--input-type=module",
+        "-e",
+        "import assert from 'node:assert/strict';\nimport {buildProjectViews,readProjectViewsArchive} from './services/project-views/package.ts';\nimport {verifyProjectViewPackage} from './services/web/project-views.js';\nimport {resolveManagedCandidate} from './services/turn-runtime/managed-candidate-v3.ts';\nimport {managedCandidateRecoveryFiles} from './services/turn-runtime/managed-candidate.ts';\nimport {budgetFiles,budgetArchive} from './tests/m3/project-view-package-budget-fixture.mjs';\nimport {scope} from './tests/m3/project-views-fixture.mjs';\nconst f=budgetFiles(),{bytes,source}=budgetArchive(f.files),pkg=await buildProjectViews(source,bytes),{packageIdentity,...body}=pkg;\nconst parsed=readProjectViewsArchive(bytes),transformed=parsed.assets.reduce((sum,a)=>sum+a.bytes.length,0),original=parsed.assets.reduce((sum,a)=>sum+a.original.length,0);\nassert.ok(transformed>2*1024*1024);assert.ok(original<2*1024*1024);\nlet clientError;await assert.rejects(verifyProjectViewPackage(pkg,scope),error=>{clientError=error.message;return /project-view-asset-digest/.test(clientError);});\nconst candidate={schemaVersion:3,operation:'pages',manifest:f.manifest,files:Object.fromEntries(Object.entries(f.files).filter(([p])=>p!=='app/views.json'))},managed=resolveManagedCandidate(candidate,undefined);\nassert.equal(managed.operation,'save');\nconst near=budgetFiles(29,{exactTotal:true}),nf=budgetArchive(near.files),np=await buildProjectViews(nf.source,nf.bytes);await verifyProjectViewPackage(np,scope);\nconsole.log(JSON.stringify({schema:'project-view-package-budget-before/v1',serverAccepted:true,archiveBytes:bytes.length,sourceAssetBytes:original,transformedAssetBytes:transformed,bodyBytes:Buffer.byteLength(JSON.stringify(body)),packageIdentity,clientRejected:true,clientError,managedAccepted:true,candidateBytes:Buffer.byteLength(JSON.stringify(candidate)),coldBytes:Buffer.byteLength(JSON.stringify(managedCandidateRecoveryFiles(managed.filesArchive))),near:{assetBytes:near.deliveredBytes,packageIdentity:np.packageIdentity,bodyBytes:Buffer.byteLength(JSON.stringify((({packageIdentity,...b})=>b)(np))),clientAccepted:true}},null,2));"
+      ],
+      "stdout": {
+        "file": "before-builder-client.stdout.log",
+        "bytes": 625,
+        "sha256": "975869bfb53cad4a940a757ccd09d26b8fe0a41b96e3a448516d37314f61550f"
+      }
+    },
+    {
+      "name": "before-regression",
+      "file": "before-regression.receipt.json",
+      "bytes": 608,
+      "sha256": "26af3ed1bc193354046ec6f625c4cc2d8042ec11d67b92ca415f902666f62346",
+      "startedAt": "2026-10-18T00:04:30.860129+00:00",
+      "endedAt": "2026-10-18T00:04:31.471064+00:00",
+      "exitCode": 1,
+      "command": [
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-name-pattern=rewritten aggregate|Managed pages|exact delivered",
+        "tests/m3/project-view-package-budget.test.mjs"
+      ],
+      "stdout": {
+        "file": "before-regression.stdout.log",
+        "bytes": 2953,
+        "sha256": "cc350c60bc14540dc21ae04e70ab3e249b1c16bf174a43046b7196b8c520a1cc"
+      }
+    },
+    {
+      "name": "focused-first",
+      "file": "focused-first.receipt.json",
+      "bytes": 1391,
+      "sha256": "66bbdaa6e5871c84f7a5111409cda0d40d18f1e7ba5e4ba16abe267128bc85ae",
+      "startedAt": "2026-10-18T00:05:49.913517+00:00",
+      "endedAt": "2026-10-18T00:05:56.092725+00:00",
+      "exitCode": 0,
+      "command": [
+        "node",
+        "--test",
+        "--test-concurrency=2",
+        "tests/m3/project-view-package-budget.test.mjs",
+        "tests/m3/project-views.test.mjs",
+        "tests/m2/managed-pages-candidate.test.ts",
+        "tests/m2/managed-candidate-v3.test.ts",
+        "tests/m2/manual-save-policy.test.ts",
+        "tests/m2/manual-save-operation.test.ts",
+        "tests/m3/manual-save-gateway.test.mjs",
+        "tests/m2/manual-save-workerd.test.mjs",
+        "tests/m3/manual-page-broker-workerd.test.mjs"
+      ],
+      "stdout": {
+        "file": "focused-first.stdout.log",
+        "bytes": 7611,
+        "sha256": "c34d648f3a383a635b0130ffd19b5437f594565fb46da21d5a55692eac9f1361"
+      }
+    },
+    {
+      "name": "focused-final-budget",
+      "file": "focused-final-budget.receipt.json",
+      "bytes": 1034,
+      "sha256": "40bbfc61cf8dafdfd8e52679504dd4724f757b39e1173063ccb10e717dd93ea8",
+      "startedAt": "2026-10-18T00:07:08.157103+00:00",
+      "endedAt": "2026-10-18T00:07:10.202939+00:00",
+      "exitCode": 0,
+      "command": [
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "tests/m3/project-view-package-budget.test.mjs"
+      ],
+      "stdout": {
+        "file": "focused-final-budget.stdout.log",
+        "bytes": 585,
+        "sha256": "2be153f469f27fe7f86651cbaa8205ff5ec4a11fd18883aff04f7b4524e1256d"
+      }
+    },
+    {
+      "name": "typecheck",
+      "file": "typecheck.receipt.json",
+      "bytes": 954,
+      "sha256": "6301cbcf49f785bf7c7bc772cc54bd3352d31890c7b74f268c520feeeff63f57",
+      "startedAt": "2026-10-18T00:05:47.651679+00:00",
+      "endedAt": "2026-10-18T00:05:48.515389+00:00",
+      "exitCode": 0,
+      "command": [
+        "npm",
+        "run",
+        "typecheck"
+      ],
+      "stdout": {
+        "file": "typecheck.stdout.log",
+        "bytes": 29,
+        "sha256": "8fa1cf5506304e8abac55868e7f1a136c9b1dde57a3981a382da4c21ea129a6f"
+      }
+    }
+  ],
+  "results": {
+    "beforeFixRegression": {
+      "exitCode": 1,
+      "pass": 0,
+      "fail": 3,
+      "expectedDemonstrationOfMissingGuards": true
+    },
+    "relatedFocusedFirst": {
+      "pass": 67,
+      "fail": 0,
+      "skipped": 0,
+      "note": "Production source matches final; then the new manual-save test strengthened only its object snapshot from keys to key/size/etag."
+    },
+    "finalFocusedBudget": {
+      "pass": 4,
+      "fail": 0,
+      "skipped": 0,
+      "includesRealLocalGatewayWorkspaceD1R2": true
+    },
+    "typecheckExitCode": 0,
+    "gitDiffCheckExitCode": 0,
+    "independentStaticReview": "preflight_tests: no blocker; did not rerun tests"
+  },
+  "manualSaveScope": {
+    "actualIntegrationAdmission": "Existing dual-loopback fixture localLimits; no production policy enabled in integration.",
+    "samePatchProductionInputCheck": "The exact final 7200-byte text patch also passed the real production smallText body validator (8192-byte file / 24576-byte request). This is not production authorization or an online save.",
+    "canonicalOutcome": "Rejected patch leaves canonical Revision/package identity and R2 object key/size/etag unchanged; original fence released. Rejection journal/fence audit writes remain allowed.",
+    "baselineAdmission": "Large baseline saved only inside the existing local synthetic fixture; not claimed to fit a single production scoped manual-save request."
+  },
+  "limitations": [
+    "Final 3 MiB body guard is defensive for current bounded valid metadata; no fabricated oversized scope was used to force that branch.",
+    "No full npm run check or CI rerun; existing relevant package, Managed, manual-save, Workerd and broker regressions plus typecheck were run.",
+    "No browser rendering or authenticated user acceptance claimed; exact product web verifier was imported and exercised.",
+    "No dependencies installed or upgraded; node_modules is an untracked symlink to the existing cache.",
+    "No cloud/provider/SSH/Docker/auth/deployment, git commit, push, PR or metadata write performed."
+  ],
+  "historicalInputsPreserved": true
+}

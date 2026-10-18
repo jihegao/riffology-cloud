@@ -1,0 +1,12 @@
+✔ rewritten aggregate is rejected by the shared archive parser and builder before delivery (63.943958ms)
+✔ Managed pages rejects a rewrite-inflated candidate within its candidate and cold-source envelopes (26.257542ms)
+✔ exact delivered 2 MiB remains inclusive and preserves bytes, body hash and client verification (235.936166ms)
+✔ small text manual patch that crosses rewritten budget leaves canonical Revision and immutable objects unchanged (1421.368917ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1973.929167

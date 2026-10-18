@@ -1,0 +1,68 @@
+{
+  "base": "638a366d31a37f7bc1d7dcd124e0b5ba753d6401",
+  "derivedEvidence": {
+    "typecheck-stdout.json": "base64 container; decode verifies the original typecheck.stdout.log bytes/hash named by immutable receipt"
+  },
+  "files": {
+    "README.md": {
+      "bytes": 3896,
+      "sha256": "b634cdbe0ca9bd1073c846f3d95b870d58449dfcb67cc7bb0fdff785ed39f2a2"
+    },
+    "before-builder-client.receipt.json": {
+      "bytes": 2695,
+      "sha256": "f166593300b1d22d150d4646e353644970de0a9a0a661659bdc2f66c9aced621"
+    },
+    "before-builder-client.stdout.log": {
+      "bytes": 625,
+      "sha256": "975869bfb53cad4a940a757ccd09d26b8fe0a41b96e3a448516d37314f61550f"
+    },
+    "before-regression.receipt.json": {
+      "bytes": 608,
+      "sha256": "26af3ed1bc193354046ec6f625c4cc2d8042ec11d67b92ca415f902666f62346"
+    },
+    "before-regression.stdout.log": {
+      "bytes": 2953,
+      "sha256": "cc350c60bc14540dc21ae04e70ab3e249b1c16bf174a43046b7196b8c520a1cc"
+    },
+    "environment.json": {
+      "bytes": 457,
+      "sha256": "74b94429a6fd370ed9b2917c45d29ed0f65a602f9c5cf82234edfa9330168555"
+    },
+    "focused-final-budget.receipt.json": {
+      "bytes": 1034,
+      "sha256": "40bbfc61cf8dafdfd8e52679504dd4724f757b39e1173063ccb10e717dd93ea8"
+    },
+    "focused-final-budget.stdout.log": {
+      "bytes": 585,
+      "sha256": "2be153f469f27fe7f86651cbaa8205ff5ec4a11fd18883aff04f7b4524e1256d"
+    },
+    "focused-first.receipt.json": {
+      "bytes": 1391,
+      "sha256": "66bbdaa6e5871c84f7a5111409cda0d40d18f1e7ba5e4ba16abe267128bc85ae"
+    },
+    "focused-first.stdout.log": {
+      "bytes": 7611,
+      "sha256": "c34d648f3a383a635b0130ffd19b5437f594565fb46da21d5a55692eac9f1361"
+    },
+    "implementation-check-receipt.json": {
+      "bytes": 10188,
+      "sha256": "6903c177d63da1392bec6143ed503ec6ca62bb825105ca6c07e293753f991bcc"
+    },
+    "independent-source-review.json": {
+      "bytes": 9717,
+      "sha256": "5c1ee3d39607e02dd1bfccc54d322c1bbd207116555e3122f6b6c3c9f059d86d"
+    },
+    "typecheck-stdout.json": {
+      "bytes": 266,
+      "sha256": "8d8cbd5ef935f0b47e66e0db6eb5dfc80133e64753a4797d4024937a76f5d82e"
+    },
+    "typecheck.receipt.json": {
+      "bytes": 954,
+      "sha256": "6301cbcf49f785bf7c7bc772cc54bd3352d31890c7b74f268c520feeeff63f57"
+    }
+  },
+  "issue": 245,
+  "rawCredentialsOrCloudExecutionReceiptsIncluded": false,
+  "schema": "jhg46-package-budget-public-evidence-inventory/v1",
+  "syntheticLocalFixturesOnly": true
+}

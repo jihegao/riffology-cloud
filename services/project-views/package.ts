@@ -57,14 +57,14 @@ export function readProjectViewsArchive(archive:Uint8Array):ProjectViewArchive|n
  const reader=workspaceArchiveReader(archive),index=workspaceFileIndex(archive);
  if(!index.files.some(f=>f.path===PROJECT_VIEWS_MANIFEST))return null;
  const manifest=parseProjectViews(JSON.parse(decoder.decode(reader.read([{path:PROJECT_VIEWS_MANIFEST,maxBytes:16384}]).get(PROJECT_VIEWS_MANIFEST)!)));
- const wanted=new Set(manifest.files);let total=0;
+ const wanted=new Set(manifest.files);let total=0,deliveredTotal=0;
  const assets:ProjectViewArchive['assets']=[];
  for(const path of manifest.files){
   const entry=index.files.find(f=>f.path===path);if(!entry||entry.type!=='file')fail('asset-missing');
   total+=entry.size;if(entry.size>VIEW_LIMITS.fileBytes||total>VIEW_LIMITS.totalBytes)fail('size-limit');
   const original=reader.read([{path,maxBytes:VIEW_LIMITS.fileBytes}]).get(path)!,ext=path.split('.').at(-1)!,bytes=['js','mjs'].includes(ext)?moduleBytes(path,original,wanted):original;
   if(projectViewTextAsset(path))decoder.decode(original);
-  if(bytes.length>VIEW_LIMITS.fileBytes)fail('size-limit');
+  deliveredTotal+=bytes.length;if(bytes.length>VIEW_LIMITS.fileBytes||deliveredTotal>VIEW_LIMITS.totalBytes)fail('size-limit');
   assets.push({path,mediaType:media[ext]!,original,bytes});
  }
  return {manifest,assets};
@@ -75,5 +75,6 @@ export async function buildProjectViews(source:PreviewSource,archive:Uint8Array)
  const {manifest}=parsed,assets:ProjectViewPackage['assets']=[];
  for(const {path,mediaType,original,bytes}of parsed.assets)assets.push({path,mediaType,base64:base64(bytes),sourceSha256:await sha(original),sha256:await sha(bytes)});
  const body={schema:'project.view-package/v1' as const,scope:previewSourceScope(source),revisionId:source.kind==='initial-workspace'?null:source.revision.revisionId,filesSha256:previewSourceFilesSha256(source),manifest,assets};
- return {...body,packageIdentity:await sha(encoder.encode(JSON.stringify(body)))};
+ const bodyBytes=encoder.encode(JSON.stringify(body));if(bodyBytes.length>3*1024*1024)fail('size-limit');
+ return {...body,packageIdentity:await sha(bodyBytes)};
 }
