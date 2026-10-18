@@ -1,0 +1,65 @@
+{
+  "date": "2026-10-17",
+  "source": "gh project item-list 1 --owner jihegao --format json --limit 200",
+  "readSucceeded": true,
+  "projectFieldsWritten": false,
+  "linearRevalidated": false,
+  "items": [
+    {
+      "id": "PVTI_lAHOAB0fL84Bj-u_zhAwWb0",
+      "status": "Backlog",
+      "assignees": [
+        "jihegao"
+      ],
+      "milestone": {
+        "description": "目标：用户无需手动启动服务，通过 Pi 提需求、实际修改 Python 模型、保存并打开预览，刷新或离开后继续。退出条件：Pi 原执行核对与受控恢复通过；已有 Queue/Mesa 预览完整矩阵、浏览器隔离及必要 UI 验收有当前版本证据；release-readiness 与发布事实一致。当前实现包含 PR #84/#86；合并不代表线上验收。WIP 最多两项：一项 Pi 恢复、一项已部署功能验收。不依赖完整 Managed 接入或 Credits 商业化。",
+        "dueOn": "",
+        "title": "Pi 线上恢复与核心流程验收"
+      },
+      "issue": 209,
+      "url": "https://github.com/jihegao/riffology-cloud/issues/209"
+    },
+    {
+      "id": "PVTI_lAHOAB0fL84Bj-u_zhA1eJE",
+      "status": "Backlog",
+      "assignees": [
+        "jihegao"
+      ],
+      "issue": 211,
+      "url": "https://github.com/jihegao/riffology-cloud/issues/211"
+    },
+    {
+      "id": "PVTI_lAHOAB0fL84Bj-u_zhA1hYs",
+      "status": "Acceptance",
+      "priority": "P1",
+      "assignees": [
+        "jihegao"
+      ],
+      "milestone": {
+        "description": "目标：用户无需手动启动服务，通过 Pi 提需求、实际修改 Python 模型、保存并打开预览，刷新或离开后继续。退出条件：Pi 原执行核对与受控恢复通过；已有 Queue/Mesa 预览完整矩阵、浏览器隔离及必要 UI 验收有当前版本证据；release-readiness 与发布事实一致。当前实现包含 PR #84/#86；合并不代表线上验收。WIP 最多两项：一项 Pi 恢复、一项已部署功能验收。不依赖完整 Managed 接入或 Credits 商业化。",
+        "dueOn": "",
+        "title": "Pi 线上恢复与核心流程验收"
+      },
+      "issue": 214,
+      "url": "https://github.com/jihegao/riffology-cloud/issues/214"
+    },
+    {
+      "id": "PVTI_lAHOAB0fL84Bj-u_zhA1hak",
+      "status": "Backlog",
+      "assignees": [
+        "jihegao"
+      ],
+      "issue": 216,
+      "url": "https://github.com/jihegao/riffology-cloud/issues/216"
+    },
+    {
+      "id": "PVTI_lAHOAB0fL84Bj-u_zhBPVpA",
+      "status": "Backlog",
+      "assignees": [
+        "jihegao"
+      ],
+      "issue": 228,
+      "url": "https://github.com/jihegao/riffology-cloud/issues/228"
+    }
+  ]
+}

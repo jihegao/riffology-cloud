@@ -1,0 +1,30 @@
+{
+  "schema": "project-view-github-merge-proof/v1",
+  "repository": "jihegao/riffology-cloud",
+  "prNumber": 233,
+  "prUrl": "https://github.com/jihegao/riffology-cloud/pull/233",
+  "merged": true,
+  "state": "closed",
+  "draft": false,
+  "baseRef": "main",
+  "mergeCommitSha": "1585280c76e55cae61f3969db5545f76edce678c",
+  "headSha": "2ebd1d754f5c5e9a0db2b3cce6edc08af429559e",
+  "freshMainSha": "1585280c76e55cae61f3969db5545f76edce678c",
+  "observedAt": "2026-10-17T08:01:00.814Z",
+  "preMergeMainSha": "24a98cda0fcb361158f9d332b6e8ca21726992a8",
+  "mergedAt": "2026-10-17T08:00:29Z",
+  "authority": "GitHub REST API pull request and branch readback",
+  "readEndpoints": [
+    "/repos/jihegao/riffology-cloud/pulls/233",
+    "/repos/jihegao/riffology-cloud/branches/main"
+  ],
+  "readyAndMergeCommands": {
+    "normalReady": true,
+    "mergeStrategy": "merge",
+    "matchHeadCommit": "2ebd1d754f5c5e9a0db2b3cce6edc08af429559e",
+    "admin": false,
+    "auto": false,
+    "deleteBranch": false
+  },
+  "ciResultOverridden": false
+}

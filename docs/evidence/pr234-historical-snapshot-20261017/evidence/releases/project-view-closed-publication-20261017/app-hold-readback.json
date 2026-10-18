@@ -1,0 +1,266 @@
+{
+  "schema": "project-view-app-stop-hold-readback/v1",
+  "parentRequestId": "d8fbe6ba-21cb-4ed4-a846-31886d6dac9d",
+  "createRequestId": "ada18822-8797-48a9-9214-c888cfb03d6e",
+  "parentPatchRequestId": "560da903-8c44-4986-b747-544687ef6e4b",
+  "actualAppId": "a031ae38-f967-483f-ae2e-3dbed3d35268",
+  "startedAt": "2026-10-17T08:30:04.059Z",
+  "endedAt": "2026-10-17T08:30:15.067Z",
+  "status": "default-closed-application-max-zero-hold-verified",
+  "app": {
+    "id": "a031ae38-f967-483f-ae2e-3dbed3d35268",
+    "name": "riffology-project-view-browser",
+    "scheduling_policy": "default",
+    "instances": 0,
+    "max_instances": 0,
+    "namespaceId": "5bc5561f57c24146a160d2a54160277c",
+    "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-project-view-browser@sha256:742a5fd20d84f6e0d233c291e7764db8e087ba7f20d75ad102b70e788e2a5339",
+    "instanceType": null,
+    "vcpu": 0.25,
+    "memoryMiB": 1024,
+    "diskMB": 4000,
+    "canonicalSha256": "768faabd21b0e0d138c1febb3ae71d7e946ff39d52639ef039c823a06821c6b4",
+    "configurationSha256": "e6516faf9a9cda94286394631c028c7a8a913d75ba0d9a22e0dde79eb2a9c337"
+  },
+  "originalMaxOnePublicationComplete": false,
+  "originalCreateReadbackFailureRetained": true,
+  "appConfigurationChecks": {
+    "immutableImage742a": true,
+    "basicResources": true,
+    "defaultNetwork": true,
+    "noPorts": true,
+    "noEnvironmentOverrides": true,
+    "noKeys": true,
+    "noCommandOrEntrypointOverrides": true,
+    "expectedRuntime": true,
+    "knownConfigurationFields": true,
+    "defaultDeploymentType": true
+  },
+  "newVersionConfigurationChecks": [
+    {
+      "version": 1,
+      "percentage": 100,
+      "checks": {
+        "immutableImage742a": true,
+        "basicResources": true,
+        "defaultNetwork": true,
+        "noPorts": true,
+        "noEnvironmentOverrides": true,
+        "noKeys": true,
+        "noCommandOrEntrypointOverrides": true,
+        "expectedRuntime": true,
+        "knownConfigurationFields": true,
+        "defaultDeploymentType": true
+      }
+    }
+  ],
+  "newAppVersionCount": 1,
+  "newAppVersions": [
+    {
+      "version": 1,
+      "percentage": 100,
+      "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-project-view-browser@sha256:742a5fd20d84f6e0d233c291e7764db8e087ba7f20d75ad102b70e788e2a5339",
+      "configurationSha256": "992a95c9754f53d636a31d4d45e183229a04ce417e6ac3b8e00e8132ccca5a68"
+    }
+  ],
+  "newAppInstanceCount": 0,
+  "checks": {
+    "appCount16": true,
+    "actualAppIdPinned": true,
+    "exactName": true,
+    "exactNamespace": true,
+    "defaultScheduling": true,
+    "zeroRequestedInstances": true,
+    "maxZeroHold": true,
+    "immutableImage742a": true,
+    "basicResources": true,
+    "appCompleteConfiguration": true,
+    "allNewVersionsPresent": true,
+    "allConfiguredVersionsPinned": true,
+    "allNewVersionsCompleteConfiguration": true,
+    "newAppInstanceListEmpty": true,
+    "original15Complete": true,
+    "allOriginalVersionsPreserved": true,
+    "registryPreserved": true,
+    "namespaces50Preserved": true,
+    "settingsPreserved": true,
+    "workerVersionResourcesPreserved": true,
+    "activeDeploymentPreserved": true,
+    "appsBracketStable": true,
+    "deploymentBracketStable": true
+  },
+  "originalAppRecordChecks": {
+    "a03836ca-d275-4f7d-898f-bc16d0875089": true,
+    "a03c0a4c-7533-4190-ba2b-ff4fecaabb48": true,
+    "a03628c4-f032-461f-a65b-612ccac11a06": true,
+    "a03156a6-9bf5-43fb-8b7f-a1f5b8d1a650": true,
+    "a035c941-2207-406e-97aa-a42ab6e9d249": true,
+    "a03693b8-f5be-4247-9280-f0c38435d911": true,
+    "a03a6e91-25cb-4a8d-89a8-be522368dde4": true,
+    "a039ed42-159d-43db-be13-69315bce5189": true,
+    "a03ddc7e-1c6e-4cea-93ec-ac03d7b0073a": true,
+    "a0321718-f17e-4ccf-974a-fd447dde5920": true,
+    "a036b418-dcce-4d2f-bd3d-6debf982ea6f": true,
+    "a03c0d4b-d529-4d81-a2b6-bfb901222a18": true,
+    "a0332851-f795-46df-9f8e-ee0ddc220095": true,
+    "a03313e4-fa9d-4de2-ac2c-d2cc69efd875": true,
+    "a03ea65b-b039-4f56-8422-36c719b87b72": true
+  },
+  "originalVersionHashes": {
+    "a03836ca-d275-4f7d-898f-bc16d0875089": "5d061bc5a0b0a841114ee6414ca224bafd1050b3258974e38a2349dbd7933324",
+    "a03c0a4c-7533-4190-ba2b-ff4fecaabb48": "04fa8bf7dab41ffdaa548f0ecdcf08948c9204ae876f4c2a2bc63b4ef99e8748",
+    "a03628c4-f032-461f-a65b-612ccac11a06": "35a051ed1fb0e983a7783f2df973530f1c482bbf94fb60d6df7162f45032d067",
+    "a03156a6-9bf5-43fb-8b7f-a1f5b8d1a650": "7b595660b679b24cebc54a4f7ae511d78ec723a0e9e33c7cacdb011cbce8b4ae",
+    "a035c941-2207-406e-97aa-a42ab6e9d249": "7feb85f1cdf520ace62c4f1b7c2e763509d01f35b4224f52cec6af9f33e67298",
+    "a03693b8-f5be-4247-9280-f0c38435d911": "adec504a97205a5b1b9ec42cc733634d1b5f799d1a724e642dee325898b7aab1",
+    "a03a6e91-25cb-4a8d-89a8-be522368dde4": "c0b24bc013795ad6f6aa8575041b23c423a35d8d1a569b49d37f501fe537f6cf",
+    "a039ed42-159d-43db-be13-69315bce5189": "f195ca2f59f445d3e0b8ac77cb59d74fa251e26b5085e4c2a7cc20f6e8c0c9c3",
+    "a03ddc7e-1c6e-4cea-93ec-ac03d7b0073a": "adec504a97205a5b1b9ec42cc733634d1b5f799d1a724e642dee325898b7aab1",
+    "a0321718-f17e-4ccf-974a-fd447dde5920": "adec504a97205a5b1b9ec42cc733634d1b5f799d1a724e642dee325898b7aab1",
+    "a036b418-dcce-4d2f-bd3d-6debf982ea6f": "adec504a97205a5b1b9ec42cc733634d1b5f799d1a724e642dee325898b7aab1",
+    "a03c0d4b-d529-4d81-a2b6-bfb901222a18": "f195ca2f59f445d3e0b8ac77cb59d74fa251e26b5085e4c2a7cc20f6e8c0c9c3",
+    "a0332851-f795-46df-9f8e-ee0ddc220095": "f6c4da8b12dedf6d5a9037b299e767fee61b0de8167aad9fa242da50b802676b",
+    "a03313e4-fa9d-4de2-ac2c-d2cc69efd875": "f195ca2f59f445d3e0b8ac77cb59d74fa251e26b5085e4c2a7cc20f6e8c0c9c3",
+    "a03ea65b-b039-4f56-8422-36c719b87b72": "adec504a97205a5b1b9ec42cc733634d1b5f799d1a724e642dee325898b7aab1"
+  },
+  "namespaceByIdHash": "69932d238a1504208bfe7449729769cf21388755fd4eff6efa15e8cddeacb19a",
+  "registryHash": "cd620e3f5495c79d1b15047de25e2ddbd6944fac285d6ba6856608e8d5056d8d",
+  "requests": [
+    {
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications",
+      "status": 200,
+      "success": true
+    },
+    {
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/durable_objects/namespaces",
+      "status": 200,
+      "success": true
+    },
+    {
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a031ae38-f967-483f-ae2e-3dbed3d35268",
+      "status": 200,
+      "success": true
+    },
+    {
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/scripts/riffology-m1-gateway-staging/deployments",
+      "status": 200,
+      "success": true
+    },
+    {
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/scripts/riffology-m1-gateway-staging/settings",
+      "status": 200,
+      "success": true
+    },
+    {
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a031ae38-f967-483f-ae2e-3dbed3d35268/versions",
+      "status": 200,
+      "success": true
+    },
+    {
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a031ae38-f967-483f-ae2e-3dbed3d35268/instances-v2",
+      "status": 200,
+      "success": true
+    },
+    {
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/scripts/riffology-m1-gateway-staging/versions/eae8764f-fda5-4241-9f51-cf01ecc46b00",
+      "status": 200,
+      "success": true
+    },
+    {
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/registries",
+      "status": 200,
+      "success": true
+    },
+    {
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a03836ca-d275-4f7d-898f-bc16d0875089/versions",
+      "status": 200,
+      "success": true
+    },
+    {
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a03c0a4c-7533-4190-ba2b-ff4fecaabb48/versions",
+      "status": 200,
+      "success": true
+    },
+    {
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a03628c4-f032-461f-a65b-612ccac11a06/versions",
+      "status": 200,
+      "success": true
+    },
+    {
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a03156a6-9bf5-43fb-8b7f-a1f5b8d1a650/versions",
+      "status": 200,
+      "success": true
+    },
+    {
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a035c941-2207-406e-97aa-a42ab6e9d249/versions",
+      "status": 200,
+      "success": true
+    },
+    {
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a03693b8-f5be-4247-9280-f0c38435d911/versions",
+      "status": 200,
+      "success": true
+    },
+    {
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a03a6e91-25cb-4a8d-89a8-be522368dde4/versions",
+      "status": 200,
+      "success": true
+    },
+    {
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a039ed42-159d-43db-be13-69315bce5189/versions",
+      "status": 200,
+      "success": true
+    },
+    {
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a03ddc7e-1c6e-4cea-93ec-ac03d7b0073a/versions",
+      "status": 200,
+      "success": true
+    },
+    {
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a0321718-f17e-4ccf-974a-fd447dde5920/versions",
+      "status": 200,
+      "success": true
+    },
+    {
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a036b418-dcce-4d2f-bd3d-6debf982ea6f/versions",
+      "status": 200,
+      "success": true
+    },
+    {
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a03c0d4b-d529-4d81-a2b6-bfb901222a18/versions",
+      "status": 200,
+      "success": true
+    },
+    {
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a0332851-f795-46df-9f8e-ee0ddc220095/versions",
+      "status": 200,
+      "success": true
+    },
+    {
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a03313e4-fa9d-4de2-ac2c-d2cc69efd875/versions",
+      "status": 200,
+      "success": true
+    },
+    {
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a03ea65b-b039-4f56-8422-36c719b87b72/versions",
+      "status": 200,
+      "success": true
+    },
+    {
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications",
+      "status": 200,
+      "success": true
+    },
+    {
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/scripts/riffology-m1-gateway-staging/deployments",
+      "status": 200,
+      "success": true
+    }
+  ],
+  "cloudWrites": 0,
+  "appPostRepeated": false,
+  "containerStartOrProviderTurnRunRequested": false,
+  "targetBasicViabilityVerified": false,
+  "userAcceptanceVerified": false,
+  "emptyVersionsDoNotClaimServingImageExecution": false
+}

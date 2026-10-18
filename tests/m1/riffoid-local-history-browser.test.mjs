@@ -8,7 +8,7 @@ test('expired recovery still exports synthetic original-origin Runs bytes withou
   let identities=0;
   const services={origin,canonical,until:1,database:{},identity:async()=>{identities++;throw Error('unexpected identity read');},snapshot:async()=>{throw Error('unexpected server read');},receipt:async()=>{throw Error('unexpected receipt');}};
   for(const path of ['/api/me','/api/auth/get-session','/api/workspaces/w','/api/workspaces/w/sessions/s/turns/receipt'])assert.equal((await legacyRecovery(new Request(origin+path),services)).status,410);
-  const browser=await chromium.launch({headless:true,args:['--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE localhost']});t.after(()=>browser.close());
+  const browser=await chromium.launch({headless:true,channel:process.env.M1_BROWSER_CHANNEL||undefined,args:['--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE localhost']});t.after(()=>browser.close());
   const context=await browser.newContext({serviceWorkers:'block',acceptDownloads:true}),requests=[],unexpected=[];
   await context.route('**/*',async route=>{
     const request=route.request(),url=new URL(request.url());requests.push({url:request.url(),method:request.method()});

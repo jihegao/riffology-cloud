@@ -1,0 +1,30 @@
+{
+  "priorIntegrationHead": "2a2111a0175195af43b056ddc0c4fb8da17fe8c2",
+  "sourceSha256": "0632c8fe6891fe5b21d3803e2dd918cc5898527b6d8870ab78be610f058c8fcf",
+  "node": "25.3.0",
+  "platform": "darwin-arm64",
+  "localRuns": [
+    {
+      "stage": "initial fixture implementation",
+      "passes": 19,
+      "failures": 0
+    },
+    {
+      "stage": "added gate-teardown and delayed rejection regressions",
+      "passes": 21,
+      "failures": 0
+    },
+    {
+      "stage": "final post-gate finishing guard, combined runtime/native-gate",
+      "passes": 30,
+      "failures": 0
+    }
+  ],
+  "typecheck": "passed before final one-line finishing guard",
+  "artifacts": {
+    "pr243-remaining-waits-local.tap.json": "c2174b6f013e16c8b8a18027bd8a3c7f3bc11c2fad5e103469fd9d220ffaa65b",
+    "pr243-remaining-waits-final.tap.json": "d3f205c7b5b61a83d3986f1e36b85b93b76191b95f483433b2b9cc123c1b8751",
+    "pr243-remaining-waits-final-combined.tap.json": "a27ccadba801f14580daa0f6a2336e813c574799b1497f3504e66c17b60b2683",
+    "pr243-remaining-waits-typecheck.txt.json": "33780dfdb55b34cbbe4e576c6ccff3997d822d1c72cea4c945e970eb2fb6ba22"
+  }
+}

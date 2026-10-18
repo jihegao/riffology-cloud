@@ -3,6 +3,9 @@ import { mkdtemp, readdir, realpath, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { test } from 'node:test';
+import { execFile } from 'node:child_process';
+import { promisify } from 'node:util';
+import { fileURLToPath } from 'node:url';
 import { runEgressProbe } from '../../../services/runtime/egress-probe.mjs';
 
 const deny = () => Response.json({ error: 'egress-policy-denied' }, { status: 403, headers: { 'x-riffology-m0-egress': 'fixed-v1' } });
@@ -168,11 +171,18 @@ test('fixed supplementary targets use non-Cloudflare DNS and a non-DNS TCP port'
 });
 
 test('an uncooperative HTTP transport is cancelled at the fixed item deadline and retained as unknown', { timeout: 6500 }, async t => {
-  const input = await fixture(t); let aborted = false, attempts = 0, pendingSignal;
+  const input = await fixture(t); let aborted = false, attempts = 0, pendingSignal, pendingRequest;
+  const gcTimers = []; let gcCalls = 0;
+  t.after(() => { for (const timer of gcTimers) clearTimeout(timer); });
   const start = Date.now();
   const output = await runEgressProbe(input, { transport: request => {
     if (request.url.endsWith('/probe/go-live-g0-20260906/status')) {
-      attempts++; pendingSignal = request.signal; pendingSignal.addEventListener('abort', () => { aborted = true; }, { once: true });
+      attempts++; pendingRequest = request; pendingSignal = request.signal; pendingSignal.addEventListener('abort', () => { aborted = true; }, { once: true });
+      // An active injected transport owns its Request until cancellation checks.
+      if (process.env.RIFFOLOGY_EGRESS_GC_CHILD === '1') {
+        assert.equal(typeof globalThis.gc, 'function');
+        for (const ms of [100, 500, 1500, 3000]) gcTimers.push(setTimeout(() => { globalThis.gc(); gcCalls++; }, ms));
+      }
       return new Promise(() => {});
     }
     return Promise.resolve(deny());
@@ -180,6 +190,21 @@ test('an uncooperative HTTP transport is cancelled at the fixed item deadline an
   assert.ok(Date.now() - start < 5500); assert.equal(pendingSignal.aborted, true); assert.equal(aborted, true); assert.equal(attempts, 1);
   assert.equal(output.rows.find(row => row.id === 'trusted-management').category, 'timeout-unconfirmed');
   assert.equal(output.requiredHttpBoundaryPassed, false); assert.equal(output.passed, false); assert.equal(output.cleanupConfirmed, true);
+  assert.equal(pendingRequest.signal, pendingSignal, 'retain the complete Request through all cancellation assertions');
+  if (process.env.RIFFOLOGY_EGRESS_GC_CHILD === '1') assert.equal(gcCalls, 4);
+});
+
+test('active injected Request retains cancellation across bounded forced GC in an isolated process', { timeout: 10000 }, async t => {
+  const directory = await realpath(await mkdtemp(join(tmpdir(), 'egress-gc-child-')));
+  t.after(() => rm(directory, { recursive: true, force: true }));
+  // isolation=none avoids a descendant test runner surviving the timeout kill.
+  // Parent removes the child's temporary evidence directory even after failure.
+  const result = await promisify(execFile)(process.execPath, ['--expose-gc', '--test', '--test-isolation=none',
+    '--test-name-pattern=^an uncooperative HTTP transport', fileURLToPath(import.meta.url)], {
+    env: { ...process.env, RIFFOLOGY_EGRESS_GC_CHILD: '1', TMPDIR: directory, TMP: directory, TEMP: directory },
+    timeout: 8500, killSignal: 'SIGKILL', signal: t.signal, maxBuffer: 256 * 1024,
+  });
+  assert.match(result.stdout, /uncooperative HTTP transport/);
 });
 
 test('unknown input, partial injection, and disabling TLS validation are rejected before any request', async t => {
