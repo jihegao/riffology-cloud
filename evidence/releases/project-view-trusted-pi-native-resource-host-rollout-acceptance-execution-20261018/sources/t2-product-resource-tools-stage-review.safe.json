@@ -1,0 +1,301 @@
+{
+  "schema": "jhg46-t2-product-resource-tools-pages-stage-independent-review/v1",
+  "recordedAt": "2026-10-18T16:39:59.294298Z",
+  "verdict": "no-must-fix-within-reviewed-stage",
+  "mustFix": [],
+  "reviewScope": "Original T2 resource-loading product result, supported tool receipts, canonical saved page/artifact creation stage only. Original release is independently reviewed by result_review; actual browser functionality/code and artifact body reassembly remain their planned stage, not inferred here.",
+  "actualEventClosure": {
+    "originalEventRange": [
+      18,
+      252
+    ],
+    "count": 235,
+    "pages": [
+      200,
+      35
+    ],
+    "allSequencesContinuous": true,
+    "allSameTurn": true,
+    "toolCompletedCount": 10,
+    "allIsErrorFalse": true,
+    "nativeLoadResourceCount": 1,
+    "providerResponding200Count": 6
+  },
+  "toolReceiptClosure": {
+    "count": 9,
+    "allOriginalHttpBodyBytesShaVerified": true,
+    "allHttp200TerminalLedgerCompletedOutcomeCompleted": true,
+    "allOriginalCallNameAndFinalR2BindingsMatchEvents": true,
+    "nativeResourceToolExcludedWithoutAnUnsupported400": true,
+    "rows": [
+      {
+        "name": "project_read",
+        "path": ".pi/skills/native-pages-check/SKILL.md",
+        "state": "terminal",
+        "source": "ledger",
+        "ledgerStatus": "completed",
+        "outcome": "completed",
+        "httpBodyBytes": 3496,
+        "httpBodySha256": "d1818762547d6a31df3c5a66c4cd497c702fceec3750d3b001be3c0babe4d1bc",
+        "resultBytes": 2875,
+        "usage": "unknown"
+      },
+      {
+        "name": "project_bash",
+        "path": null,
+        "state": "terminal",
+        "source": "ledger",
+        "ledgerStatus": "completed",
+        "outcome": "completed",
+        "httpBodyBytes": 720,
+        "httpBodySha256": "a2e47dfd396a9779804d12400077afb6492497cfc4bb68c1c8b4911ef8300010",
+        "resultBytes": 100,
+        "usage": "unknown"
+      },
+      {
+        "name": "project_read",
+        "path": null,
+        "state": "terminal",
+        "source": "ledger",
+        "ledgerStatus": "completed",
+        "outcome": "completed",
+        "httpBodyBytes": 921,
+        "httpBodySha256": "a40f6b04382fdd744961fe81257a370aae647daf44b3038a1934ae26c0d81673",
+        "resultBytes": 301,
+        "usage": "unknown"
+      },
+      {
+        "name": "project_write",
+        "path": "app/views.json",
+        "state": "terminal",
+        "source": "ledger",
+        "ledgerStatus": "completed",
+        "outcome": "completed",
+        "httpBodyBytes": 750,
+        "httpBodySha256": "b117e59a42acbac0f0e1cfe2f721e1ba13e36b596ac1879cf16b7374bc90ce8c",
+        "resultBytes": 128,
+        "usage": "unknown"
+      },
+      {
+        "name": "project_write",
+        "path": "app/home.html",
+        "state": "terminal",
+        "source": "ledger",
+        "ledgerStatus": "completed",
+        "outcome": "completed",
+        "httpBodyBytes": 749,
+        "httpBodySha256": "e9610e2166586b45d80bbaa0e2a05529399543b49310534cc7c7fb77186b2735",
+        "resultBytes": 127,
+        "usage": "unknown"
+      },
+      {
+        "name": "project_write",
+        "path": "app/report.html",
+        "state": "terminal",
+        "source": "ledger",
+        "ledgerStatus": "completed",
+        "outcome": "completed",
+        "httpBodyBytes": 751,
+        "httpBodySha256": "2d48e90f1c170e8ea3ede3ff6b703ef3442a9719179bc33a79c2f0cf0f054457",
+        "resultBytes": 129,
+        "usage": "unknown"
+      },
+      {
+        "name": "project_write",
+        "path": "app/style.css",
+        "state": "terminal",
+        "source": "ledger",
+        "ledgerStatus": "completed",
+        "outcome": "completed",
+        "httpBodyBytes": 749,
+        "httpBodySha256": "5635f548a5d36bd4eaddf99d3246da26c2069a6d7a353e46aff5fa8f753d9735",
+        "resultBytes": 127,
+        "usage": "unknown"
+      },
+      {
+        "name": "project_write",
+        "path": "docs/series.json",
+        "state": "terminal",
+        "source": "ledger",
+        "ledgerStatus": "completed",
+        "outcome": "completed",
+        "httpBodyBytes": 752,
+        "httpBodySha256": "9be2e3960c7bffe0f67051ce02f33821ebacecd7b80cbe4838fd976c72ac3115",
+        "resultBytes": 130,
+        "usage": "unknown"
+      },
+      {
+        "name": "project_write",
+        "path": "app/main.mjs",
+        "state": "terminal",
+        "source": "ledger",
+        "ledgerStatus": "completed",
+        "outcome": "completed",
+        "httpBodyBytes": 749,
+        "httpBodySha256": "9dc052089ab7199fbe642b4f2971a78310690cc5b34f580675e4eead548e0df7",
+        "resultBytes": 127,
+        "usage": "unknown"
+      }
+    ],
+    "bashExitCode": 0,
+    "usageUnknownNotZero": true
+  },
+  "skillProductResult": {
+    "actualOrdinaryReadPath": ".pi/skills/native-pages-check/SKILL.md",
+    "actualReadBytes": 2698,
+    "actualReadSha256": "f05062374fccbffa83a7e6da5505a3229bd975ff8d5aaf30e832c8f0a3c3d294",
+    "matchesFrozenSkillBytesExact": true,
+    "nativeLoadResourceToolCompleted": true,
+    "sourceBinding": "Existing deployed source binds the in-memory project resource catalog to claimed turn.base.workspace revision/filesSHA with whole archive and resource SHA checks; separate base.session supplies the saved native Session. Actual T2 follows saved R1, and ordinary read returns the frozen2698B skill exactly.",
+    "claim": "Combined frozen-R1 source binding, actual successful native resource load event, and actual exact ordinary skill read support this product-level resource-loading result. No new private-provenance visibility requirement is introduced.",
+    "limit": "Public native load event itself lacks path/args/provenance; do not describe it alone as a raw provenance dump, independently inspected Session snapshot or proof that a model obeys every skill instruction."
+  },
+  "pagesAndDataCreation": {
+    "actualWrites": [
+      {
+        "kind": "write",
+        "path": "app/views.json",
+        "bytes": 261,
+        "sha256": "1f1c572845d420efb5dd0d5e275eb2584b53f543904c5703c51de5d32c3f6882"
+      },
+      {
+        "kind": "write",
+        "path": "app/home.html",
+        "bytes": 457,
+        "sha256": "2574b8908fb22efe47bc197fea78f0c81010b9bd65a4f40c3b91bac2ce77f36b"
+      },
+      {
+        "kind": "write",
+        "path": "app/report.html",
+        "bytes": 451,
+        "sha256": "38bc4a25f6ab2b41c8484b8d4fbdaffec57799f6890d85c9278109aae352719e"
+      },
+      {
+        "kind": "write",
+        "path": "app/style.css",
+        "bytes": 474,
+        "sha256": "761cbfe6621a8e44d35f63edc9596d36efb1c014e8e30bc635f3ff814d6f7aa9"
+      },
+      {
+        "kind": "write",
+        "path": "docs/series.json",
+        "bytes": 119,
+        "sha256": "da95afe93d010519d1a4ba35ac10fce6c052369ce85d15bc091f70987f7df687"
+      },
+      {
+        "kind": "write",
+        "path": "app/main.mjs",
+        "bytes": 2542,
+        "sha256": "f35830bb9af40ff488ca423e5a376636ac981add643fc8a97a585acaa94559a2"
+      }
+    ],
+    "manifestMatchedCandidate": {
+      "bytes": 261,
+      "sha256": "1f1c572845d420efb5dd0d5e275eb2584b53f543904c5703c51de5d32c3f6882",
+      "exactCandidateHashEqualsActualWriteReceipt": true,
+      "notSeparateCanonicalContentGet": true
+    },
+    "seriesMatchedCandidate": {
+      "bytes": 119,
+      "sha256": "da95afe93d010519d1a4ba35ac10fce6c052369ce85d15bc091f70987f7df687",
+      "exactCandidateHashEqualsActualWriteReceipt": true,
+      "notSeparateCanonicalContentGet": true
+    },
+    "manifestSchema": "project.views/v1",
+    "declaredViewIds": [
+      "home",
+      "report"
+    ],
+    "declaredFileCount": 5,
+    "seriesVersion": "V1",
+    "seriesValues": [
+      2,
+      3,
+      5
+    ],
+    "seriesArtifactIdMatchesActualToolReceipt": true,
+    "canonicalR2": {
+      "revisionId": "f53f1165ed49240ac45896f27f33739f9e573efd7d9bef8c0e4f0424ee0b7bfa",
+      "filesSha256": "8f8e54bc82c48d0fe3065d96993e16bfece3a735f49feccec50e84f517660fc6",
+      "sessionSha256": "81be03985df62609713b637a41edfb49ca31444eb51d5731f576edbdea822f7f",
+      "committedAt": 1792341079840
+    },
+    "sessionHeadEqualsR2": true,
+    "turnCompletedSaved": true,
+    "fileDiffSummary": {
+      "added": 7,
+      "modified": 0,
+      "deleted": 0
+    },
+    "claimBoundary": "Write receipt plus saved R2/file index/candidate SHA establishes recorded file creation/content identity where a full expected byte candidate is supplied. The matched candidate files are not separately downloaded canonical content. Other page/script bytes are known only by recorded write size/SHA in this review."
+  },
+  "artifactStage": {
+    "sourceTextFileBytes": 17408,
+    "actualToolReceipt": {
+      "schemaVersion": 1,
+      "artifactId": "artifact-12f7b598d25da2662fdc9776594e3e8c5914ee7a99c59fc4e9dbdddba553",
+      "operation": "read",
+      "mediaType": "application/json",
+      "bytes": 17567,
+      "sha256": "1f1934a77952256ed99aa9cedcd923bea033cfb6239d81aa141d677faa4ab35a",
+      "createdAt": 1792341038327
+    },
+    "eventArtifactEqualsReceipt": true,
+    "actualBodyReassembledHere": false,
+    "claimBoundary": "The application/json envelope17567B/SHA is a recorded actual artifact receipt, distinct from17408B source text. Complete body/chunk reassembly and SHA are still the planned artifact-read check."
+  },
+  "scriptAuditBoundary": {
+    "mainRecordedBytes": 2542,
+    "mainRecordedSha256": "f35830bb9af40ff488ca423e5a376636ac981add643fc8a97a585acaa94559a2",
+    "streamOnlyFinalAnswerBytes": 565,
+    "actualScriptTextAvailableHere": false,
+    "actualScriptExtractedOrExecuted": false,
+    "nextPlannedRead": "Actual browser canonical package after existing R2 release/gate prerequisites can supply saved JS bytes for API/UI checks; no new model Turn or project/source write is required by this review."
+  },
+  "sourceVersionDistinction": "Initial source report correctly binds actual ec8 baked host to merged main240378 host942333ec. W old host9964 is not substituted as deployed ec8; unchanged loader/research/Worker sources were compared byteexact to main240378.",
+  "references": [
+    {
+      "file": "original-supported-tool-receipts.raw.private.json",
+      "bytes": 14340,
+      "sha256": "758f42aa41b5e34e4aef9e62be15a61b974a6629f112c458ac04be3f00dbca64"
+    },
+    {
+      "file": "tool-receipts-and-expected-bytes-check.safe.json",
+      "bytes": 2587,
+      "sha256": "a37aeba4d63202b12a3283372633c41fcbc04c4ac6326e7c42faed560ca82062"
+    },
+    {
+      "file": "expected-matched-app_views.json.private",
+      "bytes": 261,
+      "sha256": "1f1c572845d420efb5dd0d5e275eb2584b53f543904c5703c51de5d32c3f6882"
+    },
+    {
+      "file": "expected-matched-docs_series.json.private",
+      "bytes": 119,
+      "sha256": "da95afe93d010519d1a4ba35ac10fce6c052369ce85d15bc091f70987f7df687"
+    },
+    {
+      "file": "original-receipt-second-read-with-events.raw.private.json",
+      "bytes": 76767,
+      "sha256": "907f146663d755bdec14ad0e3323b10af6445bb071e82a4840348af9d058d9ae"
+    },
+    {
+      "file": "events-remainder-and-files-diff-original.raw.private.json",
+      "bytes": 13974,
+      "sha256": "53a434208b3508424722ef748c34ca6488095826b9fdd012125ebe1d27160cc4"
+    }
+  ],
+  "priorPointInTimeReview": {
+    "file": "reviews/t2-resource-events-initial-review.safe.json",
+    "bytes": 13198,
+    "sha256": "cfe9108722ec261648c316aadb27fa93fab92ade5a71ea5861ca2d35dd695b23"
+  },
+  "performed": {
+    "localOriginalFilesAndSourceOnly": true,
+    "liveCalls": 0,
+    "tests": 0,
+    "projectOrSourceChanges": 0,
+    "additionalTurn": 0
+  },
+  "privateSkillPromptActorOrProviderRequestIdsCopied": false
+}

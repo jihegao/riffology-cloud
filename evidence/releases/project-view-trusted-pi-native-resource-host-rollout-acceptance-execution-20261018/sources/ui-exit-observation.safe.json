@@ -1,0 +1,21 @@
+{
+  "schema": "jhg46-failed-browser-stage-ui-exit-observation/v1",
+  "observedAtUtc": "2026-10-18 17:07:10 UTC",
+  "authority": "supported native Safari computer-use AX observations",
+  "projectStage": "failed at first observed Dashboard SDK timeout; no explicit retry or Report/artifact action",
+  "afterOwnedDelete": {
+    "ordinaryReadbackOriginalSha256": "dd53a23b19eaf5b856ead9ed4727a7f8b0ee0a02970e43e48aa964e463f766d8",
+    "projectViewStatus": 503,
+    "remainingProjectFrames": 0,
+    "nonGetObserverEntryCount": 4
+  },
+  "uiCleanup": {
+    "navigatedExistingTabTo": "https://app.riffoid.com/",
+    "observedProjectList": true,
+    "webInspectorConsoleClearedByFullDocumentNavigation": true,
+    "webInspectorClosedViaObservedCloseButton": true,
+    "oldProjectsNotOpenedOrRestored": true
+  },
+  "noAdditionalTurnOrGateMutation": true,
+  "scopeLimit": "UI observation; does not replace original HTTP, container release or billing evidence"
+}

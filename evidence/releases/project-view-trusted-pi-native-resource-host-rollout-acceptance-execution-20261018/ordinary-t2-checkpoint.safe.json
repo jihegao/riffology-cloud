@@ -1,0 +1,329 @@
+{
+  "schema": "jhg46-ordinary-t2-author-safe-checkpoint/v1",
+  "checkpointScope": "T2 completed/saved R2 and original product-authority release passed; later actual V1 first-page initialization failed, stopping the remaining acceptance",
+  "projectId": "c09f052b-9300-487e-b34a-49a8316bc633",
+  "workspaceId": "f6591b33-804e-4f79-8bd5-91f65e213f9b",
+  "generation": 1,
+  "sessionId": "f01a2ec1-489e-4e85-808b-83ebd85069a6",
+  "turnId": "7cd21d33-e2c1-4da8-ac34-00732dadc0d9",
+  "originalUiAck": {
+    "method": "POST",
+    "key": "377e618c-d35c-4298-bcf8-ccac44699ec2",
+    "status": 202,
+    "sentAt": "2026-10-18T16:29:51.844Z",
+    "responseAt": "2026-10-18T16:29:58.581Z",
+    "bodyBytes": 2167,
+    "bodySha256": "e5b162b585e36856fffae57f03f20e6539079a9e82e18743b5d0b279cc64299f"
+  },
+  "explicitTurnOrdinal": 2,
+  "sessionCount": 1,
+  "turnCount": 2,
+  "observerCount": 4,
+  "observerCountIsTurnCount": false,
+  "terminal": {
+    "status": "completed",
+    "executionOutcome": "completed",
+    "persistenceOutcome": "saved",
+    "errorCode": null,
+    "persistenceErrorCode": null,
+    "startedAt": 1792340999426,
+    "finishedAt": 1792341082324
+  },
+  "checkpoint": {
+    "revisionId": "f53f1165ed49240ac45896f27f33739f9e573efd7d9bef8c0e4f0424ee0b7bfa",
+    "filesSha256": "8f8e54bc82c48d0fe3065d96993e16bfece3a735f49feccec50e84f517660fc6",
+    "sessionSha256": "81be03985df62609713b637a41edfb49ca31444eb51d5731f576edbdea822f7f",
+    "committedAt": 1792341079840
+  },
+  "sessionHeadExactCheckpoint": true,
+  "t1OriginalTurnUnchanged": true,
+  "events": {
+    "originalEventRange": [
+      18,
+      252
+    ],
+    "count": 235,
+    "pages": [
+      200,
+      35
+    ],
+    "allSequencesContinuous": true,
+    "allSameTurn": true,
+    "toolCompletedCount": 10,
+    "allIsErrorFalse": true,
+    "nativeLoadResourceCount": 1,
+    "providerResponding200Count": 6
+  },
+  "tools": {
+    "count": 9,
+    "allOriginalHttpBodyBytesShaVerified": true,
+    "allHttp200TerminalLedgerCompletedOutcomeCompleted": true,
+    "allOriginalCallNameAndFinalR2BindingsMatchEvents": true,
+    "nativeResourceToolExcludedWithoutAnUnsupported400": true,
+    "rows": [
+      {
+        "name": "project_read",
+        "path": ".pi/skills/native-pages-check/SKILL.md",
+        "state": "terminal",
+        "source": "ledger",
+        "ledgerStatus": "completed",
+        "outcome": "completed",
+        "httpBodyBytes": 3496,
+        "httpBodySha256": "d1818762547d6a31df3c5a66c4cd497c702fceec3750d3b001be3c0babe4d1bc",
+        "resultBytes": 2875,
+        "usage": "unknown"
+      },
+      {
+        "name": "project_bash",
+        "path": null,
+        "state": "terminal",
+        "source": "ledger",
+        "ledgerStatus": "completed",
+        "outcome": "completed",
+        "httpBodyBytes": 720,
+        "httpBodySha256": "a2e47dfd396a9779804d12400077afb6492497cfc4bb68c1c8b4911ef8300010",
+        "resultBytes": 100,
+        "usage": "unknown"
+      },
+      {
+        "name": "project_read",
+        "path": null,
+        "state": "terminal",
+        "source": "ledger",
+        "ledgerStatus": "completed",
+        "outcome": "completed",
+        "httpBodyBytes": 921,
+        "httpBodySha256": "a40f6b04382fdd744961fe81257a370aae647daf44b3038a1934ae26c0d81673",
+        "resultBytes": 301,
+        "usage": "unknown"
+      },
+      {
+        "name": "project_write",
+        "path": "app/views.json",
+        "state": "terminal",
+        "source": "ledger",
+        "ledgerStatus": "completed",
+        "outcome": "completed",
+        "httpBodyBytes": 750,
+        "httpBodySha256": "b117e59a42acbac0f0e1cfe2f721e1ba13e36b596ac1879cf16b7374bc90ce8c",
+        "resultBytes": 128,
+        "usage": "unknown"
+      },
+      {
+        "name": "project_write",
+        "path": "app/home.html",
+        "state": "terminal",
+        "source": "ledger",
+        "ledgerStatus": "completed",
+        "outcome": "completed",
+        "httpBodyBytes": 749,
+        "httpBodySha256": "e9610e2166586b45d80bbaa0e2a05529399543b49310534cc7c7fb77186b2735",
+        "resultBytes": 127,
+        "usage": "unknown"
+      },
+      {
+        "name": "project_write",
+        "path": "app/report.html",
+        "state": "terminal",
+        "source": "ledger",
+        "ledgerStatus": "completed",
+        "outcome": "completed",
+        "httpBodyBytes": 751,
+        "httpBodySha256": "2d48e90f1c170e8ea3ede3ff6b703ef3442a9719179bc33a79c2f0cf0f054457",
+        "resultBytes": 129,
+        "usage": "unknown"
+      },
+      {
+        "name": "project_write",
+        "path": "app/style.css",
+        "state": "terminal",
+        "source": "ledger",
+        "ledgerStatus": "completed",
+        "outcome": "completed",
+        "httpBodyBytes": 749,
+        "httpBodySha256": "5635f548a5d36bd4eaddf99d3246da26c2069a6d7a353e46aff5fa8f753d9735",
+        "resultBytes": 127,
+        "usage": "unknown"
+      },
+      {
+        "name": "project_write",
+        "path": "docs/series.json",
+        "state": "terminal",
+        "source": "ledger",
+        "ledgerStatus": "completed",
+        "outcome": "completed",
+        "httpBodyBytes": 752,
+        "httpBodySha256": "9be2e3960c7bffe0f67051ce02f33821ebacecd7b80cbe4838fd976c72ac3115",
+        "resultBytes": 130,
+        "usage": "unknown"
+      },
+      {
+        "name": "project_write",
+        "path": "app/main.mjs",
+        "state": "terminal",
+        "source": "ledger",
+        "ledgerStatus": "completed",
+        "outcome": "completed",
+        "httpBodyBytes": 749,
+        "httpBodySha256": "9dc052089ab7199fbe642b4f2971a78310690cc5b34f580675e4eead548e0df7",
+        "resultBytes": 127,
+        "usage": "unknown"
+      }
+    ],
+    "bashExitCode": 0,
+    "usageUnknownNotZero": true
+  },
+  "skill": {
+    "originalSkillReadBytes": 2698,
+    "sha256": "f05062374fccbffa83a7e6da5505a3229bd975ff8d5aaf30e832c8f0a3c3d294",
+    "actualNativeSkillLoadResourceEventSucceeded": true,
+    "remoteLedgerReadIsSeparateFromNativeLoadResource": true
+  },
+  "v1RecordedFiles": {
+    "actualWrites": [
+      {
+        "kind": "write",
+        "path": "app/views.json",
+        "bytes": 261,
+        "sha256": "1f1c572845d420efb5dd0d5e275eb2584b53f543904c5703c51de5d32c3f6882"
+      },
+      {
+        "kind": "write",
+        "path": "app/home.html",
+        "bytes": 457,
+        "sha256": "2574b8908fb22efe47bc197fea78f0c81010b9bd65a4f40c3b91bac2ce77f36b"
+      },
+      {
+        "kind": "write",
+        "path": "app/report.html",
+        "bytes": 451,
+        "sha256": "38bc4a25f6ab2b41c8484b8d4fbdaffec57799f6890d85c9278109aae352719e"
+      },
+      {
+        "kind": "write",
+        "path": "app/style.css",
+        "bytes": 474,
+        "sha256": "761cbfe6621a8e44d35f63edc9596d36efb1c014e8e30bc635f3ff814d6f7aa9"
+      },
+      {
+        "kind": "write",
+        "path": "docs/series.json",
+        "bytes": 119,
+        "sha256": "da95afe93d010519d1a4ba35ac10fce6c052369ce85d15bc091f70987f7df687"
+      },
+      {
+        "kind": "write",
+        "path": "app/main.mjs",
+        "bytes": 2542,
+        "sha256": "f35830bb9af40ff488ca423e5a376636ac981add643fc8a97a585acaa94559a2"
+      }
+    ],
+    "manifestMatchedCandidate": {
+      "bytes": 261,
+      "sha256": "1f1c572845d420efb5dd0d5e275eb2584b53f543904c5703c51de5d32c3f6882",
+      "exactCandidateHashEqualsActualWriteReceipt": true,
+      "notSeparateCanonicalContentGet": true
+    },
+    "seriesMatchedCandidate": {
+      "bytes": 119,
+      "sha256": "da95afe93d010519d1a4ba35ac10fce6c052369ce85d15bc091f70987f7df687",
+      "exactCandidateHashEqualsActualWriteReceipt": true,
+      "notSeparateCanonicalContentGet": true
+    },
+    "manifestSchema": "project.views/v1",
+    "declaredViewIds": [
+      "home",
+      "report"
+    ],
+    "declaredFileCount": 5,
+    "seriesVersion": "V1",
+    "seriesValues": [
+      2,
+      3,
+      5
+    ],
+    "seriesArtifactIdMatchesActualToolReceipt": true,
+    "canonicalR2": {
+      "revisionId": "f53f1165ed49240ac45896f27f33739f9e573efd7d9bef8c0e4f0424ee0b7bfa",
+      "filesSha256": "8f8e54bc82c48d0fe3065d96993e16bfece3a735f49feccec50e84f517660fc6",
+      "sessionSha256": "81be03985df62609713b637a41edfb49ca31444eb51d5731f576edbdea822f7f",
+      "committedAt": 1792341079840
+    },
+    "sessionHeadEqualsR2": true,
+    "turnCompletedSaved": true,
+    "fileDiffSummary": {
+      "added": 7,
+      "modified": 0,
+      "deleted": 0
+    },
+    "claimBoundary": "Write receipt plus saved R2/file index/candidate SHA establishes recorded file creation/content identity where a full expected byte candidate is supplied. The matched candidate files are not separately downloaded canonical content. Other page/script bytes are known only by recorded write size/SHA in this review."
+  },
+  "artifact": {
+    "sourceTextFileBytes": 17408,
+    "actualToolReceipt": {
+      "schemaVersion": 1,
+      "artifactId": "artifact-12f7b598d25da2662fdc9776594e3e8c5914ee7a99c59fc4e9dbdddba553",
+      "operation": "read",
+      "mediaType": "application/json",
+      "bytes": 17567,
+      "sha256": "1f1934a77952256ed99aa9cedcd923bea033cfb6239d81aa141d677faa4ab35a",
+      "createdAt": 1792341038327
+    },
+    "eventArtifactEqualsReceipt": true,
+    "actualBodyReassembledHere": false,
+    "claimBoundary": "The application/json envelope17567B/SHA is a recorded actual artifact receipt, distinct from17408B source text. Complete body/chunk reassembly and SHA are still the planned artifact-read check."
+  },
+  "actualScriptReadBoundary": {
+    "mainRecordedBytes": 2542,
+    "mainRecordedSha256": "f35830bb9af40ff488ca423e5a376636ac981add643fc8a97a585acaa94559a2",
+    "streamOnlyFinalAnswerBytes": 565,
+    "actualScriptTextAvailableHere": false,
+    "actualScriptExtractedOrExecuted": false,
+    "nextPlannedRead": "Actual browser canonical package after existing R2 release/gate prerequisites can supply saved JS bytes for API/UI checks; no new model Turn or project/source write is required by this review."
+  },
+  "release": {
+    "productAuthorityConjunctionPassed": true,
+    "postGuardObservedFrom": "2026-10-18T16:38:44.717Z",
+    "postGuardObservedThrough": "2026-10-18T16:38:53.935Z",
+    "fiveOriginalHttp200BodiesByteShaVerified": true,
+    "activeTurnId": null,
+    "resourceWait": null,
+    "releaseHold": null,
+    "recoveryHold": null,
+    "capacity": "available",
+    "rawPrivateStopLeaseReceiptRead": false
+  },
+  "physical": {
+    "from": "2026-10-18T16:39:42.592Z",
+    "through": "2026-10-18T16:39:45.121Z",
+    "logicalInactive": 9,
+    "dashDurableObjects": 9,
+    "dashInstances": 0,
+    "currentUnfilteredSchedulerDeployments": 1,
+    "currentPlacementIdSha256": "eace47040cb83da21ec71ef6585381cee740493186d577cebbc93010a89cd162",
+    "currentVmRunning": true,
+    "currentContainerStopped": true,
+    "canonicalDispatchSandboxAssociationPassed": true,
+    "allHistoricalPlacementsDisposedClaimed": false
+  },
+  "canonicalDispatchAssociation": "ordinary-t2-sandbox-identity.safe.json",
+  "history": {
+    "originalFirstPendingReleaseAndCompletedReadRetained": true,
+    "consoleAxPartialCaptureRetained": true,
+    "singleLocalBlobExportOfOriginalCachedReadsByteExact": true,
+    "noHttpReplayedToRecoverConsoleCapture": true,
+    "localBlobBytes": 98938,
+    "localBlobSha256": "211c5fc1f82f242a24a827c893e1f775e99e06995cc5bb7152c0ecb4722945e9",
+    "originalBodiesCopiedToPublicEvidence": false
+  },
+  "pending": [
+    "V1 first observed Dashboard page request timeout; no page retry in this batch",
+    "Report page/factor20and50/pause/subscription/refresh-leave functional acceptance not completed",
+    "complete artifact chunk/body reassembly and independent SHA not performed",
+    "Session2/T3/V2/R3 not executed"
+  ],
+  "usageAndFees": "unknown; not zero or settled",
+  "windowEndsAt": "2026-10-18T19:07:16Z",
+  "authorFactsNotIndependentReview": true,
+  "laterActualBrowserStage": "browser-v1-failed-stage.safe.json"
+}
