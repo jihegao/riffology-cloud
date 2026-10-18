@@ -1,0 +1,113 @@
+{
+  "schema": "jhg46-local-only-registry-readback-final-independent-source-review/v1",
+  "reviewedAt": "2026-10-18T13:48:51.966572Z",
+  "reviewOnly": true,
+  "decision": "no-must-fix-in-final-preparation",
+  "mustFix": [],
+  "requestId": "c263a2f3-f445-430e-b562-2e48f1eeb637",
+  "operationId": "registry-local-readback-v1",
+  "bindings": {
+    "operationsManifest": {
+      "bytes": 2062,
+      "sha256": "f4c663dd0c7d9808144348df8a46dbc71b5f931b76429f5f2567619915d17ed3"
+    },
+    "complete16SourceBinding": {
+      "bytes": 2717,
+      "sha256": "d77eada0d066040161b5daa4d23415eeaff593fdd5802da0c6e79cf30996b1c4"
+    },
+    "all16ActualBytesAnd8Core4AdditionalBindingsMatched": true,
+    "driverSHA256": "a2689933297ccb314e75b6c5a667b9000da2b5c285967d352fef72d8984a0080",
+    "sourceVerifierSHA256": "88be50689ace6dfc69d20d5fd8d2b39273200489788f6d5bb18dec90d7383d99",
+    "readerSHA256": "d73b1624476eb3c7fa929bff3fd6d3d99fc4a062fa9a7229c8d09aac15be6be5",
+    "scopeSHA256": "9b98ec42ae698ec18738626937ab019779a11ca145988f42b9e0dfb71118f8f4",
+    "originalVerificationSHA256": "76a53be45c5cd33a5b322bd5dd3dabc6b49f64aa53b739b38a6331cbe998beca"
+  },
+  "mechanicalChecks": {
+    "old8AndLatest14ActualRecordByteHashesMatched": true,
+    "verificationByteEqualOriginalActualRecord": true,
+    "readerLiteralScopeProjectionAndFullVerificationExact": true,
+    "reader52OrderedSlotsExact": true,
+    "totalBodyBytesIncludingRepeatedLayerPositions": 407919377,
+    "unchangedOCIAndRenewalContractBytesMatched": true,
+    "unchangedAuthAndSourceASTSegmentsMatched": 12,
+    "ASTSegmentConvention": "Exact function/class source excluding terminal newline"
+  },
+  "closedFindings": [
+    {
+      "id": "undefined-S-in-real-slot",
+      "status": "resolved; original synthetic failure retained, c.SCOPE used"
+    },
+    {
+      "id": "interrupt-code-on-error-body-or-response-close",
+      "status": "resolved; specific c.Stop deadline/external code retained without raw error text"
+    },
+    {
+      "id": "grant-expiry-active-last-slot",
+      "status": "resolved; budget min720/current grant remaining, float setitimer and monotonic, grant fresh after final proof and before ACK"
+    },
+    {
+      "id": "failed-child-cleanup",
+      "status": "resolved conservatively; nonzero known child may prove reaped/PID absent, missing lifecycle remains unknown"
+    },
+    {
+      "id": "raw-config-transfer-origin",
+      "status": "documentation corrected; AMD returns safe descriptor evidence only, Mac Registry config stream/hash still occurs without persistence or raw-object comparison"
+    }
+  ],
+  "staticChecks": {
+    "preAuth": "Exact one-LF/no-CR wire, actual grant SHA/window, full manifest and fixed new execution directory checked before once-state/source SSH/auth. New schema/operation rejects spent grants.",
+    "source": "One no-forwarding/no-agent/no-multiplex SSH sends only bound code; old8/latest14 hashes and prior supervisor absence, original source stream chain and full archive53blob/49diffID revalidation before any OAuth/JWT. No remote direct writes, Docker or API.",
+    "normalAuth": "Existing same-user six scopes before/after pinned default-profile normal token command with emptydotenv/CI/no inherited token; no login/consent/fallback. Fixed user/account GETs and one pull-only15minute account credential. OAuth used only for normal Cloudflare API, not sentAMD; JWT stays in Mac memory.",
+    "GETs": "Exactly52 fixed slots on Mac7892, duplicate layers retained; per-slot intent/terminal/proof, complete SHA+size and required manifest header relation. No redirect/retry/fallback/replacement mint/newroute/body-or-header persistence. Response closed for success; safe bounded failure metadata.",
+    "contentContract": "Original archive raw SHA+size versus actual complete local body SHA+size. DirectSmallRawByteObjectComparisonPerformed=false; no direct two-object byte comparison claim.",
+    "timing": "Global signal timer and monotonic deadline capped by min720/human grant expiry without upward rounding; fresh grant after last proof and before finalACK. TTL remains15minutes.",
+    "ACK": "Full local success requires persisted source-proof/terminal/full52 aggregate hashes and separate finalACK. Main output verifies actual persisted object hashes.",
+    "reader": "Rechecks source raw stdout SHA and full JSON proof equality, literal original verification, all52 per-slot proof-terminal chain/aggregate and finalACK3hashes. Fresh ps original supervisor/sourceSSH/Node PID absence without argv/env; PID reuse stays pending. Partial/error missing evidence never full success.",
+    "authority": "Reader publicationVerified/mergeAllowed alwaysfalse, executionTransportOriginalAckStillRequired=true. Root must combine original local transport ACK plus complete recordACK/proofs/cleanup and fresh fixed PR253head CI/review; driver cannot merge.",
+    "preservedScope": "No push/export/build/Docker/pull/load/tag/container/provider/model/Turn/Run/app/Gateway/policy/rollout/payment write or original runtime deadline extension. No old once/history reset."
+  },
+  "existingValidation": {
+    "reviewerTestsExecuted": 0,
+    "authorFinalFocusedSuite": {
+      "uniqueTests": 15,
+      "exitCode": 0,
+      "receiptSHA256": "9af44d81707696d7d9505b36744d20480bd2c5c8fbfc1afdbe966e93a392de11",
+      "rawLogBytes": 1595,
+      "rawLogSHA256": "43a240fd6187fe6170ccb135a1038143634cfe136cf1046c5e0337a905c02afa",
+      "allFinalCodeAndTestBytesMatch": true
+    },
+    "readerAuthorSuite": {
+      "passed": 15,
+      "failed": 0,
+      "safeReceiptSHA256": "8d866ead5801fc5808170068f972b74fb200e3b2e31f9d4f3868d4f95a6cd2ca",
+      "readerAndTestBytesMatched": true,
+      "rawLogReferencedBySafeReceiptOnly": true
+    },
+    "prior13And5SelectedHistory": "Retained; not18unique. Final whole focused driver15 then passed once. Old executed suites and reader15 not rerun by that driver check.",
+    "documentationBridge": {
+      "sha256": "376483edcf7fb3419cad7291ecd7fb79bcddd3699288d495dfd65c3ae6a5079c",
+      "oldOps9eAndFull4debHistoryRetained": true,
+      "boundFilesChangedAfterFinal15Only": [
+        "EXECUTION.md",
+        "operations-manifest.json"
+      ],
+      "programScopeTestsUnchanged": true,
+      "noDocTestRerun": true
+    }
+  },
+  "limitations": [
+    "Source preparation only: no new human grant or actual SSH/auth/Registry call was made by the reviewer.",
+    "Changing the data route does not prove Registry/proxy cause or throughput; public403 is not arrears evidence.",
+    "The future run still needs unique original execution ACK plus independent all52/ACK/process cleanup before root conditional merge. A diagnostic reader exit0 alone never suffices.",
+    "No credential server revocation/expiry or persistent OAuth downgrade is proved by clearing references.",
+    "Original c263 unknown, prior4attempt3proof, locks/archive/usage, T1 failure and runtime deadline stay distinct; fees unknown are not zero."
+  ],
+  "actualReviewerActions": {
+    "localReadHashASTJSONOnly": true,
+    "rawGrantHumanReplyOAuthCredentialConfigRead": false,
+    "authSSHAPIRegistryDockerProviderCalls": 0,
+    "testsExecuted": 0,
+    "authorOrFormalWorktreeEdited": false,
+    "subagentsSpawned": 0
+  }
+}

@@ -1,3 +1,7 @@
+## 2026-10-18：同 c263 本机 Registry 回读包已独审，执行待新授权
+
+[本机只回读固定包](project-view-trusted-pi-local-registry-readback-packet-20261018.md)已完成最终作者15/15、读取器15项fixture及独审（mustFix=[]）。ops `16313c71…`、16件 `919648f9…` 保留同一归档/tag/ec8d及52槽；AMD仅无转发SSH只读源复验，Registry凭据留在本机内存，本机既有7892完成GET，限720秒与grant剩余时间较短者。不增加scope或15分钟TTL，不把改路径当作带宽或根因证明。尚无新grant/实际认证、源SSH、凭据POST或GET；不部署、新Turn或延长旧窗口。下方fc06的4尝试/3证明、unknown与独立清理保持，完整发布/#253合并/普通用户验收仍pending。
+
 > 2026-10-18 原 c263 Registry 只回读实际结果：获批 3fd5a29 包已执行一次，4 GET 尝试/3 完整 proof；第一层 HTTP200 仅捕获 11,337,728/30,649,033 B，在总 720 秒限附近中断。远端 unknown-stopped、本次原 SSH1/唯一 ACK=false，完整52项未通过，publication pending、#253 未合并。独立 reader/collector 确认14原安全JSON逐 bytes/SHA/事件等值，原 supervisor/限定配置/7897 route 和两本机原 PID 清理成立；不证明凭据撤销/到期、镜像完整可拉取或零费用。无补槽/重试、export/push/Docker、部署、真实 Turn 或原 runtime 窗口扩展；695e 离线通过及所有旧unknown/失败/锁/归档历史保留。见[本次实际结果](project-view-trusted-pi-original-registry-readback-result-20261018.md)。下方准备稿中的“尚未授权/未执行”仅为其原冻结时点记录，不替代本次实际停止结果。
 
 ## 2026-10-18：原 c263 Registry 完整回读准备（尚未执行）

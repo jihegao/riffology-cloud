@@ -1,0 +1,60 @@
+{
+  "additionalFiles": {
+    "independent-local-readback-readonly.py": {
+      "bytes": 44755,
+      "sha256": "d73b1624476eb3c7fa929bff3fd6d3d99fc4a062fa9a7229c8d09aac15be6be5"
+    },
+    "renewal-source-contract.json": {
+      "bytes": 2497,
+      "sha256": "0593104af3bcc19871b2b55074d85aae105e2a04fef8f9041ab3e31887775f60"
+    },
+    "test_independent_local_readback.py": {
+      "bytes": 11841,
+      "sha256": "f2e90d289f7fd3fbeeea2ff09343f64890961f696d5f2f78409bbce62d5beb72"
+    },
+    "verification-source.json": {
+      "bytes": 10398,
+      "sha256": "76a53be45c5cd33a5b322bd5dd3dabc6b49f64aa53b739b38a6331cbe998beca"
+    }
+  },
+  "files": {
+    "AUTHORIZATION.md": {
+      "bytes": 3158,
+      "sha256": "2f91d9e5df5b709efe8d6ff367c28de7c57a3ddcad6f4c836b6341a9b5c12a9e"
+    },
+    "EXECUTION.md": {
+      "bytes": 7913,
+      "sha256": "879fd3486928f9678bca32ed60af507224e280c00fba644294d8e3da1ded2b41"
+    },
+    "local-recovery.py": {
+      "bytes": 27877,
+      "sha256": "2565c433a9c2d5364a3a77aad3aa8ef14254a234f7a74d6df6c930f0d2d4ce8c"
+    },
+    "oci_verify.py": {
+      "bytes": 5748,
+      "sha256": "0a23618e34b9a2acf608acc86d281ebd68f60a62ba2b102ecda92502c294acea"
+    },
+    "pub_common.py": {
+      "bytes": 5339,
+      "sha256": "eea82cc2e0480485564537903260f311ff1b432d4d3ba9053341072ae3efa3a6"
+    },
+    "scope.json": {
+      "bytes": 9635,
+      "sha256": "9b98ec42ae698ec18738626937ab019779a11ca145988f42b9e0dfb71118f8f4"
+    },
+    "source-verify.py": {
+      "bytes": 8361,
+      "sha256": "88be50689ace6dfc69d20d5fd8d2b39273200489788f6d5bb18dec90d7383d99"
+    },
+    "test_recovery.py": {
+      "bytes": 16241,
+      "sha256": "7da21f3b3153627c8faf062d704757e14f624c32ee36c43ef8f9bae737426a1c"
+    }
+  },
+  "humanExecutionGrantPresent": false,
+  "operationId": "registry-local-readback-v1",
+  "requestId": "c263a2f3-f445-430e-b562-2e48f1eeb637",
+  "reviewOnly": true,
+  "schema": "trusted-pi-local-registry-readback-operations/v1",
+  "sourceImageId": "sha256:0bb9af7a5909c41187cf56402a21420100c72a8de0025b0a7152f8804e85d191"
+}

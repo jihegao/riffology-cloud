@@ -1,0 +1,153 @@
+{
+  "actualCandidateAuthSshRegistryDockerCalls": 0,
+  "complete16SourceBindingSha256": "919648f9e77ea0a77033e9aaa1fd3aefda24510ae5dd7a55ba19ba2723571572",
+  "files": [
+    {
+      "bytes": 3158,
+      "file": "AUTHORIZATION.md",
+      "sha256": "2f91d9e5df5b709efe8d6ff367c28de7c57a3ddcad6f4c836b6341a9b5c12a9e"
+    },
+    {
+      "bytes": 7913,
+      "file": "EXECUTION.md",
+      "sha256": "879fd3486928f9678bca32ed60af507224e280c00fba644294d8e3da1ded2b41"
+    },
+    {
+      "bytes": 3269,
+      "file": "README.md",
+      "sha256": "bca1c7107d824c223bae13df9ce32de7ab399da3233d78f146c239efa038cbcd"
+    },
+    {
+      "bytes": 3336,
+      "file": "author-validation/final-complete15.receipt.json",
+      "sha256": "9af44d81707696d7d9505b36744d20480bd2c5c8fbfc1afdbe966e93a392de11"
+    },
+    {
+      "bytes": 1595,
+      "file": "author-validation/final-complete15.stdout",
+      "sha256": "43a240fd6187fe6170ccb135a1038143634cfe136cf1046c5e0337a905c02afa"
+    },
+    {
+      "bytes": 3381,
+      "file": "author-validation/final-formatted-complete15.receipt.json",
+      "sha256": "ae8ffd1d5d60a654c5d0bc01bf75809a8069ff4810468b9e0121df2329b646aa"
+    },
+    {
+      "bytes": 1595,
+      "file": "author-validation/final-formatted-complete15.stdout",
+      "sha256": "6d7e8ab090355628854c3390efc9582ffdb1bb07bb1b3b7c73ead7e28f54af52"
+    },
+    {
+      "bytes": 2717,
+      "file": "complete-source-binding.json",
+      "sha256": "919648f9e77ea0a77033e9aaa1fd3aefda24510ae5dd7a55ba19ba2723571572"
+    },
+    {
+      "bytes": 1633,
+      "file": "documentation-correction.safe.json",
+      "sha256": "376483edcf7fb3419cad7291ecd7fb79bcddd3699288d495dfd65c3ae6a5079c"
+    },
+    {
+      "bytes": 2177,
+      "file": "formatting-correction.safe.json",
+      "sha256": "0c0a6f521cfdd3a059728fba680b57cb3aa8762d2c1192b0971c211a47f15fed"
+    },
+    {
+      "bytes": 44755,
+      "file": "independent-local-readback-readonly.py",
+      "sha256": "d73b1624476eb3c7fa929bff3fd6d3d99fc4a062fa9a7229c8d09aac15be6be5"
+    },
+    {
+      "bytes": 27877,
+      "file": "local-recovery.py",
+      "sha256": "2565c433a9c2d5364a3a77aad3aa8ef14254a234f7a74d6df6c930f0d2d4ce8c"
+    },
+    {
+      "bytes": 5748,
+      "file": "oci_verify.py",
+      "sha256": "0a23618e34b9a2acf608acc86d281ebd68f60a62ba2b102ecda92502c294acea"
+    },
+    {
+      "bytes": 6884,
+      "file": "offline-checks.safe.json",
+      "sha256": "784704ef60af0934dbbfa4e5d1d234fc02b7799cc57d7030793cfed80b26d09e"
+    },
+    {
+      "bytes": 2062,
+      "file": "operations-manifest.json",
+      "sha256": "16313c7193782acce5cd88de7c0e2caf97c76e59c807b581b8b58ef54642eafa"
+    },
+    {
+      "bytes": 5339,
+      "file": "pub_common.py",
+      "sha256": "eea82cc2e0480485564537903260f311ff1b432d4d3ba9053341072ae3efa3a6"
+    },
+    {
+      "bytes": 2063,
+      "file": "reader-offline-checks.safe.json",
+      "sha256": "8d866ead5801fc5808170068f972b74fb200e3b2e31f9d4f3868d4f95a6cd2ca"
+    },
+    {
+      "bytes": 2497,
+      "file": "renewal-source-contract.json",
+      "sha256": "0593104af3bcc19871b2b55074d85aae105e2a04fef8f9041ab3e31887775f60"
+    },
+    {
+      "bytes": 3590,
+      "file": "reviews/final-source-review.json",
+      "sha256": "67e76b7c0c1969f5bb7a7351d59c212c7e50c7468f224bacb69d1e0eb0b5a16d"
+    },
+    {
+      "bytes": 863,
+      "file": "reviews/root-source-check.json",
+      "sha256": "047f8352aec8466ea25afabfb8c43a0b1ce01770908041787ca7bfb554119ca1"
+    },
+    {
+      "bytes": 7234,
+      "file": "reviews/source-review-before-format.json",
+      "sha256": "842b63032bd28fa3a846208420692e5f112d3e1cc981bbb14863bdbe6c0e441e"
+    },
+    {
+      "bytes": 9635,
+      "file": "scope.json",
+      "sha256": "9b98ec42ae698ec18738626937ab019779a11ca145988f42b9e0dfb71118f8f4"
+    },
+    {
+      "bytes": 5586,
+      "file": "source-reuse-contract.json",
+      "sha256": "d239c03127dc7ded26a85978392dd48386d2babb09f73891f35d08dfa0068a98"
+    },
+    {
+      "bytes": 8361,
+      "file": "source-verify.py",
+      "sha256": "88be50689ace6dfc69d20d5fd8d2b39273200489788f6d5bb18dec90d7383d99"
+    },
+    {
+      "bytes": 11841,
+      "file": "test_independent_local_readback.py",
+      "sha256": "f2e90d289f7fd3fbeeea2ff09343f64890961f696d5f2f78409bbce62d5beb72"
+    },
+    {
+      "bytes": 16241,
+      "file": "test_recovery.py",
+      "sha256": "7da21f3b3153627c8faf062d704757e14f624c32ee36c43ef8f9bae737426a1c"
+    },
+    {
+      "bytes": 10398,
+      "file": "verification-source.json",
+      "sha256": "76a53be45c5cd33a5b322bd5dd3dabc6b49f64aa53b739b38a6331cbe998beca"
+    }
+  ],
+  "limits": [
+    "Source inputs are fixed bytes; final validation is synthetic and not actual Registry proof.",
+    "The exact final driver/test bytes passed a new15/15 synthetic run after one whitespace-only correction. Original documentation/test snapshots and both correction bridges are retained separately.",
+    "No raw grant, human reply, OAuth/Registry credential, config/Env body or private stream is included.",
+    "Existing execution paths and original process/hash identities are fixed review inputs, not credential values."
+  ],
+  "newHumanGrantCreated": false,
+  "operationId": "registry-local-readback-v1",
+  "operationsManifestSha256": "16313c7193782acce5cd88de7c0e2caf97c76e59c807b581b8b58ef54642eafa",
+  "preparationOnly": true,
+  "requestId": "c263a2f3-f445-430e-b562-2e48f1eeb637",
+  "schema": "jhg46-local-registry-readback-preparation-public-inventory/v1"
+}
