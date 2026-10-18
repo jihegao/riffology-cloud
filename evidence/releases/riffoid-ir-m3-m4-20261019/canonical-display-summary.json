@@ -1,0 +1,73 @@
+{
+  "schema": "riffoid-ir.canonical-display-evidence/v1",
+  "environment": "local-workerd-sqlite-d1-r2",
+  "actualBrowserExecution": false,
+  "onlineAcceptance": false,
+  "agent": "synthetic registration of stale IR projection; ordinary canonical edits use actual manual-save routes",
+  "checks": [
+    {
+      "name": "missing-canonical-draft-does-not-revive-stale-projection",
+      "passed": true,
+      "revisionId": "b14d1b61918464b23e384679bbcf7600e184326e128df588991f0ffd1516639b",
+      "packageIdentity": "ac5b79911cf46b71c3b7fc304e8611e58e06a20ebacbc90a1f61a5af328a3b0e"
+    },
+    {
+      "name": "valid-canonical-draft-display",
+      "passed": true,
+      "draftSha256": "8f33e4ee30fc748b31056871f6f3b3081a511a0b5f525003aa40b78e7e99cd98",
+      "durationMinutes": 95,
+      "revisionId": "a336d31af3f899737a33c60df2e6d7c64cb2e5980d8ecd6c053ca9c731faefa5",
+      "packageIdentity": "21240afd82e127c2b920409659f10162aadc9037cb8e0af27253dfeae34da031"
+    },
+    {
+      "name": "malformed-canonical-json-is-preserved",
+      "passed": true,
+      "draftSha256": "d4140b89d5a6eaa8cd471de0c11883e22b9de5c4b6df9da1fde585ec4c536546",
+      "type": "unknown",
+      "revisionId": "28e8fbd100f9f1ec738d1c5823867c6e41edc6df387a2786bcf2f54e4327ca3a"
+    },
+    {
+      "name": "repaired-canonical-display-survives-restart",
+      "passed": true,
+      "draftSha256": "7c4fa157863e84c1e7579fa2b821bff365ec92df0518c2d1fd5350a2fd9574a4",
+      "revisionId": "9c82570c200494a110805d4e014fd5ed3216a69ec97ccdfb3e4856823931edf4",
+      "packageIdentity": "5b9906f1f79efcf539565fe099bce1071a580e152c27dc1dde3e73f642b3a244"
+    },
+    {
+      "name": "post-await-package-is-revalidated",
+      "passed": true,
+      "oldPackageIdentity": "5b9906f1f79efcf539565fe099bce1071a580e152c27dc1dde3e73f642b3a244",
+      "currentPackageIdentity": "f3ae3d9ea9e48044e459354618c02a3f57cf0fd2f39a8c32b39e9a41e37ad2f5",
+      "status": 409,
+      "noDraftDelivered": true
+    },
+    {
+      "name": "post-await-catalog-is-revalidated",
+      "passed": true,
+      "gatewayStatus": 503,
+      "workspaceRejection": {
+        "operation": "show",
+        "message": "not_found",
+        "status": 404
+      },
+      "noModelDelivered": true,
+      "revisionId": "f6bd6e556bbedaa29973817c43918facfe41e3be4f35eda2a425fe6c8b73b4ed"
+    },
+    {
+      "name": "canonical-display-has-zero-execution-and-no-write",
+      "passed": true,
+      "turns": 0,
+      "sessions": 0,
+      "executionAttempts": {
+        "runtime": 0,
+        "capacity": 0,
+        "tools": 0,
+        "containers": 0
+      },
+      "outbound": 0,
+      "ordinaryManualSaves": 6
+    }
+  ],
+  "passed": true,
+  "completedAt": "2026-10-18T16:23:04.196Z"
+}

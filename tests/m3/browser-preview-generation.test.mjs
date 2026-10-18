@@ -41,8 +41,12 @@ test('actual release resolveOptions injects generation policy and original adapt
  const calls=[];
  const release=createProductTrustedPiRelease({clock:()=>now,modelFetch:async()=>{throw Error('generation-test-must-not-call-model');},toolFetch:async input=>{calls.push(new URL(input).pathname);return Response.json({model:{spec:{}},experiments:[]});}});
  const options=await release.resolveOptions({identity,actor,executionDeadlineAt:now+600000});
- assert.deepEqual(calls,['/v1/research']);assert.deepEqual(options.fixedSkills.map(s=>s.name),['simulation']);
- const content=options.fixedSkills[0].content;assert.ok(content.includes('project_install_preview_adapter'));assert.ok(content.includes(adapterSha));assert.equal(content.includes(adapter),false);
+ assert.deepEqual(calls,['/v1/research']);assert.deepEqual(options.fixedSkills.map(s=>s.name),['riffoid-ir','simulation']);
+ const ir=options.fixedSkills.find(s=>s.name==='riffoid-ir').content;
+ assert.match(ir,/local\/unverified/);assert.match(ir,/never as a verified Experiment or cloud Research Run/);
+ assert.match(ir,/Do not call sim-engine run or start a cloud Run/);assert.match(ir,/generate only must stop before check\/compile\/run/);
+ assert.match(ir,/After writing or editing model\/business-ir\.draft\.json, call project_ir_show/);
+ const content=options.fixedSkills.find(s=>s.name==='simulation').content;assert.ok(content.includes('project_install_preview_adapter'));assert.ok(content.includes(adapterSha));assert.equal(content.includes(adapter),false);
  for(const path of [...contract.sourcePaths,...contract.javascriptSourcePaths])assert.ok(content.includes(path));
  assert.match(content,/six|mesa.*3\.5\.1/i);assert.match(content,/Queue code must remain CPython 3\.11 compatible/);assert.match(content,/Preserve existing working SimPy and server Preview/);
  assert.match(content,/do not convert them/i);assert.match(content,/renderer:"javascript-canvas"/);assert.match(content,/exports exactly a named function render/);assert.match(content,/event is null, \{type:"pointer",x:number,y:number,button:integer\}, or \{type:"select",id:string\}/);assert.match(content,/only M1 frontend events/);assert.ok(content.includes(javascriptExample));for(const fields of ['x,y,width,height,fill','x,y,radius,fill','x1,y1,x2,y2,stroke,width','x,y,text,fill,size'])assert.ok(content.includes(fields));assert.match(content,/steps and horizon are ordinary parameters/);assert.match(content,/Do not clamp, coerce, truncate/);

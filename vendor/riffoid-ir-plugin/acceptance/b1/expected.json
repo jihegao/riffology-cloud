@@ -1,0 +1,219 @@
+{
+  "description": "Riffoid IR Plugin v0.2 development contract: fixed B1 acceptance input and expected semantic observations.",
+  "status": "Requirements fixture only; no plugin browser execution is claimed by this file.",
+  "input": {
+    "file": "business-ir.json",
+    "version": "aircraft-business-ir/v1",
+    "business_fingerprint": "58bc6d1abdc3339a071e387bd359ce92d7f22e57204182e30d991fc0e6b1e0de",
+    "domain_pack": "aircraft-support-pack/v0.1",
+    "compiler_version": "sim-engine-compiler==0.1.0",
+    "semantic_profile": "legacy-minute-v1",
+    "seed": 0,
+    "duration_minutes": 60,
+    "tick_minutes": 1,
+    "deterministic": true,
+    "sample_requests": []
+  },
+  "comparison": {
+    "metrics": "Exact numeric equality for the listed keys; other metrics may also be returned.",
+    "selected_events": "Match the listed (time, phase, kind, entity) tuples as an ordered subsequence of the actual trace; other events are allowed.",
+    "same_minute_order": "The listed events must appear in the stated order within the same simulated minute.",
+    "time_unit": "minute",
+    "ignore": [
+      "runId",
+      "sourceRunId",
+      "wall-clock timestamps",
+      "host-specific storage references"
+    ]
+  },
+  "sources": {
+    "business_ir": "https://github.com/jihegao/riffology-cloud/blob/65df9b771a5d0497304a5955e33974e8ea9aa9ac/tests/fixtures/compiler-v01/model/business-ir.json",
+    "business_ir_git_blob": "494b9f3491f9b048d96a8287ce9491ac20eb8527",
+    "canonical_input": "https://github.com/jihegao/sim_engine_compiler/blob/5900513b3d3d9c581d50ff904dd460c984afbc96/tests/fixtures/synthetic/b1-daily-operations.json",
+    "baseline_oracle": "https://github.com/jihegao/sim_engine_compiler/blob/5900513b3d3d9c581d50ff904dd460c984afbc96/tests/fixtures/synthetic/b1-daily-operations-oracle.json",
+    "oracle_fixture_version": "legacy-minute-oracle/v1",
+    "oracle_name": "AircraftSupportV1Model",
+    "upstream_reference_commit": "5352a0d7757cbac012c75d516d1a7ac4ff15aa2a",
+    "canonical_input_file_sha256": "902f6f92d14257af9d11b44945764c5234b5e9e1f8cafc108f1c71c6bcae32d4",
+    "reference_conformance": "https://github.com/jihegao/sim_engine_compiler/blob/5900513b3d3d9c581d50ff904dd460c984afbc96/tests/conformance/test_b1_reference.py",
+    "variant_reference_rules": "https://github.com/jihegao/sim_engine_compiler/blob/5900513b3d3d9c581d50ff904dd460c984afbc96/src/sim_engine_compiler/reference/simpy_runtime.py",
+    "identity_note": "Canonical input file SHA-256, normalized canonical source SHA-256, Business fingerprint and Git blob SHA identify different representations."
+  },
+  "baseline": {
+    "expected_basis": "Selected observations copied from the independently generated, committed B1 oracle at the source above.",
+    "metrics": {
+      "planned_sorties": 2,
+      "launched_sorties": 2,
+      "completed_sorties": 2,
+      "successful_mission_waves": 2,
+      "cancelled_sorties": 0,
+      "delayed_sorties": 0,
+      "elapsed_minutes": 60
+    },
+    "stop_reason": "duration",
+    "selected_events": [
+      {
+        "time": 20,
+        "phase": "mission_dispatch",
+        "kind": "mission_launched",
+        "entity": "sortie-a-d1-w1"
+      },
+      {
+        "time": 28,
+        "phase": "mission_success",
+        "kind": "mission_success_point_succeeded",
+        "entity": "sortie-a-d1-w1"
+      },
+      {
+        "time": 30,
+        "phase": "mission_returns",
+        "kind": "mission_returned",
+        "entity": "F35-01"
+      },
+      {
+        "time": 40,
+        "phase": "mission_dispatch",
+        "kind": "mission_launched",
+        "entity": "sortie-b-d1-w1"
+      },
+      {
+        "time": 48,
+        "phase": "mission_success",
+        "kind": "mission_success_point_succeeded",
+        "entity": "sortie-b-d1-w1"
+      },
+      {
+        "time": 50,
+        "phase": "mission_returns",
+        "kind": "mission_returned",
+        "entity": "F35-01"
+      },
+      {
+        "time": 52,
+        "phase": "job_progress_and_completions",
+        "kind": "postflight_completed",
+        "entity": "F35-01"
+      }
+    ],
+    "same_minute_order": [
+      {
+        "time": 30,
+        "phase": "mission_returns",
+        "kind": "mission_returned",
+        "entity": "F35-01"
+      },
+      {
+        "time": 30,
+        "phase": "preflight_generation",
+        "kind": "operations_phase_created",
+        "entity": "job-0002"
+      },
+      {
+        "time": 30,
+        "phase": "preflight_generation",
+        "kind": "operations_phase_completed",
+        "entity": "job-0002"
+      }
+    ]
+  },
+  "second_mission_plus_5_minutes": {
+    "edit": {
+      "op": "replace",
+      "path": "/payload/sections/mission_profile/collections/composite_tasks/0/definition/taskItems/1/firstWaveTime",
+      "from": "00:40",
+      "value": "00:45"
+    },
+    "required_workflow": [
+      "edit draft payload",
+      "seal",
+      "validate",
+      "compile",
+      "inspect bundle",
+      "execute in user browser",
+      "persist result",
+      "read with Agent"
+    ],
+    "expected_basis": "Derived from the pinned independent Python reference rules; this variant has NOT been executed as part of writing this contract. Implementation acceptance must compare an independent reference run and both actual browser runs with these expectations.",
+    "derivation": [
+      "A remaining same-day mission suppresses postflight after the first return at minute 30.",
+      "Second preparation starts at planned start 45 minus advance notice 10, i.e. minute 35.",
+      "F35-01 is selected again; its zero-duration relaunch completes in minute 35.",
+      "Second success point is 45 + ceil(10 * 0.75) = 53; return is 45 + 10 = 55.",
+      "Two-minute postflight starts at return minute 55 and completes at minute 57."
+    ],
+    "metrics": {
+      "planned_sorties": 2,
+      "launched_sorties": 2,
+      "completed_sorties": 2,
+      "successful_mission_waves": 2,
+      "cancelled_sorties": 0,
+      "delayed_sorties": 0,
+      "elapsed_minutes": 60
+    },
+    "stop_reason": "duration",
+    "selected_events": [
+      {
+        "time": 20,
+        "phase": "mission_dispatch",
+        "kind": "mission_launched",
+        "entity": "sortie-a-d1-w1"
+      },
+      {
+        "time": 28,
+        "phase": "mission_success",
+        "kind": "mission_success_point_succeeded",
+        "entity": "sortie-a-d1-w1"
+      },
+      {
+        "time": 30,
+        "phase": "mission_returns",
+        "kind": "mission_returned",
+        "entity": "F35-01"
+      },
+      {
+        "time": 45,
+        "phase": "mission_dispatch",
+        "kind": "mission_launched",
+        "entity": "sortie-b-d1-w1"
+      },
+      {
+        "time": 53,
+        "phase": "mission_success",
+        "kind": "mission_success_point_succeeded",
+        "entity": "sortie-b-d1-w1"
+      },
+      {
+        "time": 55,
+        "phase": "mission_returns",
+        "kind": "mission_returned",
+        "entity": "F35-01"
+      },
+      {
+        "time": 57,
+        "phase": "job_progress_and_completions",
+        "kind": "postflight_completed",
+        "entity": "F35-01"
+      }
+    ],
+    "same_minute_order": [
+      {
+        "time": 35,
+        "phase": "preflight_generation",
+        "kind": "operations_phase_created",
+        "entity": "job-0002"
+      },
+      {
+        "time": 35,
+        "phase": "preflight_generation",
+        "kind": "operations_phase_completed",
+        "entity": "job-0002"
+      }
+    ],
+    "assertions": [
+      "The first mission launch, success point and return are unchanged.",
+      "The second mission still uses F35-01.",
+      "The edited Business and Plan fingerprints differ from the baseline.",
+      "A new runId is saved; the original run keeps its original artifacts and inputs."
+    ]
+  }
+}

@@ -38,3 +38,10 @@ COPY --chown=root:root --chmod=0555 platform_workspace_archive.py /opt/riffology
 # stack a second filter on an arm64 Docker VM. The wrapper accepts this marker
 # only for libseccomp -ECANCELED and still drops to uid 10001.
 ENV RIFFOLOGY_PROJECT_PLATFORM_EGRESS_FENCE=workerd-deny-all-v1
+
+# Same pinned IR package used by the Trusted Pi release. No npm network install.
+COPY --chown=root:root vendor/riffoid-ir-plugin/ /opt/riffology/riffoid-ir-plugin/
+RUN test -x /usr/local/bin/node \
+    && /usr/local/bin/node --version \
+    && /opt/riffology/python-compiler/bin/python3 -c "import sim_engine_compiler; assert sim_engine_compiler.__version__ == '0.1.0'"
+COPY --chown=root:root --chmod=0444 vendor/riffoid-ir-plugin.lock.json /opt/riffology/riffoid-ir-plugin.lock.json

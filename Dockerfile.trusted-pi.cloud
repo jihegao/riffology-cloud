@@ -29,3 +29,8 @@ COPY --chown=root:root --chmod=0444 services/trusted-pi/release-unconfigured.mjs
 COPY --chown=root:root --chmod=0444 services/trusted-pi/research-context.mjs /opt/riffology/trusted-pi/research-context.mjs
 
 COPY --chown=root:root --chmod=0555 services/trusted-pi/runtime_supervisor.py /opt/riffology/runtime_supervisor.py
+
+# Platform-owned IR package; project files cannot discover or replace it.
+COPY --chown=root:root vendor/riffoid-ir-plugin/ /opt/riffology/vendor/riffoid-ir-plugin/
+COPY --chown=root:root --chmod=0444 services/trusted-pi/ir-package.mjs /opt/riffology/trusted-pi/ir-package.mjs
+COPY --chown=root:root --chmod=0444 vendor/riffoid-ir-plugin.lock.json /opt/riffology/vendor/riffoid-ir-plugin.lock.json

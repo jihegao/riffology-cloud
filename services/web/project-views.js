@@ -5,6 +5,9 @@ const encoder=new TextEncoder(),decoder=new TextDecoder('utf8',{fatal:true});
 const fail=code=>{throw Error('project-view-'+code);};
 const sha=async bytes=>[...new Uint8Array(await crypto.subtle.digest('SHA-256',bytes))].map(n=>n.toString(16).padStart(2,'0')).join('');
 const decode=asset=>Uint8Array.from(atob(asset.base64),c=>c.charCodeAt(0));
+const irOperations=new Set(['show','draft','records','heartbeat','submit','detach','project_ir_result']);
+const IR_INPUT_BYTES=256*1024,IR_RESPONSE_BYTES=512*1024;
+const object=value=>!!value&&typeof value==='object'&&!Array.isArray(value)&&Object.getPrototypeOf(value)===Object.prototype;
 /** Called only with a package returned by the current authenticated host API. */
 export async function verifyProjectViewPackage(pkg,scope,isCurrent=()=>true){
  if(!isCurrent()||!pkg||pkg.schema!=='project.view-package/v1'||pkg.scope?.tenantId!==scope.tenantId||pkg.scope?.workspaceId!==scope.workspaceId||scope.projectId&&pkg.scope.projectId!==scope.projectId||scope.workspaceGeneration!==undefined&&pkg.scope.workspaceGeneration!==scope.workspaceGeneration||!Array.isArray(pkg.assets)||pkg.assets.length>64||pkg.manifest?.schema!=='project.views/v1'||!Array.isArray(pkg.manifest.views)||pkg.manifest.views.length>16)fail('scope-denied');
@@ -17,8 +20,9 @@ export async function verifyProjectViewPackage(pkg,scope,isCurrent=()=>true){
  return pkg;
 }
 /** Scope is a closure held by the host, never a claim accepted from a frame.
- * No app API URL, credentials, command or write operation enters this port. */
-export function createProjectViewBroker({port,pkg,isCurrent,onNavigate=()=>{},onState=()=>{},readAsset,readArtifacts=async()=>({items:[],nextCursor:null,version:null}),authorize=async()=>{},liveness=false}){
+ * No app API URL, credentials, command or arbitrary file write enters this port.
+ * IR replies and result submissions use their own explicit bounded contract. */
+export function createProjectViewBroker({port,pkg,isCurrent,onNavigate=()=>{},onState=()=>{},readAsset,readArtifacts=async()=>({items:[],nextCursor:null,version:null}),irRequest=async()=>{throw Error('ir-unavailable');},authorize=async()=>{},liveness=false}){
  let closed=false,failed=false,lastId=0,inflight=0,subscribed=false,artifactState=null,subscriptionEpoch=0;
  const post=port.postMessage.bind(port),closePort=port.close.bind(port),setTimer=globalThis.setTimeout.bind(globalThis),clearTimer=globalThis.clearTimeout.bind(globalThis),now=globalThis.performance.now.bind(globalThis.performance);
  let livenessStarted=false,pingNonce=null,pingTimer=null,pongTimer=null,pongDeadline=null;
@@ -30,14 +34,15 @@ export function createProjectViewBroker({port,pkg,isCurrent,onNavigate=()=>{},on
   pongDeadline=now()+3000;pongTimer=setTimer(()=>{if(!current())return;close();onState('failed');},3000);
   try{post({type:'project-view-ping',nonce:pingNonce});}catch{close();onState('failed');}
  }
- const checkAuthorization=async()=>{try{await authorize();}catch(error){onState('failed');throw error;}};
+ const checkAuthorization=async()=>{try{await authorize();}catch(error){failed=true;onState('failed');throw error;}};
+ const failHeartbeat=()=>{if(closed)return;const notify=!failed;failed=true;close();if(notify)onState('failed');};
  const snapshot=()=>({revisionId:pkg.revisionId,filesSha256:pkg.filesSha256,packageIdentity:pkg.packageIdentity,files:pkg.assets.map(({path,sha256,mediaType})=>({path,sha256,mediaType})),artifacts:artifactState,views:pkg.manifest.views.map(({id,title,entrypoint})=>({id,title,entrypoint}))});
- const send=value=>{if(!current())return;if(encoder.encode(JSON.stringify(value)).length>65536){if(value.id)post({id:value.id,error:'response-too-large'});return;}post(value);};
+ const send=(value,maxBytes=65536)=>{if(!current())return false;if(encoder.encode(JSON.stringify(value)).length>maxBytes){if(value.id)post({id:value.id,error:'response-too-large'});return false;}post(value);return true;};
  port.onmessage=async event=>{
   if(!current())return;
   const m=event.data;
   if(!m||typeof m!=='object'||Array.isArray(m))return;
-  try{if(encoder.encode(JSON.stringify(m)).length>4096)return;}catch{return;}
+  try{if(encoder.encode(JSON.stringify(m)).length>(m.type==='ir.request'?IR_INPUT_BYTES+1024:4096)){if(m.type==='ir.request'&&Number.isSafeInteger(m.id)&&m.id>lastId&&m.id<=2147483647){lastId=m.id;send({id:m.id,error:'request-too-large'});}return;}}catch{return;}
   if(m.type==='ended'&&Object.keys(m).sort().join(',')==='reason,type'&&m.reason==='navigation-ended'){failed=true;close();onState('navigation-ended');return;}
   if(m.type==='project-view-pong'){
    if(liveness===true&&pingNonce!==null&&Object.keys(m).sort().join(',')==='nonce,type'&&m.nonce===pingNonce){if(now()>=pongDeadline){close();onState('failed');return;}clearTimer(pongTimer);pongTimer=pongDeadline=null;pingNonce=null;pingTimer=setTimer(ping,1000);}return;
@@ -46,15 +51,22 @@ export function createProjectViewBroker({port,pkg,isCurrent,onNavigate=()=>{},on
   if(m.type==='failed'&&Object.keys(m).sort().join(',')==='error,type'&&['page-install-failed','page-script-failed','page-script-timeout'].includes(m.error)){failed=true;onState('failed');return;}
   if(!Number.isSafeInteger(m.id)||m.id<=lastId||m.id>2147483647)return;
   lastId=m.id;
-  const keys=Object.keys(m).sort().join(','),expected=m.type==='files.read'?'id,path,type':m.type==='artifacts.list'?'cursor,id,type':m.type==='artifacts.read'?'artifactId,id,offset,type':m.type==='navigate'?'entrypoint,id,type':'id,type';
-  if(keys!==expected||inflight>=8){send({id:m.id,error:'request-denied'});return;}
+  const keys=Object.keys(m).sort().join(','),expected=m.type==='ir.request'?'id,input,operation,type':m.type==='files.read'?'id,path,type':m.type==='artifacts.list'?'cursor,id,type':m.type==='artifacts.read'?'artifactId,id,offset,type':m.type==='navigate'?'entrypoint,id,type':'id,type';
+  if(keys!==expected||inflight>=8||m.type==='ir.request'&&(!irOperations.has(m.operation)||!object(m.input))){send({id:m.id,error:'request-denied'});return;}
+  const heartbeat=m.type==='ir.request'&&m.operation==='heartbeat';
   const requestSubscriptionEpoch=['updates.subscribe','updates.cancel'].includes(m.type)?++subscriptionEpoch:null;
   if(requestSubscriptionEpoch!==null)subscribed=false;
   inflight++;
   try{
    await checkAuthorization();if(!current())return;
    let value;
-   if(m.type==='files.list')value=snapshot().files;
+   if(m.type==='ir.request'){
+    if(encoder.encode(JSON.stringify(m.input)).length>IR_INPUT_BYTES){send({id:m.id,error:'request-too-large'});return;}
+    value=await irRequest(m.operation,m.input);
+    // A heartbeat may already have claimed a run or expired an old lease. A
+    // failed/uncertain reply cannot permit this frame to renew an unseen claim.
+    if(heartbeat&&(!object(value)||value.connected!==true||value.status==='failed'))throw Error('project-ir-heartbeat-failed');
+   }else if(m.type==='files.list')value=snapshot().files;
    else if(m.type==='artifacts.list'){
     if(m.cursor!==null&&(typeof m.cursor!=='string'||! /^(?:[a-f0-9]{64}:){2,3}artifact-[a-f0-9]{60}$/.test(m.cursor)))throw Error('cursor-denied');
     value=await readArtifacts({cursor:m.cursor});
@@ -75,13 +87,18 @@ export function createProjectViewBroker({port,pkg,isCurrent,onNavigate=()=>{},on
    }else throw Error('request-denied');
    // A package update or Catalog revocation can happen while bytes are being
    // read. Recheck the real host authority at the final delivery boundary.
-   if(['files.read','artifacts.list','artifacts.read','updates.subscribe'].includes(m.type)){
+   if(['ir.request','files.read','artifacts.list','artifacts.read','updates.subscribe'].includes(m.type)){
     if(!current())return;
     await checkAuthorization();if(!current())return;
     if(m.type==='updates.subscribe'&&requestSubscriptionEpoch!==subscriptionEpoch){send({id:m.id,value:{subscribed:false}});return;}
    }
-   if(!current())return;send({id:m.id,value});if(subscribed&&m.type==='updates.subscribe')send({type:'snapshot',snapshot:snapshot()});
-  }catch{send({id:m.id,error:'request-denied'});if(!current())return;}finally{inflight--;}
+   if(!current())return;const delivered=send({id:m.id,value},m.type==='ir.request'?IR_RESPONSE_BYTES:65536);if(heartbeat&&!delivered)failHeartbeat();if(subscribed&&m.type==='updates.subscribe')send({type:'snapshot',snapshot:snapshot()});
+  }catch(error){
+   const code=error?.code??error?.message,reason=m.type==='ir.request'&&code==='project-ir-response-too-large'?'response-too-large':m.type==='ir.request'&&['project-ir-request-too-large','body_too_large'].includes(code)?'request-too-large':'request-denied';
+   try{send({id:m.id,error:reason});}catch{ /* The original port may already be unavailable. */ }
+   finally{if(heartbeat)failHeartbeat();}
+   if(!current())return;
+  }finally{inflight--;}
  };
  port.start?.();
  return {close,async publish(){if(!subscribed||!current())return;const epoch=subscriptionEpoch;await checkAuthorization();if(!current()||!subscribed||epoch!==subscriptionEpoch)return;const state=await readArtifacts({cursor:null});if(!current()||!subscribed||epoch!==subscriptionEpoch)return;await checkAuthorization();if(!current()||!subscribed||epoch!==subscriptionEpoch)return;artifactState=state;send({type:'snapshot',snapshot:snapshot()});},get closed(){return closed;}};
@@ -120,6 +137,11 @@ export function createProjectViewsPanel({root,api,pollMs=5000}){
      const params=new URLSearchParams({identity:ownPackage.packageIdentity});
      if(query.cursor)params.set('cursor',query.cursor);if(query.offset!==undefined)params.set('offset',String(query.offset));
      return api('/api/workspaces/'+encodeURIComponent(ownContext.workspaceId)+'/project-view-artifacts'+(query.artifactId?'/'+query.artifactId:'')+'?'+params,{signal:AbortSignal.timeout(10000)});
+    },
+    irRequest:async(operation,input)=>{
+     if(!current())fail('stale');
+     const result=await api('/api/workspaces/'+encodeURIComponent(ownContext.workspaceId)+'/project-ir',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({packageIdentity:ownPackage.packageIdentity,operation,input}),signal:AbortSignal.timeout(25000)});
+     if(!current())fail('stale');return result;
     },
     onNavigate:next=>void choose(next),
     authorize:async()=>{

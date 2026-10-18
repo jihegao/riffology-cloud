@@ -1,0 +1,902 @@
+{
+  "schema": "riffoid-ir.project-tools-image-acceptance/v1",
+  "scope": "Actual local native Linux/amd64 ProjectTools cloud-recipe image execution with the baked fixed helper/CLI and real compiler SDK",
+  "observedAt": "2026-10-18T17:06:58.900514+00:00",
+  "status": "passed",
+  "sourceCommit": "ed89ef4ee4d52c649cb4d154421b5f151f789c5a",
+  "contextTarSha256": "468d2130c0a141040c944fe048cca3612b4fa01560fb6efb8db04da7ea80d77e",
+  "sourceContextFiles": 54,
+  "sourceContextUnchangedAfterProbe": true,
+  "packagePin": {
+    "version": "0.3.1",
+    "packageSha256": "86b7a28a1b92652fb01b15ea6671414ecdd5e38c639878455e7abffb60d46ad6",
+    "contractCommit": "f1f6762e774b5eba63b788a2baacde56d491c0fe",
+    "files": 45,
+    "lockSha256": "7c376d888134915642ed1bf939f810d244764b75f11646cb8337986d2e9843f3"
+  },
+  "build": {
+    "exitCode": 0,
+    "seconds": 13.032835960388184,
+    "imageId": "sha256:402381b5b2c0f460e6af44bc4e953d53f6bdb648de4c9ccbeee837815580cd8f",
+    "platform": "linux/amd64",
+    "networkForRunInstructions": "none",
+    "publicAdd": [
+      {
+        "url": "https://github.com/astral-sh/python-build-standalone/releases/download/20251217/cpython-3.14.2%2B20251217-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz",
+        "sha256": "4eb8731e2dbc9644dca24e71a9e7615f7fb04720342ea65f3c30ea3a6a00b792"
+      },
+      {
+        "url": "https://files.pythonhosted.org/packages/48/72/920ed1224c94a8a5a69e6c1275ac7fe4eb911ba8feffddf469f1629d47f3/simpy-4.1.1-py3-none-any.whl",
+        "sha256": "7c5ae380240fd2238671160e4830956f8055830a8317edf5c05e495b3823cd88"
+      }
+    ],
+    "downloadObservation": "BuildKit logged the two fixed remote ADD instructions, cache hits and subsequent DONE 0.1s steps. Network byte counts were not measured; this is not an offline-build claim."
+  },
+  "runtime": {
+    "exitCode": 0,
+    "attachExitCode": 0,
+    "seconds": 2.9118692874908447,
+    "imageId": "sha256:402381b5b2c0f460e6af44bc4e953d53f6bdb648de4c9ccbeee837815580cd8f",
+    "containerId": "3efa3d40ca5ff91cf40edf4142f3861c3b78341134053d13a1a2565bf045b1c4",
+    "bakedFilesVerified": 52,
+    "nodeBinarySha256": "3517c2df0b2f8cd7f422b4b8450ef81c6889f08eb03e281d6de9079b15e6a327",
+    "compilerPythonBinarySha256": "010d370720b52e3ad79b21a079be6a10ea848acfc460552aaf3d36334980129f",
+    "identities": [
+      {
+        "kind": "system-python",
+        "version": "3.11.14",
+        "uid": 10001,
+        "gid": 10001,
+        "groups": [],
+        "status": {
+          "NoNewPrivs": "1",
+          "Seccomp": "2",
+          "Seccomp_filters": "2",
+          "CapEff": "0000000000000000"
+        },
+        "connect": {
+          "loopback": 1,
+          "unix": 1,
+          "external-tcp": 1
+        },
+        "ioUring": {
+          "425": {
+            "result": -1,
+            "errno": 1
+          },
+          "426": {
+            "result": -1,
+            "errno": 1
+          },
+          "427": {
+            "result": -1,
+            "errno": 1
+          }
+        },
+        "packageWriteDenied": 13
+      },
+      {
+        "kind": "fixed-node",
+        "version": "22.23.2",
+        "execPath": "/usr/local/bin/node",
+        "uid": 10001,
+        "gid": 10001,
+        "groups": [
+          10001
+        ],
+        "status": {
+          "NoNewPrivs": "1",
+          "Seccomp": "2",
+          "Seccomp_filters": "2",
+          "CapEff": "0000000000000000"
+        },
+        "connect": {
+          "loopback": "EPERM",
+          "unix": "EPERM"
+        }
+      },
+      {
+        "kind": "fixed-compiler-python",
+        "python": "3.14.2",
+        "compiler": "0.1.0",
+        "simpy": "4.1.1",
+        "uid": 10001,
+        "gid": 10001,
+        "groups": [],
+        "status": {
+          "NoNewPrivs": "1",
+          "Seccomp": "2",
+          "Seccomp_filters": "2",
+          "CapEff": "0000000000000000"
+        }
+      }
+    ],
+    "bakedFileHashes": [
+      {
+        "path": "/opt/riffology/file_service.py",
+        "bytes": 28350,
+        "sha256": "689d48e74d3113e3a1d2132d6ca748b2ecef57bf9490610b8cca7521a6f8e683",
+        "uid": 0,
+        "mode": "0o555"
+      },
+      {
+        "path": "/opt/riffology/process_quiescence.py",
+        "bytes": 17340,
+        "sha256": "add12d51c5f80621ecb8ab2817f06c9d01a755f771061ea5b2f023f4d947b185",
+        "uid": 0,
+        "mode": "0o555"
+      },
+      {
+        "path": "/opt/riffology/project_network_fence.py",
+        "bytes": 2520,
+        "sha256": "296da7b8a1476771c5b7f2b65a199196538a2d4180f2b273577c004b37044f97",
+        "uid": 0,
+        "mode": "0o555"
+      },
+      {
+        "path": "/opt/riffology/effect_wrapper.py",
+        "bytes": 5429,
+        "sha256": "3e2bdd8d8cfd07b21da6dca1f357d09c0df5bcf92addd66420986ddb39d5c199",
+        "uid": 0,
+        "mode": "0o555"
+      },
+      {
+        "path": "/opt/riffology/workspace_archive.py",
+        "bytes": 14668,
+        "sha256": "7a86cef42158390ad1e8274480b3d865e725eb5afe67a6b86c1b8e285cd4ac6e",
+        "uid": 0,
+        "mode": "0o555"
+      },
+      {
+        "path": "/opt/riffology/platform_workspace_archive.py",
+        "bytes": 5749,
+        "sha256": "cf58567ea62243beb89f1246070417b84fa2d5e059a5845cbaa966a5b33fa8b4",
+        "uid": 0,
+        "mode": "0o555"
+      },
+      {
+        "path": "/opt/riffology/riffoid-ir-plugin.lock.json",
+        "bytes": 7351,
+        "sha256": "7c376d888134915642ed1bf939f810d244764b75f11646cb8337986d2e9843f3",
+        "uid": 0,
+        "mode": "0o444"
+      },
+      {
+        "path": "/opt/riffology/riffoid-ir-plugin/README.md",
+        "bytes": 7973,
+        "sha256": "0d8bc836065aeaf1603936150441fd7ea8f742360e0701a9fbac4155a3e9acb4",
+        "uid": 0,
+        "mode": "0o644"
+      },
+      {
+        "path": "/opt/riffology/riffoid-ir-plugin/acceptance/b1/business-ir.json",
+        "bytes": 4509,
+        "sha256": "e27c4060e281ad195035f2ac82913651c472f00aebcd4bd0d306a51649bba4d8",
+        "uid": 0,
+        "mode": "0o644"
+      },
+      {
+        "path": "/opt/riffology/riffoid-ir-plugin/acceptance/b1/expected.json",
+        "bytes": 7754,
+        "sha256": "06b1b0356172cbcde43760ef9964b5c1ae0cb658cb9e382a1cee2a144fe3250a",
+        "uid": 0,
+        "mode": "0o644"
+      },
+      {
+        "path": "/opt/riffology/riffoid-ir-plugin/adapters/riffoid/index.mjs",
+        "bytes": 4062,
+        "sha256": "4320d902af515cbe37a1ac9a8b2a01dc44feca0586ef8ad66b05ab72b075211d",
+        "uid": 0,
+        "mode": "0o644"
+      },
+      {
+        "path": "/opt/riffology/riffoid-ir-plugin/adapters/riffoid/platform.mjs",
+        "bytes": 3250,
+        "sha256": "aef4031e8a5bb139cb0bfaea31c96493274f22761040da10eddef84889c4bc26",
+        "uid": 0,
+        "mode": "0o644"
+      },
+      {
+        "path": "/opt/riffology/riffoid-ir-plugin/browser/app.css",
+        "bytes": 3707,
+        "sha256": "7da94e938eccf330dc383804c2b40f638e8586bf0a340c67994cfbdf08cf611c",
+        "uid": 0,
+        "mode": "0o644"
+      },
+      {
+        "path": "/opt/riffology/riffoid-ir-plugin/browser/app.html",
+        "bytes": 2676,
+        "sha256": "25bf4510f6065a89ea701d69b4d607ae7830a8f8fc4ccfc4d3c50cd49ee03e31",
+        "uid": 0,
+        "mode": "0o644"
+      },
+      {
+        "path": "/opt/riffology/riffoid-ir-plugin/browser/app.js",
+        "bytes": 13945,
+        "sha256": "5044f330e47c40815591fd4e503da2141115ad80de02e3a4f60d3f35b9fc8010",
+        "uid": 0,
+        "mode": "0o644"
+      },
+      {
+        "path": "/opt/riffology/riffoid-ir-plugin/browser/pi-web-plugin.js",
+        "bytes": 3025,
+        "sha256": "2e40bfb8bc78b01dd982c986fcc9af9c279e3b19cc97a9f44837699dc2504b5b",
+        "uid": 0,
+        "mode": "0o644"
+      },
+      {
+        "path": "/opt/riffology/riffoid-ir-plugin/browser/runtime.js",
+        "bytes": 24317,
+        "sha256": "54cf8400a889748d6a796b10a3a1789ff6f622fd5fd986429ab28e2995d839ef",
+        "uid": 0,
+        "mode": "0o644"
+      },
+      {
+        "path": "/opt/riffology/riffoid-ir-plugin/browser/worker.js",
+        "bytes": 3599,
+        "sha256": "5905881426fc6e21310f880b07cd7a840981883e9544922bb8fd6f47e3802e0f",
+        "uid": 0,
+        "mode": "0o644"
+      },
+      {
+        "path": "/opt/riffology/riffoid-ir-plugin/docs/acceptance.md",
+        "bytes": 12007,
+        "sha256": "2e728a90e88844613d53dec8211940ceb14d6caa3ad74c45090721b1a59fb07e",
+        "uid": 0,
+        "mode": "0o644"
+      },
+      {
+        "path": "/opt/riffology/riffoid-ir-plugin/docs/domain-development.md",
+        "bytes": 4893,
+        "sha256": "dcdd7cb2d9f1bbefa4b26e67b2c685a14d44e9a453979c26c9bee7dc5af05d39",
+        "uid": 0,
+        "mode": "0o644"
+      },
+      {
+        "path": "/opt/riffology/riffoid-ir-plugin/docs/functional-requirements-v0.2.md",
+        "bytes": 24000,
+        "sha256": "d83f5fb2c498aec8493d74bca7a493933aeda5b2b4ba7fb1b2ff527b10b3c2b7",
+        "uid": 0,
+        "mode": "0o644"
+      },
+      {
+        "path": "/opt/riffology/riffoid-ir-plugin/docs/model-fields.md",
+        "bytes": 2969,
+        "sha256": "8348ce00d1bd39fa7ccd693cfa643843a94470c600ea2b117bad1e1dd9c763f5",
+        "uid": 0,
+        "mode": "0o644"
+      },
+      {
+        "path": "/opt/riffology/riffoid-ir-plugin/docs/riffoid-integration.md",
+        "bytes": 4642,
+        "sha256": "d334bbf3781a8ed9961735424ab8ffaccdd6533036b5f94a0bfb72bd8fcd7de1",
+        "uid": 0,
+        "mode": "0o644"
+      },
+      {
+        "path": "/opt/riffology/riffoid-ir-plugin/extensions/riffoid-ir/index.js",
+        "bytes": 4859,
+        "sha256": "2835a6e2c8c4c9786155d4815bede7362c95a9d36fece2b917a3676590aebd14",
+        "uid": 0,
+        "mode": "0o644"
+      },
+      {
+        "path": "/opt/riffology/riffoid-ir-plugin/package.json",
+        "bytes": 1215,
+        "sha256": "f6ea0722592e81cd9f8ad0e5e7c3ba8944c5dbde9b13cd25a1d726aa148e2821",
+        "uid": 0,
+        "mode": "0o644"
+      },
+      {
+        "path": "/opt/riffology/riffoid-ir-plugin/scripts/bootstrap-compiler.py",
+        "bytes": 1564,
+        "sha256": "34a8412cedb6473bb327b7e1d84ebbe737c402dcb8ed5e1db06fda09913ac5de",
+        "uid": 0,
+        "mode": "0o644"
+      },
+      {
+        "path": "/opt/riffology/riffoid-ir-plugin/scripts/check.mjs",
+        "bytes": 609,
+        "sha256": "a0a6857bc677981165fbb23e0a16d4367c2519e688d40662f0fa439943908ff3",
+        "uid": 0,
+        "mode": "0o644"
+      },
+      {
+        "path": "/opt/riffology/riffoid-ir-plugin/scripts/compiler.py",
+        "bytes": 3564,
+        "sha256": "d0f8249a6506f3eceaf678c69d7fe888eafe8412a7e8ed8061b7992390d369c8",
+        "uid": 0,
+        "mode": "0o644"
+      },
+      {
+        "path": "/opt/riffology/riffoid-ir-plugin/scripts/export-acceptance.mjs",
+        "bytes": 3388,
+        "sha256": "9a404c2ad52096fb363b3dacb657745ce84860352e27795d04cd573e5a96902a",
+        "uid": 0,
+        "mode": "0o644"
+      },
+      {
+        "path": "/opt/riffology/riffoid-ir-plugin/scripts/install-local.mjs",
+        "bytes": 1063,
+        "sha256": "36f0b02754b8a8d950b868802174bfd66cce8e720552129d296cc73d029e08e3",
+        "uid": 0,
+        "mode": "0o644"
+      },
+      {
+        "path": "/opt/riffology/riffoid-ir-plugin/scripts/riffoid-cli.mjs",
+        "bytes": 4477,
+        "sha256": "5421ec8b9361bb91afc4a68fac50e46bfecee8f3de419c6e862e95024a06c1b2",
+        "uid": 0,
+        "mode": "0o644"
+      },
+      {
+        "path": "/opt/riffology/riffoid-ir-plugin/scripts/start-test-workspace.mjs",
+        "bytes": 558,
+        "sha256": "50e9ec0c1e72047f865047441f90594dbe1f483422d61a1924a6d0ea265370e6",
+        "uid": 0,
+        "mode": "0o644"
+      },
+      {
+        "path": "/opt/riffology/riffoid-ir-plugin/scripts/test-riff-pi.mjs",
+        "bytes": 11555,
+        "sha256": "273c2be82e4091fec6092af23741c4b86dd7c107455a283724d2407d5ee24888",
+        "uid": 0,
+        "mode": "0o644"
+      },
+      {
+        "path": "/opt/riffology/riffoid-ir-plugin/scripts/test-workspace.mjs",
+        "bytes": 3982,
+        "sha256": "2d63d1f187f5c0b080be1e5986472ceb6cc1b322204e3e091062ef9930084eb1",
+        "uid": 0,
+        "mode": "0o644"
+      },
+      {
+        "path": "/opt/riffology/riffoid-ir-plugin/skills/riffoid-ir/SKILL.md",
+        "bytes": 3953,
+        "sha256": "40d2304578935b2909c9978180f3ff2f96d9106763ea494a77a026812b503158",
+        "uid": 0,
+        "mode": "0o644"
+      },
+      {
+        "path": "/opt/riffology/riffoid-ir-plugin/src/broker.mjs",
+        "bytes": 6760,
+        "sha256": "b6571a8187db431daec389c992b6253a57f8dcdea351f16ed3873a6dd7ce436f",
+        "uid": 0,
+        "mode": "0o644"
+      },
+      {
+        "path": "/opt/riffology/riffoid-ir-plugin/src/compiler.mjs",
+        "bytes": 1800,
+        "sha256": "682e706a3126cd52a1cc49fbd3f44d9d2536219f0afa6b6e23ff1068e4c02d5c",
+        "uid": 0,
+        "mode": "0o644"
+      },
+      {
+        "path": "/opt/riffology/riffoid-ir-plugin/src/domain-pack.mjs",
+        "bytes": 2507,
+        "sha256": "437e8e711101b0f2a431438de5ae36b1076bd92ed959e02b80eb0e60f6ce2b97",
+        "uid": 0,
+        "mode": "0o644"
+      },
+      {
+        "path": "/opt/riffology/riffoid-ir-plugin/src/live-connection.mjs",
+        "bytes": 1348,
+        "sha256": "258fbad419d48f25200a496a788e389b3fc333a5040a68fc2c38e7d6de25f3fd",
+        "uid": 0,
+        "mode": "0o644"
+      },
+      {
+        "path": "/opt/riffology/riffoid-ir-plugin/src/model-summary.d.mts",
+        "bytes": 79,
+        "sha256": "efec89f84ba80b3513c6c396d73d57041b37074562e2a16734fb68550ec1a25c",
+        "uid": 0,
+        "mode": "0o644"
+      },
+      {
+        "path": "/opt/riffology/riffoid-ir-plugin/src/model-summary.mjs",
+        "bytes": 1019,
+        "sha256": "d0ffdb3049478dbef41fa3b6ea891aaa18e09618a30e691bc28a2c00bee9b747",
+        "uid": 0,
+        "mode": "0o644"
+      },
+      {
+        "path": "/opt/riffology/riffoid-ir-plugin/src/project.mjs",
+        "bytes": 17660,
+        "sha256": "4e00dd8b909ce04e7f19153bf44c4d076a842dd4ce6d52cae92048d77abb21eb",
+        "uid": 0,
+        "mode": "0o644"
+      },
+      {
+        "path": "/opt/riffology/riffoid-ir-plugin/src/tools.mjs",
+        "bytes": 1779,
+        "sha256": "073df9ec9e92c7a392d7d0c42d38b526fec6388419b8e5473e26f7f6171e10fc",
+        "uid": 0,
+        "mode": "0o644"
+      },
+      {
+        "path": "/opt/riffology/riffoid-ir-plugin/tests/broker.test.mjs",
+        "bytes": 1816,
+        "sha256": "c687398278e0d6d3425bd6468b16da573f411e22f1996d9aad8e739dec01caa0",
+        "uid": 0,
+        "mode": "0o644"
+      },
+      {
+        "path": "/opt/riffology/riffoid-ir-plugin/tests/conformance.test.mjs",
+        "bytes": 5027,
+        "sha256": "ef9eb60e5cd776680f3fac7abb5bbdff70b714c863c6cba5018d975fb8086cb9",
+        "uid": 0,
+        "mode": "0o644"
+      },
+      {
+        "path": "/opt/riffology/riffoid-ir-plugin/tests/development.test.mjs",
+        "bytes": 5792,
+        "sha256": "14ea251848799d7653b52fd669dbb85157140584363c297efd9e39c409260862",
+        "uid": 0,
+        "mode": "0o644"
+      },
+      {
+        "path": "/opt/riffology/riffoid-ir-plugin/tests/model-summary.test.mjs",
+        "bytes": 1343,
+        "sha256": "03b31f36fac5b1ed36605f928b503fa7086e7a479d4bf47b4fb76520a31a0b6e",
+        "uid": 0,
+        "mode": "0o644"
+      },
+      {
+        "path": "/opt/riffology/riffoid-ir-plugin/tests/package.test.mjs",
+        "bytes": 2621,
+        "sha256": "98fe983d62aff910a2bc12ff5914e4991be9ad3cfb6e8479bfaa76aa9ed0d6f2",
+        "uid": 0,
+        "mode": "0o644"
+      },
+      {
+        "path": "/opt/riffology/riffoid-ir-plugin/tests/project.test.mjs",
+        "bytes": 6216,
+        "sha256": "448188f1e4b2601c68d051560dced782902f977082ba511a39e553a440d6992a",
+        "uid": 0,
+        "mode": "0o644"
+      },
+      {
+        "path": "/opt/riffology/riffoid-ir-plugin/tests/riffoid-cli.test.mjs",
+        "bytes": 5411,
+        "sha256": "91f96e88e84d14a80584a734157c321e31cc330c21bde5f049e153fb61cc43f7",
+        "uid": 0,
+        "mode": "0o644"
+      },
+      {
+        "path": "/opt/riffology/riffoid-ir-plugin/tests/test-workspace.test.mjs",
+        "bytes": 4509,
+        "sha256": "4ee5de006df262c3dc75c990bb466712e44b4464e6993619e77bf524b7a4b02f",
+        "uid": 0,
+        "mode": "0o644"
+      },
+      {
+        "path": "/opt/riffology/riffoid-ir-plugin/tests/worker.test.mjs",
+        "bytes": 2128,
+        "sha256": "8a7724bfc41a75ec05bb4074e4d7ce1377e11fbf98e3658023550a879c8ed7f4",
+        "uid": 0,
+        "mode": "0o644"
+      }
+    ],
+    "actualProcessSamples": [
+      {
+        "stage": "ir-image-identity",
+        "pid": 10,
+        "argv": [
+          "/usr/local/bin/python3",
+          "/opt/riffology/file_service.py"
+        ],
+        "status": {
+          "Name": "python3",
+          "State": "R (running)",
+          "PPid": "8",
+          "Uid": "10001\t10001\t10001\t10001",
+          "Gid": "10001\t10001\t10001\t10001",
+          "Groups": "",
+          "CapEff": "0000000000000000",
+          "NoNewPrivs": "1",
+          "Seccomp": "2",
+          "Seccomp_filters": "2"
+        }
+      },
+      {
+        "stage": "ir-image-write",
+        "pid": 25,
+        "argv": [
+          "/usr/local/bin/python3",
+          "/opt/riffology/file_service.py"
+        ],
+        "status": {
+          "Name": "python3",
+          "State": "R (running)",
+          "PPid": "23",
+          "Uid": "10001\t10001\t10001\t10001",
+          "Gid": "10001\t10001\t10001\t10001",
+          "Groups": "",
+          "CapEff": "0000000000000000",
+          "NoNewPrivs": "1",
+          "Seccomp": "2",
+          "Seccomp_filters": "2"
+        }
+      },
+      {
+        "stage": "ir-image-check",
+        "pid": 28,
+        "argv": [
+          "/usr/local/bin/python3",
+          "/opt/riffology/file_service.py"
+        ],
+        "status": {
+          "Name": "python3",
+          "State": "R (running)",
+          "PPid": "26",
+          "Uid": "10001\t10001\t10001\t10001",
+          "Gid": "10001\t10001\t10001\t10001",
+          "Groups": "",
+          "CapEff": "0000000000000000",
+          "NoNewPrivs": "1",
+          "Seccomp": "2",
+          "Seccomp_filters": "2"
+        }
+      },
+      {
+        "stage": "ir-image-check",
+        "pid": 29,
+        "argv": [
+          "/usr/local/bin/node",
+          "/opt/riffology/riffoid-ir-plugin/scripts/riffoid-cli.mjs"
+        ],
+        "status": {
+          "Name": "node",
+          "State": "R (running)",
+          "PPid": "28",
+          "Uid": "10001\t10001\t10001\t10001",
+          "Gid": "10001\t10001\t10001\t10001",
+          "Groups": "",
+          "CapEff": "0000000000000000",
+          "NoNewPrivs": "1",
+          "Seccomp": "2",
+          "Seccomp_filters": "2"
+        }
+      },
+      {
+        "stage": "ir-image-check",
+        "pid": 40,
+        "argv": [
+          "/opt/riffology/python-compiler/bin/python3",
+          "/opt/riffology/riffoid-ir-plugin/scripts/compiler.py",
+          "check",
+          "/workspace/model/business-ir.draft.json"
+        ],
+        "status": {
+          "Name": "python3",
+          "State": "R (running)",
+          "PPid": "29",
+          "Uid": "10001\t10001\t10001\t10001",
+          "Gid": "10001\t10001\t10001\t10001",
+          "Groups": "",
+          "CapEff": "0000000000000000",
+          "NoNewPrivs": "1",
+          "Seccomp": "2",
+          "Seccomp_filters": "2"
+        }
+      },
+      {
+        "stage": "ir-image-check",
+        "pid": 41,
+        "argv": [
+          "/opt/riffology/python-compiler/bin/python3",
+          "/opt/riffology/riffoid-ir-plugin/scripts/compiler.py",
+          "probe",
+          "-"
+        ],
+        "status": {
+          "Name": "python3",
+          "State": "R (running)",
+          "PPid": "29",
+          "Uid": "10001\t10001\t10001\t10001",
+          "Gid": "10001\t10001\t10001\t10001",
+          "Groups": "",
+          "CapEff": "0000000000000000",
+          "NoNewPrivs": "1",
+          "Seccomp": "2",
+          "Seccomp_filters": "2"
+        }
+      },
+      {
+        "stage": "ir-image-compile",
+        "pid": 44,
+        "argv": [
+          "/usr/local/bin/python3",
+          "/opt/riffology/file_service.py"
+        ],
+        "status": {
+          "Name": "python3",
+          "State": "R (running)",
+          "PPid": "42",
+          "Uid": "10001\t10001\t10001\t10001",
+          "Gid": "10001\t10001\t10001\t10001",
+          "Groups": "",
+          "CapEff": "0000000000000000",
+          "NoNewPrivs": "1",
+          "Seccomp": "2",
+          "Seccomp_filters": "2"
+        }
+      },
+      {
+        "stage": "ir-image-compile",
+        "pid": 45,
+        "argv": [
+          "/usr/local/bin/node",
+          "/opt/riffology/riffoid-ir-plugin/scripts/riffoid-cli.mjs"
+        ],
+        "status": {
+          "Name": "node",
+          "State": "R (running)",
+          "PPid": "44",
+          "Uid": "10001\t10001\t10001\t10001",
+          "Gid": "10001\t10001\t10001\t10001",
+          "Groups": "",
+          "CapEff": "0000000000000000",
+          "NoNewPrivs": "1",
+          "Seccomp": "2",
+          "Seccomp_filters": "2"
+        }
+      },
+      {
+        "stage": "ir-image-compile",
+        "pid": 56,
+        "argv": [
+          "/opt/riffology/python-compiler/bin/python3",
+          "/opt/riffology/riffoid-ir-plugin/scripts/compiler.py",
+          "compile",
+          "/workspace/.riffoid-ir/models/15db85afde93cfdfd356b8a32954786d3cd1cb0e517671d6f99642181676b22c/business.json",
+          "/workspace/.riffoid-ir/tmp/a7055142-c959-44d5-a68b-8c85851c7365.simpack"
+        ],
+        "status": {
+          "Name": "python3",
+          "State": "R (running)",
+          "PPid": "45",
+          "Uid": "10001\t10001\t10001\t10001",
+          "Gid": "10001\t10001\t10001\t10001",
+          "Groups": "",
+          "CapEff": "0000000000000000",
+          "NoNewPrivs": "1",
+          "Seccomp": "2",
+          "Seccomp_filters": "2"
+        }
+      },
+      {
+        "stage": "ir-image-compile",
+        "pid": 57,
+        "argv": [
+          "/opt/riffology/python-compiler/bin/python3",
+          "/opt/riffology/riffoid-ir-plugin/scripts/compiler.py",
+          "probe",
+          "-"
+        ],
+        "status": {
+          "Name": "python3",
+          "State": "R (running)",
+          "PPid": "45",
+          "Uid": "10001\t10001\t10001\t10001",
+          "Gid": "10001\t10001\t10001\t10001",
+          "Groups": "",
+          "CapEff": "0000000000000000",
+          "NoNewPrivs": "1",
+          "Seccomp": "2",
+          "Seccomp_filters": "2"
+        }
+      }
+    ],
+    "rootPositiveControl": {
+      "tcpLoopback": true,
+      "unix": true,
+      "port": 46439
+    },
+    "fencedRootArrivals": [],
+    "monitorErrors": [],
+    "rootPlatform": {
+      "machine": "x86_64",
+      "kernel": "6.8.0-138-generic",
+      "uid": 0,
+      "status": {
+        "Name": "python3",
+        "State": "R (running)",
+        "PPid": "0",
+        "Uid": "0\t0\t0\t0",
+        "Gid": "0\t0\t0\t0",
+        "Groups": "0",
+        "CapEff": "00000000000000eb",
+        "NoNewPrivs": "1",
+        "Seccomp": "2",
+        "Seccomp_filters": "1"
+      }
+    }
+  },
+  "compile": {
+    "checkStatus": "passed",
+    "compileStatus": "succeeded",
+    "browserArtifactRef": ".riffoid-ir/artifacts/89d7f7a162c4a727d6b2e58fcd3d4d5e6e8eb88e0500cd35015013ba1f0847e3/browser.json",
+    "toolchain": {
+      "plugin": "0.3.1",
+      "packageSha256": "86b7a28a1b92652fb01b15ea6671414ecdd5e38c639878455e7abffb60d46ad6",
+      "domainPack": "aircraft-support-pack/v0.1",
+      "compiler": "0.1.0",
+      "businessIr": "aircraft-business-ir/v1",
+      "planIr": "aircraft-support-plan/v1alpha2",
+      "profile": "legacy-minute-v1",
+      "browserRuntime": "aircraft-support-browser/0.3.0",
+      "runtimeSha256": "54cf8400a889748d6a796b10a3a1789ff6f622fd5fd986429ab28e2995d839ef",
+      "compilerArtifact": {
+        "wheelSha256": "e7bcd9271dd42106b78e87176e3485b290536f5291c0440872b814fc549858f7",
+        "mode": "installed-sdk"
+      }
+    },
+    "registeredFiles": [
+      {
+        "path": ".riffoid-ir/artifacts/89d7f7a162c4a727d6b2e58fcd3d4d5e6e8eb88e0500cd35015013ba1f0847e3/browser.json",
+        "sha256": "89d7f7a162c4a727d6b2e58fcd3d4d5e6e8eb88e0500cd35015013ba1f0847e3"
+      },
+      {
+        "path": ".riffoid-ir/models/15db85afde93cfdfd356b8a32954786d3cd1cb0e517671d6f99642181676b22c/business.json",
+        "sha256": "15db85afde93cfdfd356b8a32954786d3cd1cb0e517671d6f99642181676b22c"
+      },
+      {
+        "path": ".riffoid-ir/bundles/301acca96e06776f936eeda67ba8ce6dd2b35fab93415dcd7965775a18f98b2f/model.simpack",
+        "sha256": "301acca96e06776f936eeda67ba8ce6dd2b35fab93415dcd7965775a18f98b2f"
+      },
+      {
+        "path": ".riffoid-ir/runtimes/54cf8400a889748d6a796b10a3a1789ff6f622fd5fd986429ab28e2995d839ef/runtime.js",
+        "sha256": "54cf8400a889748d6a796b10a3a1789ff6f622fd5fd986429ab28e2995d839ef"
+      }
+    ],
+    "irPageInstalled": true
+  },
+  "containerPolicy": {
+    "NetworkMode": "none",
+    "ReadonlyRootfs": true,
+    "CapAdd": [
+      "CAP_CHOWN",
+      "CAP_DAC_OVERRIDE",
+      "CAP_FOWNER",
+      "CAP_KILL",
+      "CAP_SETGID",
+      "CAP_SETUID"
+    ],
+    "CapDrop": [
+      "ALL"
+    ],
+    "Privileged": false,
+    "Memory": 805306368,
+    "MemorySwap": 805306368,
+    "NanoCpus": 1000000000,
+    "PidsLimit": 128,
+    "SecurityOpt": [
+      "no-new-privileges"
+    ],
+    "PidMode": "",
+    "IpcMode": "private",
+    "Binds": null,
+    "PortBindings": {},
+    "Tmpfs": {
+      "/tmp": "rw,nosuid,nodev,noexec,size=33554432,mode=1777",
+      "/var/lib/riffology": "rw,nosuid,nodev,noexec,size=67108864,mode=0700",
+      "/workspace": "rw,nosuid,nodev,size=67108864,uid=10001,gid=10001,mode=0755"
+    },
+    "Mounts": []
+  },
+  "quiescence": {
+    "seal": {
+      "schemaVersion": 1,
+      "sealed": true,
+      "quiescent": true,
+      "projectUid": 10001
+    },
+    "final": {
+      "schemaVersion": 1,
+      "sealed": true,
+      "quiescent": true,
+      "projectUid": 10001
+    },
+    "remainingProjectPids": [],
+    "canonicalFreeze": {
+      "bytes": 112640,
+      "ok": true,
+      "operation": "freeze",
+      "sha256": "6dfde5fd0a353918870f12e80fe3d6568567a1b52b33a198b320fcee8a4bf18c"
+    },
+    "lateWriteExitCode": 1,
+    "lateWriteDenied": true
+  },
+  "cleanup": {
+    "containerAbsent": true,
+    "removeExitCode": 0,
+    "previousImagesPreserved": true,
+    "previousContainersPreserved": true,
+    "baselineUniqueImageCount": 23,
+    "baselineContainerCount": 0,
+    "newImageRetained": true
+  },
+  "executionBoundary": {
+    "cloudflareOrRegistryPublication": false,
+    "cloudExecution": false,
+    "onlineDeployment": false,
+    "providerCalls": 0,
+    "simulationRuns": 0,
+    "automaticRetries": false
+  },
+  "evidence": {
+    "sha256Verified": true,
+    "rawFilesRetainedOutsideRepository": true,
+    "rawReceiptsContainCompiledBundleBase64AndAreExcludedFromPublicPublication": true,
+    "evidenceIndexSha256": "fa075d99d539165e32c1f220f64278f598775ee0aee9840908bb768a22057857",
+    "files": [
+      {
+        "name": "environment.json",
+        "bytes": 3610,
+        "sha256": "97e414e188be6a8de25d87da00c7ebddf2239844a2169e36194f04ed555856cd"
+      },
+      {
+        "name": "baseline-resources.json",
+        "bytes": 3165,
+        "sha256": "74a96f82eb351d7a0d26fb5c218b5b543bbde5dc40ca1c081ec5b69ba74252c2"
+      },
+      {
+        "name": "transfer-verified.json",
+        "bytes": 1022,
+        "sha256": "507ccba2be229528cc74346592d782e25aa921314de0033214691986e9c06eeb"
+      },
+      {
+        "name": "transferred-source.json",
+        "bytes": 9717,
+        "sha256": "d03d99dc42ed8e7819d277fa9702bf903def9febb2d561e6527ce64c444abeaa"
+      },
+      {
+        "name": "build-result.json",
+        "bytes": 2226,
+        "sha256": "c4644cfdb3945c83293d5fe6ec5c655a9636b094880b570ef1f263339a34d96f"
+      },
+      {
+        "name": "build.stdout.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "build.stderr.log",
+        "bytes": 6991,
+        "sha256": "2cfd9f4972b5bc1d6011dd7898e48d6220b9a0e17547aba5289d1e283438339f"
+      },
+      {
+        "name": "build-metadata.json",
+        "bytes": 2332,
+        "sha256": "d7d8123f51329fb3c56f1b89d806d23b4d994feac8ed0de4081d885afce55ac4"
+      },
+      {
+        "name": "image.id",
+        "bytes": 71,
+        "sha256": "0efdba35c4ebfc0d514365a169d1f1a775c6782023bf07656b4dfc44e93f52ea"
+      },
+      {
+        "name": "container.id",
+        "bytes": 65,
+        "sha256": "7ebcb7125bbbe6562e606f0e179954be3ea4eb3cc314f36af5da06e8aac50657"
+      },
+      {
+        "name": "probe-result.json",
+        "bytes": 162470,
+        "sha256": "22295a5eb053745a5032d5214eda88ea8a840f9d156560659d1e37fe8b1cc7ea"
+      },
+      {
+        "name": "probe.stdout.log",
+        "bytes": 275969,
+        "sha256": "f167c8a256b20e71df1ca7a2bdc243b52849510be1f183a05fa992f7aa4ef928"
+      },
+      {
+        "name": "probe.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ]
+  },
+  "probeSourceSha256": "e080b041c25123f77f36a54826c6747dfd173d9a17e4002299c73b78eee4f3d6"
+}

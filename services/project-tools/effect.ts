@@ -3,7 +3,7 @@ import { normalizeToolCommand, toolCommandDigest, type ToolCommand } from '../to
 import type { ToolCommandReference, ToolEffectReceipt } from '../tools/ledger.ts';
 import type { ToolEffectPort } from '../tools/dispatcher.ts';
 
-type ProjectOperation='read'|'read_page'|'write'|'edit'|'list'|'search'|'bash';
+type ProjectOperation='read'|'read_page'|'write'|'edit'|'list'|'search'|'bash'|'ir';
 type ProcessPhase='absent'|'unknown'|'running'|'exited';
 export type ProjectEffectProcessObservation={
   schemaVersion:1;effectId:string;phase:ProcessPhase;exitCode:number|null;stdout:string|null;stderr:string|null;
@@ -21,7 +21,7 @@ export interface ProjectEffectSupervisorPort{
   observePersistedTerminal?(effectId:string):Promise<ProjectEffectProcessObservation|null>;
 }
 
-const PROJECT_OPERATIONS=new Set<ProjectOperation>(['read','read_page','write','edit','list','search','bash']);
+const PROJECT_OPERATIONS=new Set<ProjectOperation>(['read','read_page','write','edit','list','search','bash','ir']);
 const READ_ONLY=new Set<ProjectOperation>(['read','read_page','list','search']);
 const PHASES=new Set<ProcessPhase>(['absent','unknown','running','exited']);
 export const PROJECT_EFFECT_MAX_STDOUT_BYTES=1_100_000;
@@ -75,7 +75,7 @@ function decodeExited(base:ReturnType<typeof identity>,operation:ProjectOperatio
     return nonterminal(base,observedAt,'unknown');
   }
   if(value.exitCode===2){
-    if(body&&Object.keys(body).length===2&&body.ok===false){const code=safeError(body.error);if(code){if(operation==='bash'&&(code==='project-tool-bash-timeout'||code==='project-tool-result-too-large'))return nonterminal(base,observedAt,'unknown');return terminal(base,observedAt,'failed',code,{});}}
+    if(body&&Object.keys(body).length===2&&body.ok===false){const code=safeError(body.error);if(code){if((operation==='bash'||operation==='ir')&&(code==='project-tool-bash-timeout'||code==='project-tool-ir-timeout'||code==='project-tool-result-too-large'))return nonterminal(base,observedAt,'unknown');return terminal(base,observedAt,'failed',code,{});}}
     return READ_ONLY.has(operation)?terminal(base,observedAt,'failed','project-tool-invalid-output',{}):nonterminal(base,observedAt,'unknown');
   }
   if(value.exitCode!==0)return READ_ONLY.has(operation)?terminal(base,observedAt,'failed','project-tool-process-failed',{}):nonterminal(base,observedAt,'unknown');

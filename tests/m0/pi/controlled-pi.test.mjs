@@ -399,3 +399,17 @@ test('a broken saved skill can be repaired by the remote tool and loaded on the 
  assert.equal((await next.prompt('/skill:pages')).outcome,'completed');
  assert.match(JSON.stringify(f.requests.at(-1).body),/REPAIRED_BODY/);assert.equal(writes,1);
 });
+
+
+test('trusted command preparation completes before the provider and is checkpointed without extension discovery',async t=>{
+ const f=await fixture(t),prepared=[];
+ const bridge={definitions:[tool],execute:async()=>{throw Error('unused-tool');},preparePrompt:async(text,{signal})=>{assert.equal(f.requests.length,0);assert.equal(signal.aborted,false);prepared.push(text);return 'User command: '+text+'\nObserved scoped mode: ir';}};
+ const host=await createControlledPiSession({...f.options,bridge});t.after(()=>host.dispose());
+ assert.equal((await host.prompt('/sim ir')).outcome,'completed');assert.deepEqual(prepared,['/sim ir']);assert.equal(f.requests.length,1);
+ assert.match(JSON.stringify(f.requests[0].body),/Observed scoped mode: ir/);assert.match(JSON.stringify(host.snapshot()),/User command: \/sim ir/);assert.equal(host.inspect().extensions,0);
+});
+test('an unknown command preparation failure never starts a provider call or retries its effect',async t=>{
+ const f=await fixture(t);let attempts=0;
+ const host=await createControlledPiSession({...f.options,bridge:{definitions:[tool],execute:async()=>{throw Error('unused-tool');},preparePrompt:async()=>{attempts++;throw Error('original-command-unknown');}}});t.after(()=>host.dispose());
+ await assert.rejects(host.prompt('/sim ir'),/original-command-unknown/);assert.equal(attempts,1);assert.equal(f.requests.length,0);assert.equal(host.inspect().active,false);
+});

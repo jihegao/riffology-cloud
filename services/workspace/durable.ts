@@ -1,3 +1,9 @@
+import {ProjectIrAuthority} from '../project-ir/authority.ts';
+import {readCanonicalIrDisplay} from '../project-ir/canonical.ts';
+import {projectIrToolEffect,projectIrRegisterEffect} from '../project-ir/effects.ts';
+import {projectViewBrowserAdmission} from '../project-views/browser-policy.ts';
+import {acceptedInvitationProjectAdmission} from '../catalog/project-admission.ts';
+import type {ToolEffectReceipt} from '../tools/ledger.ts';
 import {CatalogManualSaveFence} from '../catalog/manual-save-fence.ts';
 import {assertManualSaveRead,assertManualSaveBody,manualSaveCapability} from './manual-save-policy.ts';
 import {runManualSave,serializeManualSave,manualOperationResult,manualRejectionResult,recoverManualSaveAuthorization,retiredManualSaveResult} from './manual-save-operation.ts';
@@ -137,6 +143,7 @@ import { turnOperationTracer } from '../turn/operation-telemetry.ts';
 import {G5TerminalReconciliation} from './g5-terminal-reconciliation.ts';
 
 export interface WorkspaceAgentEnv {
+  PROJECT_VIEW_BROWSER_POLICY_JSON?:string;
   PRIVATE_BETA_POLICY_JSON?:string;
   PRIVATE_BETA_CAPACITY?:DurableObjectNamespace<PrivateBetaCapacity>;
   WORKSPACE_AGENT: DurableObjectNamespace<WorkspaceAgent>;
@@ -708,6 +715,60 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     const actorId=await warmTrustedPiActorId(binding.lease);if(!this.env.TRUSTED_PI_SANDBOX||this.env.TRUSTED_PI_SANDBOX.idFromName(actorId).toString()!==input.containerId)throw Error('warm-outbound-authority-denied');
     const latest=await this.#leases().authoritative(identity),end=await this.#turns.snapshot(scope),last=end.turns[identity.turnId];if(latest.closing||this.#leases().selection(identity)?.closing||end.activeTurnId!==identity.turnId||last?.cancelRequestedAt!==null||input.deadlineAt<=Date.now())throw Error('warm-outbound-authority-denied');
     return {actorId,identity,actor:turn.actor,executionDeadlineAt:binding.executionDeadlineAt,lease:binding.lease,binding:binding.binding};
+  }
+  #projectIrTail:Promise<unknown>=Promise.resolve();
+  #projectIrExclusive<T>(run:()=>Promise<T>):Promise<T>{
+    const result=this.#projectIrTail.then(run);this.#projectIrTail=result.catch(()=>{});return result;
+  }
+  async #authorizeProjectIrTool(command:ToolCommand){
+    const scope=this.#ready(command.scope);this.assertWritableScope(scope);
+    const state=await this.#turns.snapshot(scope),turn=state.turns[command.turnId];
+    if(state.activeTurnId!==command.turnId||!turn||!['starting','running'].includes(turn.status)||turn.dispatchId!==command.dispatchId||turn.cancelRequestedAt!==null||turn.finishedAt!==null||command.deadlineAt<=Date.now())throw Error('project-ir-turn-denied');
+    const allowed=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).workspace(turn.actor,scope.workspaceId);
+    if(!sameScope(allowed,scope))throw Error('project-ir-tool-scope-denied');
+    if(this.ctx.storage.kv.get<{privateBeta?:boolean}>('pi-developer-turn:'+command.turnId)?.privateBeta)await this.#betaControl().authorizeTool(scope,turn.actor,command.turnId,command.deadlineAt);
+    const latest=await this.#turns.snapshot(scope),current=latest.turns[command.turnId];
+    if(latest.activeTurnId!==command.turnId||!current||!['starting','running'].includes(current.status)||current.dispatchId!==command.dispatchId||current.actor.userId!==turn.actor.userId||current.actor.authVersion!==turn.actor.authVersion||current.cancelRequestedAt!==null||current.finishedAt!==null||command.deadlineAt<=Date.now())throw Error('project-ir-turn-denied');
+    this.#ready(scope);this.assertWritableScope(scope);
+  }
+  async projectIrToolEffect(input:{command:ToolCommand;effectId:string;observeOnly:boolean}){
+    await this.#prepareNormalJournal();const command=normalizeToolCommand(input.command),scope=this.#ready(command.scope);
+    if(!this.env.WORKSPACE_CHECKPOINTS)throw Error('project-ir-unavailable');
+    const original=(await this.#turns.snapshot(scope)).turns[command.turnId];if(!original||original.dispatchId!==command.dispatchId)throw Error('project-ir-turn-denied');
+    return this.#archiveWrite(scope,()=>this.#projectIrExclusive(()=>projectIrToolEffect({storage:this.ctx.storage,bucket:this.env.WORKSPACE_CHECKPOINTS!,scope,actor:original.actor,authorize:()=>this.#authorizeProjectIrTool(command)},{...input,command})));
+  }
+  async projectIrRegisterEffect(input:{command:ToolCommand;effectId:string;receipt:ToolEffectReceipt}){
+    await this.#prepareNormalJournal();const command=normalizeToolCommand(input.command),scope=this.#ready(command.scope);
+    if(!this.env.WORKSPACE_CHECKPOINTS)throw Error('project-ir-unavailable');
+    const original=(await this.#turns.snapshot(scope)).turns[command.turnId];if(!original||original.dispatchId!==command.dispatchId)throw Error('project-ir-turn-denied');
+    return this.#archiveWrite(scope,()=>this.#projectIrExclusive(()=>projectIrRegisterEffect({storage:this.ctx.storage,bucket:this.env.WORKSPACE_CHECKPOINTS!,scope,actor:original.actor,authorize:()=>this.#authorizeProjectIrTool(command)},{...input,command})));
+  }
+  /** Browser-local results have their own durable projection; heartbeat and
+   * submit never advance the canonical source Revision or allocate a container. */
+  async projectIrBrowser(input:{scope:TurnScope;actor:TurnActor;packageIdentity:string;operation:string;input:Record<string,unknown>}){
+    await this.#prepareNormalJournal();const scope=this.#ready(input.scope);
+    if(!this.env.WORKSPACE_CHECKPOINTS||!['show','draft','records','heartbeat','submit','detach','project_ir_result'].includes(input.operation)||! /^[a-f0-9]{64}$/.test(input.packageIdentity))throw Error('project-ir-request-denied');
+    const authorize=async()=>{
+      this.#ready(scope);this.assertWritableScope(scope);projectViewBrowserAdmission(this.env,scope,input.actor);
+      const db=catalogDatabase(this.env.CATALOG),actual=await new ProjectCatalog(db,new Set()).writableWorkspace(input.actor,scope.workspaceId);
+      if(!sameScope(actual,scope)||!await acceptedInvitationProjectAdmission(db,'true',input.actor,scope.tenantId))throw Error('project-ir-access-denied');
+      if(!(await this.projectViewCurrent({scope,actor:input.actor,identity:input.packageIdentity})).current)throw Error('project-view-stale');
+      this.#ready(scope);this.assertWritableScope(scope);projectViewBrowserAdmission(this.env,scope,input.actor);
+    };
+    return this.#archiveWrite(scope,()=>this.#projectIrExclusive(async()=>{
+      await authorize();
+      const authority=new ProjectIrAuthority(this.ctx.storage,this.env.WORKSPACE_CHECKPOINTS!,scope,Date.now,authorize,input.actor),result=await authority.browser({operation:input.operation,input:input.input});
+      // A running Turn needs its just-registered projection before the final
+      // Revision exists. Outside a Turn, ordinary saved edits are authoritative.
+      if(['show','draft'].includes(input.operation)&&(await this.#turns.snapshot(scope)).activeTurnId===null){
+        const source=await this.#simulationSource(scope),files=await this.env.REVISION_STORE.getByName(revisionStoreActorName(scope)).serviceFiles(source),display=await readCanonicalIrDisplay(files);
+        if((await this.#turns.snapshot(scope)).activeTurnId===null){
+          if(input.operation==='draft')result.draft=display.draft;
+          else{result.currentModel=display.currentModel;result.defaultMode=display.defaultMode;}
+        }
+      }
+      await authorize();return result;
+    }));
   }
   async experimentParameterEffect(input:{command:ToolCommand;effectId:string;observeOnly:boolean}){
     await this.#prepareNormalJournal();

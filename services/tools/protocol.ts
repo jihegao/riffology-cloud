@@ -2,7 +2,7 @@ import {parameterDraftArguments} from '../simulation/parameter-draft-input.ts';
 import type { TurnScope } from '../turn/protocol.ts';
 import { positive, scope as validateScope, sha, turnDigest, turnId } from '../turn/protocol.ts';
 
-export type ToolOperation='read'|'read_page'|'write'|'edit'|'list'|'search'|'bash'|'experiment_parameters';
+export type ToolOperation='read'|'read_page'|'write'|'edit'|'list'|'search'|'bash'|'experiment_parameters'|'ir';
 export type ToolCommand={
   schemaVersion:1;
   scope:TurnScope;
@@ -23,7 +23,7 @@ export type ToolCommandIntent={
   operation:ToolOperation;
   arguments:Record<string,unknown>;
 };
-const OPERATIONS=new Set<ToolOperation>(['read','read_page','write','edit','list','search','bash','experiment_parameters']);
+const OPERATIONS=new Set<ToolOperation>(['read','read_page','write','edit','list','search','bash','experiment_parameters','ir']);
 export function toolOperation(value:unknown):ToolOperation{
   if(typeof value!=='string'||!OPERATIONS.has(value as ToolOperation))throw Error('invalid-tool-operation');
   return value as ToolOperation;
@@ -48,10 +48,41 @@ export function workspacePath(value:unknown,allowRoot=false):string{
   if(parts.some(part=>!part||part==='.'||part==='..')||parts[0]==='.riffology')throw Error('invalid-tool-path');
   return parts.join('/');
 }
+export function irToolArguments(value:unknown):Record<string,unknown>{
+  const envelope=plain(value);exact(envelope,['operation','input']);
+  const input=plain(envelope.input),operation=envelope.operation;
+  if(operation==='project_ir_check'){exact(input,['draftRef']);return {operation,input:{draftRef:workspacePath(input.draftRef)}};}
+  if(operation==='project_ir_compile'){
+    exact(input,['sealedRef']);const sealedRef=workspacePath(input.sealedRef);
+    if(!/^\.riffoid-ir\/models\/[a-f0-9]{64}\/business\.json$/.test(sealedRef))throw Error('invalid-tool-arguments');
+    return {operation,input:{sealedRef}};
+  }
+  if(operation==='project_ir_run'){
+    if(Object.hasOwn(input,'sourceRunId')){
+      exact(input,['sourceRunId']);
+      if(typeof input.sourceRunId!=='string'||!/^run-[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/.test(input.sourceRunId))throw Error('invalid-tool-arguments');
+      return {operation,input:{sourceRunId:input.sourceRunId}};
+    }
+    exact(input,Object.hasOwn(input,'runOptions')?['browserArtifactRef','runOptions']:['browserArtifactRef']);
+    const browserArtifactRef=workspacePath(input.browserArtifactRef);
+    if(!/^\.riffoid-ir\/artifacts\/[a-f0-9]{64}\/browser\.json$/.test(browserArtifactRef))throw Error('invalid-tool-arguments');
+    let runOptions;
+    if(Object.hasOwn(input,'runOptions')){const options=plain(input.runOptions);exact(options,Object.hasOwn(options,'seed')?['seed']:[]);if(Object.hasOwn(options,'seed')&&(!Number.isSafeInteger(options.seed)||(options.seed as number)<0))throw Error('invalid-tool-arguments');runOptions=Object.hasOwn(options,'seed')?{seed:options.seed}:{};}
+    return {operation,input:{browserArtifactRef,...(runOptions===undefined?{}:{runOptions})}};
+  }
+  if(operation==='project_ir_result'){
+    exact(input,['runId']);if(typeof input.runId!=='string'||!/^run-[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/.test(input.runId))throw Error('invalid-tool-arguments');
+    return {operation,input:{runId:input.runId}};
+  }
+  if(operation==='mode'){exact(input,['mode']);if(input.mode!=='ir'&&input.mode!=='code')throw Error('invalid-tool-arguments');return {operation,input:{mode:input.mode}};}
+  if(operation==='show'||operation==='install'){exact(input,[]);return {operation,input:{}};}
+  throw Error('invalid-tool-arguments');
+}
 function args(operation:ToolOperation,value:unknown):Record<string,unknown>{
   const input=plain(value);
   switch(operation){
     case 'experiment_parameters':return parameterDraftArguments(input);
+    case 'ir':return irToolArguments(input);
     case 'read': exact(input,['path']);return {path:workspacePath(input.path)};
     case 'read_page': {
       exact(input,['path','offset','maxBytes','expectedSha256']);

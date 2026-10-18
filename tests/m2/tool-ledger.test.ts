@@ -70,3 +70,24 @@ test('sync uncertainty cannot replay a committed dispatch and corrupted rows fai
   const f=fixture(t),h=f.host();await h.accept(command());f.failSync(true);await assert.rejects(h.dispatch('command-a'),/sync-unknown/);f.failSync(false);f.reopen();assert.equal((await f.host().dispatch('command-a')).authorized,false);
   f.sql("UPDATE tool_commands SET scope_json='{}' WHERE command_id='command-a'");await assert.rejects(f.host().lookup('command-a'),/invalid-persisted-tool-ledger/);
 });
+
+
+test('only an admitted IR command can persist the complete bounded browser record across reopen',async t=>{
+ const f=fixture(t),h=f.host(),ir:ToolCommand={...command(),operation:'ir',arguments:{operation:'project_ir_result',input:{runId:'run-11111111-1111-4111-8111-111111111111'}}};
+ await h.accept(ir);const sent=await h.dispatch('command-a');
+ const events=Array.from({length:1200},(_,i)=>({sequence:i+1,time:i,phase:'tick',kind:'observed',entity:'aircraft-a'}));
+ const proof=receipt(sent.record,{result:{runId:'run-11111111-1111-4111-8111-111111111111',events}});
+ assert.ok(Buffer.byteLength(JSON.stringify(proof.result))>16384);
+ await h.applyEffect(proof);f.reopen();assert.deepEqual((await f.host().lookup('command-a'))!.result,proof.result);
+ assert.equal((await f.host().dispatch('command-a')).authorized,false);
+ await f.host().accept(command('ordinary'));const ordinary=await f.host().dispatch('ordinary');
+ await assert.rejects(f.host().applyEffect(receipt(ordinary.record,{result:proof.result})),/invalid-event-payload/);
+ assert.equal((await f.host().lookup('ordinary'))!.status,'dispatched');
+});
+test('oversized IR result and caller-shaped budget fields leave the durable effect uncommitted',async t=>{
+ const f=fixture(t),h=f.host(),ir:ToolCommand={...command(),operation:'ir',arguments:{operation:'show',input:{}}};
+ await h.accept(ir);const sent=await h.dispatch('command-a'),proof=receipt(sent.record,{result:{events:['x'.repeat(384*1024)]}});
+ await assert.rejects(h.applyEffect(proof),/tool-ir-result-too-large/);
+ await assert.rejects(h.applyEffect({...receipt(sent.record),operation:'ir'}),/invalid-tool-effect-receipt/);
+ assert.equal((await h.lookup('command-a'))!.status,'dispatched');
+});

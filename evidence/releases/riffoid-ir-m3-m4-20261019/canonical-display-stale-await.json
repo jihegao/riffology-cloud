@@ -1,0 +1,16 @@
+{
+  "oldPackageIdentity": "5b9906f1f79efcf539565fe099bce1071a580e152c27dc1dde3e73f642b3a244",
+  "currentPackageIdentity": "f3ae3d9ea9e48044e459354618c02a3f57cf0fd2f39a8c32b39e9a41e37ad2f5",
+  "blocked": {
+    "armed": true,
+    "entered": true,
+    "released": false,
+    "sourceKind": "manual-save"
+  },
+  "rejected": {
+    "status": 409,
+    "body": {
+      "error": "project-ir-conflict"
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "blocked": {
+    "armed": true,
+    "entered": true,
+    "released": false,
+    "sourceKind": "manual-save"
+  },
+  "rejected": {
+    "status": 503,
+    "body": {
+      "error": "project-ir-unavailable"
+    }
+  },
+  "workspaceRejection": {
+    "operation": "show",
+    "message": "not_found",
+    "status": 404
+  },
+  "head": {
+    "revisionId": "f6bd6e556bbedaa29973817c43918facfe41e3be4f35eda2a425fe6c8b73b4ed",
+    "filesSha256": "95dcf25b1229b221dc6554b3037cc462fe142b259ad5ea5a5e4c5754415531f6",
+    "committedAt": 1792340584036
+  },
+  "packageIdentity": "f3ae3d9ea9e48044e459354618c02a3f57cf0fd2f39a8c32b39e9a41e37ad2f5"
+}

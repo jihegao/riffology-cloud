@@ -1,0 +1,190 @@
+{
+  "schema": "riffoid-ir.workerd-storage-evidence/v1",
+  "environment": "local-workerd-sqlite-d1-r2",
+  "nodeVersion": "v26.10.0",
+  "scope": {
+    "tenantId": "tenant-alpha",
+    "projectId": "project-alpha",
+    "workspaceId": "workspace-alpha",
+    "workspaceGeneration": 1
+  },
+  "identity": "synthetic-alpha/authVersion-1",
+  "source": "committed real compiler 0.1.0 B1 simpack + shared package runtime/worker",
+  "agent": "synthetic fixture Core registration/tool only; no Pi Turn or provider call",
+  "execution": "actual shared runtime in Node using the frozen sources returned by production Gateway/Workspace RPC",
+  "actualBrowserExecution": false,
+  "onlineAcceptance": false,
+  "checks": [
+    {
+      "name": "canonical-page-and-compiled-graph",
+      "passed": true,
+      "revisionId": "506528160a29c9ec43120dafe4d3f54791c5fcea684d8e6b1ee97768fcfd8163",
+      "packageIdentity": "89452e932160c5807369eced170def7a6c6459f5318c61dc826a82f6c226402f",
+      "browserArtifactRef": ".riffoid-ir/artifacts/69de09f2b59b1d4e7833fab40f9d61e9674ff26896097483d17a2f5db3e4b9cd/browser.json",
+      "toolchain": {
+        "plugin": "0.3.1",
+        "domainPack": "aircraft-support-pack/v0.1",
+        "compiler": "0.1.0",
+        "businessIr": "aircraft-business-ir/v1",
+        "planIr": "aircraft-support-plan/v1alpha2",
+        "profile": "legacy-minute-v1",
+        "browserRuntime": "aircraft-support-browser/0.3.0",
+        "runtimeSha256": "54cf8400a889748d6a796b10a3a1789ff6f622fd5fd986429ab28e2995d839ef",
+        "compilerArtifact": {
+          "wheelSha256": "e7bcd9271dd42106b78e87176e3485b290536f5291c0440872b814fc549858f7",
+          "mode": "portable-compilation-sdk"
+        },
+        "manifest": {
+          "bundle_id": "fbdabd19409873000a170b5311e0ab3049e0b8570b921e5b66ff4d24c44730a5",
+          "compiler_version": "0.1.0",
+          "domain_pack": {
+            "name": "aircraft-support",
+            "version": "aircraft-support-pack/v0.1"
+          },
+          "execution_profile": {
+            "resource_dispatch_index": "absent",
+            "rng": "legacy-sequential-v1",
+            "semantic": "legacy-minute-v1",
+            "work": "stable-topological-serial"
+          },
+          "files": {
+            "business.json": "d5996be0ef602bc7512c857b99ba37de3bcc30ddefa828b3ebcf3f3ad6895dd5",
+            "core.json": "a8a80eaddf72aeb3656a8e0906a8334f5d9ddeaf036cc7223f9d59a19a501213",
+            "lineage.json": "9e33aec8ee175bad811aa4d26a0e750899a44eba055fd0a35b24a0ccc1d92b68",
+            "plan.json": "3584430f31d2fad37cba98fa7c2cd42bcc482d43640b10c0bee0f35eddf965fe"
+          },
+          "identity": {
+            "business_fingerprint": "58bc6d1abdc3339a071e387bd359ce92d7f22e57204182e30d991fc0e6b1e0de",
+            "core_fingerprint": "9a72979cebdb0bd03d9188e1033f81c3e6384cce12a465567a33eb6fe9b0f864",
+            "plan_fingerprint": "3584430f31d2fad37cba98fa7c2cd42bcc482d43640b10c0bee0f35eddf965fe",
+            "source_inputs_sha256": "59c6397c9529fcd6582221deab72744cd4d5788c9b7b5e0fc945e9c15cdf8e5c"
+          },
+          "ir_versions": {
+            "business": "aircraft-business-ir/v1",
+            "core": "simulation-core-ir/v2",
+            "lineage": "compiler-lineage/v2",
+            "plan": "aircraft-support-plan/v1alpha2"
+          },
+          "runtime_version": "0.1.0",
+          "schema_version": "sim-engine-model-bundle/v1"
+        }
+      }
+    },
+    {
+      "name": "gateway-workspace-claim",
+      "passed": true,
+      "runId": "run-dde33cb6-2c2a-c146-e3fa-7f7598249a82",
+      "runtimeSha256": "54cf8400a889748d6a796b10a3a1789ff6f622fd5fd986429ab28e2995d839ef",
+      "workerSha256": "5905881426fc6e21310f880b07cd7a840981883e9544922bb8fd6f47e3802e0f",
+      "seed": 13
+    },
+    {
+      "name": "real-r2-terminal-save",
+      "passed": true,
+      "runId": "run-dde33cb6-2c2a-c146-e3fa-7f7598249a82",
+      "recordSha256": "fe2abc45d1230f2a0991e033b65b6bf936a7c2f63676d0303a5729bdb2885e77",
+      "eventCount": 22,
+      "metrics": {
+        "planned_sorties": 2,
+        "launched_sorties": 2,
+        "completed_sorties": 2,
+        "successful_mission_waves": 2,
+        "cancelled_sorties": 0,
+        "delayed_sorties": 0,
+        "elapsed_minutes": 60,
+        "lru_failures": 0,
+        "in_flight_failures": 0,
+        "failed_sorties": 0
+      }
+    },
+    {
+      "name": "workerd-sqlite-r2-restart",
+      "passed": true,
+      "runId": "run-dde33cb6-2c2a-c146-e3fa-7f7598249a82",
+      "recordSha256": "fe2abc45d1230f2a0991e033b65b6bf936a7c2f63676d0303a5729bdb2885e77",
+      "unchangedObjectCount": 15,
+      "noRedispatch": true
+    },
+    {
+      "name": "explicit-frozen-source-replay",
+      "passed": true,
+      "sourceRunId": "run-dde33cb6-2c2a-c146-e3fa-7f7598249a82",
+      "runId": "run-b7b9e781-8c5b-2a66-f627-9148895d15c1",
+      "browserArtifactRef": ".riffoid-ir/artifacts/69de09f2b59b1d4e7833fab40f9d61e9674ff26896097483d17a2f5db3e4b9cd/browser.json",
+      "runtimeSha256": "54cf8400a889748d6a796b10a3a1789ff6f622fd5fd986429ab28e2995d839ef",
+      "workerSha256": "5905881426fc6e21310f880b07cd7a840981883e9544922bb8fd6f47e3802e0f",
+      "seed": 13,
+      "laterGraphPurpose": "storage/graph fixture only, no claim of new domain compilation"
+    },
+    {
+      "name": "real-gateway-and-workspace-scope-rejections",
+      "passed": true,
+      "denials": [
+        {
+          "boundary": "Gateway",
+          "case": "foreign owner",
+          "status": 404
+        },
+        {
+          "boundary": "Workspace production browser RPC",
+          "case": "foreign owner",
+          "status": 403
+        },
+        {
+          "boundary": "Workspace production browser RPC",
+          "case": "stale generation",
+          "status": 403
+        },
+        {
+          "boundary": "Workspace production browser RPC",
+          "case": "stale authVersion",
+          "status": 403
+        },
+        {
+          "boundary": "Gateway",
+          "case": "unexpected operation/scope/object key",
+          "status": 400
+        },
+        {
+          "boundary": "Gateway",
+          "case": "unexpected operation/scope/object key",
+          "status": 400
+        },
+        {
+          "boundary": "Gateway",
+          "case": "unexpected operation/scope/object key",
+          "status": 400
+        }
+      ]
+    },
+    {
+      "name": "old-package-and-catalog-revocation",
+      "passed": true,
+      "oldPackageIdentity": "89452e932160c5807369eced170def7a6c6459f5318c61dc826a82f6c226402f",
+      "currentPackageIdentity": "103acad12b55c80dfb9f9ecdd080c7765991ccd01e8f1eb031f4040f7670c55c",
+      "stalePackageStatus": 409,
+      "gatewayRevokedStatus": 404,
+      "workspaceRevokedStatus": 403,
+      "originalRecordSha256": "fe2abc45d1230f2a0991e033b65b6bf936a7c2f63676d0303a5729bdb2885e77"
+    },
+    {
+      "name": "zero-execution-and-canonical-preservation",
+      "passed": true,
+      "turns": 0,
+      "sessions": 0,
+      "executionNamespaceAttempts": {
+        "runtime": 0,
+        "capacity": 0,
+        "tools": 0,
+        "containers": 0
+      },
+      "outboundRequests": 0,
+      "explicitManualSaves": 3,
+      "syntheticRegistrations": 2,
+      "syntheticRunTools": 2,
+      "productionBrowserRpcCalls": 20
+    }
+  ],
+  "passed": true,
+  "completedAt": "2026-10-18T16:23:02.623Z"
+}

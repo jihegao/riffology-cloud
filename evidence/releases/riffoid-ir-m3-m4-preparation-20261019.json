@@ -1,0 +1,95 @@
+{
+  "schema": "riffoid.ir-plugin-preparation/v1",
+  "recordedAt": "2026-10-18T16:29:50.953138+00:00",
+  "issue": "https://github.com/jihegao/riffology-cloud/issues/254",
+  "hostBaseCommit": "240378f65fee54d917b053f565087095a07244db",
+  "pluginContractCommit": "f1f6762e774b5eba63b788a2baacde56d491c0fe",
+  "pluginVersion": "0.3.1",
+  "packageSha256": "86b7a28a1b92652fb01b15ea6671414ecdd5e38c639878455e7abffb60d46ad6",
+  "packageFiles": 45,
+  "vendorCopies": 2,
+  "validation": {
+    "pluginFullCheck": {
+      "passed": 25,
+      "failed": 0,
+      "compiler": "real local CompilerSDK 0.1.0"
+    },
+    "canonicalWorkerd": {
+      "passed": 17,
+      "failed": 0,
+      "executionBoundary": "real local Workerd SQLite/D1/R2, synthetic scope/execution boundaries; no live account acceptance"
+    },
+    "priorWorkerdFixtureRegression": {
+      "passed": 15,
+      "failed": 0
+    },
+    "hostFullCheck": {
+      "command": "npm run check",
+      "exitCode": 0,
+      "node": {
+        "tests": 3437,
+        "passed": 3424,
+        "failed": 0,
+        "skipped": 13
+      },
+      "python": {
+        "tests": 8,
+        "passed": 8
+      },
+      "rawLog": {
+        "bytes": 366089,
+        "sha256": "5e6fec1819620709fbe896ef45aea02e574b9cb7f548ffb810c76b948c1b21cb",
+        "location": "outside repository"
+      },
+      "finalDeliveryFixes": [
+        "Post-action delivery/auth failure propagates unknown and preserves original effect.",
+        "Uncertain heartbeat closes original broker rather than renewing an unseen claim.",
+        "First empty project follows explicit save/open/continue boundary."
+      ],
+      "precedingFullCheck": "host-check.json"
+    },
+    "precedingHostFullCheck": {
+      "command": "npm run check",
+      "exitCode": 0,
+      "node": {
+        "tests": 3428,
+        "passed": 3415,
+        "failed": 0,
+        "skipped": 13
+      },
+      "python": {
+        "tests": 8,
+        "passed": 8
+      },
+      "rawLog": {
+        "bytes": 365054,
+        "sha256": "e7318922bc68a569a9457987ad33fc19307c2bfedf40f44ade8a68f653b701cd",
+        "location": "outside repository"
+      },
+      "environment": {
+        "M1_BROWSER_CHANNEL": "chromium",
+        "browserVersion": "Chromium 153.0.8010.12",
+        "tls": "existing Homebrew OpenSSL 3.6.4",
+        "browserAssets": "README hash-verified prepared assets"
+      },
+      "previousFailuresPreserved": "Outside repository: missing default Chrome, missing browser assets, system LibreSSL pkey -check support, fixture favicon 404 and old fixed-skill assertion. No failure output was overwritten.",
+      "evidence": "riffoid-ir-m3-m4-20261019/host-check.json"
+    }
+  },
+  "imageExecutionProbe": {
+    "status": "passed",
+    "evidence": "riffoid-ir-m3-m4-20261019/project-tools-image-probe.json",
+    "imageId": "sha256:402381b5b2c0f460e6af44bc4e953d53f6bdb648de4c9ccbeee837815580cd8f",
+    "productionDeployment": false
+  },
+  "deployment": null,
+  "onlineAcceptance": null,
+  "executionBoundary": "Shared fixed package integration preparation only. Browser outputs remain local/unverified. No production gate, resource, deployment, model request or paid execution is performed by this evidence.",
+  "remaining": [
+    "Confirm ongoing work final merged baseline before serial production integration.",
+    "Deploy exact reviewed package and retain authoritative deployment/resource receipts.",
+    "Perform actual dual-host ACC-01 through ACC-05 with same package; retain selected session/tool/run/reference evidence."
+  ],
+  "selectedLocalWorkerdEvidence": "riffoid-ir-m3-m4-20261019/",
+  "pluginPullRequest": "https://github.com/jihegao/riffoid-ir-plugin/pull/2"
+}

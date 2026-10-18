@@ -16,6 +16,7 @@ import {g5RepairFixtureProof} from './g5-fixture-authority.ts';
 import {issueProjectEffectCapability} from '../sandbox/capability.ts';
 import {sandboxActorIds} from '../sandbox/policy.ts';
 import {workspaceSandboxActor,type WorkspaceSandboxLease} from '../sandbox/workspace-binding.ts';
+import {createProjectIrEffects} from '../project-tools/ir-routing.ts';
 import {publicToolReceipt,toolReceiptCallId,toolReceiptName,toolReceiptOperation} from './receipt.ts';
 
 export interface ToolBridgeEnv{
@@ -37,10 +38,12 @@ export class ToolBridgeAgent extends DurableObject<ToolBridgeEnv>{
   get #dispatcher(){
     const files=new ProjectSandboxFileEffects(this.env.M2_PROJECT_EFFECT_CAPABILITY_KEY,actorId=>getSandbox(this.env.PROJECT_SANDBOX,actorId,{sleepAfter:'5m'}),Date.now,this.env.WORKSPACE_AGENT?async(command,observeOnly)=>this.env.WORKSPACE_AGENT!.getByName(workspaceAgentName(command.scope.tenantId,command.scope.workspaceId)).prepareProjectTool({command,observeOnly}):undefined);
     const draft=(command:import('./protocol.ts').ToolCommand,effectId:string,observeOnly:boolean)=>{if(!this.env.WORKSPACE_AGENT)throw Error('parameter-draft-unavailable');return this.env.WORKSPACE_AGENT.getByName(workspaceAgentName(command.scope.tenantId,command.scope.workspaceId)).experimentParameterEffect({command,effectId,observeOnly});};
+    const ir=createProjectIrEffects(files,command=>{if(!this.env.WORKSPACE_AGENT)throw Error('project-ir-unavailable');return this.env.WORKSPACE_AGENT.getByName(workspaceAgentName(command.scope.tenantId,command.scope.workspaceId));});
+    const materializer=new ToolArtifactMaterializer(this.env.TOOL_ARTIFACT_STORE.getByName(TOOL_ARTIFACT_STORE_ACTOR));
     return new ToolDispatcher(this.#ledger,{
-      execute:input=>input.command.operation==='experiment_parameters'?draft(input.command,input.effectId,false):files.execute(input),
-      observe:input=>input.command.operation==='experiment_parameters'?draft(input.command,input.reference.effectId,true):files.observe(input),
-    },new ToolArtifactMaterializer(this.env.TOOL_ARTIFACT_STORE.getByName(TOOL_ARTIFACT_STORE_ACTOR)));
+      execute:input=>input.command.operation==='experiment_parameters'?draft(input.command,input.effectId,false):input.command.operation==='ir'?ir.execute(input):files.execute(input),
+      observe:input=>input.command.operation==='experiment_parameters'?draft(input.command,input.reference.effectId,true):input.command.operation==='ir'?ir.observe(input):files.observe(input),
+    },{materialize:(receipt,command)=>command.operation==='ir'?Promise.resolve(receipt):materializer.materialize(receipt,command)});
   }
   async #settlementIdentity(value:unknown){const identity=turnRuntimeIdentity(value),name=await toolBridgeActorName(identity.scope,identity.turnId,identity.dispatchId);if(!this.env.TOOL_BRIDGE_AGENT.idFromName(name).equals(this.ctx.id))throw Error('tool-bridge-actor-scope-denied');return identity;}
   async nativeAttemptSnapshot(raw:unknown){
@@ -62,7 +65,7 @@ export class ToolBridgeAgent extends DurableObject<ToolBridgeEnv>{
     const record=readExistingToolCommand(this.ctx.storage,commandId);
     if(!record)return publicToolReceipt({identity,revisionId,toolCallId,name,commandId,record:null,effect:null});
     if(!sameScope(record.scope,identity.scope)||record.turnId!==identity.turnId||record.dispatchId!==identity.dispatchId||record.operation!==operation)throw Error('tool-receipt-scope-denied');
-    if(['completed','failed','cancelled'].includes(record.status)||!record.effectId||operation==='experiment_parameters')return publicToolReceipt({identity,revisionId,toolCallId,name,commandId,record,effect:null});
+    if(['completed','failed','cancelled'].includes(record.status)||!record.effectId||operation==='experiment_parameters'||operation==='ir')return publicToolReceipt({identity,revisionId,toolCallId,name,commandId,record,effect:null});
     if(!record.command)throw Error('invalid-persisted-tool-ledger');
     const reference=toolCommandReference(record),capability=await issueProjectEffectCapability(this.env.M2_PROJECT_EFFECT_CAPABILITY_KEY,{actorId:target.actorId,command:record.command,effectId:reference.effectId,expiresAt:Date.now()+60_000});
     const sandbox=this.env.PROJECT_SANDBOX.getByName(target.actorId),effect=await sandbox.readPersistedFileEffectTerminal({identity,reference,command:record.command,capability,warm:target.warm});

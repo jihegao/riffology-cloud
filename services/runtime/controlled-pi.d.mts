@@ -51,6 +51,7 @@ export interface ControlledPiOptions {
   bridge?: {
     definitions: Array<Pick<ToolDefinition, 'name' | 'label' | 'description' | 'parameters'>>;
     execute(call: ProjectToolCall): Promise<AgentToolResult<unknown>>;
+    preparePrompt?(text: string, options: { signal?: AbortSignal }): Promise<string>;
   };
   /** A coordinator-verified checkpoint, not a project file or arbitrary client upload. */
   snapshot?: PiCheckpoint;

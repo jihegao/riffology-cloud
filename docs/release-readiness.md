@@ -1,5 +1,11 @@
 # Current release readiness — 2026-10-14
 
+## 2026-10-19 固定 IR 插件 M3/M4 独立实现准备
+
+[#254](https://github.com/jihegao/riffology-cloud/issues/254) 在独立 worktree 基于 `240378f65fee54d917b053f565087095a07244db` 接入同版 `riffoid-ir-plugin@0.3.1`，包括受控 fixed skill/工具、原 Project Tools effect 路径和浏览器原生页面。两个固定包副本及逐文件 SHA 一致。SQLite/R2 运行投影保留原 effect、scope/generation、actor/authVersion 和冻结历史；普通保存后的模型展示也按 canonical 文件重建。
+
+[接入说明](riffoid-ir-plugin-integration.md) · [本轮实际离线证据与边界](../evidence/releases/riffoid-ir-m3-m4-preparation-20261019.json)。本快照仍为实现准备：实际 Project Tools Linux/amd64 镜像已验证 Node 22.23.2、UID/GID 10001、seccomp/网络拒绝、真实 B1 check/compile 和进程清空；不宣称生产部署或双端 ACC 完成。完整检查已有 3,424 项 Node、8 项 Python 通过，13 项按原条件跳过；线上阶段等待当前工作确认后的合并基线，随后单独串行集成和部署验收；不覆盖 #104/#214 正在进行的发布，不开放 G5/M3/M4 云执行。
+
 ## 2026-10-18 #248 maintenance admission code delivery
 
 [PR #250](https://github.com/jihegao/riffology-cloud/pull/250) merged as `82c615894d1f27751be8a6bb5aea2c46941060d2`. The reviewed source HEAD `c669921f4796c5b35c6f2e049c92876f4faf7c5b` passed [CI 39093215235 / job 117574153432](https://github.com/jihegao/riffology-cloud/actions/runs/39093215235/job/117574153432), including the two added Gateway tests and five maintenance Workerd tests. This is code delivery for [#248](https://github.com/jihegao/riffology-cloud/issues/248), supporting [#104](https://github.com/jihegao/riffology-cloud/issues/104) and [#214](https://github.com/jihegao/riffology-cloud/issues/214); it is not target-environment acceptance.
