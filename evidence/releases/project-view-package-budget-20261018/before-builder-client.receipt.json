@@ -1,0 +1,17 @@
+{
+  "command": [
+    "node",
+    "--input-type=module",
+    "-e",
+    "import assert from 'node:assert/strict';\nimport {buildProjectViews,readProjectViewsArchive} from './services/project-views/package.ts';\nimport {verifyProjectViewPackage} from './services/web/project-views.js';\nimport {resolveManagedCandidate} from './services/turn-runtime/managed-candidate-v3.ts';\nimport {managedCandidateRecoveryFiles} from './services/turn-runtime/managed-candidate.ts';\nimport {budgetFiles,budgetArchive} from './tests/m3/project-view-package-budget-fixture.mjs';\nimport {scope} from './tests/m3/project-views-fixture.mjs';\nconst f=budgetFiles(),{bytes,source}=budgetArchive(f.files),pkg=await buildProjectViews(source,bytes),{packageIdentity,...body}=pkg;\nconst parsed=readProjectViewsArchive(bytes),transformed=parsed.assets.reduce((sum,a)=>sum+a.bytes.length,0),original=parsed.assets.reduce((sum,a)=>sum+a.original.length,0);\nassert.ok(transformed>2*1024*1024);assert.ok(original<2*1024*1024);\nlet clientError;await assert.rejects(verifyProjectViewPackage(pkg,scope),error=>{clientError=error.message;return /project-view-asset-digest/.test(clientError);});\nconst candidate={schemaVersion:3,operation:'pages',manifest:f.manifest,files:Object.fromEntries(Object.entries(f.files).filter(([p])=>p!=='app/views.json'))},managed=resolveManagedCandidate(candidate,undefined);\nassert.equal(managed.operation,'save');\nconst near=budgetFiles(29,{exactTotal:true}),nf=budgetArchive(near.files),np=await buildProjectViews(nf.source,nf.bytes);await verifyProjectViewPackage(np,scope);\nconsole.log(JSON.stringify({schema:'project-view-package-budget-before/v1',serverAccepted:true,archiveBytes:bytes.length,sourceAssetBytes:original,transformedAssetBytes:transformed,bodyBytes:Buffer.byteLength(JSON.stringify(body)),packageIdentity,clientRejected:true,clientError,managedAccepted:true,candidateBytes:Buffer.byteLength(JSON.stringify(candidate)),coldBytes:Buffer.byteLength(JSON.stringify(managedCandidateRecoveryFiles(managed.filesArchive))),near:{assetBytes:near.deliveredBytes,packageIdentity:np.packageIdentity,bodyBytes:Buffer.byteLength(JSON.stringify((({packageIdentity,...b})=>b)(np))),clientAccepted:true}},null,2));"
+  ],
+  "cwd": "/Users/jihegao/.codex/worktrees/jhg46-package-response-budget/riffology-cloud",
+  "startedAt": "2026-10-18T00:04:20.805233+00:00",
+  "endedAt": "2026-10-18T00:04:21.269769+00:00",
+  "exitCode": 0,
+  "stdoutFile": "before-builder-client.stdout.log",
+  "stdoutBytes": 625,
+  "stdoutSha256": "975869bfb53cad4a940a757ccd09d26b8fe0a41b96e3a448516d37314f61550f",
+  "sourceHead": "638a366d31a37f7bc1d7dcd124e0b5ba753d6401",
+  "productionSourceUnmodified": true
+}

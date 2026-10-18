@@ -1,0 +1,201 @@
+{
+  "base": "638a366d31a37f7bc1d7dcd124e0b5ba753d6401",
+  "baseline": {
+    "allInputsUseValidBoundedScopePathsAndSourceFiles": true,
+    "bodyBelow3MiB": true,
+    "coldContextBytes": 253362,
+    "exact2MiBClientAcceptedBeforeFix": true,
+    "exact2MiBPackageIdentity": "9665b73e0bf80e0246c94b75f3f1cfd841d568d5057061c146d856e94d204a0a",
+    "managedCandidateBytes": 253312,
+    "realClientPreviouslyRejected": "project-view-asset-digest",
+    "rewrittenAssetBytes": 2240220,
+    "serializedBodyBytes": 3004353,
+    "serverAndManagedPreviouslyAccepted": true,
+    "sourceAssetBytes": 230620
+  },
+  "limits": [
+    "The real demonstrated mismatch is the post-rewrite2MiB aggregate; its3,004,353B body was already below3MiB. No separate reachable3MiB overflow from a legal bounded scope is claimed, and no illegal huge-scope test was invented.",
+    "The exact3MiB body check is defense in depth matching client/runtime protocol. Valid-boundary positive behavior is covered without changing response schema/hash semantics.",
+    "The manual integration is local/synthetic with real Gateway/Workspace/store code and local D1/R2; it does not establish ordinary-user/production/paid execution acceptance.",
+    "R2 observations and canonical identity stability do not mean journal/fence audit writes are absent or that account-wide usage/fees are zero.",
+    "The broad67-test result binds the earlier test snapshot, while final4-test result binds the stronger final test. No67-on-final-test-byte claim is made.",
+    "No GitHub/Cloudflare/OAuth/SSH/Docker/network service call or new test execution was performed by this reviewer. No implementation/source file was edited.",
+    "This receipt does not authorize9ec auth/Registry execution, deployment or any protected merge."
+  ],
+  "mustFix": [],
+  "persistenceBoundary": {
+    "auditJournalAndFenceWritesRemainAllowed": true,
+    "canonicalRevisionAndPackageIdentityUnchanged": true,
+    "codeOrder": "runManualSave reserves journal/acquires fence before prepare; Workspace prepare calls buildProjectViews before writeStarted and commitManual, so validation can abort/release while retaining audit history.",
+    "fencesReleased": true,
+    "globalNoPersistentWritesClaim": false,
+    "r2ObjectKeySizeEtagObservationsUnchanged": true
+  },
+  "productionDiff": {
+    "bytes": 2362,
+    "path": "services/project-views/package.ts",
+    "review": "Retains the original aggregate budget and adds a separate delivered byte total after module rewriting; serialized body uses the same body/UTF8 bytes as the client3MiB check and its existing hash, preserving valid package format/identity.",
+    "sha256": "32036bd715b60c00bf063e3962011fee30adab09e1d3b7186bbf3dfae138d6ca",
+    "trackedProductionFileCount": 1
+  },
+  "receiptRefs": [
+    {
+      "bytes": 2695,
+      "command": [
+        "node",
+        "--input-type=module",
+        "-e",
+        "recorded source/client baseline probe"
+      ],
+      "exitCode": 0,
+      "path": "before-builder-client.receipt.json",
+      "sha256": "f166593300b1d22d150d4646e353644970de0a9a0a661659bdc2f66c9aced621",
+      "sourceSha256": null,
+      "stdoutBytes": 625,
+      "stdoutSha256": "975869bfb53cad4a940a757ccd09d26b8fe0a41b96e3a448516d37314f61550f"
+    },
+    {
+      "bytes": 608,
+      "command": [
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-name-pattern=rewritten aggregate|Managed pages|exact delivered",
+        "tests/m3/project-view-package-budget.test.mjs"
+      ],
+      "exitCode": 1,
+      "path": "before-regression.receipt.json",
+      "sha256": "26af3ed1bc193354046ec6f625c4cc2d8042ec11d67b92ca415f902666f62346",
+      "sourceSha256": null,
+      "stdoutBytes": 2953,
+      "stdoutSha256": "cc350c60bc14540dc21ae04e70ab3e249b1c16bf174a43046b7196b8c520a1cc"
+    },
+    {
+      "bytes": 954,
+      "command": [
+        "npm",
+        "run",
+        "typecheck"
+      ],
+      "exitCode": 0,
+      "path": "typecheck.receipt.json",
+      "sha256": "6301cbcf49f785bf7c7bc772cc54bd3352d31890c7b74f268c520feeeff63f57",
+      "sourceSha256": {
+        "services/project-views/package.ts": "1d7683036c31ff238367f5f16e72b7f1381acf214cda97cf7fc032802b4a1d41",
+        "tests/m3/project-view-package-budget-fixture.mjs": "6908f8d1a67488af1d9e8aaa9a88c2304fc4d4bdceac23b428ed863a3061dfdf",
+        "tests/m3/project-view-package-budget.test.mjs": "f88b3f5b5883a21f0826f33523f372ca33a46c86105184910fe8ec48ab33d82c"
+      },
+      "stdoutBytes": 29,
+      "stdoutSha256": "8fa1cf5506304e8abac55868e7f1a136c9b1dde57a3981a382da4c21ea129a6f"
+    },
+    {
+      "bytes": 1391,
+      "command": [
+        "node",
+        "--test",
+        "--test-concurrency=2",
+        "tests/m3/project-view-package-budget.test.mjs",
+        "tests/m3/project-views.test.mjs",
+        "tests/m2/managed-pages-candidate.test.ts",
+        "tests/m2/managed-candidate-v3.test.ts",
+        "tests/m2/manual-save-policy.test.ts",
+        "tests/m2/manual-save-operation.test.ts",
+        "tests/m3/manual-save-gateway.test.mjs",
+        "tests/m2/manual-save-workerd.test.mjs",
+        "tests/m3/manual-page-broker-workerd.test.mjs"
+      ],
+      "exitCode": 0,
+      "path": "focused-first.receipt.json",
+      "sha256": "66bbdaa6e5871c84f7a5111409cda0d40d18f1e7ba5e4ba16abe267128bc85ae",
+      "sourceSha256": {
+        "services/project-views/package.ts": "1d7683036c31ff238367f5f16e72b7f1381acf214cda97cf7fc032802b4a1d41",
+        "tests/m3/project-view-package-budget-fixture.mjs": "6908f8d1a67488af1d9e8aaa9a88c2304fc4d4bdceac23b428ed863a3061dfdf",
+        "tests/m3/project-view-package-budget.test.mjs": "f88b3f5b5883a21f0826f33523f372ca33a46c86105184910fe8ec48ab33d82c"
+      },
+      "stdoutBytes": 7611,
+      "stdoutSha256": "c34d648f3a383a635b0130ffd19b5437f594565fb46da21d5a55692eac9f1361"
+    },
+    {
+      "bytes": 1034,
+      "command": [
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "tests/m3/project-view-package-budget.test.mjs"
+      ],
+      "exitCode": 0,
+      "path": "focused-final-budget.receipt.json",
+      "sha256": "40bbfc61cf8dafdfd8e52679504dd4724f757b39e1173063ccb10e717dd93ea8",
+      "sourceSha256": {
+        "services/project-views/package.ts": "1d7683036c31ff238367f5f16e72b7f1381acf214cda97cf7fc032802b4a1d41",
+        "tests/m3/project-view-package-budget-fixture.mjs": "6908f8d1a67488af1d9e8aaa9a88c2304fc4d4bdceac23b428ed863a3061dfdf",
+        "tests/m3/project-view-package-budget.test.mjs": "6822ea58b3c95361d2a9d58d075666a68850cb09c11c8060ae776a31c7040027"
+      },
+      "stdoutBytes": 585,
+      "stdoutSha256": "2be153f469f27fe7f86651cbaa8205ff5ec4a11fd18883aff04f7b4524e1256d"
+    }
+  ],
+  "regressionChecks": [
+    "The shared archive parser and builder reject rewrite-inflated aggregate content even though each7200B source module and70000B rewritten module are individually bounded.",
+    "Managed pages rejection is on a valid candidate under512KiB and a cold-source envelope under1MiB, through the real shared parser; no invalid oversized scope is used.",
+    "Exact delivered2MiB remains inclusive; existing package bytes/hash and real client verification are preserved. One extra delivered byte is rejected.",
+    "The synthetic local Gateway/Workspace/RevisionStore/R2 integration rejects one7200B manual patch without advancing canonical Revision/package identity; final test compares complete R2 key/size/etag observations and released fences, with zero outbound calls and zero Turn/Session."
+  ],
+  "reviewedAt": "2026-10-18T00:10:24.743626+00:00",
+  "reviewerSideEffects": {
+    "externalCalls": 0,
+    "oauthCredentialFilesRead": 0,
+    "sourceChanges": 0,
+    "testsRun": 0
+  },
+  "schema": "jhg46-pr245-package-budget-independent-source-review/v1",
+  "smallTextEvidence": {
+    "actualMiniflareFixtureUsesLocalLimits": true,
+    "productionSmallTextPolicyInstalledInIntegrationFixture": false,
+    "requestAndFileCapsCheckedByGuard": true,
+    "samePatchAcceptedByRealAssertManualSaveBodyUnderExplicit8192BytePolicy": true,
+    "supportedConclusion": "The same legal7200B patch is accepted by the actual smallText body guard, and the shared local save path rejects its rewritten aggregate overflow before commit. This is not end-to-end production policy or authenticated user acceptance."
+  },
+  "sourceRefs": [
+    {
+      "bytes": 7776,
+      "path": "services/project-views/package.ts",
+      "sha256": "1d7683036c31ff238367f5f16e72b7f1381acf214cda97cf7fc032802b4a1d41"
+    },
+    {
+      "bytes": 2147,
+      "path": "tests/m3/project-view-package-budget-fixture.mjs",
+      "sha256": "6908f8d1a67488af1d9e8aaa9a88c2304fc4d4bdceac23b428ed863a3061dfdf"
+    },
+    {
+      "bytes": 5589,
+      "path": "tests/m3/project-view-package-budget.test.mjs",
+      "sha256": "6822ea58b3c95361d2a9d58d075666a68850cb09c11c8060ae776a31c7040027"
+    }
+  ],
+  "status": "passed-no-mustfix-local-source-and-regression-review",
+  "validation": {
+    "beforeProductionFixThreeSelectedRegressionsFailed": true,
+    "finalTargeted": {
+      "failed": 0,
+      "files": 1,
+      "passed": 4,
+      "reason": "Only final test storage observation changed from keys to key/size/etag; production/helper stayed identical to the67-test/typecheck snapshot.",
+      "testSha256": "6822ea58b3c95361d2a9d58d075666a68850cb09c11c8060ae776a31c7040027",
+      "tests": 4
+    },
+    "initialRelatedGroup": {
+      "failed": 0,
+      "files": 9,
+      "passed": 67,
+      "testSha256": "f88b3f5b5883a21f0826f33523f372ca33a46c86105184910fe8ec48ab33d82c",
+      "tests": 67
+    },
+    "reviewerReranTests": false,
+    "typecheck": {
+      "exitCode": 0,
+      "productionSourceMatchesFinal": true,
+      "testSnapshot": "initial-f88b3f5b"
+    }
+  }
+}
