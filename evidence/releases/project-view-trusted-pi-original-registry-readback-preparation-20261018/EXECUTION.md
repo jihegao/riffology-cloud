@@ -1,0 +1,14 @@
+# 原 c263 Registry 完整回读（未执行准备）
+
+原恢复实际已导出并验证固定镜像，push CLI 在2026-10-18 20:36:38.892（上海）exit0，唯一完成 digest 行为 `ec8d…/9585`；这不能替代 Registry 完整验收。远端终态 `unknown-stopped/publication-local-error`，`registry-readback.json` 缺席；本机 SSH255。原6 CLI、supervisor、临时凭据文件与路由已独立确认清理。全部原记录和失败锁保留。
+
+本候选只补回读。固定 source index `sha256:0bb9af7a5909c41187cf56402a21420100c72a8de0025b0a7152f8804e85d191` /856B，runnable `sha256:ec8dbe9efe229a1626ea3202b618653f82f8d29d9da8b19310c3b3838f2a2623` /9585B，config `sha256:cea60e390b6726ec0147153e1318b3655c8386460e98d02e35bb571768e49da5` /19067B。原归档407961600B/SHA `deddc21059715d3d63fc9c652e84e510be7117cda315102c3b1fd0f0bcf2f6d8`，53 blobs/49 diffIDs。所有49层来自原10398B `verification-source.json`（SHA `76a53be45c5cd33a5b322bd5dd3dabc6b49f64aa53b739b38a6331cbe998beca`），不能由调用方传入任意 descriptor。
+
+1. 新私有副本保持原 source manifest，生成真实新 compact+LF grant。入口为 `python3 local-recovery.py --execute --grant-file <private-grant> --grant-sha256 <actualSHA>`。此准备阶段绝不调用该入口。它先核 wire、全 source、grant，再创建 `readback-once` 永久一次锁。
+2. 复用固定 Wrangler 4.129.0 /14,390,953B/SHA `0a7bc2107ca92b2cc6db58b6a36d38d44b549eebd7db7ec34c36db9da7a91264` 的 `auth token --json --profile default --env-file /dev/null`；CI模式、日志关闭、输出仅有界内存。CLI前后核同六 scopes，之后核原用户 hash 和账号。正常刷新失败/要求重新登录立即停止。一次只读 `ssh -G` 核无继承转发后，启动一个无agent/无复用的 SSH-R，1500秒绝对观察上限。
+3. 远端只在原 ROOT 下新建 `registry-readback-recovery-v1/records`（owned0700、永久一次锁）。原intent、unknown terminal、verification及CLI元数据逐字节固定。原 source-before/after stdout 只在远端内存按既有streamSHA核对，不回传 Env/config。原归档不修改、不重导出；复用 unchanged `oci_verify.py` 再读一次，完整 archiveSHA/所有可达 blob/49 diffID 对原 source RootFS 验证，最多600秒和4GiB archive/4GiB解压总量。新 Ready 只能在上述通过后发出。
+4. Ready 后仅一次 credential POST：`expiration_minutes:15, permissions:["pull"]`。成功接口 schema 仍需实际状态及完整返回验证；不从 CLI scopes 推断 REST 权限。[官方 API](https://developers.cloudflare.com/api/resources/containers/subresources/registries/subresources/credentials/methods/generate/) 列出 permission/TTL 和返回字段。JWT仅第二条SSHstdin JSON，OAuth不离机，不落配置文件。旧POST201不保证新请求结果。
+5. 凭据接收后总GET期限≤720秒，且grant仍有效；固定52槽位：原tag manifest、runnable digest manifest、config、49 layer槽位。每槽最多一次GET，无retry/redirect/fallback。tag存在也只读。每项请求发出前先写 `get-00…51.intent.json`；完成/失败后写有界安全terminal（status、捕获byte/SHA、完整性、phase、白名单异常类，绝不原错误文本/body/header/auth），每项成功立即写proof。两个manifest必须header digest匹配，small manifest/config须与归档原字节相同。层逐流SHA/byte核对，不将完整body落盘。
+6. 只有全部52成功才写新 `registry-readback.json` 并输出唯一完整ACK。任何异常保留已成功各项/失败intent+terminal及unknown总终态，无自动补槽或重试。credential/auth引用在finally释放；不宣称Python内存加密擦除/自然TTL已证明。退出SSH并回收原本机进程，独立新无转发reader核 supervisor原PID/ticks不存在、路由7897空/errno111和无auth配置，并核原52 proof/terminal链。reader不掌握Mac ACK，仅输出证据/清理布尔；root结合local完整ACK才可解除pending。
+
+固定原 ROOT 为 `/tmp/riffoid-jhg46-image-20261017.AU613w/pi-native-resource-snapshot-host-publication-v1`。该ROOT的原 records、锁、archive、tag绝不改写。当前镜像不会部署/rollout，无新项目/Session/Turn，无 provider 执行。当前代码/fixture与 source-only准备不等于新凭据、Registry实际验收或用户验收；JHG46/JHG56不因此Done。

@@ -1,3 +1,9 @@
+## 2026-10-18：原 c263 Registry 完整回读准备（尚未执行）
+
+原push CLI exit0及唯一digest行不能替代Registry验收；本机SSH255、远端unknown、完整回读文件缺席的[实际停止结果](https://github.com/jihegao/riffology-cloud/blob/41054fedc2089ad520d654a9a1dc35733145676e/docs/project-view-trusted-pi-native-resource-snapshot-host-publication-wire-repair-stop-result-20261018.md)和独立清理证据保留。新[固定回读包](project-view-trusted-pi-original-registry-readback-packet-20261018.md)仅准备补原镜像52GET，[独立源码审阅](../evidence/releases/project-view-trusted-pi-original-registry-readback-preparation-20261018/reviews/readback-only-independent-review.json)已完成（mustFix=[]，SHA64df4cc5…72c61），仍待新明确授权；正常token、pull-only15m凭据POST、临时SSH-R及GET均未执行。
+
+新目录只承接原c263审计，不重push/export、不改原锁/records/archive/tag，不部署/rollout或新Turn。必须52完整proof、唯一ACK、原进程/路由清理及fresh exact-head checks后才可条件普通合并PR253；旧真实验收窗口不延长。独立reader不单独提升发布成功。
+
 ## 2026-10-18 c263 wire-repair push CLI reported success; complete Registry proof missing
 
 The explicitly approvede521/76df repair kept the originalc263/source/directory/tag. One export verified407961600B/dedd… and53raw blobs/49diffIDs, deriving ec8d… runnable9585B and cea… config19067B from0bb/index856. One Registry credential POST201/stdin succeeded. Push CLI exit0/reaped at12:36:38.892650Z reported the matching strict ec8d/9585 line. However remote publisher ended12:45:16.036354Z unknown-stopped/publication-local-error, local SSH ended12:48:39.599189Z exit255/reaped and final ACKfalse. registry-readback.json is absent: complete52-slot proof/current Registry state and detailed cause remain unknown. [Actual stopped result](project-view-trusted-pi-native-resource-snapshot-host-publication-wire-repair-stop-result-20261018.md) · [safe evidence](../evidence/releases/project-view-trusted-pi-native-resource-snapshot-host-publication-wire-repair-stop-20261018/inventory.json).
