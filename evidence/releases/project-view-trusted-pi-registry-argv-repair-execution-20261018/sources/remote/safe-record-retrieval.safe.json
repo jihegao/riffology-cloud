@@ -1,0 +1,79 @@
+{
+  "schema": "jhg46-fb99-readonly-invocation-safe-projection/v1",
+  "originalReceipt": {
+    "file": "invocation-receipt.json",
+    "bytes": 2475,
+    "sha256": "12e24568a4429146a57fb74bb9bdad0ad332ba4cb62bea627e11e894051afb07"
+  },
+  "projectionChanges": [
+    "Tool executable/transport argv omitted; original bytes and hash retained."
+  ],
+  "receipt": {
+    "clearAllForwardings": true,
+    "dockerOrProviderCommands": 0,
+    "endedAt": "2026-10-18T02:06:11.077198+00:00",
+    "exitCode": 0,
+    "noAgentForwarding": true,
+    "readerSourceBytes": 1992,
+    "readerSourceSha256": "d12d02829a4255c42b1b25d1e919618904a66774e830d607bada33ad6d1a666f",
+    "records": [
+      {
+        "bytes": 606,
+        "matchedFrozenIndependentReaderReference": true,
+        "path": "intent.json",
+        "sha256": "b9b09c110efaeb0fd778de312dded6d65f6012eff6aef16f24b8287d00b3b4ef"
+      },
+      {
+        "bytes": 1075,
+        "matchedFrozenIndependentReaderReference": true,
+        "path": "terminal.json",
+        "sha256": "c8d30762451a3f3ab5b8365473efff52cd7e1b7159ca10671c61c419aed10261"
+      },
+      {
+        "bytes": 10209,
+        "matchedFrozenIndependentReaderReference": true,
+        "path": "raw-verification.json",
+        "sha256": "21d3b5cf87f74e3168bef605109dd214ea70f8c9747c2a999152db612bac1ce1"
+      },
+      {
+        "bytes": 17356,
+        "matchedFrozenIndependentReaderReference": true,
+        "path": "registry-readback.json",
+        "sha256": "a7b3cae2cb48b89da0856d440815c5fe58bbcfc4ee81a45b9a8dbd4d89dba3f5"
+      },
+      {
+        "bytes": 38,
+        "matchedFrozenIndependentReaderReference": false,
+        "path": "remote-tag-absence.json",
+        "sha256": "cfd16ef32a5240fb64cbe615d85b1225fdfe9ad6f52f183ae005bdec6740492e"
+      },
+      {
+        "bytes": 349,
+        "matchedFrozenIndependentReaderReference": false,
+        "path": "push-once-intent.json",
+        "sha256": "6710240b6e1ba5d1c399f86792a922cedd4a3e2cf594deb141be86280a43a6fb"
+      }
+    ],
+    "remoteWrites": 0,
+    "requestId": "fb99c7e4-21a7-4215-8261-c17dd7c148aa",
+    "schema": "trusted-pi-fb99-safe-record-readonly-invocation/v1",
+    "startedAt": "2026-10-18T02:06:09.803499+00:00",
+    "stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stderrContentsPersisted": false,
+    "stdout": {
+      "bytes": 40904,
+      "sha256": "9e556f480e4730eb0f14fa142d1a31c53721836a3084a2a1442f4bc6ceb2840c"
+    },
+    "whitelist": [
+      "intent.json",
+      "terminal.json",
+      "raw-verification.json",
+      "registry-readback.json",
+      "remote-tag-absence.json",
+      "push-once-intent.json"
+    ]
+  }
+}

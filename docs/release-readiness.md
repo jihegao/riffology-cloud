@@ -1,5 +1,14 @@
 # Current release readiness — 2026-10-17
 
+## 2026-10-18 TrustedPi Registry fb99 publication and independent cleanup completed
+
+The explicitly authorized abd265e/89f2 batchfb99 completed normal same-user OAuth consent/token, exact-six-scope/user/account checks, one Registry credential POST201, one fixedlinux/amd64 Docker push and all51 post-push raw reads:2manifest(tag/digest)+1config+48layer slots including repeated digests. The published manifest isf18a826d…/9396 and config07c199e…/18775; a946/856 remains the original local Engine/index. Original c3e archive407955456B/SHA83b81e55… was reused read-only with52blob/48diffID verification:0export/1archive verify/1pushCLI. No index/attestation/signature claim. [Actual result and safe evidence](project-view-trusted-pi-registry-argv-repair-result-20261018.md).
+
+The complete unique finalACK and SSHexit0 were followed by frozen independent reader confirmation of27fixed records,5original remote CLI lifecycles, supervisor/auth-directory/7897 release; independent local and root checks confirmed original30182/30207/30219 reaped/currently absent. Temporary cleanup does not revoke persistent containers:write OAuth or prove Registry JWT revocation/expiry. HTTP201 does not explain oldc3e403. No authoritative app/Gateway/model/fee scope counters were read; no global-zero-activity or zero-fee claim. Original9ec/c3e locks/results and frozenfb99 preparation remain unchanged.
+
+Registry publication is complete; a036 has not rolled out this image, and the prior nativeDOMv3 Gateway deployment is retained. PR239/246 merge, application/Gateway/gate rollout, container/model/Turn/Run and ordinary invited-user acceptance were outside this batch. JHG-46/fullJHG-56 remain incomplete. Priorabd265e PR236 automated CI39088048795/attempt1 succeeded02:04:05Z with14returned successful steps and conditional skips preserved; it is prior-commit CI, not a result for the new actual-evidence head or online acceptance. No CI rerun was performed. Lower9ec/fb99 “pending authorization/preparation” statements are retained historical snapshots; this section records the newly authorized completed Registry batch.
+
+
 ## 2026-10-18 TrustedPi Registry 9ec authorized attempt stopped; argv repair prepared
 
 The user authorized the fixed14d/3779 batch, including persistent OAuth containers:write and one Registry credential/push/readback/cleanup attempt. Request9ec actually launched its normal local consent CLI once at01:34:19 UTC; the original CLI exited1 and was reaped, with independent PID absence. The frozen driver did not reach auth-token/identity APIs/SSH/RegistryPOST/push. Its memory-only CLI output was4345/354B and is unavailable; CLI browser/network/local OAuth side effects remain unverified. No global-zero-activity, fee, scope-change or publication conclusion follows. [Actual result and safe sources](project-view-trusted-pi-registry-recovery-result-20261018.md). Old c3e403/locks/archive/history remain unchanged.

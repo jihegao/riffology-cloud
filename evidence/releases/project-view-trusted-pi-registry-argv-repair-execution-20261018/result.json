@@ -1,0 +1,462 @@
+{
+  "schema": "jhg46-trusted-pi-registry-argv-repair-actual-result/v1",
+  "requestId": "fb99c7e4-21a7-4215-8261-c17dd7c148aa",
+  "parentStoppedRequestId": "9ec39434-0856-4ee7-af30-adf3dd5b5df4",
+  "preparedAt": "2026-10-18T02:10:23.211481+00:00",
+  "status": "fixed-platform-image-published-and-independent-local-remote-cleanup-confirmed",
+  "registryPublicationVerified": true,
+  "independentCleanupVerified": true,
+  "mergeAllowed": false,
+  "rolloutAllowed": false,
+  "jhg46Completed": false,
+  "authorization": {
+    "contractCommit": "abd265e503c77a5fb2a9256dd8365f5849d2df05",
+    "operationsManifestSha256": "89f2f285f5f732a6f3c9b8705a47fde4b5f073970e585e779371fb20ac2680fa",
+    "grantSha256": "64595e07c5075ce96d82f2e2f51add8ecf343de5dd744bb5a9e07a715ade1999",
+    "actualHumanAuthorizationRecorded": true,
+    "bindingReceipt": "sources/authorization/grant-binding-safe.json",
+    "bindingIsPreExecutionSnapshot": true,
+    "realAuthOrDriverStartedFalseMeaning": "The safe binding was written before execution; this field is a historical snapshot, not the final execution state."
+  },
+  "actualExecution": {
+    "localStartedAt": "2026-10-18T01:59:10.480353+00:00",
+    "remoteEndedAt": "2026-10-18T02:03:05.358823+00:00",
+    "localEndedAt": "2026-10-18T02:03:09.756144+00:00",
+    "crossHostClocksProvenSynchronized": false,
+    "originalExecSessionExitCode": 0,
+    "originalLoginCliExitCode": 0,
+    "originalAuthTokenCliExitCode": 0,
+    "credentialPostAttempts": 1,
+    "credentialPostHttpStatus": 201,
+    "credentialStdinSent": true,
+    "sourceArchiveReadVerifications": 1,
+    "newExportAttempts": 0,
+    "dockerPushCliInvocations": 1,
+    "automaticRetryPerformedByExecutor": false,
+    "dockerDaemonInternalHttpRetriesControlled": false,
+    "uniqueCompleteFinalAckVerified": true,
+    "originalSshExitCode": 0,
+    "originalSshRecordedReaped": true
+  },
+  "imageIdentity": {
+    "destination": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-issue165-trusted-pi:jhg46-pi-resource-compat-20261017-a946b164",
+    "registryPlatformManifest": {
+      "digest": "sha256:f18a826d40b2fd60e2cf8c49d7f7b8f595fa609fe2be4c28593479ae846960ea",
+      "mediaType": "application/vnd.oci.image.manifest.v1+json",
+      "size": 9396
+    },
+    "registryConfig": {
+      "digest": "sha256:07c199e17490cc4fdf3e8027770f8a7413090d4e7c3a1f44aa9064e115641059",
+      "mediaType": "application/vnd.oci.image.config.v1+json",
+      "size": 18775
+    },
+    "originalLocalEngineIndex": {
+      "digest": "sha256:a946b164d10d074fcc9859f6c54c3b65d1901b41696c5ee8d8e31e275ddd1593",
+      "mediaType": "application/vnd.oci.image.index.v1+json",
+      "size": 856
+    },
+    "originalArchive": {
+      "bytes": 407955456,
+      "sha256": "83b81e553a9c4e885299650c31cd179e126168c4da50b2dfd3ed1d8ffe5e0b51",
+      "readOnlyReuse": true
+    },
+    "originalBlobCount": 52,
+    "runtimeLayerSlots": 48,
+    "allRawBlobHashesSizesReachable": true,
+    "allRunnableDiffIdsMatched": true,
+    "indexOrAttestationUploaded": false,
+    "publisherSignatureVerified": false
+  },
+  "registryRawReadback": {
+    "publishedTagAndDigestManifestReads": 2,
+    "configReads": 1,
+    "layerSlotReadsIncludingRepeatedDigestSlots": 48,
+    "totalPostPushRawReads": 51,
+    "allStatuses": 200,
+    "allRawBodiesMatchOriginal": true,
+    "countIncludesOtherApiOrTagAbsenceRequests": false,
+    "layerSlotsAreNotUniqueLayerClaim": true,
+    "source": "sources/remote/registry-readback.json"
+  },
+  "oauthAndCredential": {
+    "sameUserHashAndAccountConfirmed": true,
+    "userIdSha256": "c8d5e2a134d99693a4585510f761b811d67b3e36c413eb3c9d34d060cccc986d",
+    "accountId": "8b0d70250211aa10d89e20605a1c7e5e",
+    "exactScopes": [
+      "user:read",
+      "offline_access",
+      "account:read",
+      "workers:write",
+      "workers_scripts:write",
+      "containers:write"
+    ],
+    "oauthKeptOnLocalHost": true,
+    "oauthContainersWriteGrantIsPersistent": true,
+    "normalSameScopeRefreshMayExtendAuthority": true,
+    "oauthHasTaskAccountOrRepositoryResourceFilter": false,
+    "registryCredentialAccountScopedNotRepositoryScoped": true,
+    "requestedRegistryCredentialTtlMinutes": 15,
+    "temporaryAuthCopiesAbsent": true,
+    "credentialServerRevocationOrExpiryProved": false,
+    "oauthRevokedOrDowngradedByTemporaryCleanup": false,
+    "priorC3e403CauseExplainedBy201": false
+  },
+  "independentCleanup": {
+    "readerSourceSha256": "2207c49844d8bfa4777510d6c60d4333f509dd1d7ab42fabf71e6188c77d6266",
+    "readerResult": {
+      "file": "sources/independent/independent-remote-cleanup.json",
+      "bytes": 5274,
+      "sha256": "d3f0af3ea58cd8d9049a25fbd1fcd7cfdbe8b5a7e4ce4e82cd45c6c89b9d3632"
+    },
+    "fixedRemoteRecordReferences": 27,
+    "remoteOriginalCommandLifecycles": [
+      {
+        "exitCode": 0,
+        "linuxStartTicks": "169549306",
+        "name": "source-before",
+        "originalProcessAbsent": true,
+        "pid": 1255613,
+        "recordedReaped": true
+      },
+      {
+        "exitCode": 0,
+        "linuxStartTicks": "169549886",
+        "name": "source-after",
+        "originalProcessAbsent": true,
+        "pid": 1256561,
+        "recordedReaped": true
+      },
+      {
+        "exitCode": 1,
+        "linuxStartTicks": "169550329",
+        "name": "new-local-tag-before",
+        "originalProcessAbsent": true,
+        "pid": 1257295,
+        "recordedReaped": true
+      },
+      {
+        "exitCode": 0,
+        "linuxStartTicks": "169550334",
+        "name": "tag-original-once",
+        "originalProcessAbsent": true,
+        "pid": 1257334,
+        "recordedReaped": true
+      },
+      {
+        "exitCode": 0,
+        "linuxStartTicks": "169550345",
+        "name": "push-once",
+        "originalProcessAbsent": true,
+        "pid": 1257411,
+        "recordedReaped": true
+      }
+    ],
+    "originalRemoteSupervisorAbsent": true,
+    "temporaryAuthCopiesAbsent": true,
+    "route7897Absent": true,
+    "routeConnectErrno": 111,
+    "originalLocalProcessChecks": [
+      {
+        "argumentsInspected": false,
+        "exitCode": 0,
+        "name": "oauth-consent-once",
+        "observationAt": "2026-10-18T02:06:39.661503+00:00",
+        "pid": 30182,
+        "pidCurrentlyAbsent": true,
+        "psExitCode": 1,
+        "recordedReaped": true,
+        "recordedStartedAt": "2026-10-18T01:59:10.490785+00:00",
+        "stderrBytes": 0,
+        "stdoutBytes": 0
+      },
+      {
+        "argumentsInspected": false,
+        "exitCode": 0,
+        "name": "oauth-token-once",
+        "observationAt": "2026-10-18T02:06:39.663122+00:00",
+        "pid": 30207,
+        "pidCurrentlyAbsent": true,
+        "psExitCode": 1,
+        "recordedReaped": true,
+        "recordedStartedAt": "2026-10-18T01:59:27.732602+00:00",
+        "stderrBytes": 0,
+        "stdoutBytes": 0
+      },
+      {
+        "argumentsInspected": false,
+        "exitCode": 0,
+        "name": "original-ssh",
+        "observationAt": "2026-10-18T02:06:39.664751+00:00",
+        "pid": 30219,
+        "pidCurrentlyAbsent": true,
+        "psExitCode": 1,
+        "recordedReaped": true,
+        "recordedStartedAt": "2026-10-18T01:59:30.761721+00:00",
+        "stderrBytes": 0,
+        "stdoutBytes": 0
+      }
+    ],
+    "rootOriginalLocalPidCrossCheck": [
+      {
+        "currentAbsent": true,
+        "name": "oauth-consent-once",
+        "observationMethod": "kill(pid,0) raised ProcessLookupError; no signal sent",
+        "pid": 30182
+      },
+      {
+        "currentAbsent": true,
+        "name": "oauth-token-once",
+        "observationMethod": "kill(pid,0) raised ProcessLookupError; no signal sent",
+        "pid": 30207
+      },
+      {
+        "currentAbsent": true,
+        "name": "original-ssh",
+        "observationMethod": "kill(pid,0) raised ProcessLookupError; no signal sent",
+        "pid": 30219
+      }
+    ],
+    "readerDidNotRepeatRegistryRequests": true,
+    "readerDockerOrProviderCommands": 0,
+    "readerRemoteWrites": 0,
+    "localProcessObservationStreamMetadataMeaning": "stdoutBytes/stderrBytes in localProcessChecks describe only PID observation commands, not the memory-only OAuth CLI output."
+  },
+  "authorityBoundaries": {
+    "applicationGatewayModelAuthoritativeScopeCountersRead": false,
+    "globalZeroActivityOrFeesProved": false,
+    "sourceZeroActionFieldsScope": "Approved executor and independent review only; not authoritative global/account counters.",
+    "pr239Or246MergedByThisBatch": false,
+    "applicationGatewayOrGateRolloutAuthorized": false,
+    "containerOrRealModelTurnRunAcceptanceAuthorized": false,
+    "authenticatedOrdinaryProductFlowAcceptanceCompleted": false,
+    "feeSettlementOrArrearsConclusion": "not established by this result",
+    "a036RolledOutPublishedImage": false,
+    "existingNativeDomV3GatewayDeploymentRetained": true
+  },
+  "priorCommitCi": {
+    "file": "sources/ci/prior-abd-original-run-terminal.json",
+    "runId": 39088048795,
+    "head": "abd265e503c77a5fb2a9256dd8365f5849d2df05",
+    "base": "638a366d31a37f7bc1d7dcd124e0b5ba753d6401",
+    "attempt": 1,
+    "conclusion": "success",
+    "completedAt": "2026-10-18T02:04:05Z",
+    "returnedSteps": 14,
+    "conditionalSkipsPreserved": true,
+    "testCountsOrFullLogsRead": false,
+    "manualRerun": false,
+    "coversNewActualResultCommit": false,
+    "isRealPublicationOrUserAcceptanceEvidence": false
+  },
+  "history": {
+    "original9ecCliExit1AndSideEffectsUnknownPreserved": true,
+    "originalC3eHttp403CauseUnknownPreserved": true,
+    "old57aA21B093HistoriesPreserved": true,
+    "originalLocksAndArchivePreserved": true,
+    "frozenFb99EightOperationFilesAndTwentySixBindingsUnchanged": true
+  },
+  "provenance": {
+    "byteIdenticalSafeCopies": [
+      {
+        "file": "sources/local/credential-http-response.json",
+        "originalName": "credential-http-response.json",
+        "copy": "byte-identical",
+        "bytes": 315,
+        "sha256": "d96b9d306766f1748882f182dc1886e81d58290410a955e3b89e21e2621a6314"
+      },
+      {
+        "file": "sources/local/credential-post-once-intent.json",
+        "originalName": "credential-post-once-intent.json",
+        "copy": "byte-identical",
+        "bytes": 218,
+        "sha256": "01b7f03ddc59a0ba0bfcbbc9badc6cf3e7588289cee049c95a6f39b72cdb1aee"
+      },
+      {
+        "file": "sources/local/intent.json",
+        "originalName": "intent.json",
+        "copy": "byte-identical",
+        "bytes": 290,
+        "sha256": "20fe0e89809dc016ff088566fd61722e934fa099d2b3f847ca8ee50ad867d6ae"
+      },
+      {
+        "file": "sources/local/normal-login-identity-safe.json",
+        "originalName": "normal-login-identity-safe.json",
+        "copy": "byte-identical",
+        "bytes": 420,
+        "sha256": "4f2e9cad4cf4df735b4f79d96ed95c504ecfcc409e885f67e15bb75e62951401"
+      },
+      {
+        "file": "sources/local/oauth-consent-once-original-cli.json",
+        "originalName": "oauth-consent-once-original-cli.json",
+        "copy": "byte-identical",
+        "bytes": 70,
+        "sha256": "b589846bf4686a9d2e88693427b95dca28d75a60306f6fd08015a9804d721aca"
+      },
+      {
+        "file": "sources/local/oauth-consent-once-terminal.json",
+        "originalName": "oauth-consent-once-terminal.json",
+        "copy": "byte-identical",
+        "bytes": 159,
+        "sha256": "b17fbd35ab6edc629e9ebbf8c3595c4e07413d1f687371353302d370155d576d"
+      },
+      {
+        "file": "sources/local/oauth-consent-success-safe.json",
+        "originalName": "oauth-consent-success-safe.json",
+        "copy": "byte-identical",
+        "bytes": 72,
+        "sha256": "e396dbf6fe6347d7a87804a5f265e36280fdaa8e2ee1e70a20694e08ff62bb5f"
+      },
+      {
+        "file": "sources/local/oauth-token-once-original-cli.json",
+        "originalName": "oauth-token-once-original-cli.json",
+        "copy": "byte-identical",
+        "bytes": 70,
+        "sha256": "08bddd71b49747a5c557dde16ef64cfeb5f6e18dd5452940145c31ed950b3756"
+      },
+      {
+        "file": "sources/local/oauth-token-once-terminal.json",
+        "originalName": "oauth-token-once-terminal.json",
+        "copy": "byte-identical",
+        "bytes": 159,
+        "sha256": "e83f89eac33350ef111f172783e6e3a8c1cb41318e6ab6694075a4c97b02da62"
+      },
+      {
+        "file": "sources/local/original-ssh.json",
+        "originalName": "original-ssh.json",
+        "copy": "byte-identical",
+        "bytes": 148,
+        "sha256": "0b257070345d970a5765a22d4708dfdc125a0566b0584019d1c92c377031b394"
+      },
+      {
+        "file": "sources/local/route-once-intent.json",
+        "originalName": "route-once-intent.json",
+        "copy": "byte-identical",
+        "bytes": 307,
+        "sha256": "8995cdaa0d42a9a1dde6ab48474b3d5215f1988ff278b3e2aa33764603aae8a9"
+      },
+      {
+        "file": "sources/local/terminal.json",
+        "originalName": "terminal.json",
+        "copy": "byte-identical",
+        "bytes": 13982,
+        "sha256": "22b360150dfbcd30e7d49c6933d8637367fc509dda3b784ccfc58656bb3c80f8"
+      },
+      {
+        "file": "sources/local/verified-ready-before-credential.json",
+        "originalName": "verified-ready-before-credential.json",
+        "copy": "byte-identical",
+        "bytes": 10913,
+        "sha256": "c5a4530ed5da80d7ef88cc979df17270fbecae90d3b1fc449ad93a1a3692b1f2"
+      },
+      {
+        "file": "sources/authorization/grant-binding-safe.json",
+        "originalName": "grant-binding-safe.json",
+        "copy": "byte-identical",
+        "bytes": 842,
+        "sha256": "c26b37d5cd3fb348504e61cba34d245ce36a71501c12d74302314422f390b7db"
+      },
+      {
+        "file": "sources/independent/independent-remote-cleanup.json",
+        "originalName": "independent-remote-cleanup.json",
+        "copy": "byte-identical",
+        "bytes": 5274,
+        "sha256": "d3f0af3ea58cd8d9049a25fbd1fcd7cfdbe8b5a7e4ce4e82cd45c6c89b9d3632"
+      },
+      {
+        "file": "sources/independent/independent-local-stop-review.json",
+        "originalName": "independent-local-stop-review.json",
+        "copy": "byte-identical",
+        "bytes": 3855,
+        "sha256": "34915838f6d02ff28f49d485cd9c2093ee7b6d6ef6a0ffd59e40448421302c18"
+      },
+      {
+        "file": "sources/independent/root-terminal-and-input-review.json",
+        "originalName": "root-terminal-and-input-review.json",
+        "copy": "byte-identical",
+        "bytes": 1221,
+        "sha256": "33e3580a2ed65f26f4765c9d9c6687c7b9afd93ba823eac776ee60efcc386b47"
+      },
+      {
+        "file": "sources/remote/intent.json",
+        "originalName": "intent.json",
+        "copy": "byte-identical",
+        "bytes": 606,
+        "sha256": "b9b09c110efaeb0fd778de312dded6d65f6012eff6aef16f24b8287d00b3b4ef"
+      },
+      {
+        "file": "sources/remote/terminal.json",
+        "originalName": "terminal.json",
+        "copy": "byte-identical",
+        "bytes": 1075,
+        "sha256": "c8d30762451a3f3ab5b8365473efff52cd7e1b7159ca10671c61c419aed10261"
+      },
+      {
+        "file": "sources/remote/raw-verification.json",
+        "originalName": "raw-verification.json",
+        "copy": "byte-identical",
+        "bytes": 10209,
+        "sha256": "21d3b5cf87f74e3168bef605109dd214ea70f8c9747c2a999152db612bac1ce1"
+      },
+      {
+        "file": "sources/remote/registry-readback.json",
+        "originalName": "registry-readback.json",
+        "copy": "byte-identical",
+        "bytes": 17356,
+        "sha256": "a7b3cae2cb48b89da0856d440815c5fe58bbcfc4ee81a45b9a8dbd4d89dba3f5"
+      },
+      {
+        "file": "sources/remote/remote-tag-absence.json",
+        "originalName": "remote-tag-absence.json",
+        "copy": "byte-identical",
+        "bytes": 38,
+        "sha256": "cfd16ef32a5240fb64cbe615d85b1225fdfe9ad6f52f183ae005bdec6740492e"
+      },
+      {
+        "file": "sources/remote/push-once-intent.json",
+        "originalName": "push-once-intent.json",
+        "copy": "byte-identical",
+        "bytes": 349,
+        "sha256": "6710240b6e1ba5d1c399f86792a922cedd4a3e2cf594deb141be86280a43a6fb"
+      },
+      {
+        "file": "sources/ci/prior-abd-original-run-terminal.json",
+        "originalName": "final-terminal.json",
+        "copy": "byte-identical",
+        "bytes": 5913,
+        "sha256": "49d360e238eeb7852643d4b3be322ac458798f1909bd4feb033d059e70fb9688"
+      }
+    ],
+    "safeDerivedCopies": [
+      "sources/local/oauth-consent-once-intent.safe.json",
+      "sources/local/oauth-token-once-intent.safe.json",
+      "sources/independent/readonly-invocation.safe.json",
+      "sources/remote/safe-record-retrieval.safe.json"
+    ],
+    "remoteReadEnvelopeHashOnly": {
+      "file": "records-envelope.json",
+      "bytes": 40904,
+      "sha256": "9e556f480e4730eb0f14fa142d1a31c53721836a3084a2a1442f4bc6ceb2840c"
+    },
+    "remoteSafeReadHelperHashOnly": {
+      "file": "reader-source.py",
+      "bytes": 1992,
+      "sha256": "d12d02829a4255c42b1b25d1e919618904a66774e830d607bada33ad6d1a666f"
+    },
+    "fourCopiedRemoteOriginalsBoundToFrozenReader": [
+      "intent.json",
+      "terminal.json",
+      "raw-verification.json",
+      "registry-readback.json"
+    ],
+    "twoAdditionalRemoteRecordsBoundByReadOnlyRetrievalReceipt": [
+      "remote-tag-absence.json",
+      "push-once-intent.json"
+    ]
+  },
+  "privacy": {
+    "rawGrantOrHumanReplyReadOrIncluded": false,
+    "oauthTokenOrDockerConfigReadOrIncluded": false,
+    "rawAuthCliOutputIncluded": false,
+    "personalAbsolutePathsIncluded": false
+  }
+}
