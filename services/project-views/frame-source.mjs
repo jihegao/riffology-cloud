@@ -3,11 +3,14 @@
 export function bootstrap(){
  'use strict';
  const setTimer=window.setTimeout.bind(window),clearTimer=window.clearTimeout.bind(window),revokeUrl=URL.revokeObjectURL.bind(URL);
+ // Host RPC is bounded at30s (up to three10s HTTP reads). SDK delivery, module
+ // installation and host startup allow35s/40s/45s respectively.
+ const requestTimeoutMs=35000,scriptTimeoutMs=40000;
  let port,send,closePort,started=false,failed=false,sequence=0,connectionNonce=null,connectionOrigin=null;const pending=new Map(),listeners=new Set(),urls=[];
  const reportFailure=code=>{if(failed)return;failed=true;send?.({type:'failed',error:code});};
  window.addEventListener('error',()=>reportFailure('page-script-failed'));
  window.addEventListener('unhandledrejection',()=>reportFailure('page-script-failed'));
- const request=(type,extra={})=>new Promise((resolve,reject)=>{if(!port)return reject(Error('page disconnected'));if(pending.size>=8)return reject(Error('page request limit'));const id=++sequence,timer=setTimer(()=>{pending.delete(id);reject(Error('page request timeout'));},5000);pending.set(id,{resolve,reject,timer});send({type,id,...extra});});
+ const request=(type,extra={})=>new Promise((resolve,reject)=>{if(!port)return reject(Error('page disconnected'));if(pending.size>=8)return reject(Error('page request limit'));const id=++sequence,timer=setTimer(()=>{pending.delete(id);reject(Error('page request timeout'));},requestTimeoutMs);pending.set(id,{resolve,reject,timer});send({type,id,...extra});});
  Object.defineProperty(window,'riffoid',{value:Object.freeze({listFiles:()=>request('files.list'),readFile:path=>request('files.read',{path}),listArtifacts:(cursor=null)=>request('artifacts.list',{cursor}),readArtifact:(artifactId,offset=0)=>request('artifacts.read',{artifactId,offset}),subscribe:async listener=>{if(typeof listener!=='function')throw Error('listener required');listeners.add(listener);await request('updates.subscribe');return()=>{listeners.delete(listener);if(!listeners.size)void request('updates.cancel').catch(()=>{});};}})});
  function resolve(from,ref){const u=new URL(ref,'https://project.invalid/'+from);if(u.origin!=='https://project.invalid'||u.search||!assets.has(u.pathname.slice(1)))throw Error('undeclared page asset');return u.pathname.slice(1);}
  let assets=new Map(),blob=new Map();
@@ -40,7 +43,7 @@ export function bootstrap(){
    const s=document.createElement('script');for(const attr of old.attributes)if(attr.name!=='nonce')s.setAttribute(attr.name,attr.value);s.textContent=old.textContent;
    const executable=['','text/javascript','application/javascript','module'].includes(s.type);
    if(executable&&(s.hasAttribute('src')||s.type==='module'))await new Promise((resolve,reject)=>{
-    const timer=setTimer(()=>{reportFailure('page-script-timeout');reject(Error('page script timeout'));},5000);
+    const timer=setTimer(()=>{reportFailure('page-script-timeout');reject(Error('page script timeout'));},scriptTimeoutMs);
     s.onload=()=>{clearTimer(timer);resolve();};s.onerror=()=>{clearTimer(timer);reportFailure('page-script-failed');reject(Error('page script failed'));};s.async=false;document.body.append(s);
    });else document.body.append(s);
    if(failed)return;
