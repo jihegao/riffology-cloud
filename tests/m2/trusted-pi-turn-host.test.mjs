@@ -4,6 +4,8 @@ import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import test from 'node:test';
+import { ControlledResourceLoader } from '../../services/runtime/controlled-pi.mjs';
+import { freezeProjectResources } from '../../services/project-resources/text.mjs';
 import { RELEASE_MODULE, runTrustedPiTurnHost } from '../../services/trusted-pi/trusted-pi-turn-host.mjs';
 
 const identity = { scope: { tenantId: 'tenant-a', projectId: 'project-a', workspaceId: 'workspace-a', workspaceGeneration: 2 }, sessionId: 'session-a', turnId: 'turn-a', dispatchId: 'dispatch-a', generation: 2 };
@@ -52,6 +54,71 @@ test('runs one controlled facade turn and writes terminal result after frozen se
   assert.deepEqual(result.events[3].artifact, artifact);
   const output = Buffer.from(await readFile(`${f.prefix}.output-session.json`, 'utf8'), 'base64');
   assert.equal(sha(output), result.outputSessionSha256); assert.deepEqual(JSON.parse(output), snapshot);
+});
+
+function snapshotWithResourceProvenance() {
+  const loader = new ControlledResourceLoader({
+    systemPrompt: 'Fixed synthetic platform prompt', scope: snapshot.scope,
+    projectResources: freezeProjectResources({
+      scope: snapshot.scope, revisionId: 'revision-a', filesSha256: 'c'.repeat(64),
+      files: [{ path: 'AGENTS.md', content: 'Keep project pages local and unverified.' },
+        { path: '.pi/skills/pages/SKILL.md', content: '---\nname: pages\ndescription: Build project pages.\n---\nWrite a project page.' }],
+    }),
+  });
+  loader.loadProjectResource('.pi/skills/pages/SKILL.md');
+  return { ...structuredClone(snapshot), resources: loader.resourceProvenance() };
+}
+async function restoreSnapshot(f, value) {
+  const bytes = Buffer.from(JSON.stringify(value));
+  await writeFile(`${f.prefix}.input-session.json`, bytes);
+  const control = JSON.parse(await readFile(`${f.prefix}.control.json`, 'utf8'));
+  await writeFile(`${f.prefix}.control.json`, JSON.stringify({ ...control, inputSessionSha256: sha(bytes) }));
+}
+
+test('freezes real ControlledResourceLoader provenance in the native host terminal checkpoint', async (t) => {
+  const f = await fixture(t), frozen = snapshotWithResourceProvenance();
+  f.host.snapshot = () => structuredClone(frozen);
+  const result = await runTrustedPiTurnHost(f.id, f.release, { controlRoot: f.root, createSession: f.createSession, clock: () => 1001 });
+  const bytes = Buffer.from(await readFile(`${f.prefix}.output-session.json`, 'utf8'), 'base64');
+  assert.equal(result.outcome, 'completed'); assert.equal(f.calls.length, 1);
+  assert.equal(sha(bytes), result.outputSessionSha256); assert.deepEqual(JSON.parse(bytes), frozen);
+  const terminal = JSON.parse(await readFile(`${f.prefix}.result.json`, 'utf8'));
+  assert.equal(terminal.phase, 'terminal'); assert.equal(terminal.outputSessionSha256, sha(bytes));
+  assert.equal(frozen.resources.resources.find(r => r.path.includes('/pages/')).loaded, true);
+});
+
+test('restores real ControlledResourceLoader provenance without dropping checkpoint metadata', async (t) => {
+  const f = await fixture(t), frozen = snapshotWithResourceProvenance();
+  await restoreSnapshot(f, frozen); f.host.snapshot = () => structuredClone(frozen);
+  const result = await runTrustedPiTurnHost(f.id, f.release, { controlRoot: f.root, createSession: f.createSession, clock: () => 1001 });
+  assert.deepEqual(f.created[0].snapshot, frozen); assert.equal(f.calls.length, 1);
+  assert.equal(result.outcome, 'completed');
+  assert.deepEqual(JSON.parse(Buffer.from(await readFile(`${f.prefix}.output-session.json`, 'utf8'), 'base64')), frozen);
+});
+
+test('rejects unknown snapshot fields and invalid or foreign resource provenance before creating Pi', async (t) => {
+  const valid = snapshotWithResourceProvenance();
+  const cases = [
+    [{ ...valid, unexpected: true }, /invalid-trusted-pi-session-file/],
+    [{ ...valid, resources: { ...valid.resources, unexpected: true } }, /project-resource-provenance-invalid/],
+    [{ ...valid, resources: { ...valid.resources, resources: valid.resources.resources.map(r => ({ ...r, loaded: 'yes' })) } }, /project-resource-provenance-invalid/],
+    [{ ...valid, resources: { ...valid.resources, scope: { ...valid.resources.scope, tenantId: 'tenant-other' } } }, /project-resource-provenance-invalid/],
+    [{ ...valid, resources: { ...valid.resources, scope: { ...valid.resources.scope, projectId: 'project-other' } } }, /project-resource-provenance-invalid/],
+  ];
+  for (const [value, error] of cases) {
+    const f = await fixture(t); await restoreSnapshot(f, value);
+    await assert.rejects(runTrustedPiTurnHost(f.id, f.release, { controlRoot: f.root, createSession: f.createSession }), error);
+    assert.equal(f.created.length, 0); assert.equal(f.calls.length, 0);
+    await assert.rejects(readFile(`${f.prefix}.output-session.json`), { code: 'ENOENT' });
+  }
+});
+
+test('rejects foreign resource provenance on newly frozen output without writing a terminal checkpoint', async (t) => {
+  const f = await fixture(t), frozen = snapshotWithResourceProvenance();
+  frozen.resources.scope.projectId = 'project-other'; f.host.snapshot = () => structuredClone(frozen);
+  await assert.rejects(runTrustedPiTurnHost(f.id, f.release, { controlRoot: f.root, createSession: f.createSession, clock: () => 1001 }), /project-resource-provenance-invalid/);
+  assert.equal(f.calls.length, 1); await assert.rejects(readFile(`${f.prefix}.output-session.json`), { code: 'ENOENT' });
+  assert.equal(JSON.parse(await readFile(`${f.prefix}.result.json`, 'utf8')).phase, 'running');
 });
 
 test('omits ordinary inline results and fails the turn closed on a forged artifact receipt', async (t) => {
