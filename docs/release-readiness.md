@@ -1,5 +1,14 @@
 # Current release readiness — 2026-10-14
 
+## 2026-10-18 #248 maintenance admission code delivery
+
+[PR #250](https://github.com/jihegao/riffology-cloud/pull/250) merged as `82c615894d1f27751be8a6bb5aea2c46941060d2`. The reviewed source HEAD `c669921f4796c5b35c6f2e049c92876f4faf7c5b` passed [CI 39093215235 / job 117574153432](https://github.com/jihegao/riffology-cloud/actions/runs/39093215235/job/117574153432), including the two added Gateway tests and five maintenance Workerd tests. This is code delivery for [#248](https://github.com/jihegao/riffology-cloud/issues/248), supporting [#104](https://github.com/jihegao/riffology-cloud/issues/104) and [#214](https://github.com/jihegao/riffology-cloud/issues/214); it is not target-environment acceptance.
+
+The persisted hold rejects new Turn admission while preserving the original admitted identity, authorization, save and release paths. Tests use real local Workerd SQLite/D1 with synthetic execution/release authorities and cover restart/lost ACK, admission races, retained idle/partial pairs and control drift. Fresh ledger proof stays under the same hold and explicitly reports `actualContainerReleaseVerified:false`; terminal ledger records do not prove physical instance release. See the [maintenance contract and evidence limits](pi-maintenance-admission.md).
+
+No Gateway deployment, actual begin/end hold, TrustedPi rollout, Secrets/permission change or invited execution was performed for this closeout. #239/#246 remain outside it. Physical resource proof, fixed deployment/gate checks and any real maintenance/user acceptance require their separate scope and authorization; the October 20 human authorization boundary is unchanged. Historical failures and branch evidence remain intact.
+
+
 > 2026-10-17 文档收口：[#235 已合并及默认关闭发布、#236 离线兼容进度、历史收据保全与后续交接](documentation-closeout-20261017.md)。下方候选/权限缺失描述保留历史语境，以较新的具名证据为准。
 
 ## 2026-10-17 JHG-46 browser-local native DOM candidate; publication and user acceptance pending
