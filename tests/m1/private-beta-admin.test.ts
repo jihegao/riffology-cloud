@@ -23,6 +23,25 @@ test('Private Beta controls require current operator identity and same-origin mu
  }finally{db.sqlite.close();}
 });
 
+test('maintenance quiescence GET requires a current operator and exact original request; false proof remains visible with HTTP409',async()=>{
+ const db=new SqliteCatalog(),now=Date.now(),calls:unknown[]=[];let ready=false,unavailable=false;
+ try{
+  for(const user of ['owner','operator'])db.sqlite.prepare("INSERT INTO catalog_users(id,identity_issuer,identity_subject,normalized_email,created_at,updated_at) VALUES(?,'better-auth',?,?,?,?)").run(user,user,user+'@example.test',now,now);
+  db.sqlite.prepare("INSERT INTO catalog_platform_roles(user_id,role,status,created_at,updated_at) VALUES('operator','operator','active',?,?)").run(now,now);
+  const proof=()=>({quiescent:ready,revision:1,hold:{requestId:'maint_1'},ledger:{quiescent:true},native:{quiescent:ready,pairUnresolved:ready?0:1},actualContainerReleaseVerified:false});
+  const privateBeta={snapshot:async()=>{throw Error('mutable-snapshot-forbidden');},pause:async()=>{throw Error('pause-forbidden');},resume:async()=>{throw Error('resume-forbidden');},maintenanceQuiescence:async(...args:unknown[])=>{calls.push(args);if(unavailable)throw Error('private-beta-maintenance-proof-unavailable');return proof();}};
+  const call=(user:string|null,query='?requestId=maint_1',method='GET')=>gateway(new Request(origin+'/api/admin/private-beta/maintenance/quiescence'+query,{method,headers:{origin}}),{origin,database:db,identity:async()=>user?({subject:user,email:user+'@example.test',emailVerified:true,platformVersion:1}):null,privateBeta});
+  assert.equal((await call(null)).status,401);assert.equal((await call('owner')).status,404);assert.equal(calls.length,0);
+  for(const query of ['','?requestId=','?other=1','?requestId=maint_1&other=1','?requestId=maint_1&requestId=maint_1'])assert.equal((await call('operator',query)).status,400);
+  assert.equal((await call('operator','?requestId=maint_1','POST')).status,400);assert.equal(calls.length,0);
+  const blocked=await call('operator');assert.equal(blocked.status,409);assert.deepEqual(await blocked.json(),proof());
+  assert.deepEqual(calls.pop(),['maint_1',{userId:'operator',authVersion:1}]);
+  ready=true;const quiet=await call('operator');assert.equal(quiet.status,200);assert.deepEqual(await quiet.json(),proof());calls.pop();
+  unavailable=true;assert.equal((await call('operator')).status,409);assert.equal(calls.length,1);
+  db.sqlite.prepare("UPDATE catalog_platform_roles SET status='revoked' WHERE user_id='operator'").run();assert.equal((await call('operator')).status,404);assert.equal(calls.length,1);
+ }finally{db.sqlite.close();}
+});
+
 test('maintenance uses the existing current-operator boundary, exact CAS input and an independent pure status port',async()=>{
  const db=new SqliteCatalog(),now=Date.now(),calls:unknown[]=[];
  try{

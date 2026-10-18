@@ -43,6 +43,12 @@ export function betaMaintenanceState(storage:Storage,control:BetaMaintenanceCont
  return {schemaVersion:1 as const,...current,control,...(requestId===undefined?{}:{requestId,receipts})};
 }
 export function betaMaintenanceHeld(storage:Storage){return state(storage).hold!==null;}
+/** Verify a live barrier without changing state or recovering a historical ACK. */
+export function betaMaintenanceBarrier(storage:Storage,requestId:string,by:TurnActor,control:BetaMaintenanceControl){
+ requestId=turnId(requestId);by=actor(by);open(control);const current=state(storage),hold=current.hold;
+ if(!hold||hold.requestId!==requestId||JSON.stringify(hold.actor)!==JSON.stringify(by)||hold.policySha256!==control.policySha256||hold.controlRevision!==control.revision)fail();
+ return current;
+}
 /** These synchronous transactions are called inside the capacity actor's queue. */
 export function beginBetaMaintenance(storage:Storage,input:BetaMaintenanceInput,by:TurnActor,control:BetaMaintenanceControl){
  by=actor(by);const prior=saved(storage,'begin',input,by);if(prior)return {receipt:prior.receipt,replayed:true,current:state(storage)};

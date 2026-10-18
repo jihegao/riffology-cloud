@@ -11,7 +11,7 @@ import {turnDigest} from '../../services/turn/protocol.ts';
 
 // Real Workerd SQLite/D1 and the production capacity classes. Workspace and
 // model/native outcomes are synthetic authorities; no provider/container runs.
-async function fixture(t,{initializeNative=true}={}){
+async function fixture(t,{initializeNative=true,nativeAvailable=true}={}){
  const dir=await mkdtemp(join(tmpdir(),'beta-maintenance-')),policy=meterOnlyPolicy(await betaPolicy()),policySha=await turnDigest({...policy,enabled:false});
  const built=await build({stdin:{contents:`
  import {DurableObject} from 'cloudflare:workers';
@@ -26,6 +26,13 @@ async function fixture(t,{initializeNative=true}={}){
   async corruptMaintenanceForTest(){this.ctx.storage.kv.put('beta-maintenance-state',null);await this.ctx.storage.sync();}
  }
  export class NativeCapacity extends Native {
+  proofCalls=0;proofGate=null;releaseGate=null;waiting=false;proofFault=null;
+  async maintenanceQuiescence(){this.proofCalls++;const proof=super.maintenanceQuiescence();if(this.proofGate){this.waiting=true;await this.proofGate;this.waiting=false;}if(this.proofFault==='unknown')return {...proof,quiescent:null};return proof;}
+  proofCallsForTest(){return this.proofCalls;}
+  proofWaitingForTest(){return this.waiting;}
+  gateProofForTest(){this.proofGate=new Promise(resolve=>{this.releaseGate=resolve;});}
+  releaseProofForTest(){this.releaseGate?.();this.proofGate=null;}
+  proofFaultForTest(value){this.proofFault=value;}
   async inspectionForTest(){return {rows:this.ctx.storage.sql.exec("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name").toArray().filter(r=>r.name.startsWith('trusted_pi_')||r.name.startsWith('paired_')).map(r=>({name:r.name,rows:this.ctx.storage.sql.exec('SELECT * FROM '+r.name+' ORDER BY 1').toArray()})),alarm:await this.ctx.storage.getAlarm()};}
  }
  export class Workspace extends DurableObject {
@@ -37,6 +44,7 @@ async function fixture(t,{initializeNative=true}={}){
  export default {async fetch(r,env){const {kind,name,method,args}=await r.json();try{const ns=kind==='beta'?env.PRIVATE_BETA_CAPACITY:kind==='native'?env.TRUSTED_PI_CAPACITY:env.WORKSPACE_AGENT;return Response.json({value:await ns.getByName(name)[method](...args)});}catch(e){return Response.json({error:e.message});}}};`,resolveDir:process.cwd(),sourcefile:'maintenance-test.ts'},bundle:true,write:false,format:'esm',platform:'neutral',target:'es2024',external:['cloudflare:workers'],logLevel:'silent'});
  const classes={PRIVATE_BETA_CAPACITY:'Beta',TRUSTED_PI_CAPACITY:'NativeCapacity',WORKSPACE_AGENT:'Workspace'};
  const options={host:'127.0.0.1',port:0,inspectorPort:0,cf:{},resourcePersistencePath:dir,telemetry:{enabled:false},workers:[{config:{type:'worker',name:'maintenance-test',compatibilityDate:'2026-09-06',manifest:{mainModule:'worker.mjs',modules:{'worker.mjs':{type:'esm',contents:built.outputFiles[0].text}}},env:{CATALOG:{type:'d1',id:'catalog',name:'catalog'},PRIVATE_BETA_POLICY_JSON:{type:'text',value:JSON.stringify(policy)},PRODUCTION_MODEL_PROFILE_JSON:{type:'text',value:JSON.stringify(profile)},TRUSTED_PI_CAPACITY_LIMIT:{type:'text',value:'1'},TRUSTED_PI_CAPACITY_POLICY_VERSION:{type:'text',value:'native-test-v1'},M2_WORKSPACE_RUNTIME_REUSE_ENABLED:{type:'text',value:'true'},...Object.fromEntries(Object.entries(classes).map(([k,v])=>[k,{type:'durable-object',worker:'maintenance-test',exportName:v}]))},exports:Object.fromEntries(Object.values(classes).map(v=>[v,{type:'durable-object',storage:'sqlite'}]))},dev:{unsafeRegisterWorker:false,outboundService:{type:'fetcher',handler:()=>new Response('disabled',{status:403})}}}]};
+ if(!nativeAvailable)delete options.workers[0].config.env.TRUSTED_PI_CAPACITY;
  let mf=new Miniflare(options);await mf.ready;
  t.after(async()=>{await mf.dispose();await rm(dir,{recursive:true,force:true});});
  const rpc=async(kind,name,method,...args)=>{const d=await(await mf.dispatchFetch('http://fixture/',{method:'POST',body:JSON.stringify({kind,name,method,args})})).json();if(d.error)throw Error(d.error);return d.value;};
@@ -68,9 +76,13 @@ async function fixture(t,{initializeNative=true}={}){
 
 test('maintenance preserves admitted work and receipts across restart; state reads are inert; original proof gates end',{timeout:90000},async t=>{
  const f=await fixture(t),{cap,native}=f;
+ await assert.rejects(cap('maintenanceQuiescence','maintenance',f.operator),/conflict/);
  const admitted=await cap('admitTurn',f.admission('alice'));
  const beforeBegin=await cap('inspectionForTest'),ack=await cap('beginMaintenance',f.begin(),f.operator);
  assert.equal(ack.receipt.revision,1);assert.deepEqual((await cap('inspectionForTest')).rows,beforeBegin.rows,'begin touches only its own maintenance KV');
+ await assert.rejects(cap('maintenanceQuiescence','foreign-request',f.operator),/conflict/);
+ await assert.rejects(cap('maintenanceQuiescence','maintenance',{userId:'another-operator',authVersion:1}),/conflict/);
+ await assert.rejects(cap('maintenanceQuiescence','maintenance',{...f.operator,authVersion:2}),/conflict/);
  assert.deepEqual(await cap('admitTurn',f.admission('alice')),{...admitted,replayed:true});
  await assert.rejects(cap('admitTurn',f.admission('bob')),/maintenance-held/);
  await cap('bindTurn',f.admission('alice'),'turn-alice');
@@ -85,16 +97,20 @@ test('maintenance preserves admitted work and receipts across restart; state rea
  await assert.rejects(cap('beginMaintenance',f.begin(),{...f.operator,authVersion:2}),/conflict/);
  await assert.rejects(cap('beginMaintenance',{...f.begin(),expectedRevision:2},f.operator),/conflict/);
  const betaBefore=await cap('inspectionForTest'),nativeBefore=await native('inspectionForTest');
- for(let n=0;n<3;n++){const s=await cap('maintenanceStatus');assert.equal(s.ledger.activeSlots,1);assert.equal(s.actualContainerReleaseVerified,false);await native('maintenanceQuiescence');}
+ const callsBefore=await native('proofCallsForTest');await cap('maintenanceStatus','maintenance',f.operator);assert.equal(await native('proofCallsForTest'),callsBefore,'historical receipt GET has no native RPC');
+ for(let n=0;n<3;n++){const s=await cap('maintenanceStatus');assert.equal(s.ledger.activeSlots,1);assert.equal(s.actualContainerReleaseVerified,false);const q=await cap('maintenanceQuiescence','maintenance',f.operator);assert.equal(q.quiescent,false);assert.equal(q.ledger.activeSlots,1);assert.equal(q.native.quiescent,true);assert.equal(q.revision,1);assert.equal(q.hold.requestId,'maintenance');assert.equal(q.actualContainerReleaseVerified,false);}
  assert.deepEqual(await cap('inspectionForTest'),betaBefore);assert.deepEqual(await native('inspectionForTest'),nativeBefore);
  await f.released('alice');await cap('terminalForTest',reservation.key,'unknown');
+ assert.equal((await cap('maintenanceQuiescence','maintenance',f.operator)).quiescent,false);
  await assert.rejects(cap('endMaintenance',end,f.operator),/release-unconfirmed/);
  // Synthetic original authority supplies the execution terminal; normal
  // monitor/release remains separate from every maintenance state operation.
  await cap('terminalForTest',reservation.key,'observed');await cap('monitor');
  const blocked=await native('request',f.coldId('occupied'));
+ const occupied=await cap('maintenanceQuiescence','maintenance',f.operator);assert.equal(occupied.quiescent,false);assert.equal(occupied.native.coldUnresolved,1);
  await assert.rejects(cap('endMaintenance',end,f.operator),/release-unconfirmed/);
  await native('cancelNeverStarted',{...f.coldId('occupied'),ticketId:blocked.ticket.ticketId,leaseId:blocked.ticket.leaseId},{kind:'never-started',proofId:'occupied-cancel',observedAt:Date.now()});
+ assert.equal((await cap('maintenanceQuiescence','maintenance',f.operator)).quiescent,true,'fresh pre-rollout proof does not end the barrier');
  const ended=await cap('endMaintenance',end,f.operator);assert.equal(ended.receipt.revision,2);
  assert.deepEqual(await cap('endMaintenance',end,f.operator),{...ended,replayed:true});
  const oldBegin=await cap('beginMaintenance',f.begin(),f.operator);
@@ -111,6 +127,7 @@ test('missing original native proof fails closed without initializing a ledger, 
  const f=await fixture(t,{initializeNative:false});await f.cap('beginMaintenance',f.begin(),f.operator);
  const before=await f.native('inspectionForTest');assert.deepEqual(before,{rows:[],alarm:null});
  await assert.rejects(f.native('maintenanceQuiescence'),/proof-missing/);
+ await assert.rejects(f.cap('maintenanceQuiescence','maintenance',f.operator),/proof-missing/);
  await assert.rejects(f.cap('endMaintenance',{...f.begin(),expectedRevision:1},f.operator),/proof-missing/);
  assert.deepEqual(await f.native('inspectionForTest'),before);
  assert.equal((await f.cap('maintenanceStatus')).hold.requestId,'maintenance');
@@ -134,14 +151,19 @@ test('lost maintenance ACK recovers by original ID; retained idle and partially 
  pair=await native('confirmHandoff',pair.ref,binding,proofs);assert.equal(pair.status,'idle');
  const end={...f.begin(),expectedRevision:1},before=await native('inspectionForTest');
  assert.equal((await native('maintenanceQuiescence')).quiescent,false);
+ const idle=await cap('maintenanceQuiescence','maintenance',f.operator);assert.equal(idle.quiescent,false);assert.equal(idle.native.pairUnresolved,1);assert.equal(idle.ledger.quiescent,true);
  await assert.rejects(cap('endMaintenance',end,f.operator),/release-unconfirmed/);
  assert.deepEqual(await native('inspectionForTest'),before,'reading or failed end cannot retire idle pair or change alarm');
  pair=await native('cancelPair',pair.ref);assert.equal(pair.status,'releasing');
  const release=domain=>({schemaVersion:1,domain,leaseId:pair.ref.leaseId,leaseEpoch:pair.ref.leaseEpoch,kind:'never-started',proofId:'release-'+domain,observedAt:Date.now(),absentSince:null});
  await native('confirmPairReleased',pair.ref,{project:release('project')});
+ assert.equal((await cap('maintenanceQuiescence','maintenance',f.operator)).quiescent,false,'partial pair release remains closed');
  await assert.rejects(cap('endMaintenance',end,f.operator),/release-unconfirmed/);
  await native('confirmPairReleased',pair.ref,{trustedPi:release('trustedPi')});
  assert.equal((await native('maintenanceQuiescence')).quiescent,true);
+ const betaQuietBefore=await cap('inspectionForTest'),nativeQuietBefore=await native('inspectionForTest');
+ const quiet=await cap('maintenanceQuiescence','maintenance',f.operator);assert.equal(quiet.quiescent,true);assert.equal(quiet.hold.requestId,'maintenance');assert.equal(quiet.actualContainerReleaseVerified,false);
+ assert.deepEqual(await cap('inspectionForTest'),betaQuietBefore);assert.deepEqual(await native('inspectionForTest'),nativeQuietBefore,'positive proof does not change ledgers or alarm');
  await assert.rejects(cap('endLostAckForTest',end,f.operator),/synthetic-response-lost/);
  await f.restart();const ended=await cap('endMaintenance',end,f.operator);
  assert.equal(ended.replayed,true);assert.deepEqual(ended.current,{revision:2,hold:null});assert.equal(ended.receipt.revision,2);
@@ -156,17 +178,38 @@ test('admit/begin race is serialized and kill/pause/resume cannot bypass or eras
  await assert.rejects(cap('admitTurn',f.admission('bob')),/maintenance-held/);
  const end={...f.begin(),expectedRevision:1};
  await cap('pause');
+ await assert.rejects(cap('maintenanceQuiescence','maintenance',f.operator),/controls-changed/);
  await assert.rejects(cap('authorizeTurn',f.scope('alice'),f.actor('alice'),'turn-alice'),/paused/);
  await assert.rejects(cap('endMaintenance',end,f.operator),/release-unconfirmed|controls-changed|conflict/);
  assert.equal((await cap('maintenanceStatus')).hold.requestId,'maintenance');
  if(race[0].status==='fulfilled'){await f.released('alice');}
  await cap('resume');
+ await assert.rejects(cap('maintenanceQuiescence','maintenance',f.operator),/conflict/);
  await assert.rejects(cap('admitTurn',f.admission('bob')),/maintenance-held/);
  await assert.rejects(cap('endMaintenance',end,f.operator),/conflict/);
  await f.restart({...f.policy,enabled:false});
+ await assert.rejects(cap('maintenanceQuiescence','maintenance',f.operator),/controls-changed/);
  await assert.rejects(cap('admitTurn',f.admission('carol')),/paused/);
  await assert.rejects(cap('endMaintenance',end,f.operator),/controls-changed|conflict/);
  await f.restart({...f.policy,maxActiveTurns:3});
+ await assert.rejects(cap('maintenanceQuiescence','maintenance',f.operator),/controls-changed|conflict/);
  await assert.rejects(cap('endMaintenance',end,f.operator),/controls-changed|conflict/);
+ assert.equal((await cap('maintenanceStatus')).hold.requestId,'maintenance');
+});
+
+test('fresh quiescence fails closed on missing/unknown native authority and rechecks controls after the RPC',{timeout:90000},async t=>{
+ const missing=await fixture(t,{initializeNative:false,nativeAvailable:false});await missing.cap('beginMaintenance',missing.begin(),missing.operator);
+ await assert.rejects(missing.cap('maintenanceQuiescence','maintenance',missing.operator),/proof-unavailable/);
+ const f=await fixture(t),{cap,native}=f;await cap('beginMaintenance',f.begin(),f.operator);
+ await native('proofFaultForTest','unknown');const betaBefore=await cap('inspectionForTest'),nativeBefore=await native('inspectionForTest');
+ await assert.rejects(cap('maintenanceQuiescence','maintenance',f.operator),/proof-unavailable/);
+ assert.deepEqual(await cap('inspectionForTest'),betaBefore);assert.deepEqual(await native('inspectionForTest'),nativeBefore);
+ await native('proofFaultForTest',null);await native('gateProofForTest');
+ const reading=cap('maintenanceQuiescence','maintenance',f.operator);
+ // A real-time bounded yield, rather than a fixed number of event-loop turns.
+ try{const deadline=Date.now()+3000;while(!await native('proofWaitingForTest')){if(Date.now()>=deadline)throw Error('proof-RPC-not-reached');await new Promise(resolve=>setTimeout(resolve,1));}
+  await cap('pause');
+ }finally{await native('releaseProofForTest');}
+ await assert.rejects(reading,/controls-changed/);
  assert.equal((await cap('maintenanceStatus')).hold.requestId,'maintenance');
 });

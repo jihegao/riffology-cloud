@@ -6,7 +6,7 @@ import {workspaceAgentName} from '../workspace/protocol.ts';
 import {modelCallRequest,modelBudgetCallKey,type ModelCallRequest,type ModelCallRecord,modelBudgetTenantName} from './core.ts';
 import {productionProfile,profileDigest,conservativeCost} from '../model-proxy/production-profile.ts';
 import {trustedPiCapacityActorName} from '../capacity/client.ts';
-import {betaMaintenanceInput,betaMaintenanceState,betaMaintenanceHeld,beginBetaMaintenance,endBetaMaintenance,betaMaintenanceEndReplay,type BetaMaintenanceInput,type BetaMaintenanceControl} from './private-beta-maintenance.ts';
+import {betaMaintenanceInput,betaMaintenanceState,betaMaintenanceHeld,betaMaintenanceBarrier,beginBetaMaintenance,endBetaMaintenance,betaMaintenanceEndReplay,type BetaMaintenanceInput,type BetaMaintenanceControl} from './private-beta-maintenance.ts';
 
 async function bounded<T>(operation:Promise<T>):Promise<T>{
   let timer:ReturnType<typeof setTimeout>|undefined;
@@ -19,7 +19,7 @@ type Slot={key:string;user_id:string;document:string;created_at:number;turn_id:s
 interface Env {
   PRIVATE_BETA_POLICY_JSON?:string; PRODUCTION_MODEL_PROFILE_JSON:string; CATALOG:D1Database;
   PRIVATE_BETA_CAPACITY:DurableObjectNamespace<PrivateBetaCapacity>;
-  TRUSTED_PI_CAPACITY?:{getByName(name:string):{maintenanceQuiescence():Promise<{actor:string;policyVersion:string;quiescent:boolean}>}};
+  TRUSTED_PI_CAPACITY?:{getByName(name:string):{maintenanceQuiescence():Promise<{actor:string;policyVersion:string;quiescent:boolean;coldUnresolved:number;pairUnresolved:number;actualContainerReleaseVerified:false}>}};
   TRUSTED_PI_CAPACITY_POLICY_VERSION?:string;
   TENANT_MODEL_BUDGET?:PrivateBetaHistoricalLedger;G5_TOKEN_BUDGET?:PrivateBetaHistoricalLedger;
   PI_DEVELOPER_BUDGET:{getByName(name:string):{privateBetaCall(identity:ModelCallRequest['identity'],callId:string):Promise<ModelCallRecord|null>}};
@@ -185,6 +185,19 @@ export class PrivateBetaCapacity extends DurableObject<Env> {
     ...betaMaintenanceState(this.ctx.storage,await this.#maintenanceControl(),requestId,actor),ledger:this.#maintenanceLedger(),
     actualContainerReleaseVerified:false as const,
   }));}
+  /** Fresh logical ledger proof while the original barrier remains held.
+   * Read-only across both actors; not a physical Cloudflare instance proof. */
+  maintenanceQuiescence(requestId:string,actor:TurnActor){return this.#serial(async()=>{
+    const before=betaMaintenanceBarrier(this.ctx.storage,requestId,actor,await this.#maintenanceControl()),ledgerBefore=this.#maintenanceLedger();
+    const native=this.env.TRUSTED_PI_CAPACITY;
+    if(!native||!this.env.TRUSTED_PI_CAPACITY_POLICY_VERSION)throw Error('private-beta-maintenance-proof-unavailable');
+    const proof=await bounded(native.getByName(trustedPiCapacityActorName()).maintenanceQuiescence());
+    if(proof?.actor!==trustedPiCapacityActorName()||proof.policyVersion!==this.env.TRUSTED_PI_CAPACITY_POLICY_VERSION||typeof proof.quiescent!=='boolean'||!Number.isSafeInteger(proof.coldUnresolved)||proof.coldUnresolved<0||!Number.isSafeInteger(proof.pairUnresolved)||proof.pairUnresolved<0||proof.quiescent!==(proof.coldUnresolved===0&&proof.pairUnresolved===0)||proof.actualContainerReleaseVerified!==false)throw Error('private-beta-maintenance-proof-unavailable');
+    const control=await this.#maintenanceControl(),current=betaMaintenanceBarrier(this.ctx.storage,requestId,actor,control),ledger=this.#maintenanceLedger();
+    if(JSON.stringify(current)!==JSON.stringify(before))throw Error('private-beta-maintenance-conflict');
+    return {schemaVersion:1 as const,requestId,checkedAt:Date.now(),...current,control,ledgerBefore,ledger,native:proof,
+      quiescent:ledgerBefore.quiescent&&ledger.quiescent&&proof.quiescent,actualContainerReleaseVerified:false as const};
+  });}
   beginMaintenance(raw:BetaMaintenanceInput,actor:TurnActor){return this.#serial(async()=>{
     const input=betaMaintenanceInput(raw),control=await this.#maintenanceControl();
     const result=beginBetaMaintenance(this.ctx.storage,input,actor,control);

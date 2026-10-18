@@ -18,6 +18,20 @@ Gateway derives the current user ID/auth version after checking the active
 operator role; callers cannot supply an actor. Normal, anonymous and revoked
 operators cannot inspect or mutate this resource.
 
+The independent GET
+`/api/admin/private-beta/maintenance/quiescence?requestId=<original-id>`
+requires exactly one valid request ID and the same current operator boundary.
+It obtains fresh original Beta and native cold/retained-pair ledger evidence
+while keeping the barrier held. It verifies the original request, operator/auth
+version, enabled/unpaused policy/pin and pause/resume revision before and after
+the bounded native RPC, and checks the Beta ledger on both sides. The response
+contains current hold/revision/control, `ledgerBefore`, `ledger`, original
+`native` proof, `checkedAt`, combined `quiescent` and
+`actualContainerReleaseVerified:false`. A non-quiescent valid proof remains
+visible with HTTP 409; only a combined positive proof receives HTTP 200.
+Missing or unknown authority, absent/foreign hold, actor or control drift
+cannot produce a positive proof. This GET neither ends nor begins a hold.
+
 The state has a monotonic revision and either a hold or null. A hold records
 its request, operator/auth version, policy digest and the persisted pause/resume
 operation revision. Begin and admission share the original serial queue. An
@@ -61,7 +75,11 @@ constructor `CREATE TABLE IF NOT EXISTS` statements are separate initialization;
 this is a method-level read-only claim, not a claim that every DO construction
 performs zero writes. Native `maintenanceQuiescence` uses only original SQLite
 reads and never initializes either allocator. Tests compare persisted tables,
-KV and alarms across repeated reads and failed end requests.
+KV and alarms across positive, negative and malformed-authority reads and
+failed end requests. The independent quiescence GET invokes only the new pure
+native reader; the original receipt/status GET retains its no-native-RPC
+behavior. Neither read reconciles, schedules, initializes allocators, releases
+or writes maintenance state.
 
 These proofs describe original application ledgers and immutable release
 receipts. They do not prove actual Cloudflare instances are absent, a rollout
@@ -76,6 +94,15 @@ verify actual app/instance state, and stop on an unknown result. Cross-DO reads
 are not a global lock; the Beta hold remains active while end awaits native
 proof. This source change grants no maintenance, model, container, rollout,
 deployment or payment permission.
+
+A future separately authorized rollout must read this fresh combined logical
+proof **before** changing the original application and may read it again after
+the rollout while the same barrier remains held. It must independently verify
+actual Cloudflare application/configuration/instance identity and physical
+release/readback. Logical proof alone never permits the rollout or proves its
+physical result. Ending then beginning a hold is not a substitute for either
+pre-rollout proof or uninterrupted admission protection. Unknown results retain
+the original hold and request identity for read-only reconciliation.
 
 Local tests use real Workerd SQLite/D1 and the production capacity classes;
 Workspace/model/release outcomes are synthetic authorities and outbound network

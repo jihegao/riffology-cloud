@@ -48,7 +48,7 @@ export interface GatewayServices {
   researchExports?:GatewayResearchExports;
   simulations?:GatewaySimulations;
   privateBeta?:{snapshot():Promise<unknown>;pause(actor:TurnActor):Promise<unknown>;resume(actor:TurnActor):Promise<unknown>;userStatus?(scope:TurnScope,actor:TurnActor):Promise<unknown>;
-    maintenanceStatus?(requestId?:string,actor?:TurnActor):Promise<unknown>;beginMaintenance?(input:BetaMaintenanceInput,actor:TurnActor):Promise<unknown>;endMaintenance?(input:BetaMaintenanceInput,actor:TurnActor):Promise<unknown>};
+    maintenanceStatus?(requestId?:string,actor?:TurnActor):Promise<unknown>;maintenanceQuiescence?(requestId:string,actor:TurnActor):Promise<{quiescent:boolean}>;beginMaintenance?(input:BetaMaintenanceInput,actor:TurnActor):Promise<unknown>;endMaintenance?(input:BetaMaintenanceInput,actor:TurnActor):Promise<unknown>};
   origin:string;
   transportOrigin?:string;
   database:Database;
@@ -195,6 +195,15 @@ export async function gateway(request:Request, services:GatewayServices):Promise
     if(url.pathname==='/api/models'&&request.method==='GET')return json({models:(await models.published()).map(publicModel)});
     const modelDetail=/^\/api\/models\/([A-Za-z0-9._-]{1,128})\/versions\/([A-Za-z0-9._-]{1,64})$/.exec(url.pathname);
     if(modelDetail&&request.method==='GET')return json(publicModel(await models.getPublished(modelDetail[1],modelDetail[2])));
+    if(url.pathname==='/api/admin/private-beta/maintenance/quiescence'){
+      await admin.require(principal);
+      if(request.method!=='GET'||[...url.searchParams.keys()].some(k=>k!=='requestId')||url.searchParams.getAll('requestId').length!==1)throw new CatalogError('invalid_input');
+      const requestId=url.searchParams.get('requestId')!;
+      if(!/^[A-Za-z0-9_-]{1,128}$/.test(requestId))throw new CatalogError('invalid_input');
+      if(!services.privateBeta?.maintenanceQuiescence)throw new HttpError('private-beta-unconfigured',503);
+      const result=await turnCall(()=>services.privateBeta!.maintenanceQuiescence!(requestId,{userId:principal.userId,authVersion:principal.authVersion}));
+      return json(result,result.quiescent===true?200:409);
+    }
     if(url.pathname==='/api/admin/private-beta/maintenance'){
       await admin.require(principal);
       const beta=services.privateBeta,by={userId:principal.userId,authVersion:principal.authVersion};
