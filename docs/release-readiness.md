@@ -1,5 +1,11 @@
 # Current release readiness — 2026-10-17
 
+## 2026-10-18 project-view final package budgets fixed locally; review pending
+
+[#245](https://github.com/jihegao/riffology-cloud/issues/245) now has Draft [PR #246](https://github.com/jihegao/riffology-cloud/pull/246), head `05681cf3cf53d965784df486c25c622b74421ef0`. A real local witness proved230,620B source assets expanded to2,240,220B while server/Managed accepted and the unchanged product web verifier rejected. The minimal shared-parser/builder change preserves source limits and accepted package bytes/hash, checks rewritten aggregate2MiB and final hash-body3MiB, and rejects before canonical Revision/package/R2 objects advance. Journal/fence audit writes remain allowed. First67 related checks/typecheck passed; after strengthening only the new R2 observation, final4 checks passed. Source and public-evidence independent reviews passed. [Exact iterations, limits and retained failures](https://github.com/jihegao/riffology-cloud/blob/05681cf3cf53d965784df486c25c622b74421ef0/evidence/releases/project-view-package-budget-20261018/README.md). Local integration useslocalLimits; the same7200B patch separately passes production smallText input validation, not online policy/user acceptance. No full check/CI rerun, merge or deployment is claimed.
+
+This is the selected #214 acceptance track's minimal local repair, Project In review/P1 after implementation/review. The parent remains Acceptance/blocked, ordinary user skill/pages/save/refresh/cold recovery and full JHG-56 remain pending. The fixed14d/3779 Registry recovery inputs below are unchanged and still require the unanswered persistent OAuth/new-attempt grant; no auth/SSH/Registry/Docker/provider/gate/rollout action followed from this code fix. PR236 separately integrated main638 and resolved its sole documentation conflict without production diff.
+
 > 2026-10-17 文档收口：[#235 已合并及默认关闭发布、#236 离线兼容进度、历史收据保全与后续交接](documentation-closeout-20261017.md)。下方候选/权限缺失描述保留历史语境，以较新的具名证据为准。
 
 ## 2026-10-18 JHG-46 Registry recovery prepared; persistent OAuth grant pending
