@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "projectId": "e7044b0b-839a-4e44-9636-ab0c3b77b7ae",
+  "workspaceId": "3e1e0106-503e-42e1-89ce-35a26612935e",
+  "workspaceGeneration": 1,
+  "scopeSha256": "9949802a2876284ffa2b604411b9283de83fa45c806c24bd7ab2981ff5059286",
+  "schema": "jhg46-ordinary-t1-beta-available-safe/v1",
+  "httpStatus": 200,
+  "observedAt": "2026-10-18T10:23:09.641Z",
+  "state": "available",
+  "productReleaseProjection": "Original workspace releaseHold cleared at 10:23:07.527Z; same-user Beta status available at 10:23:09.641Z.",
+  "limit": "This is product-level original release/capacity projection, not raw native stop/ticket proof or global zero-VM/zero-fee evidence. The separately accepted idle baseline VM is not claimed released."
+}

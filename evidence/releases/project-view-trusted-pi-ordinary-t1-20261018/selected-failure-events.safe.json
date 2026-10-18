@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "projectId": "e7044b0b-839a-4e44-9636-ab0c3b77b7ae",
+  "workspaceId": "3e1e0106-503e-42e1-89ce-35a26612935e",
+  "workspaceGeneration": 1,
+  "scopeSha256": "9949802a2876284ffa2b604411b9283de83fa45c806c24bd7ab2981ff5059286",
+  "schema": "jhg46-ordinary-t1-selected-events-safe/v1",
+  "httpStatus": 200,
+  "observedAt": "2026-10-18T10:15:59.016Z",
+  "sessionId": "bc034608-8a61-47c4-b323-9f6143bca607",
+  "turnId": "bd291436-baeb-43bb-9cc2-b92f62c06c78",
+  "page": {
+    "nextSequence": 45,
+    "hasMore": false,
+    "oldestSequence": 1,
+    "snapshotRequired": false,
+    "totalReturned": 45
+  },
+  "selectedEvents": 8,
+  "events": [
+    {
+      "sequence": 3,
+      "type": "provider.status",
+      "at": 1792318363272,
+      "payload": {
+        "state": "requesting",
+        "status": null
+      }
+    },
+    {
+      "sequence": 4,
+      "type": "provider.status",
+      "at": 1792318375132,
+      "payload": {
+        "state": "responding",
+        "status": 200
+      }
+    },
+    {
+      "sequence": 6,
+      "type": "tool.started",
+      "at": 1792318375823,
+      "payload": {
+        "name": "project_write"
+      }
+    },
+    {
+      "sequence": 7,
+      "type": "tool.completed",
+      "at": 1792318381616,
+      "payload": {
+        "name": "project_write",
+        "isError": true
+      }
+    },
+    {
+      "sequence": 8,
+      "type": "provider.status",
+      "at": 1792318381618,
+      "payload": {
+        "state": "requesting",
+        "status": null
+      }
+    },
+    {
+      "sequence": 9,
+      "type": "provider.status",
+      "at": 1792318387125,
+      "payload": {
+        "state": "responding",
+        "status": 200
+      }
+    },
+    {
+      "sequence": 44,
+      "type": "turn.checkpointing",
+      "at": 1792318391396,
+      "payload": {
+        "executionOutcome": "failed",
+        "errorCode": "turn-native-exit-failed"
+      }
+    },
+    {
+      "sequence": 45,
+      "type": "turn.failed",
+      "at": 1792318391429,
+      "payload": {
+        "saved": false,
+        "executionOutcome": "failed",
+        "persistenceErrorCode": "turn-checkpoint-unknown"
+      }
+    }
+  ],
+  "providerHttp200ResponsesObserved": 2,
+  "scopeLimit": "Eight selected events from the original 45-event response, not a complete public transcript or account-wide provider count. Provider request IDs, tool call IDs, artifacts, prompts and assistant text omitted. HTTP 200 is not a usage or fee reconciliation."
+}
