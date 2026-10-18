@@ -6,7 +6,7 @@
 
 [接入说明](riffoid-ir-plugin-integration.md) · [本轮实际离线证据与边界](../evidence/releases/riffoid-ir-m3-m4-preparation-20261019.json)。本快照仍为实现准备：实际 Project Tools Linux/amd64 镜像已验证 Node 22.23.2、UID/GID 10001、seccomp/网络拒绝、真实 B1 check/compile 和进程清空；不宣称生产部署或双端 ACC 完成。前一公开源码的完整检查为 3,424 项 Node、8 项 Python 通过，13 项按原条件跳过；其后修复的真实 Docker 上下文过滤 7/7、注册失败恢复 71/71 与截图路径修复浏览器检查 5/5 通过，确认基线整合后再跑最终完整检查；同冻结 IR runtime/worker 的本地 WebKit 26.6 兼容补测 2/2 通过，含 opaque 与 PiWeb Worker 及清理，[选定证据](../evidence/releases/riffoid-ir-m3-m4-20261019/webkit-compatibility/manifest.json)明确不替代线上 ACC；线上阶段等待当前工作确认后的合并基线，随后单独串行集成和部署验收；不覆盖 #104/#214 正在进行的发布，不开放 G5/M3/M4 云执行。
 
-独立分支后续修复已通过 [GitHub Linux CI39151117118](https://github.com/jihegao/riffology-cloud/actions/runs/39151117118)：3,430 Node、8 Python 通过，13 条件跳过。公开 SDK #257 候选 `fca66cb0` 已在该独立分支与 IR 交叉代码整合；[预览实测](../evidence/releases/riffoid-ir-m3-m4-20261019/sdk257-integration-preview.json)为 Chromium27项、WebKit17项、broker17项通过。合入 main 与线上串行窗口仍待当前工作确认；整合源码已通过类型检查、UI21项与14个定向文件118项，前后源码SHA不变；该树的全量CI另行记录。
+独立分支后续修复已通过 [GitHub Linux CI39151117118](https://github.com/jihegao/riffology-cloud/actions/runs/39151117118)：3,430 Node、8 Python 通过，13 条件跳过。公开 SDK #257 候选 `fca66cb0` 已在该独立分支与 IR 交叉代码整合；[预览实测](../evidence/releases/riffoid-ir-m3-m4-20261019/sdk257-integration-preview.json)为 Chromium27项、WebKit17项、broker17项通过。合入 main 与线上串行窗口仍待当前工作确认；整合源码已通过类型检查、UI21项与14个定向文件118项，前后源码SHA不变；整合候选 `f905d790` 通过 [Linux全量CI39153083773](https://github.com/jihegao/riffology-cloud/actions/runs/39153083773)：3,446 Node、8 Python 通过，13 条件跳过，[选定摘要](../evidence/releases/riffoid-ir-m3-m4-20261019/ci-sdk257-integrated.json)保留准确 merge-ref 与原始日志哈希。
 
 ## 2026-10-18 #248 maintenance admission code delivery
 
