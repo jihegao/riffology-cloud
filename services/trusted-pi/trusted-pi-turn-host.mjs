@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto';
 import { readFile, rename, writeFile } from 'node:fs/promises';
 import { pathToFileURL } from 'node:url';
 import { createControlledPiSession } from '../runtime/controlled-pi.mjs';
+import { validateResourceProvenance } from '../project-resources/text.mjs';
 
 export const CONTROL_ROOT = '/var/lib/riffology/turns';
 export const RELEASE_MODULE = '/opt/riffology/trusted-pi/trusted-pi-release.mjs';
@@ -108,12 +109,14 @@ async function atomicWrite(path, content) {
 function parseSnapshot(bytes, expected) {
   let value;
   try { value = JSON.parse(bytes.toString('utf8')); } catch { fail('invalid-trusted-pi-session-file'); }
-  exact(value, ['format', 'scope', 'createdAt', 'entries', 'leafId'], 'invalid-trusted-pi-session-file');
+  const hasResources = value !== null && typeof value === 'object' && Object.hasOwn(value, 'resources');
+  exact(value, ['format', 'scope', 'createdAt', 'entries', 'leafId', ...(hasResources ? ['resources'] : [])], 'invalid-trusted-pi-session-file');
   exact(value.scope, ['tenantId', 'projectId', 'sessionId'], 'invalid-trusted-pi-session-file');
   if (value.format !== 'riffology-pi-session-v1' || typeof value.createdAt !== 'string'
     || !Array.isArray(value.entries) || (value.leafId !== null && typeof value.leafId !== 'string')
     || value.scope.tenantId !== expected.scope.tenantId || value.scope.projectId !== expected.scope.projectId
     || value.scope.sessionId !== expected.sessionId) fail('trusted-pi-native-scope-denied');
+  if (hasResources) validateResourceProvenance(value.resources, expected.scope);
   return value;
 }
 function assistantText(message) {
