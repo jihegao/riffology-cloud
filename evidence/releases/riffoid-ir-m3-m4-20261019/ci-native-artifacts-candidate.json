@@ -1,0 +1,27 @@
+{
+  "schema": "riffoid-ir.latest-candidate-ci/v1",
+  "recordedAt": "2026-10-18T23:05:23.933053+00:00",
+  "candidateHead": "9f69399dbe06ab1f579c12f63ad7c8c6445c0350",
+  "testedPullRequestMergeRef": "16997626e3998798db01302c80ff92193e8ed5d3",
+  "workflowRun": 39171216408,
+  "job": 117804486578,
+  "url": "https://github.com/jihegao/riffology-cloud/actions/runs/39171216408/job/117804486578",
+  "status": "passed",
+  "node": {
+    "tests": 3459,
+    "passed": 3446,
+    "failed": 0,
+    "skipped": 13
+  },
+  "python": {
+    "tests": 8,
+    "passed": 8,
+    "failed": 0
+  },
+  "decodedOriginalLog": {
+    "bytes": 558869,
+    "sha256": "47c00eedd5e3f6b7b370b138c804a5f4b326d2b471f5f0c8845a3db83744e6d8",
+    "location": "private external results"
+  },
+  "sourceChangesAfterThisCheck": "Only selected redacted evidence and status text."
+}

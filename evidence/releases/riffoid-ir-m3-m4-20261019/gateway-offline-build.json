@@ -1,0 +1,86 @@
+{
+  "schema": "riffoid-ir.offline-gateway-build-acceptance/v1",
+  "recordedAt": "2026-10-18T23:05:23.933053+00:00",
+  "status": "passed-offline-candidate-only",
+  "sourceCommit": "9f69399dbe06ab1f579c12f63ad7c8c6445c0350",
+  "sourceTree": "6cdd29d2caf4effb41ab776eef1199598465c6cd",
+  "runtimeSourceCommit": "f905d790992873f84d539666de63a3b112a4d2e1",
+  "comparisonMainCommit": "004e5cd5940c6e283b1b58501c3f409a569f6e20",
+  "bundle": {
+    "file": "output/gateway.mjs",
+    "bytes": 5874812,
+    "sha256": "a558cbfecab0c09fa8237e421af0f8333fc5e589a9b6775bc19c50eadb995f02"
+  },
+  "frame": {
+    "path": "/project-views/4e3a35ce314c986e40b5bd5b78661ae92c806ec0004badf9001311fc46c16e00/frame.html",
+    "sha256": "4e3a35ce314c986e40b5bd5b78661ae92c806ec0004badf9001311fc46c16e00",
+    "bytes": 8029,
+    "servedByGatewayBundle": true,
+    "externalAssetEntry": false
+  },
+  "selectedSourceFiles": 575,
+  "sourceInputInventorySha256": "9b967df21890515976cc5980847d8c9af040a53265afa8929b0ddd59ee329cab",
+  "packageVersion": "0.3.1",
+  "packageSha256": "86b7a28a1b92652fb01b15ea6671414ecdd5e38c639878455e7abffb60d46ad6",
+  "packageFiles": 45,
+  "bothVendorCopiesMatchTarBytes": true,
+  "build": {
+    "nodeVersion": "v26.10.0",
+    "esbuildVersion": "0.28.1",
+    "buildAttempts": 1,
+    "inputCount": 1129,
+    "gitInputs": 308,
+    "dependencyInputs": 821,
+    "changedInputsFromMain": [
+      "services/gateway/app.ts",
+      "services/gateway/project-view-services.ts",
+      "services/project-tools/effect.ts",
+      "services/project-views/frame-html.mjs",
+      "services/project-views/frame.mjs",
+      "services/tools/durable.ts",
+      "services/tools/ledger.ts",
+      "services/tools/protocol.ts",
+      "services/tools/receipt.ts",
+      "services/workspace/durable.ts"
+    ],
+    "addedInputsFromMain": [
+      "services/project-ir/authority.ts",
+      "services/project-ir/canonical.ts",
+      "services/project-ir/effects.ts",
+      "services/project-tools/ir-routing.ts",
+      "vendor/riffoid-ir-plugin/src/model-summary.mjs"
+    ],
+    "removedInputsFromMain": [],
+    "allActualGraphInputsHavePreLoadAndPostBuildHashes": true,
+    "sourceBytesStableDuringAndAfterBuild": true,
+    "moduleGraphNotCompleteFilesystemReadTrace": true,
+    "syntaxCheckPassed": true,
+    "fullTestsRepeated": false
+  },
+  "dependencySetAndBytesEqualSdkMainGraph": true,
+  "assets": {
+    "paths": 96,
+    "web": 28,
+    "immutable": 68,
+    "totalBytes": 53787156,
+    "changedPathsFromMain": [
+      "/project-views.js"
+    ],
+    "addedPathsFromMain": [],
+    "removedPathsFromMain": [],
+    "immutableCacheBytesCheckedAgainstTrackedIndex": true,
+    "addressing": "BLAKE3(base64(bytes) + extension-without-dot), first 32 hex characters; same locally inspected Wrangler asset-address protocol.",
+    "assetSessionsCreated": 0
+  },
+  "reviewManifest": {
+    "files": 712,
+    "bytes": 73798277,
+    "sha256": "dd54392f017eb91548830aa74a417feeafb33f08f8acc3c6ecd12cbd28eeab8b"
+  },
+  "rawBuildManifestSha256": "0d06a4ea56238a91e471cd77a74a24f7c73965607f3f124d66990b41e5e857c3",
+  "finalMainConfirmed": false,
+  "registryPublication": null,
+  "deployment": null,
+  "accountAuthApiOrProductionActions": 0,
+  "limitation": "One build with input witnesses, not a second reproducibility build or whole filesystem-read trace. Recheck source/dependency closure after the actual confirmed main merge."
+}

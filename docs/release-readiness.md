@@ -10,6 +10,8 @@
 
 Trusted Pi 的 ec8 继承镜像已在 AMD128 完成一次真实构建与原生探针：[选定实测](../evidence/releases/riffoid-ir-m3-m4-20261019/trusted-pi-image-probe.json)。Node22.23.2、Pi SDK0.85.0、UID/GID10002、59个目标（含同一45文件包）匹配，固定skill/七工具、三条 `/sim`、历史恢复及未知不重试通过；真实supervisor封存、禁止同epoch解封、reset和晚写归零也通过。测试CID已删除，原24个镜像ID保留；新镜像为本地OCI manifest `dcd4a5fc`，尚未发布或部署。7次model、8次research和4次tool调用均为进程内synthetic callbacks，不替代线上Agent/预算/容量或Riffoid ACC。SDK #257已合入main `004e5cd5`，最终基线确认及当前线上批次交接仍待完成。
 
+两镜像的[原始OCI验核](../evidence/releases/riffoid-ir-m3-m4-20261019/oci-image-verification.json)及本机独立复核现已通过（TrustedPi58层、ProjectTools36层，每镜像一次save）。[Gateway候选构建](../evidence/releases/riffoid-ir-m3-m4-20261019/gateway-offline-build.json)成功，1129模块输入稳定，96资产仅project-views.js变更；[最新候选CI](../evidence/releases/riffoid-ir-m3-m4-20261019/ci-native-artifacts-candidate.json)为3446 Node与8 Python通过、13跳过。当前main004e仅作为已核对源码基线；前批T2/T3、placement修订及writer/Safari正式交接仍待完成，未执行本次IR的Registry发布、部署或线上ACC，合同M3/M4保持未完成。
+
 ## 2026-10-18 #248 maintenance admission code delivery
 
 [PR #250](https://github.com/jihegao/riffology-cloud/pull/250) merged as `82c615894d1f27751be8a6bb5aea2c46941060d2`. The reviewed source HEAD `c669921f4796c5b35c6f2e049c92876f4faf7c5b` passed [CI 39093215235 / job 117574153432](https://github.com/jihegao/riffology-cloud/actions/runs/39093215235/job/117574153432), including the two added Gateway tests and five maintenance Workerd tests. This is code delivery for [#248](https://github.com/jihegao/riffology-cloud/issues/248), supporting [#104](https://github.com/jihegao/riffology-cloud/issues/104) and [#214](https://github.com/jihegao/riffology-cloud/issues/214); it is not target-environment acceptance.

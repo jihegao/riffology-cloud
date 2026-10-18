@@ -133,6 +133,23 @@
       },
       "status": "passed",
       "evidence": "riffoid-ir-m3-m4-20261019/ci-sdk257-integrated.json"
+    },
+    "latestArtifactCandidateGitHubFullCheck": {
+      "head": "9f69399dbe06ab1f579c12f63ad7c8c6445c0350",
+      "testedMergeRef": "16997626e3998798db01302c80ff92193e8ed5d3",
+      "node": {
+        "tests": 3459,
+        "passed": 3446,
+        "failed": 0,
+        "skipped": 13
+      },
+      "python": {
+        "tests": 8,
+        "passed": 8,
+        "failed": 0
+      },
+      "status": "passed",
+      "evidence": "riffoid-ir-m3-m4-20261019/ci-native-artifacts-candidate.json"
     }
   },
   "imageExecutionProbe": {
@@ -156,7 +173,7 @@
   "integrationCandidate": {
     "sdkPullRequest": 257,
     "sdkHead": "fca66cb0e1024b4e86bbbeb9a6d955b137599efa",
-    "mergedOnlyIntoIndependentBranch": true,
+    "mergedOnlyIntoIndependentBranch": false,
     "mainConfirmed": false,
     "fullIntegratedCheck": "passed GitHub Linux CI39153083773",
     "previewEvidence": "riffoid-ir-m3-m4-20261019/sdk257-integration-preview.json",
@@ -171,7 +188,10 @@
     "head": "f905d790992873f84d539666de63a3b112a4d2e1",
     "sourceTree": "716d926bcedc605ad3ad58a9edff43aa426ce108",
     "fullCheckEvidence": "riffoid-ir-m3-m4-20261019/ci-sdk257-integrated.json",
-    "upstreamSdkMainMerge": "004e5cd5940c6e283b1b58501c3f409a569f6e20"
+    "upstreamSdkMainMerge": "004e5cd5940c6e283b1b58501c3f409a569f6e20",
+    "irCandidateMergedIntoMain": false,
+    "upstreamSdkMergedIntoMain": true,
+    "finalMainAndSerialWriterHandoffPending": true
   },
   "trustedPiImageExecutionProbe": {
     "status": "passed",
@@ -190,5 +210,21 @@
     "productionDeployment": false,
     "rawEvidenceFiles": 43,
     "rawEvidenceBytes": 88828
+  },
+  "nativeArtifactClosureRecordedAt": "2026-10-18T23:05:23.933053+00:00",
+  "ociIntegrityVerification": {
+    "status": "passed-both-images",
+    "evidence": "riffoid-ir-m3-m4-20261019/oci-image-verification.json",
+    "provenance": "riffoid-ir-m3-m4-20261019/oci-image-verification-provenance.json",
+    "bothPrivateArchivesLocallyReverified": true,
+    "registryPublication": null,
+    "productionDeployment": null
+  },
+  "gatewayOfflineBuild": {
+    "status": "passed-offline-candidate-only",
+    "evidence": "riffoid-ir-m3-m4-20261019/gateway-offline-build.json",
+    "bundleSha256": "a558cbfecab0c09fa8237e421af0f8333fc5e589a9b6775bc19c50eadb995f02",
+    "assets": 96,
+    "productionDeployment": false
   }
 }

@@ -15,3 +15,5 @@
 独立候选分支已整合公开 SDK 修复 #257（`fca66cb0`），尚未合入 main 或部署。HTTP/RPC/SDK/module/startup 分别有界；IR HTTP 为25秒，整次 RPC 为30秒、外层 SDK 为35秒，并把取消信号传入 IR 请求。心跳交付不确定仍关闭原页面。此交叉候选的 Chromium27项、WebKit17项和 broker17项本地检查见选定证据，整合候选 `f905d790` 已通过 Linux 完整 CI（3,446 Node、8 Python 通过，13 条件跳过）；确认最终基线后再核对差异、完成必要检查及线上验收。
 
 AMD128 的 [Trusted Pi 实际镜像探针](../evidence/releases/riffoid-ir-m3-m4-20261019/trusted-pi-image-probe.json)也已通过：验证同一固定包、SDK0.85.0及UID10002，实际原生host/受控Session与进程封存覆盖59个目标。其模型和工具传输为synthetic callbacks，尚不证明线上Turn、部署或容量释放；与真实Project Tools编译探针一起作为上线前证据保留。
+
+两份实测镜像的[原始OCI完整校验](../evidence/releases/riffoid-ir-m3-m4-20261019/oci-image-verification.json)已通过：TrustedPi58层、ProjectTools36层，manifest/config与全部blob原字节及解压diffID匹配，前后Engine投影相同；每镜像只导出一次，同一归档已在本机完整复核。Registry发布、生产部署与线上ACC仍未执行。[Gateway离线构建](../evidence/releases/riffoid-ir-m3-m4-20261019/gateway-offline-build.json)绑定候选源码与1129个模块输入，96资产仅project-views.js改变。待前批验收结束并交接writer后，核对实际main闭包再串行发布，保留全部原资源与未知历史。
