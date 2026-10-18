@@ -1,0 +1,20 @@
+{
+  "schema": "project-view-package-budget-before/v1",
+  "serverAccepted": true,
+  "archiveBytes": 276480,
+  "sourceAssetBytes": 230620,
+  "transformedAssetBytes": 2240220,
+  "bodyBytes": 3004353,
+  "packageIdentity": "6eeaebda305ede8783f7bd447d5bb6d87da5b80045e33d8ace5446732ad03231",
+  "clientRejected": true,
+  "clientError": "project-view-asset-digest",
+  "managedAccepted": true,
+  "candidateBytes": 253312,
+  "coldBytes": 253362,
+  "near": {
+    "assetBytes": 2097152,
+    "packageIdentity": "9665b73e0bf80e0246c94b75f3f1cfd841d568d5057061c146d856e94d204a0a",
+    "bodyBytes": 2812334,
+    "clientAccepted": true
+  }
+}

@@ -146,22 +146,27 @@ function stopProof(value: unknown, kind: TrustedPiCapacityStopProof['kind']): Tr
 /** Reads the original ledger without constructing it, pinning a policy,
  * promoting tickets, changing release state, or scheduling an alarm. */
 export function readTrustedPiArchiveQuiescence(storage:Pick<TrustedPiCapacityStorage,'sql'>,rawScope:TurnScope){
-  const scope=checkedScope(rawScope),tables=new Set(storage.sql.exec<{name:string}>("SELECT name FROM sqlite_master WHERE type='table'").toArray().map(row=>row.name));
+  const scope=checkedScope(rawScope),{unresolved,quiescent}=readTrustedPiQuiescence(storage,scope);return {scope,unresolved,quiescent};
+}
+/** Global maintenance reader reuses the original terminal-proof validation. */
+export function readTrustedPiQuiescence(storage:Pick<TrustedPiCapacityStorage,'sql'>,scope:TurnScope|null=null){
+  const tables=new Set(storage.sql.exec<{name:string}>("SELECT name FROM sqlite_master WHERE type='table'").toArray().map(row=>row.name));
   if(!tables.has('trusted_pi_capacity_meta')||!tables.has('trusted_pi_capacity_tickets'))reject('trusted-pi-capacity-archive-proof-missing');
   const meta=storage.sql.exec<Row>('SELECT capacity,policy_version FROM trusted_pi_capacity_meta WHERE singleton=1').toArray()[0];if(!meta||meta.capacity!==1)reject('trusted-pi-capacity-archive-proof-invalid');identifier(meta.policy_version);
   let unresolved=0;
-  for(const row of storage.sql.exec<Row>('SELECT * FROM trusted_pi_capacity_tickets WHERE tenant_id=?',scope.tenantId).toArray()){
+  const rows=scope?storage.sql.exec<Row>('SELECT * FROM trusted_pi_capacity_tickets WHERE tenant_id=?',scope.tenantId).toArray():storage.sql.exec<Row>('SELECT * FROM trusted_pi_capacity_tickets').toArray();
+  for(const row of rows){
     const identity=trustedPiCapacityIdentity(JSON.parse(row.identity_json as string));
     for(const key of IDENTITY_KEYS)if(row[key.replace(/[A-Z]/g,letter=>'_'+letter.toLowerCase())]!==identity[key as keyof TrustedPiCapacityIdentity])reject('trusted-pi-capacity-archive-scope-denied');
-    if(identity.projectId!==scope.projectId&&identity.workspaceId!==scope.workspaceId)continue;
-    if(identity.projectId!==scope.projectId||!['queued','held','dispatched','released','cancelled'].includes(row.status as string))reject('trusted-pi-capacity-archive-proof-invalid');
+    if(scope&&identity.projectId!==scope.projectId&&identity.workspaceId!==scope.workspaceId)continue;
+    if((scope&&identity.projectId!==scope.projectId)||!['queued','held','dispatched','released','cancelled'].includes(row.status as string))reject('trusted-pi-capacity-archive-proof-invalid');
     if(row.status==='released'||row.status==='cancelled'){
       const proof=stopProof(JSON.parse(row.proof_json as string),row.status==='released'?'runtime-released':'never-started');
       positiveInteger(row.finished_at);if(row.proof_id!==proof.proofId||(row.finished_at as number)<proof.observedAt)reject('trusted-pi-capacity-archive-proof-invalid');
       if(row.status==='released'){identifier(row.lease_id);identifier(row.dispatch_id);}else if(row.dispatch_id!==null)reject('trusted-pi-capacity-archive-proof-invalid');
     }else unresolved++;
   }
-  return {scope,unresolved,quiescent:unresolved===0};
+  return {policyVersion:meta.policy_version as string,unresolved,quiescent:unresolved===0};
 }
 
 /** Application-wide, fail-closed capacity ledger for the single TrustedPi

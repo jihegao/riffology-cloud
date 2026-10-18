@@ -1,0 +1,39 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-concurrency=2",
+    "tests/m3/project-view-package-budget.test.mjs",
+    "tests/m3/project-views.test.mjs",
+    "tests/m2/managed-pages-candidate.test.ts",
+    "tests/m2/managed-candidate-v3.test.ts",
+    "tests/m2/manual-save-policy.test.ts",
+    "tests/m2/manual-save-operation.test.ts",
+    "tests/m3/manual-save-gateway.test.mjs",
+    "tests/m2/manual-save-workerd.test.mjs",
+    "tests/m3/manual-page-broker-workerd.test.mjs"
+  ],
+  "cwd": "/Users/jihegao/.codex/worktrees/jhg46-package-response-budget/riffology-cloud",
+  "startedAt": "2026-10-18T00:05:49.913517+00:00",
+  "endedAt": "2026-10-18T00:05:56.092725+00:00",
+  "exitCode": 0,
+  "stdoutFile": "focused-first.stdout.log",
+  "stdoutBytes": 7611,
+  "stdoutSha256": "c34d648f3a383a635b0130ffd19b5437f594565fb46da21d5a55692eac9f1361",
+  "environmentKeys": [
+    "HOME",
+    "LANG",
+    "LC_ALL",
+    "LOGNAME",
+    "PATH",
+    "TERM",
+    "TMPDIR",
+    "USER"
+  ],
+  "sourceSha256": {
+    "services/project-views/package.ts": "1d7683036c31ff238367f5f16e72b7f1381acf214cda97cf7fc032802b4a1d41",
+    "tests/m3/project-view-package-budget-fixture.mjs": "6908f8d1a67488af1d9e8aaa9a88c2304fc4d4bdceac23b428ed863a3061dfdf",
+    "tests/m3/project-view-package-budget.test.mjs": "f88b3f5b5883a21f0826f33523f372ca33a46c86105184910fe8ec48ab33d82c"
+  },
+  "noExternalExecution": true
+}

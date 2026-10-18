@@ -1,0 +1,12 @@
+{
+  "schema": "project-view-single-write-intent/v1",
+  "key": "worker-put",
+  "requestId": "f953bc1e-3ea1-4786-821c-26ecf68916a0",
+  "method": "PUT",
+  "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/scripts/riffology-m1-gateway-staging?bindings_inherit=strict",
+  "bodySha256": "b4276616d1b3cf59b2348505b57cc178bffb5f8fee0311a1fcea87c9556633d4",
+  "bodyBytes": 5798272,
+  "contentType": "multipart/form-data; boundary=----formdata-undici-093981307338",
+  "requestedAt": "2026-10-18T08:56:25.288Z",
+  "automaticRetry": false
+}

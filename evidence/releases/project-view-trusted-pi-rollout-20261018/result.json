@@ -1,0 +1,144 @@
+{
+  "schema": "jhg46-trusted-pi-rollout-result/v1",
+  "recordedAt": "2026-10-18T09:41:16.459593+00:00",
+  "result": "rollout-completed-but-frozen-acceptance-held",
+  "originalRequestId": "5b3d8392-7917-493f-a705-2205b7e1b470",
+  "originalHoldRequestId": "6c6d9d94-be91-45e3-8044-bf1768308d7a",
+  "originalRolloutId": "f1a653cc-44c2-49b9-87f3-33bb8940a540",
+  "applicationId": "a03628c4-f032-461f-a65b-612ccac11a06",
+  "targetVersion": 12,
+  "targetImageDigest": "sha256:f18a826d40b2fd60e2cf8c49d7f7b8f595fa609fe2be4c28593479ae846960ea",
+  "rolloutCompletedObservedAt": "2026-10-18T09:29:21.092Z",
+  "actualAppVersion12ObservedAt": "2026-10-18T09:30:26.106Z",
+  "actualImageMatches": true,
+  "fullNonImageConfigurationMatchesOriginalComparison": true,
+  "other15AppsAndVersionArraysMatch": true,
+  "gatewayAndControlsMatch": true,
+  "frozenAcceptanceComplete": false,
+  "blockers": [
+    {
+      "code": "OLD_VERSION10_RETENTION_UNVERIFIED",
+      "beforeListedVersions": [
+        11,
+        10
+      ],
+      "afterListedVersions": [
+        12,
+        11
+      ],
+      "missingListedVersion": 10,
+      "retentionCauseKnown": false,
+      "oldHistoryReadableIsNotVersionObjectOrRollbackProof": true
+    },
+    {
+      "code": "ORIGINAL_SCHEDULER_VM_RELEASE_UNCONFIRMED",
+      "deploymentId": "d030d0a3-5a0c-4aa3-a4f2-f2bc156ca905",
+      "placementId": "758d8e05-8835-dacf-6b77-0b8cfda700ca",
+      "appVersion": 12,
+      "lastExactObservedAt": "2026-10-18T09:35:16.425Z",
+      "state": "placed",
+      "vmHealth": "running",
+      "containerStatus": "stopped",
+      "terminate": false,
+      "dashEmptyAndJointQuiescenceAreNotReleaseProof": true
+    }
+  ],
+  "holdRetained": true,
+  "endSent": false,
+  "projectCreatesReported": 0,
+  "modelTurnsReported": 0,
+  "browserGateWritesReported": 0,
+  "countsScope": "Original comparison and root execution batch; not global account counters.",
+  "postReadWitness": {
+    "completeRead": true,
+    "requests": 39,
+    "startedAt": "2026-10-18T09:31:21.034Z",
+    "endedAt": "2026-10-18T09:31:23.169Z",
+    "observedTwoVersionsIsNotFrozenRetentionAcceptance": true
+  },
+  "observedStateProposal": {
+    "file": "observed-state-decision-proposal-v2.json",
+    "authorized": false,
+    "proposedOnly": true,
+    "originalBatchEndsAt": "2026-10-18T12:42:46Z",
+    "doesNotExtendDeadline": true,
+    "independentReviewPending": false,
+    "readyForExplicitHumanReviewOnly": true
+  },
+  "safeSources": [
+    {
+      "file": "application-version12.safe.json",
+      "bytes": 915,
+      "sha256": "6cf857e462174783b1e6d87c098d9b95f92f4e9a50b8e94c4aac8d5306c1b7ca"
+    },
+    {
+      "file": "maintenance-hold-summary.safe.json",
+      "bytes": 2569,
+      "sha256": "b2aa8083c755815472ac198c63a9dca3d9c83b5427ab5ec936154ce91d19fb68"
+    },
+    {
+      "file": "observed-state-decision-proposal-v2.json",
+      "bytes": 3499,
+      "sha256": "b935f8781201072b61b5fbdbbc6d288eafd4c5d184df4180e61349b8140b834f"
+    },
+    {
+      "file": "old-version10-rollout-history.safe.json",
+      "bytes": 608,
+      "sha256": "9c72d021647bb523d398c03fce6f0c0d0443cfca1af7626e65a5eedcd8dde276"
+    },
+    {
+      "file": "post-rollout-preservation-compact.json",
+      "bytes": 15371,
+      "sha256": "a4698359ad99c04e862de9cab792caba4d452deb2c20027b8a3069c957bbc0b0"
+    },
+    {
+      "file": "post-rollout-preservation-size-held.json",
+      "bytes": 623,
+      "sha256": "b1f367ecb9bae5ba97e815c7b372a7805bbd2a74107934ecca1d49ba27e47e58"
+    },
+    {
+      "file": "post-rollout-preservation-strict-held.json",
+      "bytes": 7933,
+      "sha256": "2a05e0e6c7c4a80f994eb820d631e54bdff3044ec7b3e258d7c71ade0871cfeb"
+    },
+    {
+      "file": "rollout-ack.safe.json",
+      "bytes": 1011,
+      "sha256": "ebb5a5f9996135624295cf44f264562b2620cc210589f3b5fd7ff805e46d2e97"
+    },
+    {
+      "file": "rollout-completed.safe.json",
+      "bytes": 1053,
+      "sha256": "296192fd3292ddea883787fa7ac71c50da767b723b26060e9b764ff0c3a592f9"
+    },
+    {
+      "file": "rollout-readback-comparison.json",
+      "bytes": 885,
+      "sha256": "371f16568aeed599033e7aa10b65f9b6c4051fe1c47fb35052335be7caebb5fd"
+    },
+    {
+      "file": "scheduler-original-placement.safe.json",
+      "bytes": 2627,
+      "sha256": "89ec4e3b05c38a1bb243b59e81951de3326c29e365ef1b11d14f25d7940f308e"
+    },
+    {
+      "file": "observed-state-independent-review.json",
+      "bytes": 9899,
+      "sha256": "26eeb907dbb443fa14da327e367e143f914dc686268fe43bc04a50a256ec1c19"
+    }
+  ],
+  "limits": [
+    "No raw actor/user/email, credential, private quiescence record, application configuration, host, location or events are exported. Original private record SHA/bytes only bind projections.",
+    "List-deployment and exact-deployment created_at values differ and are preserved separately; no rollout_id foreign key or stronger causal/never-attached claim.",
+    "Completed rollout and app12/f18 do not satisfy original all-old-version-retained and zero-placement conditions.",
+    "No end/extra rollout/app PATCH/stop/destroy/recreate VM/project/Turn/browser gate was performed by this evidence preparation.",
+    "An idle running VM can continue to accrue usage; no zero-fee/global-zero-execution or provider credential validation claim.",
+    "A new observed-state decision remains proposed only; until separate approval and all fresh guards, original hold/identity remains."
+  ],
+  "independentObservedStateReview": {
+    "file": "observed-state-independent-review.json",
+    "bytes": 9899,
+    "sha256": "26eeb907dbb443fa14da327e367e143f914dc686268fe43bc04a50a256ec1c19"
+  },
+  "independentReviewMeaning": "No remaining static proposal findings; authorized/canEndMaintenance/endGuardsPassed remain false. Not rollout acceptance or fresh execution authority."
+}

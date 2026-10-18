@@ -1,0 +1,526 @@
+{
+  "witness": {
+    "schema": "jhg46-gateway-preservation-witness/v1",
+    "authority": "Personal Cloudflare connector",
+    "accountId": "8b0d70250211aa10d89e20605a1c7e5e",
+    "worker": "riffology-m1-gateway-staging",
+    "requestId": "f953bc1e-3ea1-4786-821c-26ecf68916a0",
+    "phase": "after-worker-put",
+    "workerVersionId": "5a840cbc-49c5-45cd-badc-b75553c78566",
+    "startedAt": "2026-10-18T09:31:21.034Z",
+    "endedAt": "2026-10-18T09:31:23.169Z",
+    "onlyGet": true,
+    "complete": true,
+    "cloudWrites": 0,
+    "actualCredentialValueGuardPassed": true,
+    "credentialGuardCoverage": {
+      "settingsReads": 2,
+      "workerVersionBindings": 1,
+      "applicationListReads": 2,
+      "applicationVersionLists": 16,
+      "applicationVersionReadsPerApp": 1,
+      "workerSecretValueFields": 0,
+      "containerEnvironmentValueFields": 0
+    },
+    "counts": {
+      "bindings": 106,
+      "exports": 25,
+      "containerAssociations": 6,
+      "namespaces": 50,
+      "apps": 16,
+      "appVersionLists": 16
+    },
+    "originalAppInstanceListCount": 0,
+    "appsCanonicalSha256": "2aae8ad9d0852bcc309f77602d64da7cec3865bd2deb1bfaaae5a334589be68a",
+    "otherApplicationsCanonicalSha256": "0a342680b386720bafadf1c693cbec20f84284257ef36d895dd36e5aaf1b37bb",
+    "appVersionsCanonicalSha256ById": {
+      "a031ae38-f967-483f-ae2e-3dbed3d35268": "0df8df4030dc63c29c334d87ed39e6d751415e230a892cd6d0a06811655a57f1",
+      "a03836ca-d275-4f7d-898f-bc16d0875089": "5d061bc5a0b0a841114ee6414ca224bafd1050b3258974e38a2349dbd7933324",
+      "a03c0a4c-7533-4190-ba2b-ff4fecaabb48": "04fa8bf7dab41ffdaa548f0ecdcf08948c9204ae876f4c2a2bc63b4ef99e8748",
+      "a03628c4-f032-461f-a65b-612ccac11a06": "0cd8d6b2db2182a77b04f03def23dbbc3598e291161dcb21022a23754a189b20",
+      "a03156a6-9bf5-43fb-8b7f-a1f5b8d1a650": "7b595660b679b24cebc54a4f7ae511d78ec723a0e9e33c7cacdb011cbce8b4ae",
+      "a035c941-2207-406e-97aa-a42ab6e9d249": "7feb85f1cdf520ace62c4f1b7c2e763509d01f35b4224f52cec6af9f33e67298",
+      "a03693b8-f5be-4247-9280-f0c38435d911": "adec504a97205a5b1b9ec42cc733634d1b5f799d1a724e642dee325898b7aab1",
+      "a03a6e91-25cb-4a8d-89a8-be522368dde4": "c0b24bc013795ad6f6aa8575041b23c423a35d8d1a569b49d37f501fe537f6cf",
+      "a039ed42-159d-43db-be13-69315bce5189": "f195ca2f59f445d3e0b8ac77cb59d74fa251e26b5085e4c2a7cc20f6e8c0c9c3",
+      "a03ddc7e-1c6e-4cea-93ec-ac03d7b0073a": "adec504a97205a5b1b9ec42cc733634d1b5f799d1a724e642dee325898b7aab1",
+      "a0321718-f17e-4ccf-974a-fd447dde5920": "adec504a97205a5b1b9ec42cc733634d1b5f799d1a724e642dee325898b7aab1",
+      "a036b418-dcce-4d2f-bd3d-6debf982ea6f": "adec504a97205a5b1b9ec42cc733634d1b5f799d1a724e642dee325898b7aab1",
+      "a03c0d4b-d529-4d81-a2b6-bfb901222a18": "f195ca2f59f445d3e0b8ac77cb59d74fa251e26b5085e4c2a7cc20f6e8c0c9c3",
+      "a0332851-f795-46df-9f8e-ee0ddc220095": "f6c4da8b12dedf6d5a9037b299e767fee61b0de8167aad9fa242da50b802676b",
+      "a03313e4-fa9d-4de2-ac2c-d2cc69efd875": "f195ca2f59f445d3e0b8ac77cb59d74fa251e26b5085e4c2a7cc20f6e8c0c9c3",
+      "a03ea65b-b039-4f56-8422-36c719b87b72": "adec504a97205a5b1b9ec42cc733634d1b5f799d1a724e642dee325898b7aab1"
+    },
+    "controlCanonicalSha256": {
+      "settings": "287e543a73d17c4003570a1bcf8715f3581271f19332166538f930bc976607b7",
+      "deployments": "4099aac29875dc82018a3f84822fbca72dc85531f271f45da23b610f8417d1dd",
+      "schedules": "391d627b3aa458fc3da2e7010304314516240dcaa82473a4639853058a8ea876",
+      "subdomain": "30e312825bb06c36721a0f40088937653e78764ef3e27582bc25848ef0cd5d3c",
+      "domains": "17519fa58b6cfbd401f7415fcd3d0c7deb08433f648d54d8abeab27d5e157475",
+      "routes": "b92bf62b3267304dfecb00a6c074ce9b3a1372ecfd1f8e02bee22e59daeaddf2",
+      "namespaces": "1260b695fc9ec54c8abd8cdeffc6c201544e16e67a05cbf91633c1f7de67f417",
+      "registries": "cd620e3f5495c79d1b15047de25e2ddbd6944fac285d6ba6856608e8d5056d8d"
+    },
+    "workerVersionCanonicalSha256": "de19042b508dcd20ca63f64363244fdae074a95614d830bc609ada21e0808766",
+    "actualServingModule": {
+      "mainModule": "index.js",
+      "bytes": 5771650,
+      "sha256": "9c8e4b6b763e9887d1624f00ed3a8efb2a8a24d984d96bc68fdb289cb4d362c3"
+    }
+  },
+  "trace": [
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/scripts/riffology-m1-gateway-staging/deployments?page=1&per_page=1",
+      "s": 200,
+      "ok": true,
+      "t": 1792315881034,
+      "ms": 110,
+      "pg": {
+        "k": "latest1",
+        "n": 1,
+        "p": 1,
+        "pp": 1,
+        "tc": 230,
+        "tp": 230
+      }
+    },
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/scripts/riffology-m1-gateway-staging/schedules",
+      "s": 200,
+      "ok": true,
+      "t": 1792315881034,
+      "ms": 129,
+      "pg": {
+        "k": "full",
+        "n": 1
+      }
+    },
+    {
+      "p": "/zones/c97b548800561fada1a912c234696db1/workers/routes",
+      "s": 200,
+      "ok": true,
+      "t": 1792315881034,
+      "ms": 155,
+      "pg": {
+        "k": "full",
+        "n": 5
+      }
+    },
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/scripts/riffology-m1-gateway-staging/subdomain",
+      "s": 200,
+      "ok": true,
+      "t": 1792315881034,
+      "ms": 161,
+      "pg": null
+    },
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/scripts/riffology-m1-gateway-staging/settings",
+      "s": 200,
+      "ok": true,
+      "t": 1792315881034,
+      "ms": 228,
+      "pg": null
+    },
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/durable_objects/namespaces?page=1&per_page=1000",
+      "s": 200,
+      "ok": true,
+      "t": 1792315881034,
+      "ms": 262,
+      "pg": {
+        "k": "full",
+        "n": 50,
+        "p": 1,
+        "pp": 1000,
+        "tc": 50
+      }
+    },
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/domains?service=riffology-m1-gateway-staging",
+      "s": 200,
+      "ok": true,
+      "t": 1792315881034,
+      "ms": 284,
+      "pg": {
+        "k": "full",
+        "n": 3,
+        "p": 1,
+        "pp": 3,
+        "tc": 3
+      }
+    },
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/registries",
+      "s": 200,
+      "ok": true,
+      "t": 1792315881034,
+      "ms": 284,
+      "pg": {
+        "k": "full",
+        "n": 1
+      }
+    },
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications?per_page=500",
+      "s": 200,
+      "ok": true,
+      "t": 1792315881034,
+      "ms": 323,
+      "pg": {
+        "k": "full",
+        "n": 16,
+        "pp": 500
+      }
+    },
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/scripts/riffology-m1-gateway-staging/content/v2",
+      "s": 200,
+      "ok": true,
+      "t": 1792315881034,
+      "ms": 708,
+      "pg": null
+    },
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a031ae38-f967-483f-ae2e-3dbed3d35268/instances-v2?per_page=1000",
+      "s": 200,
+      "ok": true,
+      "t": 1792315881034,
+      "ms": 802,
+      "pg": {
+        "k": "full",
+        "n": 0,
+        "pp": 1000
+      }
+    },
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/scripts/riffology-m1-gateway-staging/versions/5a840cbc-49c5-45cd-badc-b75553c78566",
+      "s": 200,
+      "ok": true,
+      "t": 1792315881836,
+      "ms": 157,
+      "pg": null
+    },
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a031ae38-f967-483f-ae2e-3dbed3d35268/versions",
+      "s": 200,
+      "ok": true,
+      "t": 1792315881836,
+      "ms": 193,
+      "pg": {
+        "k": "full",
+        "n": 1
+      }
+    },
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a03c0a4c-7533-4190-ba2b-ff4fecaabb48/versions",
+      "s": 200,
+      "ok": true,
+      "t": 1792315881836,
+      "ms": 234,
+      "pg": {
+        "k": "full",
+        "n": 1
+      }
+    },
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a03156a6-9bf5-43fb-8b7f-a1f5b8d1a650/versions",
+      "s": 200,
+      "ok": true,
+      "t": 1792315881836,
+      "ms": 280,
+      "pg": {
+        "k": "full",
+        "n": 2
+      }
+    },
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a03628c4-f032-461f-a65b-612ccac11a06/versions",
+      "s": 200,
+      "ok": true,
+      "t": 1792315881836,
+      "ms": 291,
+      "pg": {
+        "k": "full",
+        "n": 2
+      }
+    },
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a039ed42-159d-43db-be13-69315bce5189/versions",
+      "s": 200,
+      "ok": true,
+      "t": 1792315881836,
+      "ms": 449,
+      "pg": {
+        "k": "full",
+        "n": 1
+      }
+    },
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a03836ca-d275-4f7d-898f-bc16d0875089/versions",
+      "s": 200,
+      "ok": true,
+      "t": 1792315881836,
+      "ms": 456,
+      "pg": {
+        "k": "full",
+        "n": 2
+      }
+    },
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a03693b8-f5be-4247-9280-f0c38435d911/versions",
+      "s": 200,
+      "ok": true,
+      "t": 1792315881836,
+      "ms": 482,
+      "pg": {
+        "k": "full",
+        "n": 1
+      }
+    },
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a03ddc7e-1c6e-4cea-93ec-ac03d7b0073a/versions",
+      "s": 200,
+      "ok": true,
+      "t": 1792315881836,
+      "ms": 494,
+      "pg": {
+        "k": "full",
+        "n": 1
+      }
+    },
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a03a6e91-25cb-4a8d-89a8-be522368dde4/versions",
+      "s": 200,
+      "ok": true,
+      "t": 1792315881836,
+      "ms": 508,
+      "pg": {
+        "k": "full",
+        "n": 1
+      }
+    },
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a036b418-dcce-4d2f-bd3d-6debf982ea6f/versions",
+      "s": 200,
+      "ok": true,
+      "t": 1792315881836,
+      "ms": 603,
+      "pg": {
+        "k": "full",
+        "n": 1
+      }
+    },
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a03c0d4b-d529-4d81-a2b6-bfb901222a18/versions",
+      "s": 200,
+      "ok": true,
+      "t": 1792315881836,
+      "ms": 666,
+      "pg": {
+        "k": "full",
+        "n": 1
+      }
+    },
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a0332851-f795-46df-9f8e-ee0ddc220095/versions",
+      "s": 200,
+      "ok": true,
+      "t": 1792315881836,
+      "ms": 681,
+      "pg": {
+        "k": "full",
+        "n": 1
+      }
+    },
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a0321718-f17e-4ccf-974a-fd447dde5920/versions",
+      "s": 200,
+      "ok": true,
+      "t": 1792315881836,
+      "ms": 706,
+      "pg": {
+        "k": "full",
+        "n": 1
+      }
+    },
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a035c941-2207-406e-97aa-a42ab6e9d249/versions",
+      "s": 200,
+      "ok": true,
+      "t": 1792315881836,
+      "ms": 815,
+      "pg": {
+        "k": "full",
+        "n": 2
+      }
+    },
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a03ea65b-b039-4f56-8422-36c719b87b72/versions",
+      "s": 200,
+      "ok": true,
+      "t": 1792315881836,
+      "ms": 829,
+      "pg": {
+        "k": "full",
+        "n": 1
+      }
+    },
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a03313e4-fa9d-4de2-ac2c-d2cc69efd875/versions",
+      "s": 200,
+      "ok": true,
+      "t": 1792315881836,
+      "ms": 855,
+      "pg": {
+        "k": "full",
+        "n": 1
+      }
+    },
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/scripts/riffology-m1-gateway-staging/schedules",
+      "s": 200,
+      "ok": true,
+      "t": 1792315882691,
+      "ms": 111,
+      "pg": {
+        "k": "full",
+        "n": 1
+      }
+    },
+    {
+      "p": "/zones/c97b548800561fada1a912c234696db1/workers/routes",
+      "s": 200,
+      "ok": true,
+      "t": 1792315882691,
+      "ms": 137,
+      "pg": {
+        "k": "full",
+        "n": 5
+      }
+    },
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/scripts/riffology-m1-gateway-staging/subdomain",
+      "s": 200,
+      "ok": true,
+      "t": 1792315882691,
+      "ms": 138,
+      "pg": null
+    },
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/scripts/riffology-m1-gateway-staging/deployments?page=1&per_page=1",
+      "s": 200,
+      "ok": true,
+      "t": 1792315882691,
+      "ms": 148,
+      "pg": {
+        "k": "latest1",
+        "n": 1,
+        "p": 1,
+        "pp": 1,
+        "tc": 230,
+        "tp": 230
+      }
+    },
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/domains?service=riffology-m1-gateway-staging",
+      "s": 200,
+      "ok": true,
+      "t": 1792315882691,
+      "ms": 156,
+      "pg": {
+        "k": "full",
+        "n": 3,
+        "p": 1,
+        "pp": 3,
+        "tc": 3
+      }
+    },
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/scripts/riffology-m1-gateway-staging/settings",
+      "s": 200,
+      "ok": true,
+      "t": 1792315882691,
+      "ms": 231,
+      "pg": null
+    },
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/durable_objects/namespaces?page=1&per_page=1000",
+      "s": 200,
+      "ok": true,
+      "t": 1792315882691,
+      "ms": 236,
+      "pg": {
+        "k": "full",
+        "n": 50,
+        "p": 1,
+        "pp": 1000,
+        "tc": 50
+      }
+    },
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications?per_page=500",
+      "s": 200,
+      "ok": true,
+      "t": 1792315882691,
+      "ms": 296,
+      "pg": {
+        "k": "full",
+        "n": 16,
+        "pp": 500
+      }
+    },
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/registries",
+      "s": 200,
+      "ok": true,
+      "t": 1792315882691,
+      "ms": 356,
+      "pg": {
+        "k": "full",
+        "n": 1
+      }
+    },
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a031ae38-f967-483f-ae2e-3dbed3d35268/instances-v2?per_page=1000",
+      "s": 200,
+      "ok": true,
+      "t": 1792315882691,
+      "ms": 429,
+      "pg": {
+        "k": "full",
+        "n": 0,
+        "pp": 1000
+      }
+    },
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/scripts/riffology-m1-gateway-staging/content/v2",
+      "s": 200,
+      "ok": true,
+      "t": 1792315882691,
+      "ms": 478,
+      "pg": null
+    }
+  ],
+  "traceFormat": {
+    "p": "fixed request path with encoded query",
+    "s": "HTTP status",
+    "ok": "API success",
+    "t": "request started Unix milliseconds",
+    "ms": "request elapsed milliseconds",
+    "pg": "pagination: k=full/latest1,n=count,p=page,pp=per_page,tc=total_count,tp=total_pages,w/wi=wrapper metadata"
+  },
+  "noRawConfigurationReturned": true,
+  "noBaselineExport": true,
+  "actualCredentialValueGuardPassed": true,
+  "allConfigurationHashesAfterCredentialGuard": true,
+  "scope": {
+    "controlReads": 2,
+    "applicationListReads": 2,
+    "moduleReads": 2,
+    "applicationVersionLists": 16,
+    "applicationVersionReadsPerApp": 1,
+    "instanceListReads": 2
+  },
+  "cloudWrites": 0
+}

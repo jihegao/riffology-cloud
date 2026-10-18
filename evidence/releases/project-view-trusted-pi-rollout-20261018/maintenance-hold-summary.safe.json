@@ -1,0 +1,83 @@
+{
+  "schema": "jhg46-maintenance-hold-and-quiescence-safe-summary/v1",
+  "beginSource": {
+    "originalFile": "maintenance-begin-ack.semantic.private.json",
+    "bytes": 544,
+    "sha256": "df9adb0825bd791b6c91108dc4298ad2414fed1fe7087224ccb206d866af1bc2"
+  },
+  "beginObservedAt": "2026-10-18T09:16:56.525Z",
+  "beginStatus": 200,
+  "holdRequestId": "6c6d9d94-be91-45e3-8044-bf1768308d7a",
+  "beginAction": "begin",
+  "currentRevisionAtBegin": 1,
+  "quiescenceObservations": [
+    {
+      "source": {
+        "originalFile": "maintenance-quiescence-0926.semantic.private.json",
+        "bytes": 1136,
+        "sha256": "6fd543c2f6f9a3422a5992d2bd7c5b7302eb31222a3b9d00362d0301be796b14"
+      },
+      "observedAt": "2026-10-18T09:26:46.700Z",
+      "status": 200,
+      "requestId": "6c6d9d94-be91-45e3-8044-bf1768308d7a",
+      "revision": 1,
+      "holdRequestId": "6c6d9d94-be91-45e3-8044-bf1768308d7a",
+      "controlRevision": 19,
+      "ledgerBefore": {
+        "activeSlots": 0,
+        "quarantinedSlots": 0,
+        "unresolvedCalls": 0,
+        "quiescent": true
+      },
+      "ledgerAfter": {
+        "activeSlots": 0,
+        "quarantinedSlots": 0,
+        "unresolvedCalls": 0,
+        "quiescent": true
+      },
+      "native": {
+        "quiescent": true,
+        "coldUnresolved": 0,
+        "pairUnresolved": 0,
+        "actualContainerReleaseVerified": false
+      },
+      "quiescent": true,
+      "actualContainerReleaseVerified": false
+    },
+    {
+      "source": {
+        "originalFile": "maintenance-quiescence-postrollout.semantic.private.json",
+        "bytes": 1136,
+        "sha256": "d9984b99031715b5d1fa4ea935a192f66ab6747cb61c2b22bf6d041727fc6b94"
+      },
+      "observedAt": "2026-10-18T09:32:07.640Z",
+      "status": 200,
+      "requestId": "6c6d9d94-be91-45e3-8044-bf1768308d7a",
+      "revision": 1,
+      "holdRequestId": "6c6d9d94-be91-45e3-8044-bf1768308d7a",
+      "controlRevision": 19,
+      "ledgerBefore": {
+        "activeSlots": 0,
+        "quarantinedSlots": 0,
+        "unresolvedCalls": 0,
+        "quiescent": true
+      },
+      "ledgerAfter": {
+        "activeSlots": 0,
+        "quarantinedSlots": 0,
+        "unresolvedCalls": 0,
+        "quiescent": true
+      },
+      "native": {
+        "quiescent": true,
+        "coldUnresolved": 0,
+        "pairUnresolved": 0,
+        "actualContainerReleaseVerified": false
+      },
+      "quiescent": true,
+      "actualContainerReleaseVerified": false
+    }
+  ],
+  "actorUserEmailAndRawPrivateRecordsIncluded": false,
+  "ledgerProofIsNotPhysicalReleaseProof": true
+}
