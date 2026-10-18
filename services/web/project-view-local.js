@@ -1,3 +1,6 @@
+// Up to three HTTP reads share one hard broker deadline; each outer layer
+// leaves five seconds for delivery/installation without retrying any read.
+export const PROJECT_VIEW_HTTP_TIMEOUT_MS=10000,PROJECT_VIEW_RPC_TIMEOUT_MS=30000,PROJECT_VIEW_STARTUP_TIMEOUT_MS=45000;
 const fail=code=>{throw Error('project-view-local-'+code);};
 /** Fixed app-delivered bootstrap, executed with an opaque sandbox origin. */
 export function validateProjectViewLocalDelivery(win,delivery){
@@ -9,9 +12,9 @@ export function validateProjectViewLocalDelivery(win,delivery){
 }
 /** Native DOM runs locally. Sandbox isolates app authority; self-navigation can
  * still send already-authorized project data, under the selected DOM contract. */
-export function createProjectViewLocal({container,delivery,pkg,view,port,isCurrent=()=>true,onError=()=>{},timeoutMs=10000}){
+export function createProjectViewLocal({container,delivery,pkg,view,port,isCurrent=()=>true,onError=()=>{},timeoutMs=PROJECT_VIEW_STARTUP_TIMEOUT_MS}){
  const doc=container.ownerDocument,win=doc.defaultView;
- let url;try{url=validateProjectViewLocalDelivery(win,delivery);if(!Number.isInteger(timeoutMs)||timeoutMs<100||timeoutMs>30000)fail('timeout');}catch(error){port.close();throw error;}
+ let url;try{url=validateProjectViewLocalDelivery(win,delivery);if(!Number.isInteger(timeoutMs)||timeoutMs<100||timeoutMs>PROJECT_VIEW_STARTUP_TIMEOUT_MS)fail('timeout');}catch(error){port.close();throw error;}
  const frame=doc.createElement('iframe'),nonce=[...win.crypto.getRandomValues(new Uint8Array(32))].map(b=>b.toString(16).padStart(2,'0')).join('');
  frame.sandbox='allow-scripts';frame.referrerPolicy='no-referrer';frame.title=view.title??view.id??'';
  frame.style.cssText='width:100%;min-height:480px;border:0;display:block';
