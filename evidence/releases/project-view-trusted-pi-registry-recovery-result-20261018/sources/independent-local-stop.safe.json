@@ -1,0 +1,149 @@
+{
+  "schema": "jhg46-registry-recovery-independent-local-stop-safe-projection/v1",
+  "originalReview": {
+    "name": "independent-local-stop-review.json",
+    "bytes": 8464,
+    "sha256": "7147cf15a577b3a0afd0338f6a558296f7946ace58222a1fb1122df1cc4be220"
+  },
+  "requestId": "9ec39434-0856-4ee7-af30-adf3dd5b5df4",
+  "operationsManifestSha256": "3779af353a82fa334fc805a54ff02fe91a2f905d2cc9daf4733b1fd92189589c",
+  "humanGrantSha256": "2910dca428285c9f3dd95a83171fcf0700f6994ee50a64d7da822c5b370418f8",
+  "observedAt": "2026-10-18T01:36:43.981480+00:00",
+  "status": "local-consent-cli-failed-and-stopped-before-token-identity-ssh-or-credential",
+  "originalConsentCli": {
+    "actualFailureReason": "unknown; raw memory-only CLI output unavailable",
+    "check": "kill(pid,0) returned ProcessLookupError; no process argv queried",
+    "currentPidAbsent": true,
+    "exitCode": 1,
+    "pid": 27665,
+    "rawOutputPersisted": false,
+    "recordedReaped": true,
+    "startedAt": "2026-10-18T01:34:19.314710+00:00",
+    "stderrBytes": 354,
+    "stdoutBytes": 4345,
+    "stopErrors": []
+  },
+  "driverControlFlowFindings": {
+    "amdBootstrapOrRouteFromThisDriverNotReached": true,
+    "authTokenCliNotReached": true,
+    "credentialPostNotReached": true,
+    "credentialStdinNotReached": true,
+    "driverOauthMetadataReadNotReached": true,
+    "driverUserAccountApiNotReached": true,
+    "failedHelperReturnsNoOutputToCaller": true,
+    "imageOrRegistryPublicationNotReached": true,
+    "normalLoginAttemptConsumed": true,
+    "sshConfigOrLaunchNotReached": true,
+    "sshReapedFalseMeans": "no SSH process was created; not evidence of an unreaped SSH child",
+    "successMarkerCheckNotReached": true
+  },
+  "recordReferences": [
+    {
+      "name": "intent.json",
+      "bytes": 290,
+      "sha256": "04f0e2ff603e6115a89bdc32c822ebb8a8fcba2ae6391e567c6c10296bfe8393"
+    },
+    {
+      "name": "oauth-consent-once-intent.json",
+      "bytes": 549,
+      "sha256": "baef84b33daf857a9c603402550ce31b3d68408401ad90fbec679a2813b4f162"
+    },
+    {
+      "name": "oauth-consent-once-original-cli.json",
+      "bytes": 70,
+      "sha256": "8178c766c322b59cc06dfdfaf7b984dc42f75af541b95bb9b0e221ed224f0314"
+    },
+    {
+      "name": "oauth-consent-once-terminal.json",
+      "bytes": 190,
+      "sha256": "4d1b7850eb7343487085eb8dfa613e72a85a05005e7bd94ab15c0bff2286f28d"
+    },
+    {
+      "name": "terminal.json",
+      "bytes": 836,
+      "sha256": "1e3b5f3bc9bd08b4669b5a620a156bf0361e8f26f97275f40cd6d788f8d2e6c6"
+    }
+  ],
+  "recordSetExactlyExpected": true,
+  "laterRecordsAbsent": [
+    "oauth-consent-success-safe.json",
+    "oauth-token-once-intent.json",
+    "oauth-token-once-original-cli.json",
+    "oauth-token-once-terminal.json",
+    "normal-login-identity-safe.json",
+    "identity-http-response.json",
+    "route-once-intent.json",
+    "original-ssh.json",
+    "verified-ready-before-credential.json",
+    "credential-post-once-intent.json",
+    "credential-http-response.json"
+  ],
+  "frozenSourceReferences": [
+    {
+      "name": "operations-manifest.json",
+      "bytes": 1313,
+      "sha256": "3779af353a82fa334fc805a54ff02fe91a2f905d2cc9daf4733b1fd92189589c"
+    },
+    {
+      "name": "AUTHORIZATION.md",
+      "bytes": 4146,
+      "sha256": "f67952e07405e13a5d92e45f27bf60b9d1e28efdeeed2b3bcfa121b355f982c1"
+    },
+    {
+      "name": "EXECUTION.md",
+      "bytes": 4695,
+      "sha256": "6748153859e55b6ab3a9822e0b2a02518c1db3b2106deaef63f83d020f7dcf8e"
+    },
+    {
+      "name": "local-recovery.py",
+      "bytes": 19223,
+      "sha256": "dd50c217aa6cbbe7a6312d985f7d7d80655dd8d90188d535032bcbd612352e04"
+    },
+    {
+      "name": "oci_verify.py",
+      "bytes": 5748,
+      "sha256": "0a23618e34b9a2acf608acc86d281ebd68f60a62ba2b102ecda92502c294acea"
+    },
+    {
+      "name": "pub_common.py",
+      "bytes": 3291,
+      "sha256": "24ecc1a238a2fd6d71e36087e75a1ce56c24e6be6184220074feed11cc842d0c"
+    },
+    {
+      "name": "remote-recovery.py",
+      "bytes": 13818,
+      "sha256": "339aa74fd246024886ca243526bd097d39be16150719a3b117474a7fcad6a178"
+    },
+    {
+      "name": "scope.json",
+      "bytes": 5078,
+      "sha256": "550c3ccae4e342e5684066c38f33bb0a68f64917c5f68a48151a94efd195eac8"
+    },
+    {
+      "name": "test_recovery.py",
+      "bytes": 16307,
+      "sha256": "a68cdfc227160b43e9243e0a0d2c901ee11cbcac2b3068c7bcabcfeae70a5800"
+    }
+  ],
+  "mergeAllowed": false,
+  "reviewActions": {
+    "authTokenOrCredentialReads": 0,
+    "candidateOrOriginalRecordWrites": 0,
+    "networkOrSshOrDockerCalls": 0,
+    "processArgvReads": 0,
+    "remoteReaderCalls": 0,
+    "wranglerCalls": 0
+  },
+  "limits": [
+    "Only this frozen driver attempt and retained local record chain are established; no general claim about unrelated services or processes.",
+    "The invoked Wrangler login could itself have performed browser/network/local-auth side effects before exit; this review did not inspect OAuth storage, browser state, Cloudflare or AMD and cannot prove no such side effects.",
+    "The terminal does not diagnose CLI exit1, prove OAuth scope changes, Registry publication, remote cleanup, credential revocation, arrears or JHG46 completion.",
+    "The existing attempt lock and original terminal remain unchanged; no retry was performed."
+  ],
+  "projectionChanges": [
+    "Absolute local paths replaced by record basenames",
+    "Private filesystem ownership and link metadata omitted",
+    "Private grant and human reply references reduced to hashes in the authorization projection"
+  ],
+  "privateGrantOrHumanReplyIncluded": false
+}

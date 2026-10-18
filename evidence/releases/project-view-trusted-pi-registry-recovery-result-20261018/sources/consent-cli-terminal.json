@@ -1,0 +1,9 @@
+{
+  "errorCode": "normal-oauth-cli-failed-no-retry",
+  "exitCode": 1,
+  "originalReaped": true,
+  "outputPersisted": false,
+  "stderrBytes": 354,
+  "stdoutBytes": 4345,
+  "stopErrors": []
+}
