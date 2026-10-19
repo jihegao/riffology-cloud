@@ -32,11 +32,13 @@ import {observerRpcData} from '../preview/observer-rpc-data.ts';
 import {observerArtifactReceipt} from '../preview/observer-artifacts.ts';
 import type {GatewayObservations} from './observer-services.ts';
 import type {GatewayG5ReadonlyReads} from './g5-read-services.ts';
+import {PROJECT_IR_INPUT_MAX_BYTES,PROJECT_IR_RESPONSE_MAX_BYTES,projectIrBrowserRequest} from './project-view-services.ts';
+type ProjectViewServices=ReturnType<typeof import('./project-view-services.ts').createGatewayProjectViewServices>;
 
 export interface GatewayServices {
   projectViewSessions?:ReturnType<typeof import('./project-view-session-services.ts').createGatewayProjectViewSessionServices>;
   manualSaves?:ReturnType<typeof import('./manual-save-services.ts').createGatewayManualSaveServices>;
-  projectViews?:ReturnType<typeof import('./project-view-services.ts').createGatewayProjectViewServices>;
+  projectViews?:Omit<ProjectViewServices,'ir'>&Partial<Pick<ProjectViewServices,'ir'>>;
   projectArchives?:GatewayProjectArchives;
   executionAvailability?:{service:boolean;preview:boolean;simulation:boolean};
   testingSimulationAvailable?:(principal:Principal,tenantId:string)=>boolean;
@@ -361,6 +363,30 @@ export async function gateway(request:Request, services:GatewayServices):Promise
       const body=await readJson(request,viewSession[2]?70*1024:4096);
       try{return json(viewSession[2]?await services.projectViewSessions.command(workspaceId,principal,viewSession[2],body,authorize):await services.projectViewSessions.start(scope,principal,body,authorize),viewSession[2]?200:201);}
       catch(error){if(error instanceof CatalogError||error instanceof HttpError)throw error;throw new HttpError('project-view-unavailable',503);}
+    }
+    const projectIrRoute=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/project-ir$/.exec(url.pathname);
+    if(projectIrRoute){
+      if(request.method!=='POST'||url.search)throw new CatalogError('not_found');
+      const catalog=new ProjectCatalog(services.database,new Set(['blank-v1']),models),workspaceId=projectIrRoute[1]!,scope=await catalog.writableWorkspace(principal,workspaceId);
+      if(!services.projectViews?.browserLocal||!services.projectViews.ir)throw new HttpError('project-ir-unavailable',503);
+      const authorize=async()=>{
+        if(!await acceptedInvitationProjectAdmission(services.database,'true',principal,scope.tenantId))throw new HttpError('project-ir-access-denied',403);
+        const latest=await catalog.writableWorkspace(principal,workspaceId);if(!sameScope(scope,latest))throw new HttpError('project-ir-access-denied',403);
+      };
+      try{
+        const body=projectIrBrowserRequest(await readJson(request,PROJECT_IR_INPUT_MAX_BYTES+1024));
+        await authorize();const result=await services.projectViews.ir(scope,principal,body,authorize);
+        if(new TextEncoder().encode(JSON.stringify(result)).length>PROJECT_IR_RESPONSE_MAX_BYTES)throw new HttpError('project-ir-response-too-large',413);
+        return json(result);
+      }catch(error){
+        if(error instanceof CatalogError||error instanceof HttpError)throw error;
+        const code=error instanceof Error?error.message:'';
+        if(/too-large/.test(code))throw new HttpError(code,413);
+        if(/input-invalid/.test(code))throw new HttpError('project-ir-input-invalid',400);
+        if(/admission-closed|access-denied|scope-denied/.test(code))throw new HttpError('project-ir-access-denied',403);
+        if(/stale|conflict|not-owned/.test(code))throw new HttpError('project-ir-conflict',409);
+        throw new HttpError('project-ir-unavailable',503);
+      }
     }
     const projectViewArtifactsRoute=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/project-view-artifacts(?:\/((?:artifact-[a-f0-9]{60}|manual-artifact-[a-f0-9]{64})))?$/.exec(url.pathname);
     if(projectViewArtifactsRoute){

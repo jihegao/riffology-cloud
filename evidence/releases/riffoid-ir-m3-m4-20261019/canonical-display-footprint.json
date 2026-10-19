@@ -1,0 +1,155 @@
+{
+  "footprint": {
+    "journal": {
+      "alpha": {
+        "turns": 0,
+        "sessions": 0,
+        "active": null,
+        "operations": [
+          {
+            "id": "ir-display-base-alpha",
+            "status": "committed",
+            "revisionId": "b14d1b61918464b23e384679bbcf7600e184326e128df588991f0ffd1516639b"
+          },
+          {
+            "id": "ir-display-valid-v1",
+            "status": "committed",
+            "revisionId": "a336d31af3f899737a33c60df2e6d7c64cb2e5980d8ecd6c053ca9c731faefa5"
+          },
+          {
+            "id": "ir-display-malformed",
+            "status": "committed",
+            "revisionId": "28e8fbd100f9f1ec738d1c5823867c6e41edc6df387a2786bcf2f54e4327ca3a"
+          },
+          {
+            "id": "ir-display-repaired",
+            "status": "committed",
+            "revisionId": "9c82570c200494a110805d4e014fd5ed3216a69ec97ccdfb3e4856823931edf4"
+          },
+          {
+            "id": "ir-display-race-new-head",
+            "status": "committed",
+            "revisionId": "f6bd6e556bbedaa29973817c43918facfe41e3be4f35eda2a425fe6c8b73b4ed"
+          }
+        ]
+      },
+      "beta": {
+        "turns": 0,
+        "sessions": 0,
+        "active": null,
+        "operations": [
+          {
+            "id": "ir-display-base-beta",
+            "status": "committed",
+            "revisionId": "d8f4999480367432f02f672c3cf7273c04a23d79731eb42ae6f66ae5b1225a5b"
+          }
+        ]
+      }
+    },
+    "fences": [
+      {
+        "operation_id": "ir-display-base-alpha",
+        "state": "released",
+        "terminal_status": "committed",
+        "revision_id": "b14d1b61918464b23e384679bbcf7600e184326e128df588991f0ffd1516639b"
+      },
+      {
+        "operation_id": "ir-display-base-beta",
+        "state": "released",
+        "terminal_status": "committed",
+        "revision_id": "d8f4999480367432f02f672c3cf7273c04a23d79731eb42ae6f66ae5b1225a5b"
+      },
+      {
+        "operation_id": "ir-display-malformed",
+        "state": "released",
+        "terminal_status": "committed",
+        "revision_id": "28e8fbd100f9f1ec738d1c5823867c6e41edc6df387a2786bcf2f54e4327ca3a"
+      },
+      {
+        "operation_id": "ir-display-race-new-head",
+        "state": "released",
+        "terminal_status": "committed",
+        "revision_id": "f6bd6e556bbedaa29973817c43918facfe41e3be4f35eda2a425fe6c8b73b4ed"
+      },
+      {
+        "operation_id": "ir-display-repaired",
+        "state": "released",
+        "terminal_status": "committed",
+        "revision_id": "9c82570c200494a110805d4e014fd5ed3216a69ec97ccdfb3e4856823931edf4"
+      },
+      {
+        "operation_id": "ir-display-valid-v1",
+        "state": "released",
+        "terminal_status": "committed",
+        "revision_id": "a336d31af3f899737a33c60df2e6d7c64cb2e5980d8ecd6c053ca9c731faefa5"
+      }
+    ],
+    "keys": [
+      "manual-blobs-v1/tenant-alpha/project-alpha/workspace-alpha/files/02549a343fef4835c8baed28bcd17465d3478d7fd585569332f7ebfa4abf9c85",
+      "manual-blobs-v1/tenant-alpha/project-alpha/workspace-alpha/files/0a4e82318b0e8b86ad50fda9e1c3e4c99a76188bdf83bbd715130d779d47eba8",
+      "manual-blobs-v1/tenant-alpha/project-alpha/workspace-alpha/files/20d2c4f2078917b4442466eb13aa8a0417cafa576e859ac72bb8f30b07382419",
+      "manual-blobs-v1/tenant-alpha/project-alpha/workspace-alpha/files/95dcf25b1229b221dc6554b3037cc462fe142b259ad5ea5a5e4c5754415531f6",
+      "manual-blobs-v1/tenant-alpha/project-alpha/workspace-alpha/files/f33e7a56a7d11efe069181f137fa8dff0d3f3426bf1f5e8b4fa3ade1f4714391",
+      "manual-blobs-v1/tenant-beta/project-beta/workspace-beta/files/a99399e969228b0a4969b79a999d0591c924734a6aac23bab3f76d6d18eb9174",
+      "manual-revisions-v1/tenant-alpha/project-alpha/workspace-alpha/1/alpha/1/ir-display-base-alpha.json",
+      "manual-revisions-v1/tenant-alpha/project-alpha/workspace-alpha/1/alpha/1/ir-display-malformed.json",
+      "manual-revisions-v1/tenant-alpha/project-alpha/workspace-alpha/1/alpha/1/ir-display-race-new-head.json",
+      "manual-revisions-v1/tenant-alpha/project-alpha/workspace-alpha/1/alpha/1/ir-display-repaired.json",
+      "manual-revisions-v1/tenant-alpha/project-alpha/workspace-alpha/1/alpha/1/ir-display-valid-v1.json",
+      "manual-revisions-v1/tenant-beta/project-beta/workspace-beta/1/beta/1/ir-display-base-beta.json",
+      "project-ir/v1/510eb518d7d5a448dfc6dde96617a06c940bc5c116a73d4a038652eed69e1221/objects/301acca96e06776f936eeda67ba8ce6dd2b35fab93415dcd7965775a18f98b2f",
+      "project-ir/v1/510eb518d7d5a448dfc6dde96617a06c940bc5c116a73d4a038652eed69e1221/objects/3779c1cc247bfdc36eb0d5e633d837131b88dabb3b9055de7dd9e447557f5c6b",
+      "project-ir/v1/510eb518d7d5a448dfc6dde96617a06c940bc5c116a73d4a038652eed69e1221/objects/54cf8400a889748d6a796b10a3a1789ff6f622fd5fd986429ab28e2995d839ef",
+      "project-ir/v1/510eb518d7d5a448dfc6dde96617a06c940bc5c116a73d4a038652eed69e1221/objects/5905881426fc6e21310f880b07cd7a840981883e9544922bb8fd6f47e3802e0f",
+      "project-ir/v1/510eb518d7d5a448dfc6dde96617a06c940bc5c116a73d4a038652eed69e1221/objects/69de09f2b59b1d4e7833fab40f9d61e9674ff26896097483d17a2f5db3e4b9cd",
+      "project-ir/v1/510eb518d7d5a448dfc6dde96617a06c940bc5c116a73d4a038652eed69e1221/objects/8bfb88c149cb5c2cf9ae54e4eea73d855887feaa69b886a6eb1fba66e8bad53d",
+      "project-ir/v1/510eb518d7d5a448dfc6dde96617a06c940bc5c116a73d4a038652eed69e1221/objects/ad2705e535d12cf1d637742bf10022cdeb716785423dcbecffde2e37d5cc0527",
+      "workspaces/tenant-alpha/workspace-alpha/1/runtime-workspace-alpha/initial.json",
+      "workspaces/tenant-beta/workspace-beta/1/runtime-workspace-beta/initial.json"
+    ],
+    "manualPosts": 6,
+    "outbound": 0
+  },
+  "counts": {
+    "alpha": {
+      "ir": {
+        "registrations": 1,
+        "tools": 0,
+        "browser": 12,
+        "rejectedBrowser": 2,
+        "lastRejection": {
+          "operation": "show",
+          "message": "not_found",
+          "status": 404
+        }
+      },
+      "executionAttempts": {
+        "runtime": 0,
+        "capacity": 0,
+        "tools": 0,
+        "containers": 0
+      }
+    },
+    "beta": {
+      "ir": {
+        "registrations": 0,
+        "tools": 0,
+        "browser": 0,
+        "rejectedBrowser": 0
+      },
+      "executionAttempts": {
+        "runtime": 0,
+        "capacity": 0,
+        "tools": 0,
+        "containers": 0
+      }
+    },
+    "executionBindings": "deny-and-count-local-fixture"
+  },
+  "head": {
+    "revisionId": "f6bd6e556bbedaa29973817c43918facfe41e3be4f35eda2a425fe6c8b73b4ed",
+    "filesSha256": "95dcf25b1229b221dc6554b3037cc462fe142b259ad5ea5a5e4c5754415531f6",
+    "committedAt": 1792340584036
+  },
+  "packageIdentity": "f3ae3d9ea9e48044e459354618c02a3f57cf0fd2f39a8c32b39e9a41e37ad2f5"
+}

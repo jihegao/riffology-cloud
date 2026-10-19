@@ -1,0 +1,27 @@
+{
+  "schema": "riffoid-ir.selected-evidence-manifest/v1",
+  "scope": "local WebKit compatibility only",
+  "packageSha256": "86b7a28a1b92652fb01b15ea6671414ecdd5e38c639878455e7abffb60d46ad6",
+  "files": [
+    {
+      "path": "summary.json",
+      "bytes": 2572,
+      "sha256": "b2d867d596007c1caf6cbed8bbf69a98b44c59dde06e3f6af346d2fadce8b230"
+    },
+    {
+      "path": "opaque-native-frame-record.json",
+      "bytes": 13362,
+      "sha256": "c7e3cd456496ec271f2baf5ad1e523fca6092a2880e76be5a954680d3b66d65b"
+    },
+    {
+      "path": "local-piweb-module-record.json",
+      "bytes": 12990,
+      "sha256": "f97248a40555a5f42524c84f38a1360595991ef201f00ab2196e6cff078ba1c0"
+    },
+    {
+      "path": "README.txt",
+      "bytes": 922,
+      "sha256": "b18cb6155249aa9c426b4ac5763e5d1c00fb9ff3ef612f2ec9b17fa4ff191dc9"
+    }
+  ]
+}

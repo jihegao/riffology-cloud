@@ -1,0 +1,209 @@
+{
+  "schema": "riffoid-ir.trusted-pi-image-probe-summary/v1",
+  "status": "passed",
+  "startedAt": "2026-10-18T22:01:59.485292+00:00",
+  "endedAt": "2026-10-18T22:03:10.425611+00:00",
+  "hostArchitecture": "linux/amd64",
+  "executionBoundary": "Actual baked Linux image, native Pi SDK/host and supervisor; model, research and tool transports are in-process synthetic callbacks.",
+  "source": {
+    "firstPublicCommit": "810f30ad67b32cbf84108f16aafacfab5f49c97e",
+    "firstPublicTree": "9d315b94ed4fdc5ccbe8c1df2afac6d2020debf9",
+    "currentRuntimeClosure": {
+      "commit": "f905d790992873f84d539666de63a3b112a4d2e1",
+      "tree": "716d926bcedc605ad3ad58a9edff43aa426ce108",
+      "uniqueSourceFiles": 58,
+      "bytes": 514260,
+      "mismatches": 0,
+      "proofSha256": "fde4705e8ae9313646886babbcfd15942541280b898bf2a10abaa1e9606cc79e"
+    },
+    "publicPullRequest": "https://github.com/jihegao/riffology-cloud/pull/256"
+  },
+  "package": {
+    "name": "riffoid-ir-plugin",
+    "version": "0.3.1",
+    "packageSha256": "86b7a28a1b92652fb01b15ea6671414ecdd5e38c639878455e7abffb60d46ad6",
+    "contractCommit": "f1f6762e774b5eba63b788a2baacde56d491c0fe",
+    "files": 45
+  },
+  "runtime": {
+    "id": "aircraft-support-browser/0.3.0",
+    "sha256": "54cf8400a889748d6a796b10a3a1789ff6f622fd5fd986429ab28e2995d839ef",
+    "workerSha256": "5905881426fc6e21310f880b07cd7a840981883e9544922bb8fd6f47e3802e0f"
+  },
+  "baseIdentity": {
+    "ociIndexDigest": "sha256:0bb9af7a5909c41187cf56402a21420100c72a8de0025b0a7152f8804e85d191",
+    "linuxAmd64PlatformManifest": "sha256:ec8dbe9efe229a1626ea3202b618653f82f8d29d9da8b19310c3b3838f2a2623",
+    "configBlob": "sha256:cea60e390b6726ec0147153e1318b3655c8386460e98d02e35bb571768e49da5",
+    "rootfsLayers": 49
+  },
+  "derivedImage": {
+    "engineId": "sha256:dcd4a5fc6f02c9d0ee1290e07c268a8dba4aba1790e75b98c5f7bb83792da487",
+    "localDescriptor": {
+      "digest": "sha256:dcd4a5fc6f02c9d0ee1290e07c268a8dba4aba1790e75b98c5f7bb83792da487",
+      "mediaType": "application/vnd.oci.image.manifest.v1+json",
+      "size": 12864
+    },
+    "registryPublication": null,
+    "productionDeployment": null,
+    "rootfsLayers": 58,
+    "baseRootfsPrefixMatched": true,
+    "launchProjectionPreserved": true
+  },
+  "build": {
+    "backend": "docker-legacy-v0",
+    "originalBuilds": 1,
+    "seconds": 62.056,
+    "automaticFallbacks": 0,
+    "npmInstalls": 0,
+    "explicitRegistryOrPublicationCommands": 0,
+    "wholeHostNetworkTrafficMeasured": false
+  },
+  "nativeProbe": {
+    "originalContainerStarts": 1,
+    "seconds": 7.278,
+    "nodeVersion": "22.23.2",
+    "installedPackages": {
+      "@earendil-works/pi-coding-agent": "0.85.0",
+      "@earendil-works/pi-server": "0.85.0"
+    },
+    "uid": 10002,
+    "gid": 10002,
+    "network": "none",
+    "checkedImageTargets": 59,
+    "inheritedUniqueSources": 8,
+    "irTools": [
+      "project_ir_check",
+      "project_ir_compile",
+      "project_ir_install",
+      "project_ir_mode",
+      "project_ir_result",
+      "project_ir_run",
+      "project_ir_show"
+    ],
+    "checks": {
+      "allRuntimePackageLockBytesOwnerMode": true,
+      "exactActiveAlias": true,
+      "actualNativeHostAndControlledSession": true,
+      "irFixedSkillAndSevenTools": true,
+      "threeSimCommandsOnceEach": true,
+      "unknownNoRetryOrProvider": true,
+      "coldRestoreAndProvenance": true,
+      "noProjectExtensionExecuted": true,
+      "allSessionsDisposed": true
+    },
+    "syntheticTransports": {
+      "model": 7,
+      "research": 8,
+      "tool": 4,
+      "ambient": 0,
+      "sessionCreations": 8,
+      "sessionDisposals": 8
+    },
+    "cases": [
+      {
+        "name": "legacy",
+        "outcome": "completed",
+        "modelCalls": 1,
+        "syntheticToolCalls": 0
+      },
+      {
+        "name": "resources",
+        "outcome": "completed",
+        "modelCalls": 1,
+        "syntheticToolCalls": 0
+      },
+      {
+        "name": "restore",
+        "outcome": "completed",
+        "modelCalls": 1,
+        "syntheticToolCalls": 0
+      },
+      {
+        "name": "ir-skill",
+        "outcome": "completed",
+        "modelCalls": 1,
+        "syntheticToolCalls": 0
+      },
+      {
+        "name": "sim-ir",
+        "outcome": "completed",
+        "modelCalls": 1,
+        "syntheticToolCalls": 1
+      },
+      {
+        "name": "sim-code",
+        "outcome": "completed",
+        "modelCalls": 1,
+        "syntheticToolCalls": 1
+      },
+      {
+        "name": "sim-show",
+        "outcome": "completed",
+        "modelCalls": 1,
+        "syntheticToolCalls": 1
+      },
+      {
+        "name": "unknown",
+        "outcome": "failed",
+        "modelCalls": 0,
+        "syntheticToolCalls": 1
+      },
+      {
+        "name": "unknown-root",
+        "rejectedBeforeSession": true
+      },
+      {
+        "name": "invalid-provenance",
+        "rejectedBeforeSession": true
+      },
+      {
+        "name": "foreign-scope",
+        "rejectedBeforeSession": true
+      }
+    ]
+  },
+  "supervisor": {
+    "actualFixedNativeLaunches": 2,
+    "launchFixture": "Each correct identity/token is checked by the baked host; missing input is rejected with ENOENT before release resolution, then actual supervisor launch exits1. This is not an admitted Turn.",
+    "sealedOriginalSpawnDeniedExitCode": 4,
+    "sameEpochCannotUnseal": true,
+    "resetBeforeNextEpoch": true,
+    "lateWriterTerminated": true,
+    "lateWriteMarkerStable": true,
+    "postSealDomainSamples": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "finalRemaining": 0
+  },
+  "cleanup": {
+    "originalCidKnown": true,
+    "originalIdAbsent": true,
+    "otherContainerActions": 0,
+    "imageRemoved": false
+  },
+  "resourcePreservation": {
+    "allOriginalImageIdsRetained": true,
+    "allOriginalContainerIdsRetained": true,
+    "otherResourceMutationCommands": 0,
+    "initialImageIds": 24,
+    "initialContainerIds": 0
+  },
+  "provenance": "trusted-pi-image-probe-provenance.json",
+  "realOnlineAuthorityProof": false,
+  "actualProjectToolsEffects": 0,
+  "riffoidOnlineAcceptance": null,
+  "limitations": [
+    "Synthetic in-process transports are not Worker/provider/budget authority acceptance.",
+    "Native UID-domain seal is not Cloudflare lease/capacity release acceptance.",
+    "Fixed native launches deliberately fail before transport resolution; no real Turn."
+  ]
+}

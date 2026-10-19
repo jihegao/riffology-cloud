@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Riffoid IR · Model Studio</title><link rel="stylesheet" href="/assets/app.css"></head>
+<body>
+  <header><div><span class="eyebrow">RIFFOID / SIMULATION</span><h1>IR Model Studio</h1><p>从业务规则到可追溯的浏览器实验</p></div><span id="connection" role="status">正在连接</span></header>
+  <main>
+    <section class="card"><div class="heading"><h2>业务模型 <small>Business IR</small></h2><button id="reload">重新读取</button><button id="example">创建 B1 草稿</button></div>
+      <div id="summary" aria-live="polite"></div>
+      <details><summary>查看与编辑模型 JSON · model/business-ir.draft.json</summary><label for="draft">业务模型草稿</label><textarea id="draft" spellcheck="false" aria-label="业务模型草稿"></textarea><button id="save">保存草稿</button><span id="draft-status"></span></details>
+      <div class="pipeline"><button id="check">1 · 封存并检查</button><span>→</span><button id="compile" disabled>2 · 编译 Plan</button><span>→</span><button id="run" disabled>3 · 浏览器运行</button></div>
+      <pre id="diagnostics" role="status">打开或创建草稿，然后检查模型。</pre>
+    </section>
+    <section class="card"><div class="heading"><h2>实验记录 <small>Runs</small></h2><button id="refresh">刷新记录</button><button id="replay" disabled>按原条件复跑</button></div>
+      <label for="runs">已保存的运行</label><select id="runs"><option value="">尚无运行记录</option></select>
+      <p id="run-status" role="status">等待运行</p><div id="metrics" class="metrics"></div>
+      <details open><summary>执行事件与业务规则</summary><div class="scroll"><table><thead><tr><th>序号</th><th>分钟</th><th>阶段</th><th>事件 / 对象</th><th>业务来源</th></tr></thead><tbody id="events"></tbody></table></div></details>
+      <details><summary>模型、产物与执行身份</summary><pre id="identity"></pre></details>
+      <details><summary>与另一运行比较</summary><label for="compare-runs">对照运行</label><select id="compare-runs"><option value="">选择对照记录</option></select><pre id="comparison">选择两个已完成的运行，查看指标与任务事件时间。</pre></details>
+    </section>
+  </main>
+  <footer>aircraft-support-pack/v0.1 · legacy-minute-v1 · 计算位置：用户浏览器 · 合成 B1，结果 local/unverified</footer>
+  <script src="http://127.0.0.1:8514/v1/bridge.js"></script><script type="module" src="/assets/app.js"></script>
+</body></html>

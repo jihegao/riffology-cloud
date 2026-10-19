@@ -4,7 +4,7 @@ import type {ToolCommandRecord,ToolEffectReceipt} from './ledger.ts';
 import type {ToolOperation} from './protocol.ts';
 
 const TOOL_CALL=/^[A-Za-z0-9_-]{1,128}(?:\|[A-Za-z0-9_-]{1,128})?$/;
-const NAMES=new Map<string,ToolOperation>([['project_read','read'],['project_read_page','read_page'],['project_write','write'],['project_edit','edit'],['project_list','list'],['project_search','search'],['project_install_preview_adapter','write'],['project_bash','bash'],['project_set_experiment_parameters','experiment_parameters']]);
+const NAMES=new Map<string,ToolOperation>([['project_read','read'],['project_read_page','read_page'],['project_write','write'],['project_edit','edit'],['project_list','list'],['project_search','search'],['project_install_preview_adapter','write'],['project_bash','bash'],['project_set_experiment_parameters','experiment_parameters'],...['project_ir_check','project_ir_compile','project_ir_run','project_ir_result','project_ir_mode','project_ir_show','project_ir_install'].map(name=>[name,'ir'] as [string,ToolOperation])]);
 const TERMINAL=new Set(['completed','failed','cancelled']);
 // Leave fixed headroom for the receipt envelope so the whole public response,
 // rather than only its result member, stays below the 64 KiB transport bound.

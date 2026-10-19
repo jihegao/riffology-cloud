@@ -8,6 +8,7 @@ redirect an accepted operation outside the workspace inode tree.
 import hashlib
 import json
 import os
+import re
 import signal
 import stat
 import subprocess
@@ -25,6 +26,12 @@ MAX_DEADLINE_MS = 120000
 MAX_EFFECT_RESULT_BYTES = 1060000
 MAX_INLINE_PAGE_RESULT_BYTES = 15000
 MAX_BASH_STREAM_BYTES = 6000
+IR_NODE = "/usr/local/bin/node"
+IR_PROGRAM = "/opt/riffology/riffoid-ir-plugin/scripts/riffoid-cli.mjs"
+IR_PACKAGE_ROOT = "/opt/riffology/riffoid-ir-plugin"
+IR_PACKAGE_LOCK = "/opt/riffology/riffoid-ir-plugin.lock.json"
+IR_PYTHON = "/opt/riffology/python-compiler/bin/python3"
+IR_COMPILER_WHEEL_SHA256 = "e7bcd9271dd42106b78e87176e3485b290536f5291c0440872b814fc549858f7"
 TEST_HOOK = lambda _stage: None
 
 
@@ -431,12 +438,137 @@ def search_tool(root_fd, args, deadline_at):
     return {"kind": "search", "path": args["path"], "query": query, "matches": matches, "filesScanned": files_scanned, "truncated": truncated}
 
 
+def verify_ir_package(root=IR_PACKAGE_ROOT, lock=IR_PACKAGE_LOCK):
+    # Both arguments are platform constants in product calls. Reject symlinks,
+    # extra files/directories, hardlinks and byte drift before executing Node.
+    try:
+        info, lock_info = os.lstat(root), os.lstat(lock)
+        if not stat.S_ISDIR(info.st_mode) or not stat.S_ISREG(lock_info.st_mode) or lock_info.st_size > 128 * 1024:
+            fail("project-tool-ir-package-invalid")
+        with open(lock, "rb") as stream:
+            pin = json.loads(stream.read(128 * 1024 + 1))
+        exact(pin, ["schema", "name", "version", "packageSha256", "contractCommit", "files"], "project-tool-ir-package-invalid")
+        if (pin["schema"] != "riffoid-ir.package-pin/v1" or pin["name"] != "riffoid-ir-plugin"
+                or not isinstance(pin["version"], str) or not re.fullmatch(r"[0-9]+\.[0-9]+\.[0-9]+", pin["version"])
+                or not isinstance(pin["packageSha256"], str) or not re.fullmatch(r"[a-f0-9]{64}", pin["packageSha256"])
+                or not isinstance(pin["contractCommit"], str) or not re.fullmatch(r"[a-f0-9]{40}", pin["contractCommit"])
+                or not isinstance(pin["files"], list) or not 0 < len(pin["files"]) <= 256):
+            fail("project-tool-ir-package-invalid")
+        expected, directories, total = {}, set(), 0
+        for item in pin["files"]:
+            exact(item, ["path", "bytes", "sha256"], "project-tool-ir-package-invalid")
+            path = item["path"]
+            if (not isinstance(path, str) or not re.fullmatch(r"(?:[A-Za-z0-9_-]+/)*[A-Za-z0-9_.-]+", path)
+                    or any(p in {".", ".."} for p in path.split("/")) or path in expected
+                    or type(item["bytes"]) is not int or not 0 <= item["bytes"] <= 1024 * 1024
+                    or not isinstance(item["sha256"], str) or not re.fullmatch(r"[a-f0-9]{64}", item["sha256"])):
+                fail("project-tool-ir-package-invalid")
+            total += item["bytes"]
+            if total > 8 * 1024 * 1024:
+                fail("project-tool-ir-package-invalid")
+            expected[path] = item
+            parts = path.split("/")
+            for index in range(1, len(parts)):
+                directories.add("/".join(parts[:index]))
+        found = set()
+        for current, dirnames, filenames in os.walk(root, followlinks=False):
+            relative = os.path.relpath(current, root)
+            for name in dirnames + filenames:
+                logical = name if relative == "." else relative + "/" + name
+                path = os.path.join(current, name)
+                info = os.lstat(path)
+                if stat.S_ISDIR(info.st_mode):
+                    if logical not in directories:
+                        fail("project-tool-ir-package-invalid")
+                    continue
+                item = expected.get(logical)
+                if (not item or not stat.S_ISREG(info.st_mode) or info.st_nlink != 1 or info.st_size != item["bytes"]):
+                    fail("project-tool-ir-package-invalid")
+                with open(path, "rb") as stream:
+                    content = stream.read(1024 * 1024 + 1)
+                if len(content) != item["bytes"] or hashlib.sha256(content).hexdigest() != item["sha256"]:
+                    fail("project-tool-ir-package-invalid")
+                found.add(logical)
+        if found != set(expected):
+            fail("project-tool-ir-package-invalid")
+        with open(os.path.join(root, "package.json"), "rb") as stream:
+            manifest = json.load(stream)
+        if manifest.get("name") != pin["name"] or manifest.get("version") != pin["version"]:
+            fail("project-tool-ir-package-invalid")
+        return pin
+    except ToolError:
+        raise
+    except (OSError, ValueError, TypeError, KeyError):
+        fail("project-tool-ir-package-invalid")
+
+
+def ir_tool(args, root, deadline_at):
+    exact(args, ["operation", "input"])
+    operation, value = args["operation"], args["input"]
+    if operation not in {"project_ir_check", "project_ir_compile", "mode", "show", "install"}:
+        fail("project-tool-ir-authority-required")
+    if not isinstance(value, dict):
+        fail("invalid-tool-arguments")
+    if operation in {"project_ir_check", "project_ir_compile"}:
+        key = "draftRef" if operation == "project_ir_check" else "sealedRef"
+        exact(value, [key])
+        workspace_path(value[key])
+    elif operation == "mode":
+        exact(value, ["mode"])
+        if value["mode"] not in {"ir", "code"}:
+            fail("invalid-tool-arguments")
+    else:
+        exact(value, [])
+    pin = verify_ir_package()
+    # No shell, user argv, alternate executable, inherited credential or project
+    # module lookup is accepted at this boundary. The package is image-owned.
+    root_fd = open_root(root)
+    os.close(root_fd)
+    check_deadline(deadline_at)
+    remaining_ms = max(1, deadline_at - int(time.time() * 1000))
+    process = subprocess.Popen(
+        [IR_NODE, IR_PROGRAM], cwd=root,
+        env={"LANG": "C.UTF-8", "PATH": "/usr/bin:/bin", "PYTHONDONTWRITEBYTECODE": "1",
+             "RIFFOID_IR_PYTHON": IR_PYTHON, "RIFFOID_IR_COMPILER_WHEEL_SHA256": IR_COMPILER_WHEEL_SHA256,
+             "RIFFOID_IR_COMPILER_MODE": "installed-sdk", "RIFFOID_IR_PACKAGE_SHA256": pin["packageSha256"]},
+        stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, start_new_session=True,
+    )
+    try:
+        stdout, stderr = process.communicate(json.dumps(args, separators=(",", ":")).encode("utf-8"), timeout=remaining_ms / 1000)
+    except subprocess.TimeoutExpired:
+        try:
+            os.killpg(process.pid, signal.SIGKILL)
+        except ProcessLookupError:
+            pass
+        process.communicate()
+        raise EffectUnknown("project-tool-ir-timeout")
+    finally:
+        # A finite tool cannot leave children mutating the frozen workspace.
+        try:
+            os.killpg(process.pid, signal.SIGKILL)
+        except ProcessLookupError:
+            pass
+    if len(stdout) > MAX_EFFECT_RESULT_BYTES or len(stderr) > 16384:
+        raise EffectUnknown("project-tool-result-too-large")
+    if process.returncode != 0 or stderr:
+        raise EffectUnknown("project-tool-ir-process-failed")
+    try:
+        result = json.loads(stdout.decode("utf-8", errors="strict"))
+    except (ValueError, UnicodeDecodeError) as error:
+        raise EffectUnknown("project-tool-ir-invalid-output") from error
+    if not isinstance(result, dict):
+        raise EffectUnknown("project-tool-ir-invalid-output")
+    return result
+
+
 def execute(value, root="/workspace"):
     request = exact(value, ["deadlineAt", "operation", "arguments"], "invalid-tool-command")
     deadline_at = deadline(request["deadlineAt"])
     operation = request["operation"]
-    if operation not in ("read", "read_page", "write", "edit", "list", "search", "bash"):
+    if operation not in ("read", "read_page", "write", "edit", "list", "search", "bash", "ir"):
         fail("project-tool-operation-not-file")
+    if operation == "ir":
+        return ir_tool(request["arguments"], root, deadline_at)
     if operation == "bash":
         args = exact(request["arguments"], ["script", "timeoutMs"])
         script = args["script"]

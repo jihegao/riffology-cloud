@@ -1,0 +1,39 @@
+{
+  "schema": "riffoid-ir.ci-observation/v1",
+  "observedAt": "2026-10-18T17:34:16.894264+00:00",
+  "repository": "jihegao/riffology-cloud",
+  "pullRequest": 256,
+  "requestedHead": "bda696a9f59135ba3c6c40f2524e8f51044e2e82",
+  "testedMergeCommit": "f73a650188c924447ec8251095b872ad58a22124",
+  "runId": 39148781863,
+  "jobId": 117737971158,
+  "url": "https://github.com/jihegao/riffology-cloud/actions/runs/39148781863/job/117737971158",
+  "conclusion": "failure",
+  "failure": {
+    "test": "opaque native IR page executes the actual shared frozen B1 Worker and persists that result",
+    "file": "tests/m3/project-ir-browser.test.mjs",
+    "error": "ENOENT when an unconditional screenshot uses a macOS-only temporary path on the Linux runner",
+    "scope": "Test evidence capture. The actual shared Worker result reached succeeded before capture."
+  },
+  "correction": "Binary capture is now opt-in via RIFFOID_IR_BROWSER_EVIDENCE_DIR; its directory is explicitly created. Default CI makes no binary evidence capture.",
+  "correctionLocalVerification": {
+    "command": "node --experimental-strip-types --test tests/m3/project-ir-browser.test.mjs",
+    "engine": "existing Chromium 153.0.8010.12",
+    "passed": 5,
+    "failed": 0
+  },
+  "correctedGitHubRun": {
+    "runId": 39151117118,
+    "jobId": 117744790858,
+    "head": "810f30ad67b32cbf84108f16aafacfab5f49c97e",
+    "conclusion": "success",
+    "evidence": "ci-post-review.json"
+  },
+  "rawLog": {
+    "location": "outside repository",
+    "bytes": 539029,
+    "sha256": "880ec58fcfa5d32a1ea0b24f2ac358f9150dcaba4087759b9b1f5c37f5a2b9cd"
+  },
+  "productionChanged": false,
+  "onlineAcceptance": false
+}

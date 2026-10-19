@@ -10,11 +10,13 @@ export const scopes=Object.fromEntries(['alpha','beta'].map(user=>[user,{tenantI
 /** Synthetic identities and initialization only. Saves, packages and artifact
  * receipts come from the real Gateway/Workspace/RevisionStore and local D1/R2.
  * This worker is bundled only inside this test, never a deployment entrypoint. */
-export async function manualPageFixture(t,{browserLocal=false}={}){
+export async function manualPageFixture(t,{browserLocal=false,projectIrTest=false}={}){
  const browserPolicy=JSON.stringify({schema:'project-view-browser-policy/v1',enabled:true,startsAt:Date.now()-1000,endsAt:Date.now()+600000,dataEgress:'accepted',grants:Object.entries(scopes).map(([user,scope])=>({scope,actor:{userId:user,authVersion:1}}))});
  const source=`
  import {WorkspaceAgent as BaseWorkspace} from './services/workspace/durable.ts';
- export {RevisionStore} from './services/turn-runtime/revision-store.ts';
+ import {ProjectIrAuthority} from './services/project-ir/authority.ts';
+ import {RevisionStore as BaseRevisionStore} from './services/turn-runtime/revision-store.ts';
+ import {revisionStoreActorName} from './services/turn-runtime/revision-store-client.ts';
  import {gateway} from './services/gateway/app.ts';
  import {catalogDatabase} from './services/catalog/database.ts';
  import {createGatewayManualSaveServices} from './services/gateway/manual-save-services.ts';
@@ -26,12 +28,56 @@ export async function manualPageFixture(t,{browserLocal=false}={}){
  const appOrigin=${JSON.stringify(appOrigin)},scopes=${JSON.stringify(scopes)};
  let browserPolicyEnabled=true;
  const localEnv=env=>({...env,APP_ORIGIN:appOrigin,BROWSER_PREVIEW_EXECUTION_ORIGIN:'http://localhost:8821',...(${JSON.stringify(browserLocal)}?{PROJECT_VIEW_BROWSER_POLICY_JSON:browserPolicyEnabled?${JSON.stringify(browserPolicy)}:'{"enabled":false}'}:{})});
+ // A test-only barrier holds bytes already read by the real RevisionStore.
+ // It permits concurrent canonical saves/revocation before the production
+ // Workspace's post-await package/authorization check returns any display.
+ export class RevisionStore extends BaseRevisionStore {
+  #irSourceBarrier=null;
+  async serviceFiles(...args){
+   const bytes=await super.serviceFiles(...args),barrier=this.#irSourceBarrier;
+   if(${JSON.stringify(projectIrTest)}&&barrier&&!barrier.entered){barrier.entered=true;barrier.sourceKind=args[0]?.kind??null;barrier.start();await barrier.wait;}
+   return bytes;
+  }
+  async projectIrSourceBarrierForTest(operation){
+   if(!${JSON.stringify(projectIrTest)})throw Error('fixture disabled');
+   if(operation==='arm'){
+    if(this.#irSourceBarrier?.entered&&!this.#irSourceBarrier.released)throw Error('fixture source already held');
+    let release,start;const wait=new Promise(r=>{release=r;}),started=new Promise(r=>{start=r;});
+    this.#irSourceBarrier={wait,started,release,start,entered:false,released:false,sourceKind:null};
+   }else if(operation==='release'){if(this.#irSourceBarrier){this.#irSourceBarrier.released=true;this.#irSourceBarrier.release();}}
+   else if(operation==='wait'){if(!this.#irSourceBarrier)throw Error('fixture source not armed');await this.#irSourceBarrier.started;}
+   else if(operation!=='state')throw Error('fixture operation denied');
+   return {armed:this.#irSourceBarrier!==null,entered:this.#irSourceBarrier?.entered??false,released:this.#irSourceBarrier?.released??false,sourceKind:this.#irSourceBarrier?.sourceKind??null};
+  }
+ }
  export class WorkspaceAgent extends BaseWorkspace {
   #packageReads=0;
-  constructor(ctx,env){super(ctx,localEnv(env));}
+  constructor(ctx,env){
+   const bound=localEnv(env);
+   if(${JSON.stringify(projectIrTest)})for(const [name,kind]of [['PROJECT_RUNTIME','runtime'],['PRODUCT_TURN_RUNTIME','runtime'],['TRUSTED_PI_CAPACITY','capacity'],['TOOL_BRIDGE_AGENT','tools'],['TRUSTED_PI_SANDBOX','containers'],['PROJECT_SANDBOX','containers'],['SIMULATION_SANDBOX','containers']]){
+    const deny=()=>{const key='fixture:execution-attempts',counts=ctx.storage.kv.get(key)??{runtime:0,capacity:0,tools:0,containers:0};counts[kind]++;ctx.storage.kv.put(key,counts);throw Error('fixture execution binding denied');};
+    bound[name]={getByName:deny,idFromName:deny,get:deny};
+   }
+   super(ctx,bound);
+  }
   async projectViews(input){this.#packageReads++;return super.projectViews(input);}
   packageReadsForTest(){return this.#packageReads;}
   async dropPackageAuthorityForTest(){this.ctx.storage.kv.delete('project-view-package-authority');await this.ctx.storage.sync();return {ok:true};}
+  async projectIrSyntheticAgentForTest(input){
+   if(!${JSON.stringify(projectIrTest)})throw Error('fixture disabled');
+   const scope=scopes.alpha,actor={userId:'alpha',authVersion:1},authority=new ProjectIrAuthority(this.ctx.storage,this.env.WORKSPACE_CHECKPOINTS,scope,Date.now,async()=>{},actor);
+   const counters=this.ctx.storage.kv.get('fixture:project-ir:counters')??{registrations:0,tools:0,browser:0,rejectedBrowser:0};
+   if(input.operation==='register')counters.registrations++;else if(['project_ir_run','project_ir_result'].includes(input.operation))counters.tools++;else throw Error('fixture operation denied');
+   this.ctx.storage.kv.put('fixture:project-ir:counters',counters);await this.ctx.storage.sync();
+   return input.operation==='register'?authority.register({effectId:input.effectId,registration:input.registration}):authority.tool({effectId:input.effectId,operation:input.operation,input:input.input,observeOnly:input.observeOnly??false});
+  }
+  async projectIrBrowser(input){
+   if(!${JSON.stringify(projectIrTest)})return super.projectIrBrowser(input);
+   const key='fixture:project-ir:counters',counters=this.ctx.storage.kv.get(key)??{registrations:0,tools:0,browser:0,rejectedBrowser:0};
+   counters.browser++;this.ctx.storage.kv.put(key,counters);await this.ctx.storage.sync();
+   try{return await super.projectIrBrowser(input);}catch(error){const latest=this.ctx.storage.kv.get(key);latest.rejectedBrowser++;latest.lastRejection={operation:input.operation,message:error instanceof Error?error.message:String(error),status:typeof error?.status==='number'?error.status:null};this.ctx.storage.kv.put(key,latest);await this.ctx.storage.sync();throw error;}
+  }
+  async projectIrCountersForTest(){return {ir:this.ctx.storage.kv.get('fixture:project-ir:counters')??{registrations:0,tools:0,browser:0,rejectedBrowser:0},executionAttempts:this.ctx.storage.kv.get('fixture:execution-attempts')??{runtime:0,capacity:0,tools:0,containers:0}};}
   async seedForTest(scope){
    const task={id:'initial-'+scope.workspaceId,tenantId:scope.tenantId,projectId:scope.projectId,workspaceId:scope.workspaceId,generation:1,starterVersion:'blank-v1',authVersion:1,createdAt:1000,deadlineAt:2000};
    const identity={taskId:task.id,tenantId:task.tenantId,projectId:task.projectId,workspaceId:task.workspaceId,generation:1,runtimeId:'runtime-'+scope.workspaceId,leaseId:'lease-'+scope.workspaceId},markerNonce='synthetic-canary';
@@ -46,6 +92,17 @@ export async function manualPageFixture(t,{browserLocal=false}={}){
   const url=new URL(request.url),bound=localEnv(env),stub=scope=>env.WORKSPACE_AGENT.getByName(workspaceAgentName(scope.tenantId,scope.workspaceId));
   if(url.pathname==='/__fixture/disable-browser-policy'){browserPolicyEnabled=false;return Response.json({ok:true});}
   if(${JSON.stringify(browserLocal)}){const frame=serveProjectViewBrowserFrame(request,bound);if(frame)return frame;}
+  if(${JSON.stringify(projectIrTest)}&&url.pathname==='/__fixture/project-ir-source-barrier')return Response.json(await env.REVISION_STORE.getByName(revisionStoreActorName(scopes.alpha)).projectIrSourceBarrierForTest(url.searchParams.get('operation')??'state'));
+  if(${JSON.stringify(projectIrTest)}&&url.pathname==='/__fixture/project-ir-agent'){
+   if(request.method!=='POST')return Response.json({error:'method denied'},{status:405});
+   return Response.json(await stub(scopes.alpha).projectIrSyntheticAgentForTest(await request.json()));
+  }
+  if(${JSON.stringify(projectIrTest)}&&url.pathname==='/__fixture/project-ir-workspace'){
+   if(request.method!=='POST')return Response.json({error:'method denied'},{status:405});
+   const input=await request.json(),actor={userId:request.headers.get('x-synthetic-user')??'alpha',authVersion:input.authVersion??1};
+   try{return Response.json(await stub(scopes.alpha).projectIrBrowser({scope:input.scope??scopes.alpha,actor,packageIdentity:input.packageIdentity,operation:input.operation,input:input.input}));}catch{return Response.json({denied:true},{status:403});}
+  }
+  if(${JSON.stringify(projectIrTest)}&&url.pathname==='/__fixture/project-ir-counts')return Response.json({alpha:await stub(scopes.alpha).projectIrCountersForTest(),beta:await stub(scopes.beta).projectIrCountersForTest(),executionBindings:'deny-and-count-local-fixture'});
   if(url.pathname==='/__fixture/seed'){for(const scope of Object.values(scopes))await stub(scope).seedForTest(scope);return Response.json({ok:true});}
   if(url.pathname==='/__fixture/diagnostics'){if(url.searchParams.get('user')==='alpha')return Response.json(await stub(scopes.alpha).diagnosticsForTest());const result={};for(const [name,scope]of Object.entries(scopes))result[name]=await stub(scope).diagnosticsForTest();return Response.json(result);}
   if(url.pathname==='/__fixture/package-reads')return Response.json({reads:await stub(scopes.alpha).packageReadsForTest()});

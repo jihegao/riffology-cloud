@@ -1,5 +1,17 @@
 # Current release readiness — 2026-10-14
 
+## 2026-10-19 固定 IR 插件 M3/M4 独立实现准备
+
+[#254](https://github.com/jihegao/riffology-cloud/issues/254) 在独立 worktree 基于 `240378f65fee54d917b053f565087095a07244db` 接入同版 `riffoid-ir-plugin@0.3.1`，包括受控 fixed skill/工具、原 Project Tools effect 路径和浏览器原生页面。两个固定包副本及逐文件 SHA 一致。SQLite/R2 运行投影保留原 effect、scope/generation、actor/authVersion 和冻结历史；普通保存后的模型展示也按 canonical 文件重建。
+
+[接入说明](riffoid-ir-plugin-integration.md) · [本轮实际离线证据与边界](../evidence/releases/riffoid-ir-m3-m4-preparation-20261019.json)。本快照仍为实现准备：实际 Project Tools Linux/amd64 镜像已验证 Node 22.23.2、UID/GID 10001、seccomp/网络拒绝、真实 B1 check/compile 和进程清空；不宣称生产部署或双端 ACC 完成。前一公开源码的完整检查为 3,424 项 Node、8 项 Python 通过，13 项按原条件跳过；其后修复的真实 Docker 上下文过滤 7/7、注册失败恢复 71/71 与截图路径修复浏览器检查 5/5 通过，确认基线整合后再跑最终完整检查；同冻结 IR runtime/worker 的本地 WebKit 26.6 兼容补测 2/2 通过，含 opaque 与 PiWeb Worker 及清理，[选定证据](../evidence/releases/riffoid-ir-m3-m4-20261019/webkit-compatibility/manifest.json)明确不替代线上 ACC；线上阶段等待当前工作确认后的合并基线，随后单独串行集成和部署验收；不覆盖 #104/#214 正在进行的发布，不开放 G5/M3/M4 云执行。
+
+独立分支后续修复已通过 [GitHub Linux CI39151117118](https://github.com/jihegao/riffology-cloud/actions/runs/39151117118)：3,430 Node、8 Python 通过，13 条件跳过。公开 SDK #257 候选 `fca66cb0` 已在该独立分支与 IR 交叉代码整合；[预览实测](../evidence/releases/riffoid-ir-m3-m4-20261019/sdk257-integration-preview.json)为 Chromium27项、WebKit17项、broker17项通过。合入 main 与线上串行窗口仍待当前工作确认；整合源码已通过类型检查、UI21项与14个定向文件118项，前后源码SHA不变；整合候选 `f905d790` 通过 [Linux全量CI39153083773](https://github.com/jihegao/riffology-cloud/actions/runs/39153083773)：3,446 Node、8 Python 通过，13 条件跳过，[选定摘要](../evidence/releases/riffoid-ir-m3-m4-20261019/ci-sdk257-integrated.json)保留准确 merge-ref 与原始日志哈希。
+
+Trusted Pi 的 ec8 继承镜像已在 AMD128 完成一次真实构建与原生探针：[选定实测](../evidence/releases/riffoid-ir-m3-m4-20261019/trusted-pi-image-probe.json)。Node22.23.2、Pi SDK0.85.0、UID/GID10002、59个目标（含同一45文件包）匹配，固定skill/七工具、三条 `/sim`、历史恢复及未知不重试通过；真实supervisor封存、禁止同epoch解封、reset和晚写归零也通过。测试CID已删除，原24个镜像ID保留；新镜像为本地OCI manifest `dcd4a5fc`，尚未发布或部署。7次model、8次research和4次tool调用均为进程内synthetic callbacks，不替代线上Agent/预算/容量或Riffoid ACC。SDK #257已合入main `004e5cd5`，最终基线确认及当前线上批次交接仍待完成。
+
+两镜像的[原始OCI验核](../evidence/releases/riffoid-ir-m3-m4-20261019/oci-image-verification.json)及本机独立复核现已通过（TrustedPi58层、ProjectTools36层，每镜像一次save）。[Gateway候选构建](../evidence/releases/riffoid-ir-m3-m4-20261019/gateway-offline-build.json)成功，1129模块输入稳定，96资产仅project-views.js变更；[最新候选CI](../evidence/releases/riffoid-ir-m3-m4-20261019/ci-native-artifacts-candidate.json)为3446 Node与8 Python通过、13跳过。当前main004e仅作为已核对源码基线；前批T2/T3、placement修订及writer/Safari正式交接仍待完成，未执行本次IR的Registry发布、部署或线上ACC，合同M3/M4保持未完成。
+
 ## 2026-10-18 #248 maintenance admission code delivery
 
 [PR #250](https://github.com/jihegao/riffology-cloud/pull/250) merged as `82c615894d1f27751be8a6bb5aea2c46941060d2`. The reviewed source HEAD `c669921f4796c5b35c6f2e049c92876f4faf7c5b` passed [CI 39093215235 / job 117574153432](https://github.com/jihegao/riffology-cloud/actions/runs/39093215235/job/117574153432), including the two added Gateway tests and five maintenance Workerd tests. This is code delivery for [#248](https://github.com/jihegao/riffology-cloud/issues/248), supporting [#104](https://github.com/jihegao/riffology-cloud/issues/104) and [#214](https://github.com/jihegao/riffology-cloud/issues/214); it is not target-environment acceptance.

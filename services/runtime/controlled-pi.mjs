@@ -370,7 +370,9 @@ export async function createControlledPiSession({
       turnController = controller;
       pendingTurn = (async () => {
         try {
-          await session.prompt(loader.expandProjectCommand(text), { expandPromptTemplates: false, source: 'rpc' });
+          const prepared=bridge?.preparePrompt?await bridge.preparePrompt(text,{signal:controller.signal}):text;
+          controller.signal.throwIfAborted();
+          await session.prompt(loader.expandProjectCommand(prepared), { expandPromptTemplates: false, source: 'rpc' });
           const reply = [...session.state.messages].reverse().find((message) => message.role === 'assistant');
           if (controller.signal.aborted) return { outcome: 'aborted', stopReason: 'aborted' };
           const outcome = reply?.stopReason === 'aborted' ? 'aborted'

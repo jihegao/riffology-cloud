@@ -1,0 +1,36 @@
+{
+  "alpha": {
+    "ir": {
+      "registrations": 2,
+      "tools": 2,
+      "browser": 20,
+      "rejectedBrowser": 5,
+      "lastRejection": {
+        "operation": "project_ir_result",
+        "message": "not_found",
+        "status": 404
+      }
+    },
+    "executionAttempts": {
+      "runtime": 0,
+      "capacity": 0,
+      "tools": 0,
+      "containers": 0
+    }
+  },
+  "beta": {
+    "ir": {
+      "registrations": 0,
+      "tools": 0,
+      "browser": 0,
+      "rejectedBrowser": 0
+    },
+    "executionAttempts": {
+      "runtime": 0,
+      "capacity": 0,
+      "tools": 0,
+      "containers": 0
+    }
+  },
+  "executionBindings": "deny-and-count-local-fixture"
+}

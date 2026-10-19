@@ -1,0 +1,55 @@
+{
+  "name": "riffoid-ir-plugin",
+  "version": "0.3.1",
+  "description": "Aircraft Business IR, compiler and browser execution for Pi Web and Riffoid",
+  "type": "module",
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=22",
+    "python": ">=3.12"
+  },
+  "keywords": [
+    "pi-package",
+    "pi-web",
+    "simulation"
+  ],
+  "files": [
+    "browser",
+    "src",
+    "extensions",
+    "skills",
+    "scripts",
+    "adapters",
+    "tests",
+    "acceptance/b1",
+    "docs",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "node scripts/check.mjs",
+    "check": "node scripts/check.mjs && node --test tests/*.test.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "start": "node src/broker.mjs",
+    "start:test": "node scripts/start-test-workspace.mjs",
+    "acceptance:export": "node scripts/export-acceptance.mjs",
+    "test:riff-pi": "node scripts/test-riff-pi.mjs"
+  },
+  "pi": {
+    "extensions": [
+      "./extensions/riffoid-ir/index.js"
+    ],
+    "skills": [
+      "./skills/riffoid-ir"
+    ]
+  },
+  "piWeb": {
+    "plugins": [
+      {
+        "id": "riffoid-ir",
+        "browserRoot": "browser",
+        "module": "browser/pi-web-plugin.js",
+        "machineSpecific": true
+      }
+    ]
+  }
+}

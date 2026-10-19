@@ -1,0 +1,17 @@
+{
+  "schema": "jhg46-report-switch-source-evidence-inventory/v1",
+  "files": [
+    {
+      "file": "independent-source-review.safe.json",
+      "bytes": 10002,
+      "sha256": "204b892d4f6a88cc073522a7b561c1c42c875770b2950a7c6869394be1df7ac3"
+    },
+    {
+      "file": "source-validation.safe.json",
+      "bytes": 9968,
+      "sha256": "68cb0dcd75b76eaa59c27bec32ea06c988a19d9d750bdd9f54aa1353829a2c45"
+    }
+  ],
+  "rawPrivateProductBodiesPublished": false,
+  "testsRepeatedForPublication": false
+}

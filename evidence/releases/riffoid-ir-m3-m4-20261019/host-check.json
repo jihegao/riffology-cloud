@@ -1,0 +1,26 @@
+{
+  "command": "npm run check",
+  "exitCode": 0,
+  "node": {
+    "tests": 3428,
+    "passed": 3415,
+    "failed": 0,
+    "skipped": 13
+  },
+  "python": {
+    "tests": 8,
+    "passed": 8
+  },
+  "rawLog": {
+    "bytes": 365054,
+    "sha256": "e7318922bc68a569a9457987ad33fc19307c2bfedf40f44ade8a68f653b701cd",
+    "location": "outside repository"
+  },
+  "environment": {
+    "M1_BROWSER_CHANNEL": "chromium",
+    "browserVersion": "Chromium 153.0.8010.12",
+    "tls": "existing Homebrew OpenSSL 3.6.4",
+    "browserAssets": "README hash-verified prepared assets"
+  },
+  "previousFailuresPreserved": "Outside repository: missing default Chrome, missing browser assets, system LibreSSL pkey -check support, fixture favicon 404 and old fixed-skill assertion. No failure output was overwritten."
+}

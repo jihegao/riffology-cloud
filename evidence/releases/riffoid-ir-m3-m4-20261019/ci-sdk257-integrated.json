@@ -1,0 +1,82 @@
+{
+  "schema": "riffoid-ir.github-full-check/v1",
+  "recordedAt": "2026-10-18T18:25:06.481130+00:00",
+  "repository": "jihegao/riffology-cloud",
+  "pullRequest": 256,
+  "head": "f905d790992873f84d539666de63a3b112a4d2e1",
+  "sourceTree": "716d926bcedc605ad3ad58a9edff43aa426ce108",
+  "testedMergeRef": "7cf8377fbe98dfb45c7617acde6f1958ceb96124",
+  "base": "240378f65fee54d917b053f565087095a07244db",
+  "sdkHead": "fca66cb0e1024b4e86bbbeb9a6d955b137599efa",
+  "runId": 39153083773,
+  "jobId": 117750566057,
+  "jobUrl": "https://github.com/jihegao/riffology-cloud/actions/runs/39153083773/job/117750566057",
+  "conclusion": "success",
+  "command": "npm run check",
+  "node": {
+    "tests": 3459,
+    "passed": 3446,
+    "failed": 0,
+    "skipped": 13
+  },
+  "python": {
+    "tests": 8,
+    "passed": 8,
+    "failed": 0
+  },
+  "perNodeBlock": {
+    "tests": [
+      21,
+      357,
+      564,
+      1051,
+      1311,
+      20,
+      13,
+      92,
+      30
+    ],
+    "pass": [
+      21,
+      356,
+      564,
+      1051,
+      1299,
+      20,
+      13,
+      92,
+      30
+    ],
+    "fail": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "skipped": [
+      0,
+      1,
+      0,
+      0,
+      12,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "rawLog": {
+    "bytes": 558396,
+    "characters": 550346,
+    "sha256": "4772bb0ed221bb6f315ae05e441577281d2cbeda9bb2d24266089278d336a652",
+    "location": "outside repository"
+  },
+  "scope": "Actual GitHub Linux full check of SDK257 plus IR candidate; synthetic local scopes do not establish production deployment, authenticated Agent acceptance or online ACC.",
+  "productionDeployment": false,
+  "riffoidOnlineAcceptance": null
+}

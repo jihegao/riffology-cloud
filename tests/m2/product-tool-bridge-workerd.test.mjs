@@ -24,7 +24,8 @@ export class EffectFixture extends DurableObject{
  async execute(command,effectId){
   const prior=await this.ctx.storage.get('receipt');if(prior){if(prior.effectId!==effectId)throw Error('effect-id-conflict');return prior;}
   await this.ctx.storage.put('executions',(await this.ctx.storage.get('executions')??0)+1);
-  const receipt={schemaVersion:1,scope:command.scope,turnId:command.turnId,dispatchId:command.dispatchId,commandId:command.commandId,effectId,phase:'terminal',outcome:'completed',errorCode:null,result:{text:'written'},observedAt:Date.now()};
+  const result=command.operation==='ir'?{runId:command.arguments.input.runId,events:Array.from({length:1200},(_,i)=>({sequence:i+1,time:i,phase:'tick',kind:'observed',entity:'aircraft-a'}))}:{text:'written'};
+  const receipt={schemaVersion:1,scope:command.scope,turnId:command.turnId,dispatchId:command.dispatchId,commandId:command.commandId,effectId,phase:'terminal',outcome:'completed',errorCode:null,result,observedAt:Date.now()};
   await this.ctx.storage.put('receipt',receipt);
   if(command.arguments.content==='lost-after-effect'&&!await this.ctx.storage.get('lost')){await this.ctx.storage.put('lost',true);throw Error('lost-after-effect');}
   return receipt;
@@ -79,5 +80,18 @@ test('real Bridge HTTP and SQLite ledger observe one effect after its response i
 
   let expiredCommand;const expiredHost=createProductToolBridge(identity,{executionDeadlineAt:Date.now()+20,fetchImpl:async(url,init)=>{assert.equal(String(url),PRODUCT_TOOL_BRIDGE_URL);expiredCommand=JSON.parse(init.body);await new Promise(resolve=>setTimeout(resolve,30));return mf.dispatchFetch('http://tool-bridge.test/bridge',{method:'POST',body:init.body});}});
   await assert.rejects(expiredHost.execute({...call,toolCallId:'provider-call-expired'}),/product-tool-request-failed/);const expired=await (await post(mf,'/snapshot',{identity,commandId:expiredCommand.commandId})).json();assert.equal(expired.record,null);assert.equal(expired.effects,1);
+ }finally{await mf.dispose();await rm(directory,{recursive:true,force:true});}
+});
+
+
+test('IR-specific large result survives the actual Workerd SQLite ledger and host bridge without truncation',{timeout:30_000},async()=>{
+ const directory=await mkdtemp(join(tmpdir(),'ir-tool-bridge-workerd-')),workerModule=await bundledWorker();let mf=miniflare(workerModule,directory),sent;
+ const executionDeadlineAt=Date.now()+60_000,runId='run-11111111-1111-4111-8111-111111111111',call={scope:toolScope,name:'project_ir_result',toolCallId:'provider-ir-result',args:{runId}};
+ const bridge=()=>createProductToolBridge(identity,{executionDeadlineAt,fetchImpl:async(_,init)=>{sent=JSON.parse(init.body);return mf.dispatchFetch('http://tool-bridge.test/bridge',{method:'POST',body:init.body});}});
+ try{
+  const original=await bridge().execute(call),record=JSON.parse(original.content[0].text);assert.equal(record.runId,runId);assert.equal(record.events.length,1200);assert.ok(Buffer.byteLength(original.content[0].text)>16384);
+  const before=await (await post(mf,'/snapshot',{identity,commandId:sent.commandId})).json();assert.equal(before.effects,1);assert.equal(before.record.operation,'ir');assert.equal(before.record.status,'completed');assert.deepEqual(before.record.result,record);
+  await mf.dispose();mf=miniflare(workerModule,directory);assert.deepEqual(await bridge().execute(call),original);
+  const after=await (await post(mf,'/snapshot',{identity,commandId:sent.commandId})).json();assert.equal(after.effects,1);assert.deepEqual(after.record.result,record);
  }finally{await mf.dispose();await rm(directory,{recursive:true,force:true});}
 });

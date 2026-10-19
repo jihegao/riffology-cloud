@@ -33,11 +33,19 @@ function reference(value:unknown):ToolCommandReference{
   exact(value,['scope','turnId','dispatchId','commandId','digest','effectId'],'invalid-tool-reference');
   return {scope:validateScope(value.scope),turnId:turnId(value.turnId),dispatchId:turnId(value.dispatchId),commandId:turnId(value.commandId),digest:sha(value.digest),effectId:turnId(value.effectId)};
 }
-function receipt(value:unknown):ToolEffectReceipt{
+export const IR_TOOL_RESULT_MAX_BYTES=384*1024;
+function toolResult(value:unknown,operation:ToolOperation):Record<string,unknown>{
+  if(operation!=='ir')return jsonPayload(value);
+  if(!value||typeof value!=='object'||Array.isArray(value)||Object.getPrototypeOf(value)!==Object.prototype)reject('invalid-tool-ir-result');
+  let text:string;try{text=JSON.stringify(value);}catch{reject('invalid-tool-ir-result');}
+  if(new TextEncoder().encode(text).byteLength>IR_TOOL_RESULT_MAX_BYTES||text.includes('__proto__'))reject('tool-ir-result-too-large');
+  return JSON.parse(text);
+}
+function receipt(value:unknown,operation:ToolOperation):ToolEffectReceipt{
   exact(value,['schemaVersion','scope','turnId','dispatchId','commandId','effectId','phase','outcome','errorCode','result','observedAt'],'invalid-tool-effect-receipt');
   if(value.schemaVersion!==1||typeof value.phase!=='string'||!RECEIPT_PHASES.has(value.phase as ToolEffectReceipt['phase']))reject('invalid-tool-effect-receipt');
   const phase=value.phase as ToolEffectReceipt['phase'],outcome=value.outcome===null?null:OUTCOMES.has(value.outcome as NonNullable<ToolEffectReceipt['outcome']>)?value.outcome as NonNullable<ToolEffectReceipt['outcome']>:reject('invalid-tool-effect-receipt');
-  const errorCode=value.errorCode===null?null:turnId(value.errorCode),result=value.result===null?null:jsonPayload(value.result);
+  const errorCode=value.errorCode===null?null:turnId(value.errorCode),result=value.result===null?null:toolResult(value.result,operation);
   if(phase==='terminal'){
     if(!outcome||result===null||(outcome==='completed')!==(errorCode===null))reject('invalid-tool-effect-receipt');
   }else if(outcome!==null||errorCode!==null||result!==null)reject('invalid-tool-effect-receipt');
@@ -49,8 +57,8 @@ function persistedRecord(row:Row):ToolCommandRecord{
     const scope=validateScope(JSON.parse(row.scope_json as string)),status=row.status as ToolCommandStatus;
     if(!ACTIVE.has(status)&&!TERMINAL.has(status))throw Error();
     const command=row.command_json===null?null:normalizeToolCommand(JSON.parse(row.command_json as string));
-    const result=row.result_json===null?null:jsonPayload(JSON.parse(row.result_json as string));
-    const record:ToolCommandRecord={schemaVersion:1,scope,turnId:turnId(row.turn_id),dispatchId:turnId(row.dispatch_id),commandId:turnId(row.command_id),digest:sha(row.digest),deadlineAt:positive(row.deadline_at),operation:row.operation as ToolOperation,status,effectId:row.effect_id===null?null:turnId(row.effect_id),acceptedAt:positive(row.accepted_at),updatedAt:positive(row.updated_at),dispatchedAt:row.dispatched_at===null?null:positive(row.dispatched_at),unknownAt:row.unknown_at===null?null:positive(row.unknown_at),lastObservedAt:row.last_observed_at===null?null:positive(row.last_observed_at),finishedAt:row.finished_at===null?null:positive(row.finished_at),outcome:row.outcome as ToolCommandRecord['outcome'],errorCode:row.error_code===null?null:turnId(row.error_code),result,command};
+    const operation=toolOperation(row.operation),result=row.result_json===null?null:toolResult(JSON.parse(row.result_json as string),operation);
+    const record:ToolCommandRecord={schemaVersion:1,scope,turnId:turnId(row.turn_id),dispatchId:turnId(row.dispatch_id),commandId:turnId(row.command_id),digest:sha(row.digest),deadlineAt:positive(row.deadline_at),operation,status,effectId:row.effect_id===null?null:turnId(row.effect_id),acceptedAt:positive(row.accepted_at),updatedAt:positive(row.updated_at),dispatchedAt:row.dispatched_at===null?null:positive(row.dispatched_at),unknownAt:row.unknown_at===null?null:positive(row.unknown_at),lastObservedAt:row.last_observed_at===null?null:positive(row.last_observed_at),finishedAt:row.finished_at===null?null:positive(row.finished_at),outcome:row.outcome as ToolCommandRecord['outcome'],errorCode:row.error_code===null?null:turnId(row.error_code),result,command};
     toolOperation(record.operation);if(record.updatedAt<record.acceptedAt)throw Error();
     if(command&&(command.commandId!==record.commandId||command.turnId!==record.turnId||command.dispatchId!==record.dispatchId||command.deadlineAt!==record.deadlineAt||command.operation!==record.operation||!sameScope(command.scope,scope)))throw Error();
     if(ACTIVE.has(status)!==(command!==null)||TERMINAL.has(status)!==(record.finishedAt!==null&&record.outcome===status&&result!==null))throw Error();
@@ -147,7 +155,12 @@ export class SqlToolLedger{
     const result=this.#storage.transactionSync(()=>{const row=this.#referenced(ref),current=this.#row(row);if(current.status==='dispatched'){const now=this.#now();this.#storage.sql.exec("UPDATE tool_commands SET status='unknown',updated_at=?,unknown_at=? WHERE command_id=?",now,now,ref.commandId);return this.#row(this.#get(ref.commandId)!);}if(current.status==='accepted')reject('tool-effect-not-dispatched');return current;});
     await this.#storage.sync();return structuredClone(result);
   }
-  async applyEffect(value:unknown):Promise<ToolCommandRecord>{const proof=receipt(value),proofDigest=await turnDigest(proof);await this.#ready;
+  async applyEffect(value:unknown):Promise<ToolCommandRecord>{
+    // Select the result budget from the already-admitted command, never a
+    // caller-provided receipt field. The full reference is checked below.
+    await this.#ready;exact(value,['schemaVersion','scope','turnId','dispatchId','commandId','effectId','phase','outcome','errorCode','result','observedAt'],'invalid-tool-effect-receipt');
+    const existing=this.#row(this.#get(turnId(value.commandId))??reject('tool-command-not-found'));
+    const proof=receipt(value,existing.operation),proofDigest=await turnDigest(proof);
     const result=this.#storage.transactionSync(()=>{
       const ref:ToolCommandReference={scope:proof.scope,turnId:proof.turnId,dispatchId:proof.dispatchId,commandId:proof.commandId,digest:this.#row(this.#get(proof.commandId)??reject('tool-command-not-found')).digest,effectId:proof.effectId};
       const row=this.#referenced(ref),current=this.#row(row);

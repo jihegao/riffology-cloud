@@ -1,0 +1,613 @@
+{
+  "schema": "riffoid-ir.trusted-pi-image-probe-provenance/v1",
+  "rawEvidenceLocation": "outside repository",
+  "privateDownload": {
+    "files": 43,
+    "bytes": 88828,
+    "allHashesVerified": true,
+    "records": [
+      {
+        "name": "base-exact-existing-local-tag.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "base-exact-existing-local-tag.stdout",
+        "bytes": 4055,
+        "sha256": "cb56a986ed932c0af554a76121957e0964ad0e3d975e1cbe1ab581d3caddf658"
+      },
+      {
+        "name": "base-local-tag-after-build.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "base-local-tag-after-build.stdout",
+        "bytes": 4055,
+        "sha256": "cb56a986ed932c0af554a76121957e0964ad0e3d975e1cbe1ab581d3caddf658"
+      },
+      {
+        "name": "base-read-only-projection.json",
+        "bytes": 4377,
+        "sha256": "0dc6a6d83822cd1b742f39cb1602090ecd4f922d19c411c54e1df286e42c1aab"
+      },
+      {
+        "name": "build-once-intent.json",
+        "bytes": 546,
+        "sha256": "01eea32919f03556d7000f9b38b7dd95d060bb0dc0a17b4b9089d8c6e53434c7"
+      },
+      {
+        "name": "build-once.stderr",
+        "bytes": 209,
+        "sha256": "ec34a09e033b515c85951f12dbaa17dc3090601dd78ed912c6b4548ce882034a"
+      },
+      {
+        "name": "build-once.stdout",
+        "bytes": 2495,
+        "sha256": "c75e375046fa0d522bb4d36ca6c321de2308fcd8fe501beef5e799b7f85337cb"
+      },
+      {
+        "name": "cleanup-original-after-remove.stderr",
+        "bytes": 112,
+        "sha256": "d70c82effb2d4bfee9007e96a44c37088addee855932ea118d511f85e5c714d6"
+      },
+      {
+        "name": "cleanup-original-after-remove.stdout",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "name": "cleanup-original-before.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "cleanup-original-before.stdout",
+        "bytes": 1100,
+        "sha256": "df3f1fb52c5a08f50ca52decce890a898e7ce0b5aaae5b85ffa3ca146e9827c0"
+      },
+      {
+        "name": "completed-original-projection.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "completed-original-projection.stdout",
+        "bytes": 1100,
+        "sha256": "df3f1fb52c5a08f50ca52decce890a898e7ce0b5aaae5b85ffa3ca146e9827c0"
+      },
+      {
+        "name": "create-once-intent.json",
+        "bytes": 300,
+        "sha256": "8c326e6dab2c4c46a30202c0f2f30836e6135cece0827f6a7be8adb950cb53d8"
+      },
+      {
+        "name": "create-once.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "create-once.stdout",
+        "bytes": 65,
+        "sha256": "e9c25a1b3e228c774e692a10a6e4d9eb6b6a004521fbc2a32cb41e4de44f2fb0"
+      },
+      {
+        "name": "created-original-projection.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "created-original-projection.stdout",
+        "bytes": 1081,
+        "sha256": "f45eb331a4f4bb9674f723d16b4a346d4d159eb0ffcac450478c1e1e0c237482"
+      },
+      {
+        "name": "derived-image-binding.json",
+        "bytes": 5689,
+        "sha256": "b987c93d4b48912ef238a9c5f878151e7e02e8c2e2fe56251194910ef9a27f65"
+      },
+      {
+        "name": "derived-image-projection.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "derived-image-projection.stdout",
+        "bytes": 4760,
+        "sha256": "2bb1c7fe5610905f2563280148ce3bbe1da400e378e4ddc819af8ca2dbb90f11"
+      },
+      {
+        "name": "final-containers.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "final-containers.stdout",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "final-images.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "final-images.stdout",
+        "bytes": 2808,
+        "sha256": "fd49aae7c2efed3e86eb36b10ec27a6ce726b8e28aac8874b400514ca724825c"
+      },
+      {
+        "name": "initial-containers.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "initial-containers.stdout",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "initial-images.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "initial-images.stdout",
+        "bytes": 2736,
+        "sha256": "9d4da8ea45093f85be0700d9725acdf31bb9774fb1d150b4f66ff8048eba713a"
+      },
+      {
+        "name": "no-existing-new-container.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "no-existing-new-container.stdout",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "no-existing-new-tag.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "no-existing-new-tag.stdout",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "original-container-id.json",
+        "bytes": 222,
+        "sha256": "fe9025dcf229c824a2b199137a9466f0c1579828ebbfd19798a5be12aa0d4479"
+      },
+      {
+        "name": "original-intent.json",
+        "bytes": 580,
+        "sha256": "dabd0d52013234d465171598d7da636bb3da1c9b9f7c4cb3e4b3cca2ac733a95"
+      },
+      {
+        "name": "probe-result.json",
+        "bytes": 19950,
+        "sha256": "9dddf692c8ec1160b658418d5fa0763cb41233209ae812f3148de923f2e5c0fb"
+      },
+      {
+        "name": "remove-original.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "remove-original.stdout",
+        "bytes": 65,
+        "sha256": "e9c25a1b3e228c774e692a10a6e4d9eb6b6a004521fbc2a32cb41e4de44f2fb0"
+      },
+      {
+        "name": "start-once-intent.json",
+        "bytes": 265,
+        "sha256": "34bcc80dd0fc25d54f148f4e90eb4f7caba99a73b87ab746a8ccc7c28f73825d"
+      },
+      {
+        "name": "start-original-once.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "start-original-once.stdout",
+        "bytes": 15120,
+        "sha256": "7fc9e1fda7f238d2589149bd02c1d27274bf49366c4853f9f754b1fbe90845da"
+      },
+      {
+        "name": "terminal.json",
+        "bytes": 17137,
+        "sha256": "aedc1c496670872c7ef1e6acffd2e5b7f73f561018f88c7795ba77dc2d0044ba"
+      }
+    ],
+    "verification": "All 43 received file sizes and SHA256 match the independent original remote inventory; no retransmission."
+  },
+  "reviewManifestSha256": "3d165c7f1e387a07d9637a8b5b7ee9fd2cf5809ceaa6104ad5a0974d61a14cee",
+  "inputManifestSha256": "7dae1fec221a919be8981615d38c58cd871a6e8e76dcab631503ea2e53ce422b",
+  "sourceAndHarness": [
+    {
+      "path": "context/Dockerfile",
+      "sha256": "fb382e2baf55ba0ebda7b27a80802c016b66d26faf78bb64a7b85d9169305d30"
+    },
+    {
+      "path": "context/.dockerignore",
+      "sha256": "268e605a436ad03e93f8cade0daac7722de8efbe28b55311eead8457d3b87578"
+    },
+    {
+      "path": "controller/build_probe_once.py",
+      "sha256": "cbfaec0b8877cf07d9f05061fb069b1eb25fc21f92b289d6a532d3febd19aa9d"
+    },
+    {
+      "path": "probe/host-ir-probe.mjs",
+      "sha256": "f5be69e3477e14180a8ceaa342d6adad4a1d7cb3524d9c7af7a647c980cec6b9"
+    },
+    {
+      "path": "probe/image_probe.py",
+      "sha256": "66711b910a9a0b478c47942bc022f00e9e62c9269625f22c86760067bac02c44"
+    }
+  ],
+  "imageTargets": [
+    {
+      "imagePath": "browser-preview/runtime/sha256.mjs",
+      "bytes": 2241,
+      "sha256": "85da435e9edaf4dca3411cf5f86fa45a95fe15c78060849d11f7eb0344b5bd24",
+      "overlay": false
+    },
+    {
+      "imagePath": "project-resources/text.mjs",
+      "bytes": 6700,
+      "sha256": "9f7f3266549f04a0a8214e6e725ea9d85030532364f136487833e9cc45af303e",
+      "overlay": false
+    },
+    {
+      "imagePath": "runtime/controlled-pi.mjs",
+      "bytes": 23235,
+      "sha256": "97f0cfe3acda1a000a6c1a6c416bb570f17030cb0ce18888784ae43df6805389",
+      "overlay": true
+    },
+    {
+      "imagePath": "trusted-pi/trusted-pi-turn-host.mjs",
+      "bytes": 16239,
+      "sha256": "942333ecc87eb6c7545e0494fed501d9ffa5418468039845484e223b6dfa81d6",
+      "overlay": false
+    },
+    {
+      "imagePath": "trusted-pi/product-model-transport.mjs",
+      "bytes": 7703,
+      "sha256": "c2bece021f34f0b929e796238d132a819281d172b5d8fd3a6f431ed9d46801c6",
+      "overlay": false
+    },
+    {
+      "imagePath": "trusted-pi/product-tool-bridge.mjs",
+      "bytes": 12724,
+      "sha256": "9b65fe15a806ca6cd24bd561de172282b7c852b3f18f96dd7568406ccbfe2289",
+      "overlay": true
+    },
+    {
+      "imagePath": "trusted-pi/release-candidate.mjs",
+      "bytes": 27796,
+      "sha256": "08df00c080e7292c606a2e0e650aae9befb5adf294a90902938a2f917d790399",
+      "overlay": true
+    },
+    {
+      "imagePath": "trusted-pi/trusted-pi-release.mjs",
+      "bytes": 27796,
+      "sha256": "08df00c080e7292c606a2e0e650aae9befb5adf294a90902938a2f917d790399",
+      "overlay": true
+    },
+    {
+      "imagePath": "trusted-pi/research-context.mjs",
+      "bytes": 1557,
+      "sha256": "938e89155a5d5e0c405f51db5d973a4db264e63d96e308aff8da93caaaa05076",
+      "overlay": false
+    },
+    {
+      "imagePath": "trusted-pi/ir-package.mjs",
+      "bytes": 5366,
+      "sha256": "42f4d2e88880167ee6f7feaa330a6c2b0f263383c9c658bd5dc492577da84960",
+      "overlay": true
+    },
+    {
+      "imagePath": "runtime_supervisor.py",
+      "bytes": 16912,
+      "sha256": "79e2bdedaedba063364513d853eb8325f229ba55b1e51df46cbcee359807e29c",
+      "overlay": false
+    },
+    {
+      "imagePath": "package.json",
+      "bytes": 244,
+      "sha256": "0dde532fe23b810bd09b978f990d48342f7378429f2b2c48f30e055993fa6ebe",
+      "overlay": false
+    },
+    {
+      "imagePath": "package-lock.json",
+      "bytes": 150262,
+      "sha256": "ad20b5c766c411c5ba42a4fc997890fe3494ab8adb96cf5d75031366b3d144fc",
+      "overlay": false
+    },
+    {
+      "imagePath": "vendor/riffoid-ir-plugin/README.md",
+      "bytes": 7973,
+      "sha256": "0d8bc836065aeaf1603936150441fd7ea8f742360e0701a9fbac4155a3e9acb4",
+      "overlay": true
+    },
+    {
+      "imagePath": "vendor/riffoid-ir-plugin/acceptance/b1/business-ir.json",
+      "bytes": 4509,
+      "sha256": "e27c4060e281ad195035f2ac82913651c472f00aebcd4bd0d306a51649bba4d8",
+      "overlay": true
+    },
+    {
+      "imagePath": "vendor/riffoid-ir-plugin/acceptance/b1/expected.json",
+      "bytes": 7754,
+      "sha256": "06b1b0356172cbcde43760ef9964b5c1ae0cb658cb9e382a1cee2a144fe3250a",
+      "overlay": true
+    },
+    {
+      "imagePath": "vendor/riffoid-ir-plugin/adapters/riffoid/index.mjs",
+      "bytes": 4062,
+      "sha256": "4320d902af515cbe37a1ac9a8b2a01dc44feca0586ef8ad66b05ab72b075211d",
+      "overlay": true
+    },
+    {
+      "imagePath": "vendor/riffoid-ir-plugin/adapters/riffoid/platform.mjs",
+      "bytes": 3250,
+      "sha256": "aef4031e8a5bb139cb0bfaea31c96493274f22761040da10eddef84889c4bc26",
+      "overlay": true
+    },
+    {
+      "imagePath": "vendor/riffoid-ir-plugin/browser/app.css",
+      "bytes": 3707,
+      "sha256": "7da94e938eccf330dc383804c2b40f638e8586bf0a340c67994cfbdf08cf611c",
+      "overlay": true
+    },
+    {
+      "imagePath": "vendor/riffoid-ir-plugin/browser/app.html",
+      "bytes": 2676,
+      "sha256": "25bf4510f6065a89ea701d69b4d607ae7830a8f8fc4ccfc4d3c50cd49ee03e31",
+      "overlay": true
+    },
+    {
+      "imagePath": "vendor/riffoid-ir-plugin/browser/app.js",
+      "bytes": 13945,
+      "sha256": "5044f330e47c40815591fd4e503da2141115ad80de02e3a4f60d3f35b9fc8010",
+      "overlay": true
+    },
+    {
+      "imagePath": "vendor/riffoid-ir-plugin/browser/pi-web-plugin.js",
+      "bytes": 3025,
+      "sha256": "2e40bfb8bc78b01dd982c986fcc9af9c279e3b19cc97a9f44837699dc2504b5b",
+      "overlay": true
+    },
+    {
+      "imagePath": "vendor/riffoid-ir-plugin/browser/runtime.js",
+      "bytes": 24317,
+      "sha256": "54cf8400a889748d6a796b10a3a1789ff6f622fd5fd986429ab28e2995d839ef",
+      "overlay": true
+    },
+    {
+      "imagePath": "vendor/riffoid-ir-plugin/browser/worker.js",
+      "bytes": 3599,
+      "sha256": "5905881426fc6e21310f880b07cd7a840981883e9544922bb8fd6f47e3802e0f",
+      "overlay": true
+    },
+    {
+      "imagePath": "vendor/riffoid-ir-plugin/docs/acceptance.md",
+      "bytes": 12007,
+      "sha256": "2e728a90e88844613d53dec8211940ceb14d6caa3ad74c45090721b1a59fb07e",
+      "overlay": true
+    },
+    {
+      "imagePath": "vendor/riffoid-ir-plugin/docs/domain-development.md",
+      "bytes": 4893,
+      "sha256": "dcdd7cb2d9f1bbefa4b26e67b2c685a14d44e9a453979c26c9bee7dc5af05d39",
+      "overlay": true
+    },
+    {
+      "imagePath": "vendor/riffoid-ir-plugin/docs/functional-requirements-v0.2.md",
+      "bytes": 24000,
+      "sha256": "d83f5fb2c498aec8493d74bca7a493933aeda5b2b4ba7fb1b2ff527b10b3c2b7",
+      "overlay": true
+    },
+    {
+      "imagePath": "vendor/riffoid-ir-plugin/docs/model-fields.md",
+      "bytes": 2969,
+      "sha256": "8348ce00d1bd39fa7ccd693cfa643843a94470c600ea2b117bad1e1dd9c763f5",
+      "overlay": true
+    },
+    {
+      "imagePath": "vendor/riffoid-ir-plugin/docs/riffoid-integration.md",
+      "bytes": 4642,
+      "sha256": "d334bbf3781a8ed9961735424ab8ffaccdd6533036b5f94a0bfb72bd8fcd7de1",
+      "overlay": true
+    },
+    {
+      "imagePath": "vendor/riffoid-ir-plugin/extensions/riffoid-ir/index.js",
+      "bytes": 4859,
+      "sha256": "2835a6e2c8c4c9786155d4815bede7362c95a9d36fece2b917a3676590aebd14",
+      "overlay": true
+    },
+    {
+      "imagePath": "vendor/riffoid-ir-plugin/package.json",
+      "bytes": 1215,
+      "sha256": "f6ea0722592e81cd9f8ad0e5e7c3ba8944c5dbde9b13cd25a1d726aa148e2821",
+      "overlay": true
+    },
+    {
+      "imagePath": "vendor/riffoid-ir-plugin/scripts/bootstrap-compiler.py",
+      "bytes": 1564,
+      "sha256": "34a8412cedb6473bb327b7e1d84ebbe737c402dcb8ed5e1db06fda09913ac5de",
+      "overlay": true
+    },
+    {
+      "imagePath": "vendor/riffoid-ir-plugin/scripts/check.mjs",
+      "bytes": 609,
+      "sha256": "a0a6857bc677981165fbb23e0a16d4367c2519e688d40662f0fa439943908ff3",
+      "overlay": true
+    },
+    {
+      "imagePath": "vendor/riffoid-ir-plugin/scripts/compiler.py",
+      "bytes": 3564,
+      "sha256": "d0f8249a6506f3eceaf678c69d7fe888eafe8412a7e8ed8061b7992390d369c8",
+      "overlay": true
+    },
+    {
+      "imagePath": "vendor/riffoid-ir-plugin/scripts/export-acceptance.mjs",
+      "bytes": 3388,
+      "sha256": "9a404c2ad52096fb363b3dacb657745ce84860352e27795d04cd573e5a96902a",
+      "overlay": true
+    },
+    {
+      "imagePath": "vendor/riffoid-ir-plugin/scripts/install-local.mjs",
+      "bytes": 1063,
+      "sha256": "36f0b02754b8a8d950b868802174bfd66cce8e720552129d296cc73d029e08e3",
+      "overlay": true
+    },
+    {
+      "imagePath": "vendor/riffoid-ir-plugin/scripts/riffoid-cli.mjs",
+      "bytes": 4477,
+      "sha256": "5421ec8b9361bb91afc4a68fac50e46bfecee8f3de419c6e862e95024a06c1b2",
+      "overlay": true
+    },
+    {
+      "imagePath": "vendor/riffoid-ir-plugin/scripts/start-test-workspace.mjs",
+      "bytes": 558,
+      "sha256": "50e9ec0c1e72047f865047441f90594dbe1f483422d61a1924a6d0ea265370e6",
+      "overlay": true
+    },
+    {
+      "imagePath": "vendor/riffoid-ir-plugin/scripts/test-riff-pi.mjs",
+      "bytes": 11555,
+      "sha256": "273c2be82e4091fec6092af23741c4b86dd7c107455a283724d2407d5ee24888",
+      "overlay": true
+    },
+    {
+      "imagePath": "vendor/riffoid-ir-plugin/scripts/test-workspace.mjs",
+      "bytes": 3982,
+      "sha256": "2d63d1f187f5c0b080be1e5986472ceb6cc1b322204e3e091062ef9930084eb1",
+      "overlay": true
+    },
+    {
+      "imagePath": "vendor/riffoid-ir-plugin/skills/riffoid-ir/SKILL.md",
+      "bytes": 3953,
+      "sha256": "40d2304578935b2909c9978180f3ff2f96d9106763ea494a77a026812b503158",
+      "overlay": true
+    },
+    {
+      "imagePath": "vendor/riffoid-ir-plugin/src/broker.mjs",
+      "bytes": 6760,
+      "sha256": "b6571a8187db431daec389c992b6253a57f8dcdea351f16ed3873a6dd7ce436f",
+      "overlay": true
+    },
+    {
+      "imagePath": "vendor/riffoid-ir-plugin/src/compiler.mjs",
+      "bytes": 1800,
+      "sha256": "682e706a3126cd52a1cc49fbd3f44d9d2536219f0afa6b6e23ff1068e4c02d5c",
+      "overlay": true
+    },
+    {
+      "imagePath": "vendor/riffoid-ir-plugin/src/domain-pack.mjs",
+      "bytes": 2507,
+      "sha256": "437e8e711101b0f2a431438de5ae36b1076bd92ed959e02b80eb0e60f6ce2b97",
+      "overlay": true
+    },
+    {
+      "imagePath": "vendor/riffoid-ir-plugin/src/live-connection.mjs",
+      "bytes": 1348,
+      "sha256": "258fbad419d48f25200a496a788e389b3fc333a5040a68fc2c38e7d6de25f3fd",
+      "overlay": true
+    },
+    {
+      "imagePath": "vendor/riffoid-ir-plugin/src/model-summary.d.mts",
+      "bytes": 79,
+      "sha256": "efec89f84ba80b3513c6c396d73d57041b37074562e2a16734fb68550ec1a25c",
+      "overlay": true
+    },
+    {
+      "imagePath": "vendor/riffoid-ir-plugin/src/model-summary.mjs",
+      "bytes": 1019,
+      "sha256": "d0ffdb3049478dbef41fa3b6ea891aaa18e09618a30e691bc28a2c00bee9b747",
+      "overlay": true
+    },
+    {
+      "imagePath": "vendor/riffoid-ir-plugin/src/project.mjs",
+      "bytes": 17660,
+      "sha256": "4e00dd8b909ce04e7f19153bf44c4d076a842dd4ce6d52cae92048d77abb21eb",
+      "overlay": true
+    },
+    {
+      "imagePath": "vendor/riffoid-ir-plugin/src/tools.mjs",
+      "bytes": 1779,
+      "sha256": "073df9ec9e92c7a392d7d0c42d38b526fec6388419b8e5473e26f7f6171e10fc",
+      "overlay": true
+    },
+    {
+      "imagePath": "vendor/riffoid-ir-plugin/tests/broker.test.mjs",
+      "bytes": 1816,
+      "sha256": "c687398278e0d6d3425bd6468b16da573f411e22f1996d9aad8e739dec01caa0",
+      "overlay": true
+    },
+    {
+      "imagePath": "vendor/riffoid-ir-plugin/tests/conformance.test.mjs",
+      "bytes": 5027,
+      "sha256": "ef9eb60e5cd776680f3fac7abb5bbdff70b714c863c6cba5018d975fb8086cb9",
+      "overlay": true
+    },
+    {
+      "imagePath": "vendor/riffoid-ir-plugin/tests/development.test.mjs",
+      "bytes": 5792,
+      "sha256": "14ea251848799d7653b52fd669dbb85157140584363c297efd9e39c409260862",
+      "overlay": true
+    },
+    {
+      "imagePath": "vendor/riffoid-ir-plugin/tests/model-summary.test.mjs",
+      "bytes": 1343,
+      "sha256": "03b31f36fac5b1ed36605f928b503fa7086e7a479d4bf47b4fb76520a31a0b6e",
+      "overlay": true
+    },
+    {
+      "imagePath": "vendor/riffoid-ir-plugin/tests/package.test.mjs",
+      "bytes": 2621,
+      "sha256": "98fe983d62aff910a2bc12ff5914e4991be9ad3cfb6e8479bfaa76aa9ed0d6f2",
+      "overlay": true
+    },
+    {
+      "imagePath": "vendor/riffoid-ir-plugin/tests/project.test.mjs",
+      "bytes": 6216,
+      "sha256": "448188f1e4b2601c68d051560dced782902f977082ba511a39e553a440d6992a",
+      "overlay": true
+    },
+    {
+      "imagePath": "vendor/riffoid-ir-plugin/tests/riffoid-cli.test.mjs",
+      "bytes": 5411,
+      "sha256": "91f96e88e84d14a80584a734157c321e31cc330c21bde5f049e153fb61cc43f7",
+      "overlay": true
+    },
+    {
+      "imagePath": "vendor/riffoid-ir-plugin/tests/test-workspace.test.mjs",
+      "bytes": 4509,
+      "sha256": "4ee5de006df262c3dc75c990bb466712e44b4464e6993619e77bf524b7a4b02f",
+      "overlay": true
+    },
+    {
+      "imagePath": "vendor/riffoid-ir-plugin/tests/worker.test.mjs",
+      "bytes": 2128,
+      "sha256": "8a7724bfc41a75ec05bb4074e4d7ce1377e11fbf98e3658023550a879c8ed7f4",
+      "overlay": true
+    },
+    {
+      "imagePath": "vendor/riffoid-ir-plugin.lock.json",
+      "bytes": 7351,
+      "sha256": "7c376d888134915642ed1bf939f810d244764b75f11646cb8337986d2e9843f3",
+      "overlay": true
+    }
+  ],
+  "redactions": [
+    "Private filesystem roots and raw host inventory omitted.",
+    "Original opaque container, binding epoch, request and synthetic session identifiers omitted.",
+    "Authorization reply receipt and Docker configuration excluded."
+  ],
+  "registryPublicationOrProductionProof": false
+}

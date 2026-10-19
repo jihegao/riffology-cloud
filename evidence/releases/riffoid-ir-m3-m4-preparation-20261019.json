@@ -1,0 +1,230 @@
+{
+  "schema": "riffoid.ir-plugin-preparation/v1",
+  "recordedAt": "2026-10-18T17:44:34.291043+00:00",
+  "issue": "https://github.com/jihegao/riffology-cloud/issues/254",
+  "hostBaseCommit": "240378f65fee54d917b053f565087095a07244db",
+  "pluginContractCommit": "f1f6762e774b5eba63b788a2baacde56d491c0fe",
+  "pluginVersion": "0.3.1",
+  "packageSha256": "86b7a28a1b92652fb01b15ea6671414ecdd5e38c639878455e7abffb60d46ad6",
+  "packageFiles": 45,
+  "vendorCopies": 2,
+  "validation": {
+    "pluginFullCheck": {
+      "passed": 25,
+      "failed": 0,
+      "compiler": "real local CompilerSDK 0.1.0"
+    },
+    "canonicalWorkerd": {
+      "passed": 17,
+      "failed": 0,
+      "executionBoundary": "real local Workerd SQLite/D1/R2, synthetic scope/execution boundaries; no live account acceptance"
+    },
+    "priorWorkerdFixtureRegression": {
+      "passed": 15,
+      "failed": 0
+    },
+    "hostFullCheck": {
+      "command": "npm run check",
+      "exitCode": 0,
+      "node": {
+        "tests": 3437,
+        "passed": 3424,
+        "failed": 0,
+        "skipped": 13
+      },
+      "python": {
+        "tests": 8,
+        "passed": 8
+      },
+      "rawLog": {
+        "bytes": 366089,
+        "sha256": "5e6fec1819620709fbe896ef45aea02e574b9cb7f548ffb810c76b948c1b21cb",
+        "location": "outside repository"
+      },
+      "finalDeliveryFixes": [
+        "Post-action delivery/auth failure propagates unknown and preserves original effect.",
+        "Uncertain heartbeat closes original broker rather than renewing an unseen claim.",
+        "First empty project follows explicit save/open/continue boundary."
+      ],
+      "precedingFullCheck": "host-check.json",
+      "testedHead": "bda696a9f59135ba3c6c40f2524e8f51044e2e82",
+      "scope": "Prior published IR source, before the subsequent context-filter and determinate-registration-failure fixes. Final integrated full check remains pending."
+    },
+    "precedingHostFullCheck": {
+      "command": "npm run check",
+      "exitCode": 0,
+      "node": {
+        "tests": 3428,
+        "passed": 3415,
+        "failed": 0,
+        "skipped": 13
+      },
+      "python": {
+        "tests": 8,
+        "passed": 8
+      },
+      "rawLog": {
+        "bytes": 365054,
+        "sha256": "e7318922bc68a569a9457987ad33fc19307c2bfedf40f44ade8a68f653b701cd",
+        "location": "outside repository"
+      },
+      "environment": {
+        "M1_BROWSER_CHANNEL": "chromium",
+        "browserVersion": "Chromium 153.0.8010.12",
+        "tls": "existing Homebrew OpenSSL 3.6.4",
+        "browserAssets": "README hash-verified prepared assets"
+      },
+      "previousFailuresPreserved": "Outside repository: missing default Chrome, missing browser assets, system LibreSSL pkey -check support, fixture favicon 404 and old fixed-skill assertion. No failure output was overwritten.",
+      "evidence": "riffoid-ir-m3-m4-20261019/host-check.json"
+    },
+    "webkitCompatibility": {
+      "status": "passed",
+      "tests": 2,
+      "engine": "Playwright WebKit 26.6 / revision 2359",
+      "hostCommit": "bda696a9f59135ba3c6c40f2524e8f51044e2e82",
+      "evidence": "riffoid-ir-m3-m4-20261019/webkit-compatibility/manifest.json",
+      "manifestSha256": "0868292d1d4c59a3cf150e7261e0f625e62ce2554905ec0c63a606ace11f98df",
+      "executionBoundary": "Real local headless WebKit, synthetic project/RPC authority. Not online ACC.",
+      "sourceModified": false,
+      "cspModified": false
+    },
+    "buildContext": {
+      "passed": 7,
+      "failed": 0,
+      "skipped": 0,
+      "dockerClient": "29.9.0",
+      "daemonBuild": false,
+      "evidence": "riffoid-ir-m3-m4-20261019/trusted-pi-build-context.json"
+    },
+    "registrationFailureRecovery": {
+      "passed": 71,
+      "failed": 0,
+      "typecheck": "passed",
+      "evidence": "riffoid-ir-m3-m4-20261019/registration-failure-recovery.json",
+      "scope": "real SQLite Ledger/Dispatcher/ProductToolBridge/Core with synthetic receipt/actor/KV/R2; not online ACC"
+    },
+    "nativeBrowserCapturePortability": {
+      "passed": 5,
+      "failed": 0,
+      "evidence": "riffoid-ir-m3-m4-20261019/ci-first-run.json",
+      "correctedGitHubCheck": "passed run39151117118"
+    },
+    "postReviewGitHubFullCheck": {
+      "head": "810f30ad67b32cbf84108f16aafacfab5f49c97e",
+      "passed": 3430,
+      "skipped": 13,
+      "failed": 0,
+      "pythonPassed": 8,
+      "evidence": "riffoid-ir-m3-m4-20261019/ci-post-review.json"
+    },
+    "sdk257IntegratedGitHubFullCheck": {
+      "head": "f905d790992873f84d539666de63a3b112a4d2e1",
+      "testedMergeRef": "7cf8377fbe98dfb45c7617acde6f1958ceb96124",
+      "node": {
+        "tests": 3459,
+        "passed": 3446,
+        "failed": 0,
+        "skipped": 13
+      },
+      "python": {
+        "tests": 8,
+        "passed": 8,
+        "failed": 0
+      },
+      "status": "passed",
+      "evidence": "riffoid-ir-m3-m4-20261019/ci-sdk257-integrated.json"
+    },
+    "latestArtifactCandidateGitHubFullCheck": {
+      "head": "9f69399dbe06ab1f579c12f63ad7c8c6445c0350",
+      "testedMergeRef": "16997626e3998798db01302c80ff92193e8ed5d3",
+      "node": {
+        "tests": 3459,
+        "passed": 3446,
+        "failed": 0,
+        "skipped": 13
+      },
+      "python": {
+        "tests": 8,
+        "passed": 8,
+        "failed": 0
+      },
+      "status": "passed",
+      "evidence": "riffoid-ir-m3-m4-20261019/ci-native-artifacts-candidate.json"
+    }
+  },
+  "imageExecutionProbe": {
+    "status": "passed",
+    "evidence": "riffoid-ir-m3-m4-20261019/project-tools-image-probe.json",
+    "imageId": "sha256:402381b5b2c0f460e6af44bc4e953d53f6bdb648de4c9ccbeee837815580cd8f",
+    "productionDeployment": false
+  },
+  "deployment": null,
+  "onlineAcceptance": null,
+  "executionBoundary": "Shared fixed package implementation and actual local Workerd/browser plus AMD128 native-image probes. Browser outputs remain local/unverified; native SDK probes use synthetic transport callbacks. No production deployment or online ACC is established.",
+  "remaining": [
+    "Receive confirmed final baseline and serial production handoff from the ongoing acceptance batch.",
+    "Integrate into that baseline, publish exact reviewed immutable images and deploy while preserving existing resources.",
+    "Complete actual Riffoid online ACC-01 through ACC-05 with the same passed PiWeb artifact and retain selected real session/tool/run/reference evidence."
+  ],
+  "selectedLocalWorkerdEvidence": "riffoid-ir-m3-m4-20261019/",
+  "pluginPullRequest": "https://github.com/jihegao/riffoid-ir-plugin/pull/2",
+  "hostPullRequest": "https://github.com/jihegao/riffology-cloud/pull/256",
+  "finalIntegratedFullCheck": "Independent SDK257/IR candidate passed; final confirmed main-baseline integration remains pending.",
+  "integrationCandidate": {
+    "sdkPullRequest": 257,
+    "sdkHead": "fca66cb0e1024b4e86bbbeb9a6d955b137599efa",
+    "mergedOnlyIntoIndependentBranch": false,
+    "mainConfirmed": false,
+    "fullIntegratedCheck": "passed GitHub Linux CI39153083773",
+    "previewEvidence": "riffoid-ir-m3-m4-20261019/sdk257-integration-preview.json",
+    "targetedCheck": {
+      "passed": 118,
+      "failed": 0,
+      "uiPassed": 21,
+      "typecheck": "passed",
+      "sourcesStable": true,
+      "evidence": "riffoid-ir-m3-m4-20261019/sdk257-integration-targeted.json"
+    },
+    "head": "f905d790992873f84d539666de63a3b112a4d2e1",
+    "sourceTree": "716d926bcedc605ad3ad58a9edff43aa426ce108",
+    "fullCheckEvidence": "riffoid-ir-m3-m4-20261019/ci-sdk257-integrated.json",
+    "upstreamSdkMainMerge": "004e5cd5940c6e283b1b58501c3f409a569f6e20",
+    "irCandidateMergedIntoMain": false,
+    "upstreamSdkMergedIntoMain": true,
+    "finalMainAndSerialWriterHandoffPending": true
+  },
+  "trustedPiImageExecutionProbe": {
+    "status": "passed",
+    "evidence": "riffoid-ir-m3-m4-20261019/trusted-pi-image-probe.json",
+    "provenance": "riffoid-ir-m3-m4-20261019/trusted-pi-image-probe-provenance.json",
+    "engineId": "sha256:dcd4a5fc6f02c9d0ee1290e07c268a8dba4aba1790e75b98c5f7bb83792da487",
+    "localDescriptorType": "application/vnd.oci.image.manifest.v1+json",
+    "nodeVersion": "22.23.2",
+    "piSdkVersion": "0.85.0",
+    "uid": 10002,
+    "gid": 10002,
+    "checkedImageTargets": 59,
+    "fixedPackageFiles": 45,
+    "syntheticTransportsOnly": true,
+    "registryPublication": null,
+    "productionDeployment": false,
+    "rawEvidenceFiles": 43,
+    "rawEvidenceBytes": 88828
+  },
+  "nativeArtifactClosureRecordedAt": "2026-10-18T23:05:23.933053+00:00",
+  "ociIntegrityVerification": {
+    "status": "passed-both-images",
+    "evidence": "riffoid-ir-m3-m4-20261019/oci-image-verification.json",
+    "provenance": "riffoid-ir-m3-m4-20261019/oci-image-verification-provenance.json",
+    "bothPrivateArchivesLocallyReverified": true,
+    "registryPublication": null,
+    "productionDeployment": null
+  },
+  "gatewayOfflineBuild": {
+    "status": "passed-offline-candidate-only",
+    "evidence": "riffoid-ir-m3-m4-20261019/gateway-offline-build.json",
+    "bundleSha256": "a558cbfecab0c09fa8237e421af0f8333fc5e589a9b6775bc19c50eadb995f02",
+    "assets": 96,
+    "productionDeployment": false
+  }
+}

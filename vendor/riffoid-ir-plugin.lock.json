@@ -1,0 +1,234 @@
+{
+  "schema": "riffoid-ir.package-pin/v1",
+  "name": "riffoid-ir-plugin",
+  "version": "0.3.1",
+  "packageSha256": "86b7a28a1b92652fb01b15ea6671414ecdd5e38c639878455e7abffb60d46ad6",
+  "contractCommit": "f1f6762e774b5eba63b788a2baacde56d491c0fe",
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 7973,
+      "sha256": "0d8bc836065aeaf1603936150441fd7ea8f742360e0701a9fbac4155a3e9acb4"
+    },
+    {
+      "path": "acceptance/b1/business-ir.json",
+      "bytes": 4509,
+      "sha256": "e27c4060e281ad195035f2ac82913651c472f00aebcd4bd0d306a51649bba4d8"
+    },
+    {
+      "path": "acceptance/b1/expected.json",
+      "bytes": 7754,
+      "sha256": "06b1b0356172cbcde43760ef9964b5c1ae0cb658cb9e382a1cee2a144fe3250a"
+    },
+    {
+      "path": "adapters/riffoid/index.mjs",
+      "bytes": 4062,
+      "sha256": "4320d902af515cbe37a1ac9a8b2a01dc44feca0586ef8ad66b05ab72b075211d"
+    },
+    {
+      "path": "adapters/riffoid/platform.mjs",
+      "bytes": 3250,
+      "sha256": "aef4031e8a5bb139cb0bfaea31c96493274f22761040da10eddef84889c4bc26"
+    },
+    {
+      "path": "browser/app.css",
+      "bytes": 3707,
+      "sha256": "7da94e938eccf330dc383804c2b40f638e8586bf0a340c67994cfbdf08cf611c"
+    },
+    {
+      "path": "browser/app.html",
+      "bytes": 2676,
+      "sha256": "25bf4510f6065a89ea701d69b4d607ae7830a8f8fc4ccfc4d3c50cd49ee03e31"
+    },
+    {
+      "path": "browser/app.js",
+      "bytes": 13945,
+      "sha256": "5044f330e47c40815591fd4e503da2141115ad80de02e3a4f60d3f35b9fc8010"
+    },
+    {
+      "path": "browser/pi-web-plugin.js",
+      "bytes": 3025,
+      "sha256": "2e40bfb8bc78b01dd982c986fcc9af9c279e3b19cc97a9f44837699dc2504b5b"
+    },
+    {
+      "path": "browser/runtime.js",
+      "bytes": 24317,
+      "sha256": "54cf8400a889748d6a796b10a3a1789ff6f622fd5fd986429ab28e2995d839ef"
+    },
+    {
+      "path": "browser/worker.js",
+      "bytes": 3599,
+      "sha256": "5905881426fc6e21310f880b07cd7a840981883e9544922bb8fd6f47e3802e0f"
+    },
+    {
+      "path": "docs/acceptance.md",
+      "bytes": 12007,
+      "sha256": "2e728a90e88844613d53dec8211940ceb14d6caa3ad74c45090721b1a59fb07e"
+    },
+    {
+      "path": "docs/domain-development.md",
+      "bytes": 4893,
+      "sha256": "dcdd7cb2d9f1bbefa4b26e67b2c685a14d44e9a453979c26c9bee7dc5af05d39"
+    },
+    {
+      "path": "docs/functional-requirements-v0.2.md",
+      "bytes": 24000,
+      "sha256": "d83f5fb2c498aec8493d74bca7a493933aeda5b2b4ba7fb1b2ff527b10b3c2b7"
+    },
+    {
+      "path": "docs/model-fields.md",
+      "bytes": 2969,
+      "sha256": "8348ce00d1bd39fa7ccd693cfa643843a94470c600ea2b117bad1e1dd9c763f5"
+    },
+    {
+      "path": "docs/riffoid-integration.md",
+      "bytes": 4642,
+      "sha256": "d334bbf3781a8ed9961735424ab8ffaccdd6533036b5f94a0bfb72bd8fcd7de1"
+    },
+    {
+      "path": "extensions/riffoid-ir/index.js",
+      "bytes": 4859,
+      "sha256": "2835a6e2c8c4c9786155d4815bede7362c95a9d36fece2b917a3676590aebd14"
+    },
+    {
+      "path": "package.json",
+      "bytes": 1215,
+      "sha256": "f6ea0722592e81cd9f8ad0e5e7c3ba8944c5dbde9b13cd25a1d726aa148e2821"
+    },
+    {
+      "path": "scripts/bootstrap-compiler.py",
+      "bytes": 1564,
+      "sha256": "34a8412cedb6473bb327b7e1d84ebbe737c402dcb8ed5e1db06fda09913ac5de"
+    },
+    {
+      "path": "scripts/check.mjs",
+      "bytes": 609,
+      "sha256": "a0a6857bc677981165fbb23e0a16d4367c2519e688d40662f0fa439943908ff3"
+    },
+    {
+      "path": "scripts/compiler.py",
+      "bytes": 3564,
+      "sha256": "d0f8249a6506f3eceaf678c69d7fe888eafe8412a7e8ed8061b7992390d369c8"
+    },
+    {
+      "path": "scripts/export-acceptance.mjs",
+      "bytes": 3388,
+      "sha256": "9a404c2ad52096fb363b3dacb657745ce84860352e27795d04cd573e5a96902a"
+    },
+    {
+      "path": "scripts/install-local.mjs",
+      "bytes": 1063,
+      "sha256": "36f0b02754b8a8d950b868802174bfd66cce8e720552129d296cc73d029e08e3"
+    },
+    {
+      "path": "scripts/riffoid-cli.mjs",
+      "bytes": 4477,
+      "sha256": "5421ec8b9361bb91afc4a68fac50e46bfecee8f3de419c6e862e95024a06c1b2"
+    },
+    {
+      "path": "scripts/start-test-workspace.mjs",
+      "bytes": 558,
+      "sha256": "50e9ec0c1e72047f865047441f90594dbe1f483422d61a1924a6d0ea265370e6"
+    },
+    {
+      "path": "scripts/test-riff-pi.mjs",
+      "bytes": 11555,
+      "sha256": "273c2be82e4091fec6092af23741c4b86dd7c107455a283724d2407d5ee24888"
+    },
+    {
+      "path": "scripts/test-workspace.mjs",
+      "bytes": 3982,
+      "sha256": "2d63d1f187f5c0b080be1e5986472ceb6cc1b322204e3e091062ef9930084eb1"
+    },
+    {
+      "path": "skills/riffoid-ir/SKILL.md",
+      "bytes": 3953,
+      "sha256": "40d2304578935b2909c9978180f3ff2f96d9106763ea494a77a026812b503158"
+    },
+    {
+      "path": "src/broker.mjs",
+      "bytes": 6760,
+      "sha256": "b6571a8187db431daec389c992b6253a57f8dcdea351f16ed3873a6dd7ce436f"
+    },
+    {
+      "path": "src/compiler.mjs",
+      "bytes": 1800,
+      "sha256": "682e706a3126cd52a1cc49fbd3f44d9d2536219f0afa6b6e23ff1068e4c02d5c"
+    },
+    {
+      "path": "src/domain-pack.mjs",
+      "bytes": 2507,
+      "sha256": "437e8e711101b0f2a431438de5ae36b1076bd92ed959e02b80eb0e60f6ce2b97"
+    },
+    {
+      "path": "src/live-connection.mjs",
+      "bytes": 1348,
+      "sha256": "258fbad419d48f25200a496a788e389b3fc333a5040a68fc2c38e7d6de25f3fd"
+    },
+    {
+      "path": "src/model-summary.d.mts",
+      "bytes": 79,
+      "sha256": "efec89f84ba80b3513c6c396d73d57041b37074562e2a16734fb68550ec1a25c"
+    },
+    {
+      "path": "src/model-summary.mjs",
+      "bytes": 1019,
+      "sha256": "d0ffdb3049478dbef41fa3b6ea891aaa18e09618a30e691bc28a2c00bee9b747"
+    },
+    {
+      "path": "src/project.mjs",
+      "bytes": 17660,
+      "sha256": "4e00dd8b909ce04e7f19153bf44c4d076a842dd4ce6d52cae92048d77abb21eb"
+    },
+    {
+      "path": "src/tools.mjs",
+      "bytes": 1779,
+      "sha256": "073df9ec9e92c7a392d7d0c42d38b526fec6388419b8e5473e26f7f6171e10fc"
+    },
+    {
+      "path": "tests/broker.test.mjs",
+      "bytes": 1816,
+      "sha256": "c687398278e0d6d3425bd6468b16da573f411e22f1996d9aad8e739dec01caa0"
+    },
+    {
+      "path": "tests/conformance.test.mjs",
+      "bytes": 5027,
+      "sha256": "ef9eb60e5cd776680f3fac7abb5bbdff70b714c863c6cba5018d975fb8086cb9"
+    },
+    {
+      "path": "tests/development.test.mjs",
+      "bytes": 5792,
+      "sha256": "14ea251848799d7653b52fd669dbb85157140584363c297efd9e39c409260862"
+    },
+    {
+      "path": "tests/model-summary.test.mjs",
+      "bytes": 1343,
+      "sha256": "03b31f36fac5b1ed36605f928b503fa7086e7a479d4bf47b4fb76520a31a0b6e"
+    },
+    {
+      "path": "tests/package.test.mjs",
+      "bytes": 2621,
+      "sha256": "98fe983d62aff910a2bc12ff5914e4991be9ad3cfb6e8479bfaa76aa9ed0d6f2"
+    },
+    {
+      "path": "tests/project.test.mjs",
+      "bytes": 6216,
+      "sha256": "448188f1e4b2601c68d051560dced782902f977082ba511a39e553a440d6992a"
+    },
+    {
+      "path": "tests/riffoid-cli.test.mjs",
+      "bytes": 5411,
+      "sha256": "91f96e88e84d14a80584a734157c321e31cc330c21bde5f049e153fb61cc43f7"
+    },
+    {
+      "path": "tests/test-workspace.test.mjs",
+      "bytes": 4509,
+      "sha256": "4ee5de006df262c3dc75c990bb466712e44b4464e6993619e77bf524b7a4b02f"
+    },
+    {
+      "path": "tests/worker.test.mjs",
+      "bytes": 2128,
+      "sha256": "8a7724bfc41a75ec05bb4074e4d7ce1377e11fbf98e3658023550a879c8ed7f4"
+    }
+  ]
+}

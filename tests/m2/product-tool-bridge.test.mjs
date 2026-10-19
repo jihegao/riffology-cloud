@@ -9,7 +9,7 @@ function record(command,overrides={}){return {schemaVersion:1,scope:command.scop
 function fixture(transform=(value)=>value,boundIdentity=identity){const sent=[];return {sent,bridge:createProductToolBridge(boundIdentity,{clock:()=>now,executionDeadlineAt:now+600000,fetchImpl:async(url,init)=>{const command=JSON.parse(init.body);sent.push({url:String(url),init,command});return Response.json(transform(record(command)));}})};}
 
 test('release exposes bounded project tools with closed argument schemas',()=>{
-  assert.deepEqual(productToolDefinitions.map(value=>value.name),['project_read','project_read_page','project_write','project_edit','project_list','project_search','project_install_preview_adapter','project_set_experiment_parameters','project_bash']);for(const definition of productToolDefinitions){assert.equal(definition.parameters.type,'object');assert.equal(definition.parameters.additionalProperties,false);assert.deepEqual(definition.parameters.required,Object.keys(definition.parameters.properties));}
+  assert.deepEqual(productToolDefinitions.map(value=>value.name),['project_read','project_read_page','project_write','project_edit','project_list','project_search','project_install_preview_adapter','project_set_experiment_parameters','project_bash','project_ir_check','project_ir_compile','project_ir_run','project_ir_result','project_ir_mode','project_ir_show','project_ir_install']);for(const definition of productToolDefinitions){assert.equal(definition.parameters.type,'object');assert.equal(definition.parameters.additionalProperties,false);if(!definition.name.startsWith('project_ir_'))assert.deepEqual(definition.parameters.required,Object.keys(definition.parameters.properties));}
 });
 test('platform preview adapter tool sends only the pinned bytes as one scoped write',async()=>{
   const content='reviewed-adapter\n',sha256=await import('node:crypto').then(({createHash})=>createHash('sha256').update(content).digest('hex'));
@@ -78,4 +78,24 @@ test('parameter draft terminal validation is actionable while arbitrary effect e
     await assert.rejects(f.bridge.execute(call),{message:errorCode.startsWith('simulation-')?errorCode:'product-tool-effect-failed'});
     assert.equal(f.sent.length,1);
   }
+});
+
+
+test('IR tools preserve the original scoped command and use a distinct bounded response budget',async()=>{
+ const f=fixture(value=>({...value,result:{runId:'run-a',events:[{kind:'observed',description:'x'.repeat(90_000)}]}}));
+ const result=await f.bridge.execute({scope,name:'project_ir_result',toolCallId:'ir-result',args:{runId:'run-a'}});
+ assert.equal(JSON.parse(result.content[0].text).events[0].description.length,90_000);
+ assert.equal(f.sent[0].command.operation,'ir');assert.deepEqual(f.sent[0].command.arguments,{operation:'project_ir_result',input:{runId:'run-a'}});
+ const ordinary=fixture(value=>({...value,result:{content:'x'.repeat(90_000)}}));
+ await assert.rejects(ordinary.bridge.execute({scope,name:'project_read',toolCallId:'read-a',args:{path:'x'}}),/response-too-large/);
+ const excessive=fixture(value=>({...value,result:{events:['x'.repeat(384*1024)]}}));
+ await assert.rejects(excessive.bridge.execute({scope,name:'project_ir_result',toolCallId:'result-big',args:{runId:'run-a'}}),/response-too-large/);
+});
+test('/sim commands execute exactly once before the model explains the scoped result',async()=>{
+ const f=fixture(value=>({...value,result:{defaultMode:'ir'}}));
+ const prepared=await f.bridge.preparePrompt('/sim ir');
+ assert.match(prepared,/User command: \/sim ir/);assert.match(prepared,/defaultMode/);
+ assert.equal(f.sent.length,1);assert.deepEqual(f.sent[0].command.arguments,{operation:'mode',input:{mode:'ir'}});
+ assert.equal(await f.bridge.preparePrompt('build an IR model'),'build an IR model');assert.equal(f.sent.length,1);
+ const show=fixture();await show.bridge.preparePrompt('/sim show');assert.deepEqual(show.sent[0].command.arguments,{operation:'show',input:{}});
 });

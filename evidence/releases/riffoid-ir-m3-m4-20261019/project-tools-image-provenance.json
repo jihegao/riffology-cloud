@@ -1,0 +1,7 @@
+{
+  "originalSummaryBytes": 29149,
+  "originalSummarySha256": "8d7431b204ecfcc39bc618e050b452ea1ad719a5adbf1777d2078c78393f8852",
+  "publicSummarySha256": "8d7431b204ecfcc39bc618e050b452ea1ad719a5adbf1777d2078c78393f8852",
+  "redaction": "Only local/remote probe directory prefixes replaced. Binary bundle/raw receipts/controllers stay outside repository.",
+  "productionDeployment": false
+}

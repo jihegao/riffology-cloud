@@ -69,3 +69,31 @@ test('normal Bash exit stops background group members before returning a result'
   await new Promise(resolve=>setTimeout(resolve,450));
   assert.equal(existsSync(join(f.root,'model/background.txt')),false);
 });
+
+
+test('IR file helper uses fixed executable, package, compiler and stdin without a user shell',t=>{
+ const f=fixture(t),harness=`
+import importlib.util, json, os, time
+spec=importlib.util.spec_from_file_location('svc',${JSON.stringify(service)})
+svc=importlib.util.module_from_spec(spec);spec.loader.exec_module(svc)
+seen=[]
+class FakeProcess:
+ pid=123456789; returncode=0
+ def __init__(self,argv,**kwargs): seen.append({'argv':argv,'cwd':kwargs['cwd'],'env':kwargs['env']})
+ def communicate(self,stdin=None,timeout=None):
+  seen[-1]['input']=json.loads(stdin)
+  return b'{"installed":true}', b''
+svc.subprocess.Popen=FakeProcess
+svc.verify_ir_package=lambda: {'packageSha256':'a'*64}
+svc.os.killpg=lambda *args: None
+root=${JSON.stringify(f.root)}
+result=svc.execute({'deadlineAt':int(time.time()*1000)+60000,'operation':'ir','arguments':{'operation':'install','input':{}}},root)
+print(json.dumps({'result':result,'seen':seen}))
+`;const found=spawnSync('python3',['-c',harness],{encoding:'utf8'});assert.equal(found.status,0,found.stderr);
+ const result=JSON.parse(found.stdout);assert.equal(result.result.installed,true);
+ assert.deepEqual(result.seen[0].argv,['/usr/local/bin/node','/opt/riffology/riffoid-ir-plugin/scripts/riffoid-cli.mjs']);
+ assert.deepEqual(result.seen[0].input,{operation:'install',input:{}});assert.equal(realpathSync(result.seen[0].cwd),realpathSync(f.root));
+ assert.equal(result.seen[0].env.RIFFOID_IR_PYTHON,'/opt/riffology/python-compiler/bin/python3');assert.equal(result.seen[0].env.RIFFOID_IR_COMPILER_WHEEL_SHA256,'e7bcd9271dd42106b78e87176e3485b290536f5291c0440872b814fc549858f7');
+ for(const operation of ['project_ir_run','project_ir_result','bash'])assert.equal(run(f.root,'ir',{operation,input:{}}).error,'project-tool-ir-authority-required');
+ assert.equal(run(f.root,'ir',{operation:'show',input:{script:'id'}}).error,'invalid-tool-arguments');
+});
