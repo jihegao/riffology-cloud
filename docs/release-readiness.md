@@ -1,3 +1,11 @@
+## 2026-10-19：SDK已发布、两Turn保存释放；首次Report失败，原门禁与UI已收尾
+
+fb07在用户接受9c43已知idle自然替换条件后继续：#257正常合并004e、Gateway3043/d266单次默认关闭发布、96资产全正文及新frame7876B/63eb核验通过。一个新项目/一个Session内T1/R1与T2/R2保存和联合释放通过，Dashboard20/50、Pause/Resume与真实artifact两chunks/17567B/正文SHA/content前缀通过；首次host Report显示savedUnavailable/frame0即停止，未Retry、Session2/T3、V2或cold restore。
+
+原owned DELETE200后最终Worker cb577ad1…/236 defaultclosed/source3043；完整53GET保全、原用户五GET、当前物理四GET和完整document退出/Inspector关闭已独立闭合。当前11inactive logical/Dash0及同d03b/v13/ec8唯一已接受idle2d986 VM running/container stopped不代表历史全释放或零费用；Preview计数170→171不代表停poll，AbortError与一个status未知GET保留。
+
+[实际结果](project-view-native-sdk-publication-acceptance-result-20261019.md)与[安全证据](../evidence/releases/project-view-native-sdk-publication-acceptance-execution-20261019/inventory.json)区分部分功能成功、首次Report失败和scoped清理通过。#214仍Acceptance/blocked，#255Acceptance/P0/blocked；最小竞态修复[#258](https://github.com/jihegao/riffology-cloud/issues/258)仅离线In progress/P0，未合并/部署/验收。强源码候选不作唯一线上根因；原固定包/失败/Revision/费用/锁保留，JHG-46未完成。下方dated准备/差异提案历史原文不改。
+
 ## 2026-10-19：SDK已默认关闭发布，T1联合释放；已知idle自然替换条件待决定
 
 固定#257正常合并004e，新Gateway3043/d266单次发布、前后完整保全及96资产完整字节GET通过。新普通项目仅一Session/T1，R1 saved；22:26原用户五GET与22:27完整物理四GET已确认T1产品级联合释放。T2/gate尚未执行。新frame尚未GET，源码闭门503行为使其只读核对安排在R2可信唯一PUT后/V1前，仍pending。

@@ -1,0 +1,241 @@
+{
+  "schema": "jhg46-sdk-t1-saved-effects-independent-review/v1",
+  "reviewedAt": "2026-10-18T22:24:32.157534+00:00",
+  "mustFix": [],
+  "scope": "Saved canonical R1 and two persisted command effects; not full T1 release or exact bash-argument acceptance.",
+  "checks": {
+    "firstOriginalBody0": true,
+    "firstOriginalBody1": true,
+    "firstOriginalBody2": true,
+    "firstOriginalBody3": true,
+    "firstOriginalBody4": true,
+    "originalEventsBodyBytesHash": true,
+    "toolCanonicalOriginalBody0": true,
+    "toolCanonicalOriginalBody1": true,
+    "toolCanonicalOriginalBody2": true,
+    "toolCanonicalOriginalBody3": true,
+    "sameOwnerOriginalTurnScopeAndCompletedSaved": true,
+    "snapshotOriginalSessionHeadCheckpointMatch": true,
+    "allFirstFiveAndToolCanonicalHttp200": true,
+    "complete49ContiguousOriginalEvents": true,
+    "twoExpectedOriginalToolEvents": true,
+    "terminalSuccess_project_bash": true,
+    "terminalSuccess_project_write": true,
+    "bashCompletedExit0BoundedEmptyOutput": true,
+    "writeExactNewSkill6056Hash": true,
+    "toolReceiptSequenceMatchesTwoExpectedEffects": true,
+    "canonicalRevisionAndFilesDigestMatch": true,
+    "onlyThreeDirectoriesAndSkillAdded": true,
+    "canonicalFileIndexHasNewExactSkillMetadata": true,
+    "firstReadReleaseStillPending": true,
+    "actualThreeProviderResponses200": true,
+    "publicReceiptDoesNotExposeActualArguments": true,
+    "actualToolEventsOmitArguments": true
+  },
+  "originals": [
+    {
+      "file": "ordinary/turn-1-once/first-read-and-events.original.private.json",
+      "bytes": 38297,
+      "sha256": "5de8f561ebd4db3365e2955a5ea7dd7737cdaefcf306b6045874667ac5d0510c",
+      "originalBodyCopied": false
+    },
+    {
+      "file": "ordinary/turn-1-once/tools-canonical-original.private.json",
+      "bytes": 5220,
+      "sha256": "d874be6bb217d08c54554e23c57b506d153a89ce51cf5826dcbb05730089e8dd",
+      "originalBodyCopied": false
+    },
+    {
+      "file": "ordinary/turn-1-once/first-read-0-response-original.raw.private.json",
+      "bytes": 188,
+      "sha256": "aa8d093481241466c0c657acd20cd892eef45ff9414689e7dc2a9681ea5d4c01",
+      "originalBodyCopied": false
+    },
+    {
+      "file": "ordinary/turn-1-once/first-read-1-response-original.raw.private.json",
+      "bytes": 10095,
+      "sha256": "2713896fb9f7ff713ec942e1a180445828c245a77692c657dd5424505280cec0",
+      "originalBodyCopied": false
+    },
+    {
+      "file": "ordinary/turn-1-once/first-read-2-response-original.raw.private.json",
+      "bytes": 8485,
+      "sha256": "007cb21de60cbd8488ffb2f97ed17db1d5d518bb19177cef0739a2fffcd14657",
+      "originalBodyCopied": false
+    },
+    {
+      "file": "ordinary/turn-1-once/first-read-3-response-original.raw.private.json",
+      "bytes": 27,
+      "sha256": "d6099cf2c1e401aea789a64b1fcebe79bc235e978d652c88241bf73b40e60caa",
+      "originalBodyCopied": false
+    },
+    {
+      "file": "ordinary/turn-1-once/first-read-4-response-original.raw.private.json",
+      "bytes": 188,
+      "sha256": "aa8d093481241466c0c657acd20cd892eef45ff9414689e7dc2a9681ea5d4c01",
+      "originalBodyCopied": false
+    },
+    {
+      "file": "ordinary/turn-1-once/first-events-response-original.raw.private.json",
+      "bytes": 15218,
+      "sha256": "cbb78df0379ddce0ee22395bbaa9b91665d2c236af00dbd4e90622eb355024af",
+      "originalBodyCopied": false
+    },
+    {
+      "file": "ordinary/turn-1-once/tools-canonical-0-response-original.raw.private.json",
+      "bytes": 720,
+      "sha256": "55b444225318798c4d9c10887e911d185406926000a54db6e84843afef21274f",
+      "originalBodyCopied": false
+    },
+    {
+      "file": "ordinary/turn-1-once/tools-canonical-1-response-original.raw.private.json",
+      "bytes": 775,
+      "sha256": "04c38ae90d92188861d0b7c5495446f7bd4d759d98c4578d1029303e4ba196e2",
+      "originalBodyCopied": false
+    },
+    {
+      "file": "ordinary/turn-1-once/tools-canonical-2-response-original.raw.private.json",
+      "bytes": 630,
+      "sha256": "f20b64508e27685306ae7ea2cf7ec529294fbb579521ad82b0de73d82e71b3cd",
+      "originalBodyCopied": false
+    },
+    {
+      "file": "ordinary/turn-1-once/tools-canonical-3-response-original.raw.private.json",
+      "bytes": 854,
+      "sha256": "24ca6d6f424ae064b697bd6efda1beed22c776960e39392a3d804a64d8de7971",
+      "originalBodyCopied": false
+    },
+    {
+      "file": "reviews/t1-dispatch-identity-review.safe.json",
+      "bytes": 8102,
+      "sha256": "4c2f832562a29073dd89e96baae9e724361fa6846e753fcb0a0d37f7992a2921",
+      "originalBodyCopied": false
+    }
+  ],
+  "result": {
+    "turnId": "c0ebf414-3943-4ad1-8109-f355609b6d0a",
+    "sessionId": "64d60f40-ab45-48e0-9b8f-40ebcb2374e0",
+    "revisionId": "768fc2ff2c44a5005cbaeae9b433f47f19c71bb0fb88cdaf70a1c11992d259fb",
+    "runtimeGeneration": 1,
+    "executionOutcome": "completed",
+    "persistenceOutcome": "saved",
+    "checkpointFilesSha256": "94af25456d0c56391dea7aae9f87655af913712106e60325cd1448cf61b862da",
+    "checkpointSessionSha256": "62db05400c2f157d016a398425b2677265524dd26dec99b9402c6400e2fe4df7",
+    "eventCount": 49,
+    "eventSequences": "1..49",
+    "completeHasMoreFalse": true,
+    "providerRequesting": 3,
+    "providerResponding200": 3,
+    "toolCommandLedgersCompleted": 2,
+    "bashExitCode": 0,
+    "skillPath": ".pi/skills/native-pages-check/SKILL.md",
+    "skillBytes": 6056,
+    "skillSha256": "8ef3375d58464b2a74cc57031771f5f7bad21b15f09991fb3838620e9f3ae6d7",
+    "diffSummary": {
+      "added": 4,
+      "modified": 0,
+      "deleted": 0
+    },
+    "canonicalFilesIndexCount": 10,
+    "sessionHeadEqualsCheckpoint": true,
+    "firstRelease": "pending trusted-pi-release-assignment-guard",
+    "usage": "unknown"
+  },
+  "exactBashArguments": {
+    "actualScriptOrTimeoutReturnedByCurrentPublicEvidence": false,
+    "supportedAdditionalOrdinaryReadOnlyGetLocated": false,
+    "facts": [
+      "Public tool receipt returns binding/ledger/result, not original script/timeout/command digest. Its commandId is derived from original identity/callId/name, not proof of argument bytes.",
+      "Actual original tool.started/completed events contain only ID/name/isError/artifact, no args; there is no tool.updated carrying arguments in these49events.",
+      "Terminal ToolLedger records deliberately erase command_json (ledger.ts162; schema requires null on terminal). Even an imagined read of that terminal table would not restore original args. No SQL/RPC query is proposed.",
+      "The input parser enforces positive timeout<=30000 and script<=16KiB; it does not restrict every bash script to mkdir and cannot prove exactly timeout30000.",
+      "Original frozen prompt requests mkdir -p -- .pi/skills/native-pages-check, but prompt/exit0/resulting directories cannot independently prove exact invoked script/timeout."
+    ],
+    "minimalExistingAuthority": "The already retrieved original-revision public tool ledger proves one successful bounded bash result; R1 diff proves only final added-directory/skill state. No currently reviewed public GET exposes exact original arguments. Use these qualified facts, do not replay or create new RPC/SQL/log authority to manufacture args.",
+    "exactScriptAndTimeoutAssessment": "unverified; this review does not add a requirement to publish private raw internals or waive any explicit recipe requirement."
+  },
+  "sourceBindings": [
+    {
+      "file": ".local/jhg46-native-sdk-acceptance-preparation-20261019/build-candidate-v2/source/services/tools/receipt.ts",
+      "bytes": 4353,
+      "sha256": "f498656defd1f73287bfba7316aa7aedae68d56d79ff8e5e1f59cc1681133b2f",
+      "lines": [
+        27,
+        37
+      ]
+    },
+    {
+      "file": ".local/jhg46-native-sdk-acceptance-preparation-20261019/build-candidate-v2/source/services/workspace/tool-receipt.ts",
+      "bytes": 1604,
+      "sha256": "ad3fdef071faa03103a081df187b0b59da958f9991ca85da9aa8498aee1d6c24",
+      "lines": [
+        5,
+        11
+      ]
+    },
+    {
+      "file": ".local/jhg46-native-sdk-acceptance-preparation-20261019/build-candidate-v2/source/services/tools/durable.ts",
+      "bytes": 8554,
+      "sha256": "8f22ff13ee4baa7f54d96b16cbe43dd524ffe028920dfad896c0fccc8d08d790",
+      "lines": [
+        56,
+        69
+      ]
+    },
+    {
+      "file": ".local/jhg46-native-sdk-acceptance-preparation-20261019/build-candidate-v2/source/services/tools/ledger.ts",
+      "bytes": 19674,
+      "sha256": "78723edfd2c60520f5d38ebf22325b9b5301eae3e4d4e239fe88f8199ac26243",
+      "lines": [
+        152,
+        162
+      ]
+    },
+    {
+      "file": ".local/jhg46-native-sdk-acceptance-preparation-20261019/build-candidate-v2/source/services/tools/ledger-schema.ts",
+      "bytes": 1759,
+      "sha256": "ab05f4a8cb6d10705edb89cd09984f23e0f04ab4d581f9ae2b25ccb8a3036239",
+      "lines": [
+        5,
+        19
+      ]
+    },
+    {
+      "file": ".local/jhg46-native-sdk-acceptance-preparation-20261019/build-candidate-v2/source/services/tools/protocol.ts",
+      "bytes": 7109,
+      "sha256": "4e57604e4fd75616d0654557b7abfa86245cb521e119af6bfb35f58612946d74",
+      "lines": [
+        76,
+        81
+      ]
+    },
+    {
+      "file": ".local/jhg46-native-sdk-acceptance-preparation-20261019/build-candidate-v2/source/services/turn-runtime/pi-execution.ts",
+      "bytes": 11379,
+      "sha256": "d8c051c33698aeab007cae7eec86441f882460993bceb38d11081aea07827ed8",
+      "lines": [
+        7,
+        13
+      ]
+    }
+  ],
+  "notVerified": [
+    "Original bash script/timeout exact bytes, beyond source-enforced maximum and completed result.",
+    "Direct independent R1 skill-body download; write effect6056/SHA and canonical file metadata are the actual authority here.",
+    "Post-assignment-guard original receipt/capacity and complete current physical release; first snapshot still held.",
+    "T2, finite gate, V1/artifact actual reads, Session2/T3/V2 or complete batch acceptance."
+  ],
+  "nextStageAllowedByThisReview": false,
+  "limits": [
+    "Snapshot includes a separate completed-stage timing augmentation; original-key receipt omits timing. All other public Turn fields match exactly, as does the full checkpoint/Session head.",
+    "tool effect result hashes are source-validated persisted command evidence, not independently read raw runtime stop/lease proof.",
+    "No README/body reread was performed; diff has no modifications/deletions and is narrower than full content inspection.",
+    "No fee settlement or zero cost inferred; usage remains unknown.",
+    "Current actual host/SDK publication and grant authority are referenced from prior independent dispatch review, not re-executed here."
+  ],
+  "actions": {
+    "networkAuthBrowserSqlModelGitCandidateExecutionOrTests": false,
+    "originalsEdited": false
+  },
+  "privateIdentityProviderToolCallIdsPromptOrOriginalBodiesCopied": false
+}
