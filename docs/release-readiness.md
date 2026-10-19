@@ -1,3 +1,9 @@
+## 2026-10-19 — 集成源码已合并，IR串行发布及新验收待完成
+
+[#259](https://github.com/jihegao/riffology-cloud/pull/259) 的 bdee Report 切页 fence 已经 [#256](https://github.com/jihegao/riffology-cloud/pull/256) 集成至 main `2f588455a13fea89b00c0a341540aa1e36e07f61` / tree `13bceb3a2b43d55632ee15d4f0f1db885dc7c548`，[CI39186577948](https://github.com/jihegao/riffology-cloud/actions/runs/39186577948) success。集成源码中的 Report host 为 20,085 字节（SHA前缀 `8b25`，保留 bdee fence），新 frame 为 8,029 字节（SHA前缀 `4e3a`）；这些是源码身份，不能视为已部署或用户验收。下方 bdee 离线候选节保留原时点事实，最新集成状态以本节为准。
+
+当前选中验收为 [#214](https://github.com/jihegao/riffology-cloud/issues/214)，关联 [#255](https://github.com/jihegao/riffology-cloud/issues/255) 与 [#258](https://github.com/jihegao/riffology-cloud/issues/258)，三项均 OPEN/Acceptance。用户已明确要求 IR 串行发布后完成新批 Report、冷恢复及唯一 T3；发布和新验收仍 pending，不记通过或 Done。[旧 fb07 实际结果](project-view-native-sdk-publication-acceptance-result-20261019.md)仍为首次 Report 失败且原门禁已关闭；[bdee 离线构建结果](../evidence/releases/project-view-page-switch-build-closure-20261019/README.md)保留其独立范围，不替代新集成版验收。
+
 ## 2026-10-19 — Report 切页修复的离线构建候选
 
 [#258](https://github.com/jihegao/riffology-cloud/issues/258) / [PR #259](https://github.com/jihegao/riffology-cloud/pull/259) 固定 head `bdee1975d1f8df20be5e9f83fd7b50d6885b27ad` 为 In review；已测试但未合并、未部署，不宣称线上 Report 已修复。一次离线构建的 Gateway、1124 模块 graph 和 frame 与已发布 SDK 字节一致；96 个资产仅 `/project-views.js` 更新，其余 95 个不变，总计 53,785,385 字节。
