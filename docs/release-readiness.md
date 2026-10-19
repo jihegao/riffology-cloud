@@ -1,3 +1,9 @@
+## 2026-10-19 — Report 切页修复的离线构建候选
+
+[#258](https://github.com/jihegao/riffology-cloud/issues/258) / [PR #259](https://github.com/jihegao/riffology-cloud/pull/259) 固定 head `bdee1975d1f8df20be5e9f83fd7b50d6885b27ad` 为 In review；已测试但未合并、未部署，不宣称线上 Report 已修复。一次离线构建的 Gateway、1124 模块 graph 和 frame 与已发布 SDK 字节一致；96 个资产仅 `/project-views.js` 更新，其余 95 个不变，总计 53,785,385 字节。
+
+[构建结果及未公开本地原件边界](../evidence/releases/project-view-page-switch-build-closure-20261019/README.md)与[清单](../evidence/releases/project-view-page-switch-build-closure-20261019/inventory.json)保留精确来源和独审。原线上部分验收、首次 Report 失败、门禁清理和剩余验收边界继续沿用下文实际结果；本次没有新发布或真实验收。
+
 ## 2026-10-19：SDK已发布、两Turn保存释放；首次Report失败，原门禁与UI已收尾
 
 fb07在用户接受9c43已知idle自然替换条件后继续：#257正常合并004e、Gateway3043/d266单次默认关闭发布、96资产全正文及新frame7876B/63eb核验通过。一个新项目/一个Session内T1/R1与T2/R2保存和联合释放通过，Dashboard20/50、Pause/Resume与真实artifact两chunks/17567B/正文SHA/content前缀通过；首次host Report显示savedUnavailable/frame0即停止，未Retry、Session2/T3、V2或cold restore。
