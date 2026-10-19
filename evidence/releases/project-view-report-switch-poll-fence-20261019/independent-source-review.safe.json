@@ -1,0 +1,222 @@
+{
+  "schema": "jhg46-issue258-independent-source-review/v1",
+  "reviewedAt": "2026-10-19T01:01:19.277396+00:00",
+  "issue": {
+    "url": "https://github.com/jihegao/riffology-cloud/issues/258",
+    "freshRead": true,
+    "state": "open",
+    "updatedAt": "2026-10-19T00:50:26Z",
+    "freshCommentCount": 0
+  },
+  "baseCommit": "004e5cd5940c6e283b1b58501c3f409a569f6e20",
+  "mustFix": [],
+  "verdict": "No material correctness or scope issue found in the frozen two-file implementation and its bound local regression evidence. This is source review, not deployment or user acceptance.",
+  "sourceBindings": [
+    {
+      "file": "services/web/project-views.js",
+      "bytes": 17684,
+      "sha256": "c6c2de3b53250342498cbb424b720e990ed8b8c1a273157d4cad87d8fefae2a0"
+    },
+    {
+      "file": "tests/m3/project-views-browser.test.mjs",
+      "bytes": 31850,
+      "sha256": "b7610471324130e56032faa6e47d45f993f16725378d6563c41dea252602e8d3"
+    },
+    {
+      "file": "source-fix-258/implementation.patch",
+      "bytes": 13312,
+      "sha256": "4ed355de9428c2758920627bf55f98a6780a433764cea18157feef66756e7038"
+    },
+    {
+      "file": "source-fix-258/final-author-validation.safe.json",
+      "bytes": 5475,
+      "sha256": "4e06327e6c83cea364a92a4149e41726c2a311304fd90d3c1fd42ca3b5915462"
+    },
+    {
+      "file": "AGENTS.md",
+      "bytes": 7717,
+      "sha256": "2ccf7443bcf5bf4d3a0a03e8eed31de897e424bf9a668cfd86ab9653facaf3a9"
+    }
+  ],
+  "checks": {
+    "twoChangedFilesOnly": [
+      "services/web/project-views.js",
+      "tests/m3/project-views-browser.test.mjs"
+    ],
+    "actualPatchMatchesAuthorBoundPatch": true,
+    "actualBaseMatches004e": true,
+    "originalE420SourceMatchesBaseAndAuthorSnapshot": true,
+    "finalC6c2ProductionAndB761TestMatchAuthorSnapshots": true,
+    "allNineAuthorReceiptsAndTheirOriginalStdoutStderrBytesSha256Verified": true,
+    "redV2AndFinalGreenShareExactB761TestBody": true,
+    "redV2TerminalObservation": {
+      "phase": "publish",
+      "reportReady": false,
+      "frames": 0,
+      "status": "Saved pages unavailable",
+      "pollContinuations": 1
+    },
+    "greenFourDeferredCasesTerminalObservations": {
+      "reportReady": true,
+      "frames": 1,
+      "pollContinuations": 1
+    },
+    "chromiumRelated": {
+      "pass": 29,
+      "fail": 0,
+      "includesNewSix": true
+    },
+    "chromiumFocusedRepeatedSubset": {
+      "pass": 6,
+      "fail": 0
+    },
+    "webkitFocused": {
+      "pass": 6,
+      "fail": 0,
+      "existingTaskOwnedRuntime": true
+    },
+    "ui": {
+      "pass": 21,
+      "fail": 0
+    },
+    "typecheckExitCode": 0,
+    "authorFinalDiffCheckExitCode": 0,
+    "reviewerReranTests": false,
+    "newTargetedConcernCheckNeeded": false
+  },
+  "sourceAssessment": [
+    {
+      "lines": [
+        171,
+        186
+      ],
+      "finding": "reload captures active context/request epoch plus generation and original broker. Both HTTP/package digest completion boundaries recheck this owner before global package, delivery, hidden-state or publish work. The publish call uses the captured broker."
+    },
+    {
+      "lines": [
+        179,
+        185
+      ],
+      "finding": "An operation that itself increments generation and disposes/chooses a view refreshes only its own ownership snapshot immediately after the synchronous transition. Post-disposal current checks prevent a later view/scope from receiving stale empty-package side effects. choose internally owns the full package/context/token lifetime."
+    },
+    {
+      "lines": [
+        187,
+        194
+      ],
+      "finding": "Old broker close can reject pending publish, but the stale catch cannot latch failedPackageIdentity, dispose a successor or change its status. A current error retains failure latch, owned disposal and retry UI; after awaited disposal it checks ownership again."
+    },
+    {
+      "lines": [
+        134,
+        169
+      ],
+      "finding": "choose preserves the existing original-local start/close lifecycle. Its catch now rechecks its token/context/package after asynchronous disposal before setting current failure UI, so a late old error cannot repaint a newer choice."
+    },
+    {
+      "lines": [
+        195,
+        203
+      ],
+      "finding": "Polling remains owned by active context/request epoch, independently of view generation. A view switch therefore retains one continuation; a newer reload, setActive(false), leave or pagehide invalidates the old epoch and prevents late timer rearming. Existing request clearTimeout and epoch guards avoid parallel continuations."
+    },
+    {
+      "lines": [
+        21,
+        110
+      ],
+      "finding": "Broker authorization, before/after delivery checks, cancellation, request budgets, port ownership and fail-closed callbacks are unchanged. Current-owner 403 and actual stalled HTTP remain latch/close cases; an automatic package200 cannot reexecute the failed package until explicit Retry."
+    }
+  ],
+  "regressionAssessment": [
+    "The new fixture uses the actual opaque native frame and product broker. Only the 60s panel poll timer and a marked API delivery are controlled; it does not replace authorization/deadline behavior.",
+    "The initial real subscribed Dashboard is confirmed before one old package/publish result is deferred. Host Report is selected once; both resolve and reject paths wait for an explicit Report-ready or final error marker, not an arbitrary sleep or iframe attachment alone.",
+    "Four deferred cases assert Report selection/readiness, original port closed, one continuation and successful subsequent real read-only poll. A second deferred package result followed by leave verifies no frame resurrection, timer continuation or old message handler.",
+    "403 and a genuinely stalled HTTP response retain current-owner fail-closed behavior and same-package latch; explicit Retry restores the frame. The stall is aborted on the unchanged10s inner HTTP deadline.",
+    "The first insufficiently-awaited red-v1 and the initial missing-default-WebKit-runtime invocation remain separate failed history; neither is counted as a product red proof or a successful regression. Corrected red-v2 uses the exact final test body and old production bytes."
+  ],
+  "authorCheckBindings": [
+    {
+      "label": "red",
+      "file": "source-fix-258/red.receipt.json",
+      "bytes": 1317,
+      "sha256": "4c7ca6759c774ac024ff8944885fc8d29c65a9feaa7ab2c1111a3f7e05b4770b",
+      "exitCode": 1
+    },
+    {
+      "label": "red-v2",
+      "file": "source-fix-258/red-v2.receipt.json",
+      "bytes": 1320,
+      "sha256": "c7cb2187248b097b9d0d4efb62bf15e1442644a49d457b4e119dc6a6b3393f01",
+      "exitCode": 1
+    },
+    {
+      "label": "green-focused",
+      "file": "source-fix-258/green-focused.receipt.json",
+      "bytes": 1329,
+      "sha256": "4d1c8093f7c3bdbed14869973a86675046263ea2fcd4296e917c452f93df5b1d",
+      "exitCode": 0
+    },
+    {
+      "label": "native-related",
+      "file": "source-fix-258/native-related.receipt.json",
+      "bytes": 1400,
+      "sha256": "dec4b3d8c7c5ada4897d74b409c09bb2b310fa9fdd214c63c942bd56c2fe65d7",
+      "exitCode": 0
+    },
+    {
+      "label": "check-ui",
+      "file": "source-fix-258/check-ui.receipt.json",
+      "bytes": 1207,
+      "sha256": "4249959848ef7d1ff9207cdc792b57614d0d7ee87e219f05eb8f198ce7ce5b1d",
+      "exitCode": 0
+    },
+    {
+      "label": "typecheck",
+      "file": "source-fix-258/typecheck.receipt.json",
+      "bytes": 1209,
+      "sha256": "3617f2095c1e2be82aeba1c71d71e665757088c1d04b1953024f5499382739a4",
+      "exitCode": 0
+    },
+    {
+      "label": "webkit-focused",
+      "file": "source-fix-258/webkit-focused.receipt.json",
+      "bytes": 1333,
+      "sha256": "841e11bdf95a3f04ccee49b48daaa902b46f4c8be91733063a086c7c19c02aae",
+      "exitCode": 1
+    },
+    {
+      "label": "webkit-focused-installed",
+      "file": "source-fix-258/webkit-focused-installed.receipt.json",
+      "bytes": 1519,
+      "sha256": "3b7514115a29822eb7b372e38aff807cf6527d10d89d3e7961f79d1dc12ba274",
+      "exitCode": 0
+    },
+    {
+      "label": "final-diffcheck",
+      "file": "source-fix-258/final-diffcheck.receipt.json",
+      "bytes": 1237,
+      "sha256": "7c312efb7d22e507dd59592612b068c312feddb55011037cfee6ceb581d1aaa1",
+      "exitCode": 0
+    }
+  ],
+  "scopeAndLimits": [
+    "Production changes are limited to project-views.js ownership and asynchronous side-effect checks. No backend, Gateway route, SDK API, frame protocol, deadline, provider, scope, authorization, fallback or capacity change.",
+    "Chromium29 includes the six new cases; focused Chromium6 repeats that subset, and WebKit6 is another browser execution of the same new cases. These are not41 unique new tests.",
+    "The evidence reproduces one deterministic stale-owner race and its local fix; it does not establish the original online Report failure as uniquely caused by that race.",
+    "Existing browser tests retain synthetic model/artifact fixtures and loopback HTTP only. No Safari, real project, provider, paid Turn, Cloudflare, Registry or AMD execution is performed by this review.",
+    "This review creates no merge, deployment, gate, retry, new user execution authorization or Done/Issue closure claim. Original fb07 history and time bounds remain intact.",
+    "Receipt source hashes are recorded by the author runner after command completion; independent current/base/patch/snapshot equality and exact raw output hashes were checked here. This is not a new test execution or independent runtime instrumentation."
+  ],
+  "reviewerActions": {
+    "freshIssueAndCommentsReadOnlyGithubGet": true,
+    "localFilesReadAndHash": true,
+    "localGitReadOnly": true,
+    "wroteOwnSafeReviewOnly": true,
+    "sourceEdits": false,
+    "testsOrFixturesExecuted": false,
+    "gitCommitPushMetadataMutation": false,
+    "browserAuthenticationCloudModelPaidExecution": false
+  },
+  "rawPrivateProductBodiesIdentityEmailTenantPromptConfigurationSecretOrHostLocationCopied": false
+}

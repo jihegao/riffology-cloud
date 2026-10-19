@@ -161,3 +161,88 @@ test('route replacement discards an artifact reply arriving after the original f
  release();await p.waitForTimeout(50);assert.equal(await projectFrame(f).evaluate(()=>window.savedSnapshot),undefined);assert.equal((await p.locator('body').innerText()).includes('OLD_SCOPE_ONLY'),false);
  await p.evaluate(()=>dispatchEvent(new PageTransitionEvent('pagehide')));assert.equal(await p.locator('iframe').count(),0);noRemote(f);
 });
+
+// Control only the panel's polling timer and one API delivery, not the broker's
+// authorization/deadline logic. Every response still comes from the loopback
+// server and every view runs the actual opaque native frame and product broker.
+async function pollFenceFixture(t){
+ const files=projectFiles();files['app/report.html']+='<script>parent.postMessage({type:"fixture-report-ready"},"*");</script>';const {pkg}=await packaged(files);let f,authorityFailure=null,stalledClosed=false;
+ f=await localBrowserFixture(t,{handler:async(_req,res,url)=>{
+  if(url.pathname.includes('/project-view-artifacts')){res.setHeader('content-type','application/json');res.end(JSON.stringify({items:[],nextCursor:null,version:'a'.repeat(64)}));return true;}
+  if(!url.pathname.endsWith('/project-views'))return false;
+  if(url.searchParams.has('identity')&&authorityFailure){
+   if(authorityFailure==='stall'){await new Promise(resolve=>res.once('close',()=>{stalledClosed=true;resolve();}));return true;}
+   res.writeHead(403);res.end('{}');return true;
+  }
+  res.setHeader('content-type','application/json');res.end(JSON.stringify(url.searchParams.has('identity')?{current:true}:{package:pkg,delivery:f.delivery}));return true;
+ }});
+ const p=f.page,navigation=p.waitForEvent('framenavigated',{predicate:frame=>frame.url()===f.frameUrl});
+ await p.evaluate(async scope=>{
+  (await import('/i18n.js')).setLocale('en',{persist:false});const {createProjectViewsPanel}=await import('/project-views.js');
+  const schedule=setTimeout.bind(window),cancel=clearTimeout.bind(window),Channel=MessageChannel;
+  const controls=window.pollFixture={timers:new Map(),nextTimer:-1,packageReads:0,armed:null,pending:null,settled:0,hostPorts:[],reportReady:false};
+  addEventListener('message',event=>{if(event.origin==='null'&&event.source===document.querySelector('iframe')?.contentWindow&&event.data?.type==='fixture-report-ready')controls.reportReady=true;});
+  window.setTimeout=(callback,ms,...args)=>{if(ms!==60000)return schedule(callback,ms,...args);const id=controls.nextTimer--;controls.timers.set(id,()=>callback(...args));return id;};
+  window.clearTimeout=id=>{if(!controls.timers.delete(id))cancel(id);};
+  window.MessageChannel=function(){const channel=new Channel();controls.hostPorts.push(channel.port1);return channel;};
+  controls.firePoll=()=>{if(controls.timers.size!==1)throw Error('expected-one-poll');const [id,callback]=controls.timers.entries().next().value;controls.timers.delete(id);callback();};
+  controls.release=outcome=>{const pending=controls.pending;if(!pending)throw Error('missing-deferred-request');controls.pending=null;controls.lastPhase=pending.kind;if(outcome==='reject')pending.reject(Error('synthetic-late-read-rejection'));else pending.resolve(pending.result);};
+  const api=async(path,options)=>{
+   const kind=path.split('?')[0].endsWith('/project-views')?(path.includes('?identity=')?'publish':'package'):null;if(kind==='package')controls.packageReads++;
+   const response=await fetch(path,options);if(!response.ok)throw Error('request denied');const result=await response.json();
+   if(controls.armed===kind&&path.includes('/project-views')){
+    controls.armed=null;
+    try{return await new Promise((resolve,reject)=>{const pending=controls.pending={resolve,reject,result,kind,aborted:options.signal.aborted};options.signal.addEventListener('abort',()=>{pending.aborted=true;},{once:true});});}
+    finally{controls.settled++;}
+   }
+   return result;
+  };
+  window.panel=createProjectViewsPanel({root:document.querySelector('#root'),api,pollMs:60000});window.entering=panel.enter(scope);
+ },scope);
+ const child=await navigation;await ready(p);await child.waitForFunction(()=>Boolean(window.savedSnapshot));
+ await p.waitForFunction(()=>pollFixture.timers.size===1);
+ return {...f,set authorityFailure(value){authorityFailure=value;},get stalledClosed(){return stalledClosed;}};
+}
+
+for(const phase of ['publish','package'])for(const outcome of ['resolve','reject'])test(`page switch fences a deferred old ${phase} ${outcome} and preserves one poll continuation`,async t=>{
+ const f=await pollFenceFixture(t),p=f.page;
+ await p.evaluate(phase=>{pollFixture.armed=phase;pollFixture.firePoll();},phase);
+ await p.waitForFunction(()=>Boolean(pollFixture.pending));
+ assert.equal(await p.evaluate(()=>pollFixture.pending.kind),phase,'the old subscribed view owns the deferred read');
+ const reportNavigation=p.waitForEvent('framenavigated',{predicate:frame=>frame.url()===f.frameUrl});reportNavigation.catch(()=>{});
+ await p.getByRole('tab',{name:'Report',exact:true}).click();
+ if(phase==='publish')await p.waitForFunction(()=>pollFixture.pending.aborted);
+ await p.evaluate(outcome=>pollFixture.release(outcome),outcome);
+ await p.waitForFunction(()=>pollFixture.settled===1&&pollFixture.timers.size===1&&(pollFixture.reportReady||document.querySelector('#root').textContent.includes('Saved pages unavailable')));
+ console.log(JSON.stringify({pollFenceObservation:await p.evaluate(()=>({phase:pollFixture.lastPhase??null,reportReady:pollFixture.reportReady,frames:document.querySelectorAll('iframe').length,status:document.querySelector('p.meta').textContent,pollContinuations:pollFixture.timers.size}))}));
+ assert.equal(await p.locator('.project-view-body iframe').count(),1,'old poll cannot remove the successor frame');
+ const report=await reportNavigation;await report.waitForFunction(()=>window.reportLoaded===true);
+ await ready(p);assert.equal(await p.getByRole('tab',{name:'Report',exact:true}).getAttribute('aria-selected'),'true');
+ assert.equal(await p.getByRole('button',{name:'Retry page',exact:true}).isVisible(),false,'stale error cannot latch the current package');
+ assert.equal(await p.evaluate(()=>pollFixture.hostPorts[0].onmessage),null,'the original broker was closed');
+ const reads=await p.evaluate(()=>pollFixture.packageReads);
+ await p.evaluate(()=>pollFixture.firePoll());
+ await p.waitForFunction(reads=>pollFixture.packageReads===reads+1&&pollFixture.timers.size===1,reads);
+ assert.equal(await p.locator('iframe').count(),1,'the successor survives the next actual read-only poll');
+ // Leave while another package delivery is pending: no late result may recreate
+ // a view, and scope teardown must cancel the sole continuation and all ports.
+ await p.evaluate(()=>{pollFixture.armed='package';pollFixture.firePoll();});await p.waitForFunction(()=>Boolean(pollFixture.pending));
+ await p.evaluate(outcome=>{panel.leave();pollFixture.release(outcome);},outcome);
+ await p.waitForFunction(()=>pollFixture.settled===2);
+ assert.equal(await p.locator('iframe').count(),0);assert.equal(await p.evaluate(()=>pollFixture.timers.size),0);
+ assert.equal(await p.evaluate(()=>pollFixture.hostPorts.every(port=>port.onmessage===null)),true);assert.deepEqual(f.errors,[]);noRemote(f);
+});
+
+for(const failure of ['403','stall'])test(`current poll owner ${failure} still fails closed and latches until explicit retry`,{timeout:20000},async t=>{
+ const f=await pollFenceFixture(t),p=f.page;
+ f.authorityFailure=failure;await p.evaluate(()=>pollFixture.firePoll());
+ await p.locator('iframe').waitFor({state:'detached',timeout:14000});await p.getByRole('button',{name:'Retry page',exact:true}).waitFor();
+ await p.waitForFunction(()=>pollFixture.timers.size===1);assert.equal(await p.evaluate(()=>pollFixture.hostPorts[0].onmessage),null);
+ if(failure==='stall')assert.equal(f.stalledClosed,true,'the actual stalled HTTP response was aborted by the unchanged deadline');
+ const frames=f.requests.filter(r=>r.path.endsWith('/frame.html')).length,reads=await p.evaluate(()=>pollFixture.packageReads);
+ f.authorityFailure=null;await p.evaluate(()=>pollFixture.firePoll());
+ await p.waitForFunction(reads=>pollFixture.packageReads===reads+1&&pollFixture.timers.size===1,reads);
+ assert.equal(await p.locator('iframe').count(),0,'package 200 cannot reexecute a failed current owner');assert.equal(f.requests.filter(r=>r.path.endsWith('/frame.html')).length,frames);
+ await p.getByRole('button',{name:'Retry page',exact:true}).click();await ready(p);await projectFrame(f).waitForFunction(()=>Boolean(window.savedSnapshot));
+ await p.evaluate(()=>panel.leave());assert.equal(await p.locator('iframe').count(),0);assert.equal(await p.evaluate(()=>pollFixture.timers.size),0);assert.deepEqual(f.errors,[]);noRemote(f);
+});

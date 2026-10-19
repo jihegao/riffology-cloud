@@ -165,25 +165,38 @@ export function createProjectViewsPanel({root,api,pollMs=5000}){
    local=ownLocal;frame=ownLocal.frame;
    await ownLocal.start();if(!current())await ownLocal.close();
   }catch{
-   if(current()){if(local||broker||frame)await disposeFrame().catch(()=>{});failedPackageIdentity=ownPackage.packageIdentity;bindValue(status,msg('projectViews.unavailable'));retry.hidden=false;}
+   if(current()){if(local||broker||frame)await disposeFrame().catch(()=>{});if(!current())return;failedPackageIdentity=ownPackage.packageIdentity;bindValue(status,msg('projectViews.unavailable'));retry.hidden=false;}
   }
  }
  async function reload(){
   if(!active||!context)return;const epoch=++requestEpoch,own=context;
+  let ownGeneration=generation,ownBroker=broker;
+  const current=()=>active&&context===own&&epoch===requestEpoch&&generation===ownGeneration&&broker===ownBroker;
   clearTimeout(timer);
   try{
    const result=await api('/api/workspaces/'+encodeURIComponent(own.workspaceId)+'/project-views',{signal:AbortSignal.timeout(10000)});
-   if(!active||context!==own||epoch!==requestEpoch)return;
-   if(!result?.package){generation++;await disposeFrame();pkg=null;root.hidden=true;return;}
-   await verifyProjectViewPackage(result.package,own,()=>active&&context===own&&epoch===requestEpoch);
-   if(!active||context!==own||epoch!==requestEpoch)return;
+   if(!current())return;
+   if(!result?.package){generation++;const disposal=disposeFrame();ownGeneration=generation;ownBroker=broker;await disposal;if(!current())return;pkg=null;root.hidden=true;return;}
+   await verifyProjectViewPackage(result.package,own,current);
+   if(!current())return;
    root.hidden=false;
    if(failedPackageIdentity===result.package.packageIdentity)return;
-   if(pkg?.packageIdentity!==result.package.packageIdentity||!frame||delivery?.executionOrigin!==result.delivery?.executionOrigin||delivery?.transport!==result.delivery?.transport||delivery?.frameUrl!==result.delivery?.frameUrl||delivery?.frameSha256!==result.delivery?.frameSha256){pkg=result.package;delivery=result.delivery;await choose(selected);}
-   else await broker?.publish();
+   if(pkg?.packageIdentity!==result.package.packageIdentity||!frame||delivery?.executionOrigin!==result.delivery?.executionOrigin||delivery?.transport!==result.delivery?.transport||delivery?.frameUrl!==result.delivery?.frameUrl||delivery?.frameSha256!==result.delivery?.frameSha256){
+    pkg=result.package;delivery=result.delivery;const choosing=choose(selected);ownGeneration=generation;ownBroker=broker;await choosing;
+   }else await ownBroker?.publish();
   }catch{
-   if(active&&context===own&&epoch===requestEpoch){failedPackageIdentity=pkg?.packageIdentity??failedPackageIdentity;generation++;await disposeFrame().catch(()=>{});bindValue(status,msg('projectViews.savedUnavailable'));retry.hidden=false;root.hidden=false;}
-  }finally{if(active&&context===own&&epoch===requestEpoch)timer=setTimeout(()=>void reload(),pollMs);}
+   // A view switch closes its old broker and aborts pending publish work. Only
+   // the frame that owned this read may fail/latch or dispose the current view.
+   if(current()){
+    failedPackageIdentity=pkg?.packageIdentity??failedPackageIdentity;generation++;const disposal=disposeFrame();ownGeneration=generation;ownBroker=broker;
+    await disposal.catch(()=>{});if(!current())return;
+    bindValue(status,msg('projectViews.savedUnavailable'));retry.hidden=false;root.hidden=false;
+   }
+  }finally{
+   // Polling belongs to the active scope, including after a view supersedes the
+   // old frame. A newer reload/leave owns its own continuation instead.
+   if(active&&context===own&&epoch===requestEpoch)timer=setTimeout(()=>void reload(),pollMs);
+  }
  }
  function setActive(value){if(visible===value)return;visible=value;if(!value){active=false;generation++;requestEpoch++;clearTimeout(timer);void disposeFrame().catch(()=>{});}else if(context){active=true;void reload();}}
  win.addEventListener('pagehide',()=>leave());
