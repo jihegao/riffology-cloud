@@ -1,0 +1,270 @@
+{
+  "schema": "jhg46-report-switch-poll-fence-source-evidence/v1",
+  "issue": 258,
+  "baseCommit": "004e5cd5940c6e283b1b58501c3f409a569f6e20",
+  "production": {
+    "file": "services/web/project-views.js",
+    "bytes": 17684,
+    "sha256": "c6c2de3b53250342498cbb424b720e990ed8b8c1a273157d4cad87d8fefae2a0"
+  },
+  "test": {
+    "file": "tests/m3/project-views-browser.test.mjs",
+    "bytes": 31850,
+    "sha256": "b7610471324130e56032faa6e47d45f993f16725378d6563c41dea252602e8d3"
+  },
+  "patch": {
+    "file": "implementation.patch",
+    "bytes": 13312,
+    "sha256": "4ed355de9428c2758920627bf55f98a6780a433764cea18157feef66756e7038"
+  },
+  "authorReceipt": {
+    "bytes": 5475,
+    "sha256": "4e06327e6c83cea364a92a4149e41726c2a311304fd90d3c1fd42ca3b5915462"
+  },
+  "independentReview": {
+    "file": "independent-source-review.safe.json",
+    "bytes": 10002,
+    "sha256": "204b892d4f6a88cc073522a7b561c1c42c875770b2950a7c6869394be1df7ac3",
+    "mustFix": []
+  },
+  "checks": [
+    {
+      "label": "red",
+      "receiptBytes": 1317,
+      "receiptSha256": "4c7ca6759c774ac024ff8944885fc8d29c65a9feaa7ab2c1111a3f7e05b4770b",
+      "exitCode": 1,
+      "startedAt": "2026-10-19T00:55:57.771724+00:00",
+      "finishedAt": "2026-10-19T00:55:58.604831+00:00",
+      "streams": [
+        {
+          "file": "red.stdout",
+          "bytes": 949,
+          "sha256": "03be91e56bfc7dda9bc6ed47e354eb2b207641aa78d8e7d89ce3f759d9316f86"
+        },
+        {
+          "file": "red.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "label": "red-v2",
+      "receiptBytes": 1320,
+      "receiptSha256": "c7cb2187248b097b9d0d4efb62bf15e1442644a49d457b4e119dc6a6b3393f01",
+      "exitCode": 1,
+      "startedAt": "2026-10-19T00:56:25.555770+00:00",
+      "finishedAt": "2026-10-19T00:56:26.040716+00:00",
+      "streams": [
+        {
+          "file": "red-v2.stdout",
+          "bytes": 1082,
+          "sha256": "11a14723b860a5f927fa5233733b0a1da759d8dd91ea9b8f289dd22adde1e796"
+        },
+        {
+          "file": "red-v2.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "label": "green-focused",
+      "receiptBytes": 1329,
+      "receiptSha256": "4d1c8093f7c3bdbed14869973a86675046263ea2fcd4296e917c452f93df5b1d",
+      "exitCode": 0,
+      "startedAt": "2026-10-19T00:56:49.353557+00:00",
+      "finishedAt": "2026-10-19T00:57:01.518893+00:00",
+      "streams": [
+        {
+          "file": "green-focused.stdout",
+          "bytes": 1319,
+          "sha256": "e6b657a363b9b9f56b3a18d5ccb00da7cd20fa68d6d08a39d4b0190232be022c"
+        },
+        {
+          "file": "green-focused.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "label": "native-related",
+      "receiptBytes": 1400,
+      "receiptSha256": "dec4b3d8c7c5ada4897d74b409c09bb2b310fa9fdd214c63c942bd56c2fe65d7",
+      "exitCode": 0,
+      "startedAt": "2026-10-19T00:57:16.133733+00:00",
+      "finishedAt": "2026-10-19T00:57:44.784073+00:00",
+      "streams": [
+        {
+          "file": "native-related.stdout",
+          "bytes": 4203,
+          "sha256": "26b9d1ab69eace98eb0540fae4b7142203cb06ddee576e2e66c31ded8540421d"
+        },
+        {
+          "file": "native-related.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "label": "check-ui",
+      "receiptBytes": 1207,
+      "receiptSha256": "4249959848ef7d1ff9207cdc792b57614d0d7ee87e219f05eb8f198ce7ce5b1d",
+      "exitCode": 0,
+      "startedAt": "2026-10-19T00:57:32.807070+00:00",
+      "finishedAt": "2026-10-19T00:57:35.391057+00:00",
+      "streams": [
+        {
+          "file": "check-ui.stdout",
+          "bytes": 3480,
+          "sha256": "4c204a11e6f6632f0fbcd3ada17d1ae7069146d07fc1226b0b8d2be7e8421095"
+        },
+        {
+          "file": "check-ui.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "label": "typecheck",
+      "receiptBytes": 1209,
+      "receiptSha256": "3617f2095c1e2be82aeba1c71d71e665757088c1d04b1953024f5499382739a4",
+      "exitCode": 0,
+      "startedAt": "2026-10-19T00:57:24.957064+00:00",
+      "finishedAt": "2026-10-19T00:57:25.922612+00:00",
+      "streams": [
+        {
+          "file": "typecheck.stdout",
+          "bytes": 29,
+          "sha256": "8fa1cf5506304e8abac55868e7f1a136c9b1dde57a3981a382da4c21ea129a6f"
+        },
+        {
+          "file": "typecheck.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "label": "webkit-focused",
+      "receiptBytes": 1333,
+      "receiptSha256": "841e11bdf95a3f04ccee49b48daaa902b46f4c8be91733063a086c7c19c02aae",
+      "exitCode": 1,
+      "startedAt": "2026-10-19T00:57:49.737907+00:00",
+      "finishedAt": "2026-10-19T00:57:50.079593+00:00",
+      "streams": [
+        {
+          "file": "webkit-focused.stdout",
+          "bytes": 11143,
+          "sha256": "966b00b360c5ca245f1db011f527d03eb989b55b71956331b4ad5d8d773de45f"
+        },
+        {
+          "file": "webkit-focused.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "label": "webkit-focused-installed",
+      "receiptBytes": 1519,
+      "receiptSha256": "3b7514115a29822eb7b372e38aff807cf6527d10d89d3e7961f79d1dc12ba274",
+      "exitCode": 0,
+      "startedAt": "2026-10-19T00:58:07.154797+00:00",
+      "finishedAt": "2026-10-19T00:58:21.500395+00:00",
+      "streams": [
+        {
+          "file": "webkit-focused-installed.stdout",
+          "bytes": 1323,
+          "sha256": "42793534235b7fe2fd77f334f9f0ee503f086c414f73a2af03a4422944466813"
+        },
+        {
+          "file": "webkit-focused-installed.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "label": "final-diffcheck",
+      "receiptBytes": 1237,
+      "receiptSha256": "7c312efb7d22e507dd59592612b068c312feddb55011037cfee6ceb581d1aaa1",
+      "exitCode": 0,
+      "startedAt": "2026-10-19T00:58:41.333311+00:00",
+      "finishedAt": "2026-10-19T00:58:41.347501+00:00",
+      "streams": [
+        {
+          "file": "final-diffcheck.stdout",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "file": "final-diffcheck.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    }
+  ],
+  "results": {
+    "deterministicRed": {
+      "receipt": "red-v2.receipt.json",
+      "exitCode": 1,
+      "originalSourceSha256": "e420e10e0196a9b9ce5f8c6959f8c8551ee0eeae3a2f0a317d9eac8f986ea47c",
+      "observation": {
+        "phase": "publish",
+        "reportReady": false,
+        "frames": 0,
+        "status": "Saved pages unavailable",
+        "pollContinuations": 1
+      }
+    },
+    "chromiumFocused": {
+      "receipt": "green-focused.receipt.json",
+      "passed": 6,
+      "failed": 0
+    },
+    "chromiumRelated": {
+      "receipt": "native-related.receipt.json",
+      "passed": 29,
+      "failed": 0,
+      "files": [
+        "tests/m3/project-views-browser.test.mjs",
+        "tests/m3/project-view-sdk-deadlines-browser.test.mjs",
+        "tests/m3/project-view-local-browser.test.mjs"
+      ]
+    },
+    "webkitFocused": {
+      "receipt": "webkit-focused-installed.receipt.json",
+      "passed": 6,
+      "failed": 0,
+      "runtime": "existing task-owned WebKit2359; no installation/download"
+    },
+    "ui": {
+      "receipt": "check-ui.receipt.json",
+      "passed": 21,
+      "exitCode": 0
+    },
+    "typecheck": {
+      "receipt": "typecheck.receipt.json",
+      "exitCode": 0
+    },
+    "diffcheck": {
+      "receipt": "final-diffcheck.receipt.json",
+      "exitCode": 0
+    }
+  },
+  "historyAndLimits": [
+    "First red test did not await a terminal Report-ready/error marker; its original failure is retained as red.receipt.json. Corrected marker-only test red-v2 reproduced the exact failure on unchanged old production source, and that same test body is bound to final green results.",
+    "Initial WebKit invocation failed before fixtures because default browser cache lacked WebKit2359. Its six launch failures remain in webkit-focused.receipt.json; the successful invocation explicitly selected the already installed task-owned runtime.",
+    "Only synthetic local loopback/browser and existing fake provider fixtures ran. No Safari, Cloudflare, AMD, Registry, production project, paid provider, Turn, gate or original fb07 request was executed.",
+    "This proves a deterministic stale-owner race and the listed local regressions, not the unique cause of the original online failure or authenticated user acceptance.",
+    "No full unrelated suite, merge, commit, push, deployment or Issue closure was performed. User authorization deadlines and original execution window remain unchanged."
+  ],
+  "countAttribution": "Chromium29 includes the focused new6; focused Chromium6 repeats that subset. WebKit6 is a separate engine run of the same new cases, not additional unique tests.",
+  "behavior": "Async poll/delivery/error effects retain frame-generation/broker-owner; obsolete disposed Dashboard work cannot fail or remove Report successor. Genuine current403/timeout remains failclosed and cleanup/latch semantics remain.",
+  "onlineAcceptance": "Pending; not unique-online-root-cause proof; no merge/deploy/newpaidexecution authorised by this evidence."
+}

@@ -1,0 +1,114 @@
+{
+  "schema": "riffoid-ir.report-ir-integration-validation/v1",
+  "scope": "local browser integration; synthetic provider and RPC fixtures",
+  "onlineAccClaim": false,
+  "candidate": {
+    "commit": "daada38e2ea8a9ae5276afb20a622ece927b12a7",
+    "tree": "a11a3b99fe4ef3b6ddd45348786f4dc34deb60af",
+    "parents": [
+      "2c30cee45d0051aee52b876eb61c9c3c420ad525",
+      "bdee1975d1f8df20be5e9f83fd7b50d6885b27ad"
+    ],
+    "projectViewsSha256": "8b25abbf61e1e3fb48edb52612a04e01d8dbd6f9679061f1bc7283ecf47ba3a4"
+  },
+  "package": {
+    "version": "0.3.1",
+    "unchangedFiles": 45,
+    "runtimeSha256": "54cf8400a889748d6a796b10a3a1789ff6f622fd5fd986429ab28e2995d839ef",
+    "workerSha256": "5905881426fc6e21310f880b07cd7a840981883e9544922bb8fd6f47e3802e0f"
+  },
+  "newCrossPollCases": {
+    "file": "tests/m3/project-ir-report-poll-browser.test.mjs",
+    "sha256": "50f8e88a61af1c0ebbe01be4a2c47c4e593b47d1eb5d8110484d069386e8d6c5",
+    "bytes": 14909,
+    "summary": {
+      "cancelled": 0,
+      "fail": 0,
+      "pass": 2,
+      "skipped": 0,
+      "suites": 0,
+      "tests": 2,
+      "todo": 0
+    },
+    "nodeVersion": "v26.10.0",
+    "browserVersion": "153.0.8010.12",
+    "observations": [
+      {
+        "browserVersion": "153.0.8010.12",
+        "claimDeliveries": 1,
+        "eventCount": 22,
+        "fixtureOnly": true,
+        "initial": "report",
+        "liveWorkers": 0,
+        "nodeVersion": "v26.10.0",
+        "providerOrCloudExecutions": 0,
+        "runStatus": "succeeded",
+        "submissions": 1,
+        "workerConstructions": 1
+      },
+      {
+        "browserVersion": "153.0.8010.12",
+        "claimDeliveries": 1,
+        "eventCount": 22,
+        "fixtureOnly": true,
+        "initial": "ir",
+        "liveWorkers": 0,
+        "nodeVersion": "v26.10.0",
+        "providerOrCloudExecutions": 0,
+        "runStatus": "succeeded",
+        "submissions": 1,
+        "workerConstructions": 1
+      }
+    ],
+    "rawStdout": {
+      "sha256": "1434ee2902dd75fc0233d1048a64d7385846e20e7fece130dcd98c55599c1310",
+      "bytes": 7224,
+      "format": "Node26 default spec reporter, not TAP despite original filename"
+    },
+    "analysisSha256": "e57565af9e63edc4bc0450b326b6159d71d7f3a2f3e6d9841901af47e44427e7",
+    "sourceInputs": {
+      "checked": 61,
+      "mismatches": 0,
+      "onlyNewTestChanged": true,
+      "packageFilesUnchanged": 45
+    }
+  },
+  "existingCrossRegression": {
+    "files": [
+      "tests/m3/project-views-browser.test.mjs",
+      "tests/m3/project-ir-browser.test.mjs",
+      "tests/m3/project-view-sdk-deadlines-browser.test.mjs"
+    ],
+    "summary": {
+      "cancelled": 0,
+      "fail": 0,
+      "pass": 26,
+      "skipped": 0,
+      "suites": 0,
+      "tests": 26,
+      "todo": 0
+    },
+    "rawStdout": {
+      "sha256": "91b79e627cd83722e61f92ae0b80b24fb51f900f11e8f1b11e18e8197f7928f7",
+      "bytes": 70174,
+      "format": "TAP version 13"
+    },
+    "analysisSha256": "24a2d4ca976fb548ed6294f1cd8af206aec095092308c4c5eb5ba902f0f55870",
+    "sourceInputsChecked": 61,
+    "sourcePinsBeforeAndAfterUnchanged": true,
+    "newTwoCasesNotRerun": true
+  },
+  "cleanup": {
+    "nodeLeadersReaped": true,
+    "ownedProcessGroupsGone": true,
+    "chromiumChildrenExited": true,
+    "temporaryProfilesRemoved": true,
+    "workspaceOutsideRepository": true
+  },
+  "notes": [
+    "Both directions exercise the actual browser IR Worker with one claim, one submission and 22 selected events. Authority and delivery are local fixtures.",
+    "Raw Node 26 spec output from the new cases was originally named node.tap; it is not TAP. The existing regression output is explicit TAP.",
+    "Original browser warnings remain in private raw logs. No failure, cancellation or skipped case was suppressed.",
+    "No production or authentication action was performed by these tests. This is not Riffoid online ACC evidence."
+  ]
+}
