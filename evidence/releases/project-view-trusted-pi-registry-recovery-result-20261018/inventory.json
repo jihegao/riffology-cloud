@@ -1,0 +1,57 @@
+{
+  "schema": "jhg46-safe-evidence-inventory/v1",
+  "requestId": "9ec39434-0856-4ee7-af30-adf3dd5b5df4",
+  "draft": false,
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 4285,
+      "sha256": "7158274e29ac6782fe4fcfe7322a6f7a28d3d19f6b035df32279893e1cb8608e"
+    },
+    {
+      "path": "result.json",
+      "bytes": 6191,
+      "sha256": "750ab7cb846fb62fb3931d0bf8a4115647f8416507423c4a32afee0dbd9688d5"
+    },
+    {
+      "path": "sources/attempt-intent.json",
+      "bytes": 290,
+      "sha256": "04f0e2ff603e6115a89bdc32c822ebb8a8fcba2ae6391e567c6c10296bfe8393"
+    },
+    {
+      "path": "sources/consent-cli-intent.safe.json",
+      "bytes": 1074,
+      "sha256": "da2c766e583abca8e9b88fc1f7ba386e74be84c8d0adc48342ead972e3837f61"
+    },
+    {
+      "path": "sources/consent-cli-original.json",
+      "bytes": 70,
+      "sha256": "8178c766c322b59cc06dfdfaf7b984dc42f75af541b95bb9b0e221ed224f0314"
+    },
+    {
+      "path": "sources/consent-cli-terminal.json",
+      "bytes": 190,
+      "sha256": "4d1b7850eb7343487085eb8dfa613e72a85a05005e7bd94ab15c0bff2286f28d"
+    },
+    {
+      "path": "sources/driver-terminal.json",
+      "bytes": 836,
+      "sha256": "1e3b5f3bc9bd08b4669b5a620a156bf0361e8f26f97275f40cd6d788f8d2e6c6"
+    },
+    {
+      "path": "sources/human-authorization.safe.json",
+      "bytes": 1046,
+      "sha256": "d303628ce338f28163c9a210e7f441d62e7b2306e6c771c03e757c9b300214f6"
+    },
+    {
+      "path": "sources/independent-local-stop.safe.json",
+      "bytes": 5577,
+      "sha256": "6043ea627396b8c40c3b0b85f169284103d23dcf3c9124b1e9cdf80325585648"
+    }
+  ],
+  "excludes": [
+    "inventory.json itself to avoid circular hashing",
+    "private grant and original human reply",
+    "raw CLI stdout/stderr and OAuth storage"
+  ]
+}

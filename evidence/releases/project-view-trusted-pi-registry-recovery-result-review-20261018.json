@@ -1,0 +1,84 @@
+{
+  "checks": {
+    "cliIntentOnlyTwoPathProjectionsChanged": true,
+    "emptyDriverHashesNotAttributedToCli": true,
+    "fixedFinalHashesMatched": true,
+    "fourCopiesByteIdentical": true,
+    "independentStopKnownFieldsAndAllReferencesPreserved": true,
+    "noAuthoritativeCounterClaim": true,
+    "noNewExecutionOrRepairResultClaimed": true,
+    "noPersonalAbsolutePathsFound": true,
+    "oauthBrowserNetworkSideEffectsRemainUnknown": true,
+    "old403CauseUnknown": true,
+    "tenFilesNineInventoryEntries": true,
+    "twelveRelativeLinksResolved": true
+  },
+  "files": [
+    {
+      "bytes": 1773,
+      "file": "inventory.json",
+      "sha256": "ed809e48e63fbe1772adc1e69d620a7419227bbb728bf940f708472a02c6f1cf"
+    },
+    {
+      "bytes": 4285,
+      "file": "README.md",
+      "sha256": "7158274e29ac6782fe4fcfe7322a6f7a28d3d19f6b035df32279893e1cb8608e"
+    },
+    {
+      "bytes": 6191,
+      "file": "result.json",
+      "sha256": "750ab7cb846fb62fb3931d0bf8a4115647f8416507423c4a32afee0dbd9688d5"
+    },
+    {
+      "bytes": 290,
+      "file": "sources/attempt-intent.json",
+      "sha256": "04f0e2ff603e6115a89bdc32c822ebb8a8fcba2ae6391e567c6c10296bfe8393"
+    },
+    {
+      "bytes": 1074,
+      "file": "sources/consent-cli-intent.safe.json",
+      "sha256": "da2c766e583abca8e9b88fc1f7ba386e74be84c8d0adc48342ead972e3837f61"
+    },
+    {
+      "bytes": 70,
+      "file": "sources/consent-cli-original.json",
+      "sha256": "8178c766c322b59cc06dfdfaf7b984dc42f75af541b95bb9b0e221ed224f0314"
+    },
+    {
+      "bytes": 190,
+      "file": "sources/consent-cli-terminal.json",
+      "sha256": "4d1b7850eb7343487085eb8dfa613e72a85a05005e7bd94ab15c0bff2286f28d"
+    },
+    {
+      "bytes": 836,
+      "file": "sources/driver-terminal.json",
+      "sha256": "1e3b5f3bc9bd08b4669b5a620a156bf0361e8f26f97275f40cd6d788f8d2e6c6"
+    },
+    {
+      "bytes": 1046,
+      "file": "sources/human-authorization.safe.json",
+      "sha256": "d303628ce338f28163c9a210e7f441d62e7b2306e6c771c03e757c9b300214f6"
+    },
+    {
+      "bytes": 5577,
+      "file": "sources/independent-local-stop.safe.json",
+      "sha256": "6043ea627396b8c40c3b0b85f169284103d23dcf3c9124b1e9cdf80325585648"
+    }
+  ],
+  "limits": [
+    "Static review of retained safe artifacts; no fresh process, OAuth, account or remote-state observation.",
+    "No execution authorization, publication success, merge permission or Goal completion implied."
+  ],
+  "outcome": "no-must-fix",
+  "requestId": "9ec39434-0856-4ee7-af30-adf3dd5b5df4",
+  "reviewActions": {
+    "authorFilesChanged": 0,
+    "networkSshDockerOrCloudCalls": 0,
+    "realCliHelpOrAuthCalls": 0,
+    "testsRerun": 0
+  },
+  "reviewedAt": "2026-10-18T01:44:54.267834+00:00",
+  "reviewer": "probe_readability",
+  "schema": "jhg46-independent-public-result-review/v1",
+  "scope": "Final 9ec actual local-stop public evidence only; separate from parser repair preparation."
+}

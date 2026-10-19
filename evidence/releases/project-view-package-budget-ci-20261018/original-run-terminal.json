@@ -1,0 +1,165 @@
+{
+  "schema": "jhg46-package-budget-original-ci-terminal/v1",
+  "recordedAt": "2026-10-18T00:27:32.492Z",
+  "authoritativeObservedAt": "2026-10-18T00:27:19.409Z",
+  "source": "GitHub connector GET original run and original jobs",
+  "originalRunId": 39082129040,
+  "originalRunNumber": 308,
+  "originalRunAttempt": 1,
+  "originalHead": "05681cf3cf53d965784df486c25c622b74421ef0",
+  "originalBase": "638a366d31a37f7bc1d7dcd124e0b5ba753d6401",
+  "run": {
+    "id": 39082129040,
+    "name": "Local validation",
+    "head_sha": "05681cf3cf53d965784df486c25c622b74421ef0",
+    "head_branch": "codex/jhg46-package-response-budget-20261018",
+    "run_number": 308,
+    "event": "pull_request",
+    "status": "completed",
+    "conclusion": "success",
+    "run_attempt": 1,
+    "created_at": "2026-10-18T00:15:59Z",
+    "updated_at": "2026-10-18T00:26:36Z",
+    "run_started_at": "2026-10-18T00:15:59Z",
+    "check_suite_id": 105912040736,
+    "html_url": "https://github.com/jihegao/riffology-cloud/actions/runs/39082129040",
+    "base_sha": "638a366d31a37f7bc1d7dcd124e0b5ba753d6401"
+  },
+  "jobs": [
+    {
+      "id": 117541070664,
+      "name": "check",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 39082129040,
+      "run_attempt": 1,
+      "head_sha": "05681cf3cf53d965784df486c25c622b74421ef0",
+      "started_at": "2026-10-18T00:16:02Z",
+      "completed_at": "2026-10-18T00:26:36Z",
+      "check_run_url": "https://api.github.com/repos/jihegao/riffology-cloud/check-runs/117541070664",
+      "html_url": "https://github.com/jihegao/riffology-cloud/actions/runs/39082129040/job/117541070664",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-10-18T00:16:02Z",
+          "completed_at": "2026-10-18T00:16:04Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-10-18T00:16:04Z",
+          "completed_at": "2026-10-18T00:16:06Z"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-10-18T00:16:06Z",
+          "completed_at": "2026-10-18T00:16:14Z"
+        },
+        {
+          "name": "Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-10-18T00:16:14Z",
+          "completed_at": "2026-10-18T00:16:14Z"
+        },
+        {
+          "name": "Install source-inventory dependency",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-10-18T00:16:14Z",
+          "completed_at": "2026-10-18T00:16:24Z"
+        },
+        {
+          "name": "Run npm ci --ignore-scripts",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-10-18T00:16:24Z",
+          "completed_at": "2026-10-18T00:16:31Z"
+        },
+        {
+          "name": "Run npx playwright install --with-deps chrome",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-10-18T00:16:31Z",
+          "completed_at": "2026-10-18T00:16:51Z"
+        },
+        {
+          "name": "Prepare and verify pinned public browser assets",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-10-18T00:16:51Z",
+          "completed_at": "2026-10-18T00:16:53Z"
+        },
+        {
+          "name": "Existing local checks, archived experiment and quality regression",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9,
+          "started_at": "2026-10-18T00:16:53Z",
+          "completed_at": "2026-10-18T00:26:32Z"
+        },
+        {
+          "name": "Preserve validation output, including conditional skips",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10,
+          "started_at": "2026-10-18T00:26:32Z",
+          "completed_at": "2026-10-18T00:26:33Z"
+        },
+        {
+          "name": "Post Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 18,
+          "started_at": "2026-10-18T00:26:33Z",
+          "completed_at": "2026-10-18T00:26:33Z"
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 19,
+          "started_at": "2026-10-18T00:26:33Z",
+          "completed_at": "2026-10-18T00:26:33Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 20,
+          "started_at": "2026-10-18T00:26:33Z",
+          "completed_at": "2026-10-18T00:26:34Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 21,
+          "started_at": "2026-10-18T00:26:34Z",
+          "completed_at": "2026-10-18T00:26:34Z"
+        }
+      ]
+    }
+  ],
+  "allOriginalJobStepsSuccessful": true,
+  "pollCount": 4,
+  "logsRead": false,
+  "manualRerun": false,
+  "newWorkflowRunStarted": false,
+  "trackedCodeOrGitHubMetadataChanged": false,
+  "credentialOrProviderOrCloudflareOrSshOrDockerAccess": false,
+  "scope": "Original hosted Local validation succeeded on exact PR #246 head. Existing local targeted validation remains separate. No merge, deploy or product acceptance claim."
+}

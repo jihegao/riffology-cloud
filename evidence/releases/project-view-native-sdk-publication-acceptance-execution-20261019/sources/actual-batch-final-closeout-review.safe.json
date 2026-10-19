@@ -1,0 +1,223 @@
+{
+  "schema": "jhg46-sdk-actual-batch-stop-final-closeout-independent-review/v1",
+  "reviewedAt": "2026-10-19T00:50:55.867954+00:00",
+  "mustFix": [],
+  "checks": {
+    "fixedFinalAndReportOriginalsHash": true,
+    "originalFinalBody0": true,
+    "originalFinalBody1": true,
+    "originalFinalBody2": true,
+    "originalFinalBody3": true,
+    "originalFinalBody4": true,
+    "fiveOriginalReads200OnlyGetWithSameUserBracket": true,
+    "sameOriginalUserOriginalT2KeyResultAndR2": true,
+    "exactOneSessionTwoSavedTurnsNoS2T3": true,
+    "finalProductNoHoldsAndAvailable": true,
+    "finalR2SnapshotReceiptBodySameAsPostGuard": true,
+    "reportFirstFailureStoppedNoRetryOrLaterStage": true,
+    "originalOwnedGateClosedIndependentlyAccepted": true,
+    "completeBoundedFinalObserverPreservedNoOverflow": true,
+    "allOriginalCachedObserverBodyHashes": true,
+    "oneGetAbortPreservedNotPaidTurnUnknown": true,
+    "previewNotMislabelledPollStop": true,
+    "fourFinalPhysicalGet200GuardComplete": true,
+    "elevenInactiveLogicalAndDashSameIdsNoDashVm": true,
+    "acceptedSameConditionOneCurrentIdleDeployment": true,
+    "fullDocumentExitNotJustPreviewAndNativeInspectorClosed": true,
+    "closureOrderAndNoWindowExtension": true
+  },
+  "bindings": [
+    {
+      "file": "ordinary/browser-v1/report-first-failure.original.private.json",
+      "bytes": 90867,
+      "sha256": "6630e6401b1c2ac6ab4de55d75b293baa635b6db83b13e28700461ac55c66147",
+      "privateBodyCopied": false
+    },
+    {
+      "file": "reviews/actual-finite-gate-close-review.safe.json",
+      "bytes": 7782,
+      "sha256": "a45f3ace69f3c9bf51ad9e9759d74eb6520ad3f408c375388146751dd071d40f",
+      "privateBodyCopied": false
+    },
+    {
+      "file": "closeout/final-user-ui-original.private.json",
+      "bytes": 119741,
+      "sha256": "a58bcb6113d1fd2ebc460d73ebe997b08f6c511c2ea22a259e69088d92fd684f",
+      "privateBodyCopied": false
+    },
+    {
+      "file": "closeout/final-physical.tool-result.private.json",
+      "bytes": 17457,
+      "sha256": "2ecd3eb2b9acd4ff516752232301b233da325db877f78cd4ede2b3d3961666df",
+      "privateBodyCopied": false
+    },
+    {
+      "file": "closeout/final-full-document-ui-exit.original.safe.json",
+      "bytes": 487,
+      "sha256": "8bf887869d2d4692c5b6624fcbd8f95b5fedc1e4a2aeb64d9968016cfb895c9d",
+      "privateBodyCopied": false
+    },
+    {
+      "file": "closeout/native-safari-final-observation.safe.json",
+      "bytes": 528,
+      "sha256": "ff9f6d9b231374e68f701b3f431ccb345558d64b32466e9a200e71828cf5e0fd",
+      "privateBodyCopied": false
+    },
+    {
+      "file": "authorization/idle-placement-amendment-human-grant.private.json",
+      "bytes": 1237,
+      "sha256": "16b252bd1a399bac807e236365c16ce2789275622b188ebfabdbefbf46e0f1e7",
+      "privateBodyCopied": false
+    },
+    {
+      "file": "closeout/final-0-response-original.raw.private.json",
+      "bytes": 188,
+      "sha256": "aa8d093481241466c0c657acd20cd892eef45ff9414689e7dc2a9681ea5d4c01",
+      "privateBodyCopied": false
+    },
+    {
+      "file": "closeout/final-1-response-original.raw.private.json",
+      "bytes": 13643,
+      "sha256": "aaf25870c8bb5ce3618188c458f293b39f136f5da68e51e7fe13d1ebaea80a78",
+      "privateBodyCopied": false
+    },
+    {
+      "file": "closeout/final-2-response-original.raw.private.json",
+      "bytes": 3558,
+      "sha256": "9efc5f6cd530aa7dbf551f9117198af46d47ae93ceb8c445f8927dc33543375f",
+      "privateBodyCopied": false
+    },
+    {
+      "file": "closeout/final-3-response-original.raw.private.json",
+      "bytes": 21,
+      "sha256": "3c1f6a77c60ba4bb35b79fbd5886f12ad2b3faee35fcd185e4dae0cc37f42e60",
+      "privateBodyCopied": false
+    },
+    {
+      "file": "closeout/final-4-response-original.raw.private.json",
+      "bytes": 188,
+      "sha256": "aa8d093481241466c0c657acd20cd892eef45ff9414689e7dc2a9681ea5d4c01",
+      "privateBodyCopied": false
+    }
+  ],
+  "result": "Acceptance stopped at the first Report host-tab unavailable outcome; no Retry, Session2 or T3. Original owned gate cleanup plus final ordinary product, complete current physical and full-document/native UI exit are independently closed within the unchanged batch window. This is a failed partial acceptance with cleanup, not JHG46/V1/V2 success.",
+  "finalProduct": {
+    "readFrom": "2026-10-19T00:45:15.586Z",
+    "readThrough": "2026-10-19T00:45:26.390Z",
+    "sameOriginalOrdinaryActor": true,
+    "sessions": 1,
+    "turns": 2,
+    "bothCompletedSaved": true,
+    "revisionId": "0f8b8226017fa1100a73762a1f85fb50d6d7ac49eba40fff9eab9b3551eaa6ac",
+    "canonicalHeadAndReceiptUnchangedFromPostGuard": true,
+    "fourHoldsClear": true,
+    "capacity": "available",
+    "currentDocumentUiPostCount": 1,
+    "previousDocumentUiPostCount": 3,
+    "scopeLimitedObservedUiPostTotal": 4,
+    "paidExecutionUnknownInferredFromPageAbort": false
+  },
+  "finalGate": {
+    "independentReviewSha256": "a45f3ace69f3c9bf51ad9e9759d74eb6520ad3f408c375388146751dd071d40f",
+    "closedVersion": "cb577ad1-4439-434b-aee2-326d647dc0d0",
+    "versionNumber": 236,
+    "gateAbsent": true,
+    "sourceSha256": "304373a50d7a9ca8a99cdfbda0dcae261aa34d53727b757dfeb099c88efb5e0b",
+    "resourcePreservationScope": "Dated complete53GET closure as bound in the original gate-close review; no new Gate API request by this reviewer."
+  },
+  "observerBoundary": {
+    "retainedRequests": 171,
+    "onlyGet": true,
+    "statuses": {
+      "503": 56,
+      "200": 114,
+      "unobserved": 1
+    },
+    "observerErrors": {
+      "AbortError: Fetch is aborted": 1
+    },
+    "pendingAtFinalCapture": 0,
+    "overflow": false,
+    "cachedUniqueBodyHashes": 6,
+    "previewSelectionCountBefore": 170,
+    "previewSelectionCountAfter": 171,
+    "previewSelectionAloneProvesPollStopped": false,
+    "unobservedGetAndAbortRetained": true,
+    "notProofOfCompleteBrowserNetworkPacketCapture": true
+  },
+  "finalPhysical": {
+    "readFrom": "2026-10-19T00:45:27.292Z",
+    "readThrough": "2026-10-19T00:45:29.734Z",
+    "inactiveLogicalObjects": 11,
+    "dashDurableObjects": 11,
+    "dashVmInstances": 0,
+    "unfilteredCurrentDeployments": 1,
+    "deploymentId": "d03b8c4d-8cc2-475e-ba96-6e46d062983c",
+    "placementId": "2d986b84-9cbb-45e0-afc6-f05e7746ed3b",
+    "applicationVersion": 13,
+    "sameEc8Image": true,
+    "basicCpu": 0.25,
+    "memoryMiB": 1024,
+    "vm": "running",
+    "container": "stopped",
+    "terminate": false,
+    "sameAcceptedNarrowCurrentExposedScope": true,
+    "mayIncurFees": true,
+    "noHistoricalPlacementDisposalOrGlobalZeroVmClaim": true
+  },
+  "uiExit": {
+    "fullDocumentExitAt": "2026-10-19T00:47:15.713Z",
+    "nativeAxObservedAt": "2026-10-19T00:48:42.091116+00:00",
+    "projectList": true,
+    "remainingIframes": 0,
+    "oldDocumentGlobalsAbsent": true,
+    "webInspectorClosedNativeAx": true,
+    "pagehideSourceCleanupBound": [
+      {
+        "file": ".local/jhg46-native-sdk-acceptance-preparation-20261019/build-candidate-v2/source/services/web/project-views.js",
+        "bytes": 17054,
+        "sha256": "e420e10e0196a9b9ce5f8c6959f8c8551ee0eeae3a2f0a317d9eac8f986ea47c",
+        "lines": [
+          [
+            23,
+            27
+          ],
+          [
+            126,
+            132
+          ],
+          [
+            188,
+            190
+          ]
+        ]
+      },
+      {
+        "file": ".local/jhg46-native-sdk-acceptance-preparation-20261019/build-candidate-v2/source/services/web/project-view-local.js",
+        "bytes": 4396,
+        "sha256": "9edc6ef02b7d8bb50c51ef27e5a7d18d700f3a9013239ffb55c89baf07b6b987",
+        "lines": []
+      }
+    ],
+    "rawPortOrListenerCountsExposed": false,
+    "claim": "Full document context exit and frozen pagehide disposal path; not a direct public rawport/listener count or proof every historical browser process/network request stopped."
+  },
+  "remainingAcceptance": [
+    "Report/V1 complete two-page flow failed; no successful refresh/reentry/cold V2 or overall matrix is established by this closeout.",
+    "Dashboard/artifact partial observation and source diagnosis have separate evidence; this review does not manufacture or supersede those detailed functional results.",
+    "No Session2/T3/repair Turn, no added project/window or new rollout is allowed by this cleanup review."
+  ],
+  "limits": [
+    "Observer AbortError/one GET without observed status remains a read/format/abort evidence boundary. It does not turn known completed/saved/released paid T1/T2 into paid-execution unknown.",
+    "Finaluser report is original cached JSON evidence with per-body UTF8 size/SHA, not packet-level capture of every browser request.",
+    "Physical logical11 is not eleven VMs; complete current exposed list contains one accepted basic idle VM which may keep costing. Old placements/history/usage remain preserved and un-zeroed.",
+    "Current max1/default and image lineage are preserved by the earlier original app/config/resource authority and final sole deployment; no raw private config or new application mutation is introduced.",
+    "No unique Report failure root cause, new implementation fix/deployment, settled usage or zero cost is asserted."
+  ],
+  "reviewerActions": {
+    "localOriginalFilesAndSourceHashesOnly": true,
+    "networkUiAuthSqlModelGitOrNewTests": false,
+    "frozenInputsOrOriginalsEdited": false
+  },
+  "privateIdentityEmailTenantActorHostLocationCredentialConfigOrOriginalBodiesCopied": false
+}

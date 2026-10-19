@@ -1,0 +1,17 @@
+{
+  "schema": "trusted-pi-local-transport-targeted-cleanup-checks/v1",
+  "startedAt": "2026-10-17T13:24:43.910629+00:00",
+  "endedAt": "2026-10-17T13:24:43.910886+00:00",
+  "checks": 3,
+  "passed": 3,
+  "launcherBytes": 6793,
+  "launcherSha256": "6824287d91c57f3dc137f46044eb9d527e5f3e0d461ca4120a25ab76c7256d48",
+  "syntheticOnly": true,
+  "realSshOrDockerOrCredentialAccess": false,
+  "checksCovered": [
+    "already-reaped-no-signal",
+    "poll-signal-wait-errors-do-not-escape",
+    "later-trusted-reap-after-error"
+  ],
+  "frozenRemoteOperationsChanged": false
+}

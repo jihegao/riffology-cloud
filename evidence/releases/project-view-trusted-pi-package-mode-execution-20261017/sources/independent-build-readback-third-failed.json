@@ -1,0 +1,54 @@
+{
+  "endedAt": "2026-10-17T13:38:30.244442+00:00",
+  "helperBytes": 20759,
+  "helperSha256": "99e37c55d82c2062641ccc0ed577a495453603ecac064bdb9f156622db5c4da4",
+  "imageId": "sha256:a946b164d10d074fcc9859f6c54c3b65d1901b41696c5ee8d8e31e275ddd1593",
+  "newBuildCreateStartPullOrSave": false,
+  "originalContainerId": "65714c5c5e5377ca8f761c8a1a85d6baa5bd18bc994f95c0ae07db24c4d7ec19",
+  "originalSshPid": 2425,
+  "originalSshReaped": true,
+  "priorReadbackFailuresPreserved": [
+    {
+      "dockerCommandsBeforeStop": 0,
+      "path": ".local/jhg46-package-repair-execution-20261017/build-mock-independent-readback.json",
+      "sha256": "c76bc87a3f1636d15c8538e126a4fa496fcbefca7be8c48fb2015566c4135a51"
+    },
+    {
+      "dockerCommandsBeforeStop": 0,
+      "path": ".local/jhg46-package-repair-execution-20261017/build-mock-independent-readback-v2.json",
+      "sha256": "9746bc5c757db8a6ffc9112a54ab5f82b257be75452c102279889bd1cc2b5d61"
+    }
+  ],
+  "rawLogsGrantConfigEnvReturned": false,
+  "remoteWrites": false,
+  "requestId": "a21af2c8-44ff-4f67-a07f-c364bcd6d295",
+  "safeRemoteProjection": {
+    "errorCode": "private-bounded-record-required:probe.cid",
+    "failedFixedFileSafeStat": {
+      "file": "probe.cid",
+      "gid": 1000,
+      "isRegular": true,
+      "isSymlink": false,
+      "modeOctal": "0664",
+      "size": 64,
+      "uid": 1000
+    },
+    "newBuildCreateStartPullOrSave": false,
+    "remoteWrites": 0,
+    "requestId": "a21af2c8-44ff-4f67-a07f-c364bcd6d295",
+    "status": "readback-unknown"
+  },
+  "schema": "trusted-pi-package-permissions-independent-build-readback-transport/v1",
+  "sshExitCode": 1,
+  "startedAt": "2026-10-17T13:38:21.154919+00:00",
+  "status": "readback-unknown",
+  "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "stdout": {
+    "bytes": 349,
+    "sha256": "3502702f43c9c623b9d83338733a5de926343202f3185976dd15b17d5e8ab97c"
+  },
+  "timedOut": false
+}

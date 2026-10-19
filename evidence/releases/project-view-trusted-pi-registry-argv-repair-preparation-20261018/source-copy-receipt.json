@@ -1,0 +1,51 @@
+{
+  "schema": "trusted-pi-argv-order-repair-source-copy/v1",
+  "oldRequestId": "9ec39434-0856-4ee7-af30-adf3dd5b5df4",
+  "newRequestId": "fb99c7e4-21a7-4215-8261-c17dd7c148aa",
+  "oldOperationsManifestSha256": "3779af353a82fa334fc805a54ff02fe91a2f905d2cc9daf4733b1fd92189589c",
+  "sourceArchiveUnchanged": true,
+  "oldSourceFiles": {
+    "AUTHORIZATION.md": {
+      "bytes": 4146,
+      "sha256": "f67952e07405e13a5d92e45f27bf60b9d1e28efdeeed2b3bcfa121b355f982c1"
+    },
+    "EXECUTION.md": {
+      "bytes": 4695,
+      "sha256": "6748153859e55b6ab3a9822e0b2a02518c1db3b2106deaef63f83d020f7dcf8e"
+    },
+    "local-recovery.py": {
+      "bytes": 19223,
+      "sha256": "dd50c217aa6cbbe7a6312d985f7d7d80655dd8d90188d535032bcbd612352e04"
+    },
+    "oci_verify.py": {
+      "bytes": 5748,
+      "sha256": "0a23618e34b9a2acf608acc86d281ebd68f60a62ba2b102ecda92502c294acea"
+    },
+    "pub_common.py": {
+      "bytes": 3291,
+      "sha256": "24ecc1a238a2fd6d71e36087e75a1ce56c24e6be6184220074feed11cc842d0c"
+    },
+    "remote-recovery.py": {
+      "bytes": 13818,
+      "sha256": "339aa74fd246024886ca243526bd097d39be16150719a3b117474a7fcad6a178"
+    },
+    "scope.json": {
+      "bytes": 5078,
+      "sha256": "550c3ccae4e342e5684066c38f33bb0a68f64917c5f68a48151a94efd195eac8"
+    },
+    "test_recovery.py": {
+      "bytes": 16307,
+      "sha256": "a68cdfc227160b43e9243e0a0d2c901ee11cbcac2b3068c7bcabcfeae70a5800"
+    },
+    "independent-cleanup-readonly.py": {
+      "bytes": 9057,
+      "sha256": "3fe998b9a38a48f445e03ea16431fc0b71cfa98973707d1819427ddd1929e70d"
+    },
+    "test_independent_reader.py": {
+      "bytes": 6568,
+      "sha256": "1ccd6830166f0f2cc8447ad34b066659364c18a5d78e282b414777dfb4914eb4"
+    }
+  },
+  "noGrantCopied": true,
+  "newOperationsManifestSha256": "89f2f285f5f732a6f3c9b8705a47fde4b5f073970e585e779371fb20ac2680fa"
+}

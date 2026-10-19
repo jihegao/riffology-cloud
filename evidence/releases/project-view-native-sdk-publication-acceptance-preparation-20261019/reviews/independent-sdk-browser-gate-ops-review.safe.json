@@ -1,0 +1,38 @@
+{
+  "schema": "jhg46-new-sdk-browser-gate-independent-source-review/v1",
+  "recordedAt": "2026-10-18T17:55:40.844338+00:00",
+  "manifestSha256": "88ed7584237cccf6c7ae2a61993622a9655e7446551f9740d5f411c282b3210f",
+  "checks": {
+    "manifestFinalPin": true,
+    "all21BoundInputsExact": true,
+    "externalClosureReferencePins": true,
+    "original9PassReceiptAndStreams": true,
+    "threeRealDatedRawVm53GetPhases": true,
+    "originalNumericTimeMustFixClosed": true,
+    "exactRawAnnotationPredictionNotIgnore": true,
+    "originalDeleteDerivedFinalGetter": true,
+    "onlyOnePolicyScopeGrantBounded": true,
+    "noAuthOrNetworkSenderAdded": true,
+    "kernelProjectionUnchanged": true
+  },
+  "mustFix": [],
+  "findings": [
+    "Original Date.parse(number) defect closed by safeinteger milliseconds and exact ISO roundtrip parser; actualnumber positive and invalid numeric/string negatives are asserted.",
+    "New fixed3043 source gate derives initial closed version only from root-reviewed original1feadf publication receipt/ACK/afterfullpreservation. No arbitrary closed version whitelist or edit needed.",
+    "Exact complete predicted annotation replacement must match raw secret-phase stable hash; normalization preserves raw and changes comparison hash only. No broad ignore.",
+    "Owned PUT nonce/body/parser-canonical hash/201 ACK/current100% version chain; owned DELETE intent/200/currentnewversion chain derives finalclosed GET.",
+    "Factory preserves actual new scope/actor/generation quartet, one policy acceptedegress, finite4h/Oct20,10611\u219210712\u219210611/fullsource/resources.",
+    "Existing9unique fixtures reviewed without rerun; first5of6 fixture clone incident and earlier9case run retained separately, not counted as additional uniquecases."
+  ],
+  "limits": [
+    "No futuregrant/actualmerge/publication/newproject/gateexecution proof exists yet.",
+    "Publication receipt SHA is root-reviewed trust input; raw private metadata/config never copied into review.",
+    "Full closed/open/finalclosed53GET VM runs are local fakeconnector fixtures with actualdated raw families/module, not live current witnesses."
+  ],
+  "reviewerActions": {
+    "network": 0,
+    "auth": 0,
+    "testsRepeated": 0,
+    "inputEdits": 0
+  }
+}

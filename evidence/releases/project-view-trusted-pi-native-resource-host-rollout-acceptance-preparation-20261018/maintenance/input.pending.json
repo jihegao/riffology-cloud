@@ -1,0 +1,54 @@
+{
+  "actorSource": "server authenticated original operator principal+authVersion; no client actor body",
+  "begin": {
+    "bodyTemplate": {
+      "action": "begin",
+      "expectedPolicySha256": null,
+      "expectedRevision": null,
+      "requestId": "c1f9e955-96a6-56dc-acd2-4a0e84410442"
+    },
+    "maxAttempts": 1,
+    "method": "POST",
+    "path": "/api/admin/private-beta/maintenance"
+  },
+  "beginAckActual": null,
+  "beginIsAdmissionOnly": "does not cancel/kill/pause/drain existing work; natural original completion only",
+  "end": {
+    "bodyTemplate": {
+      "action": "end",
+      "expectedPolicySha256": null,
+      "expectedRevision": null,
+      "requestId": "c1f9e955-96a6-56dc-acd2-4a0e84410442"
+    },
+    "maxAttempts": 1,
+    "method": "POST",
+    "path": "/api/admin/private-beta/maintenance"
+  },
+  "endRequires": [
+    "current same original request/operator/authVersion/policy/control ownership stable",
+    "original-work natural terminal and release proven; no active/quarantined/unresolved/nativecold/paired unknown",
+    "samehold fresh joint quiescence and separate physical full lists/exact resources meet the two explicitly selected platform conditions",
+    "exact original rollout completed and app matches originalACK target/ec8/all nonimage canonical fields",
+    "other15apps/versions/Gateway resources fully preserved",
+    "fresh state.revision for this single end; original ACK then independent requestGET currentholdnull"
+  ],
+  "endResumesExistingPiNewAdmissions": true,
+  "exactBodyKeys": [
+    "action",
+    "requestId",
+    "expectedRevision",
+    "expectedPolicySha256"
+  ],
+  "executed": false,
+  "expectedPolicySource": "same fresh authenticated GET policySha256; must remain identical under original hold/control",
+  "expectedRevisionSource": "fresh GET state.revision; never control.revision",
+  "noAutoExpiryUnlock": true,
+  "nullTemplatesMustNeverBeTransmitted": true,
+  "operatorActualIdentity": null,
+  "origin": "https://app.riffoid.com",
+  "ready": false,
+  "requestId": "c1f9e955-96a6-56dc-acd2-4a0e84410442",
+  "sameHoldQuiescence": "GET /api/admin/private-beta/maintenance/quiescence?requestId=c1f9e955-96a6-56dc-acd2-4a0e84410442",
+  "schema": "jhg46-new-maintenance-owner-cas-input/v1",
+  "unknownAction": "retain original hold/request/key and read-only reconcile; no repeat begin/end/newowner/newpolicy/clearhold/forcecleanup"
+}

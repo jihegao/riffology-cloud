@@ -1,0 +1,19 @@
+# Original57a — resume after proven read-only CLI incompatibility
+
+This is a local reviewed continuation, not a new request or repeated build. Preserve original1066 cached-base runner,4893 runner, all source/test/proof history, original c92e payload/051 pull operator, original remote `build-probe-once/` directory/intent/result and all14 regular records. Do not delete a lock, overwrite a result, change UUID/directory/base, or rerun the failed `--format` command.
+
+Root's original launch receipt SHA `c4a7555eb2fe85c19f36d4c2fa4fbf8322c19670c1d362c94b39d1bc7cc02e4a` and source's independent strict safe observation (7764B, SHA `939d1de365031ece879c44ef3aa8879339828a627f26dd45b8ae5416b464ff82`) establish: the fixed original default-builder inspect exited125, original CLI1743008/ticks164543701 was reaped, complete stderr118B SHA `efc09f33c161340d92b67de0d7b3cdf5b7e414f3730315c879d9bfedcacb2353` classified exactly `unknown flag: --format`, stdout0, no process/error/output loss. Every build/create prefix, CID/iid/build metadata was absent. No build/create/start was attempted. The original result380B/SHA41062ccf… remains unchanged, with its conservative `unknown-stopped` status; subsequent evidence supplies a narrow known-read-only-failure classification without rewriting history. The earlier credential POST is separately still unknown.
+
+The official [buildx inspect contract](https://docs.docker.com/reference/cli/docker/buildx/inspect/) offers bootstrap/timeout, not format. The earlier capability check only proved plain inspect. This continuation calls plain `buildx inspect default` once and parses exactly one header `Name: default` and `Driver: docker` before the one `Nodes:` marker. It ignores node Name entries after that marker, and rejects duplicate/missing/wrong header values. No bootstrap or alternate builder is used.
+
+Only root executes the reviewed file, under original57a:
+
+```text
+/usr/bin/python3 <reviewed-continuation-runner-path> --execute --request-id 57a70587-2b21-4a56-aed1-09c8a32d868a
+```
+
+Upload/execute source outside the locked records directory; its existing exact file set is part of the guard. Before any command, require that original fixed lock directory remains owned/private and every original file/size/SHA and both empty-config/home directories match source's authoritative projection. Verify original intent/result, precise failed argv/125/complete output, reaped and now-absent original CLI. Any extra file (including previous continuation/build/create/CID/iid/metadata), mutation or unknown result stops. Fresh original57a receiver/auth/7897-absence and exact payload checks remain required.
+
+Then create one `continue-readonly-preflight-once.intent.json` with O_EXCL in the original directory. This is a phase record under the same request, not a new execution identity. A second invocation is rejected. All new command logs use `continue-` prefixes; current result is `continued-result.json` bound to original result SHA. Existing intent/result and all failed evidence are never edited. The first build/probe argv, fixed socket/default builder/empty auth config, iid+metadata/actual-image binding, base layer/config equality, original CID sandbox/time/log caps/report checks and original-ID NotFound plus label-empty cleanup are otherwise unchanged from1066.
+
+No OAuth, credential POST, pull, forwarding, API, Registry push, Cloudflare update or real paid model/user operation exists here. Failure/unknown retains original CID/CLI/PID/ticks/phase/logs and stops; no automatic retry, rollback, new key or second build/create/start. This preparation performed only local14-case fake tests; it did not operate remote Docker/SSH/API or read credentials. Root makes the sole decision to execute the first authorized build after reviewing these pins.

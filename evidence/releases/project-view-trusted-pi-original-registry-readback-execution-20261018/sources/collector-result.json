@@ -1,0 +1,14 @@
+{
+  "dockerOrRegistryCalls": 0,
+  "files": 14,
+  "inventorySha256": "a325a6e908c91b6d5e3d1c072083a67b7f0521c756d67a6a55b6fc2d46b26696",
+  "localOriginalAckStillRequired": true,
+  "mergeAllowed": false,
+  "operationId": "registry-readback-recovery-v1",
+  "originalRecordBytes": 10670,
+  "publicationVerified": false,
+  "remoteWrites": 0,
+  "requestId": "c263a2f3-f445-430e-b562-2e48f1eeb637",
+  "schema": "jhg46-original-readback-safe-collection-result/v1",
+  "status": "original-safe-records-collected"
+}

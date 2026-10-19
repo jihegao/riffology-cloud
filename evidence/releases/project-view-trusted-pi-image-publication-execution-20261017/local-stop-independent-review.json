@@ -1,0 +1,117 @@
+{
+  "facts": {
+    "credentialStdinSent": false,
+    "finalPublicationAckVerified": false,
+    "httpStatus": 403,
+    "localStopErrors": [],
+    "mergeAllowed": false,
+    "newLoginOrScopeExpansionRecorded": false,
+    "originalLocalSshRecordedReaped": true,
+    "readyNotAppendedBecausePostRaisedBeforeAppend": true,
+    "responseBodyBytes": 105,
+    "responseBodySha256": "6979949596e21188252f2394e828a8d535daec89ca894ea4aa85179c83e27e00",
+    "safeRemoteEvents": [],
+    "sameFiveScopeNormalRenewalRecorded": true,
+    "sshExitCode": 255,
+    "uniqueCredentialPostRecorded": true
+  },
+  "limits": [
+    "HTTP403 establishes explicit HTTP rejection, not a proven missing-scope or arrears cause.",
+    "No usable credential response or credential transfer is evidenced; no issuance/revocation/natural-expiry claim.",
+    "Local SSH reaped does not prove the original remote supervisor or route released.",
+    "The 8937-byte observed-stdout digest cannot substitute for persisted remote original records.",
+    "The frozen success-only reader intentionally rejects this failure and must not be relabelled as a successful independent result.",
+    "The pre-execution authorization receipt is historical, not proof that execution never subsequently started.",
+    "Current CI merge gate remains blocked on actual failed validation; no quota/payment nonexecution evidence in the reviewed preflight."
+  ],
+  "mustFixLocal": [],
+  "pendingRemoteClosure": [
+    "Fixed request/source/destination/grant/operations identities in original remote intent and terminal.",
+    "Original failure terminal remains unknown-stopped; actual export and push counters, actual bounded error code; never promote to success.",
+    "Original supervisor PID/start-ticks absence; source-before/export-once/source-after CLI records, terminal state and bounded log hashes; original processes absent.",
+    "Original raw-verification and raw index/manifest/config descriptor chain; original archive bytes/hash without exposing config or Env.",
+    "Absence of later tag/push/registry readback records, temporary-auth directory/config, and original IPv4/IPv6 port7897 listener plus loopback ECONNREFUSED."
+  ],
+  "requestId": "c3e04c41-72da-409b-a2b1-f924e6cc67fa",
+  "reviewedAt": "2026-10-17T15:35:22.413367+00:00",
+  "schema": "jhg46-pi-publication-failure-local-evidence-review/v1",
+  "sideEffects": {
+    "oauthOrCredentialFilesRead": 0,
+    "originalRecordsModified": 0,
+    "sshOrDockerOrApiExecuted": 0,
+    "testsRun": 0
+  },
+  "sourceRefs": [
+    {
+      "bytes": 835,
+      "path": "ops/publication-once/terminal.json",
+      "sha256": "d3df3b72f5fd743df43e1b6713cb0bbec50158cee46b2c969346c546684dd6b4"
+    },
+    {
+      "bytes": 165,
+      "path": "ops/publication-once/credential-http-stop.json",
+      "sha256": "53f4e62999d75c7d975763707c026d645d07e93b9f02d7cdd4f4274a5ebeff4c"
+    },
+    {
+      "bytes": 396,
+      "path": "ops/publication-once/normal-login-identity-safe.json",
+      "sha256": "691a6aca3f28abb1f8b0762d0e16e3fc857906b0ac6a17fa0e2bfb9d1c2da1d4"
+    },
+    {
+      "bytes": 218,
+      "path": "ops/publication-once/credential-post-once-intent.json",
+      "sha256": "fafe17cd0c63243d917e0dc5f3bd364a4a32f882d6a482dee1a9ee9d6144e376"
+    },
+    {
+      "bytes": 290,
+      "path": "ops/publication-once/intent.json",
+      "sha256": "e7b534bbe44e09ee50f0f986ea3e33efb71bdfa8523e225d4419c7870304c6f7"
+    },
+    {
+      "bytes": 307,
+      "path": "ops/publication-once/route-once-intent.json",
+      "sha256": "cd15caa44d7abf5329277636ca5b522991e5da5a5e826c2da2d7fbbdffa3cc07"
+    },
+    {
+      "bytes": 729,
+      "path": "authorization-receipt.json",
+      "sha256": "a2faca382488d8c29ca71b61812aef86a10245f630ff35e74cb9f7957bc58526"
+    },
+    {
+      "bytes": 811,
+      "path": "oauth-renew-once/result.json",
+      "sha256": "30391802878d8ad1fad7bd9389c512b05e9550c32a5a4e06900b7278675a83b9"
+    },
+    {
+      "bytes": 256,
+      "path": "oauth-renew-once/command-terminal.json",
+      "sha256": "8613e9bf054635b2f6f3e522ddcb7bc8e188ea3351300b6b76f8ff4426a4c00e"
+    },
+    {
+      "bytes": 1009,
+      "path": "daemon-preflight-readonly/result.json",
+      "sha256": "34ecdb8d4b80fab950174aebc7d705a254986d1f5a854211b05475502ce665a9"
+    },
+    {
+      "bytes": 301,
+      "path": "daemon-preflight-readonly/terminal.json",
+      "sha256": "4899423fb3fbda3612d272e2752169dc226f521eade0e1f2aac4941d9a41ef9a"
+    },
+    {
+      "bytes": 356,
+      "path": "launch-once/terminal.json",
+      "sha256": "39d0429f635428e9427558957c2a3bdc506048903b5495b89fbf5af9f98ef72c"
+    },
+    {
+      "bytes": 3203,
+      "path": "github-preflight/merge-gate-preflight.json",
+      "sha256": "8370562afdc3ca61fbc57e80c146aacc5f97218293309abd80dc19dba5c24133"
+    }
+  ],
+  "status": "local-stop-confirmed-remote-closure-pending",
+  "streamChecks": {
+    "launcherParsedTerminalEqualsOriginal": true,
+    "stderr": true,
+    "stdout": true
+  }
+}

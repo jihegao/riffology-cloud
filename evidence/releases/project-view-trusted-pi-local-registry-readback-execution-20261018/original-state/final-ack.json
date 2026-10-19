@@ -1,0 +1,10 @@
+{
+  "all52Verified": true,
+  "mergeAllowed": false,
+  "operationId": "registry-local-readback-v1",
+  "readbackProofSha256": "83da70682c5da62bfa53bc182e23b9a3c4c37492a2c83243e3264844c1262464",
+  "requestId": "c263a2f3-f445-430e-b562-2e48f1eeb637",
+  "schema": "trusted-pi-local-registry-final-ack/v1",
+  "sourceProofSha256": "d58b14a3622f433482a02cc29e37a4afe87a96e2a7ae0ae77269270f266613b6",
+  "terminalSha256": "3f7d78b175ab23e23249d34aa05beb678a028d0b0bdababc2ea2787a4104e8a3"
+}

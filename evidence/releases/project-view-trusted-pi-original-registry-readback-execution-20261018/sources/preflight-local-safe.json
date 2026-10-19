@@ -1,0 +1,22 @@
+{
+  "schema": "jhg46-public-safe-projection/v1",
+  "originalFile": "preflight-local-only.json",
+  "originalBytes": 869,
+  "originalSHA256": "3664245c9c27262035aaf3d34002be004abfe1dac43ea5afd4b625af00363f19",
+  "projectionNote": "Only private operationsDirectory omitted. Zero calls/state-absent flags describe this pre-execution observation, not the actual run.",
+  "data": {
+    "schema": "jhg46-c263-original-registry-readback-preflight-local-only/v1",
+    "allSourceAndGrantValidationPassed": true,
+    "at": "2026-10-18T13:11:08.784289+00:00",
+    "authNetworkSshRegistryDockerCalls": 0,
+    "copiedBindingFiles": 16,
+    "grantBytes": 4549,
+    "grantSha256": "eb6294d0b9dd1344e8717f5a8dd6ac879e7a41ed9455c0c2cb703f0ffbb2f97f",
+    "newReadbackStateAbsent": true,
+    "oldTwoLocalStatesBytePreserved": true,
+    "operationsManifestSha256": "59fd2dd0f464e38b50b56e7c1d65229b6d81d86b12c935a822d5eeefead74342",
+    "producerConsumerRawAndShaIdentity": true,
+    "scopeSha256": "3afa843b35aca80bf6866518ec2b55fd77cd5a40533b0a9fe421031b2ccfb178",
+    "singleJsonLineExactOneLfNoCr": true
+  }
+}

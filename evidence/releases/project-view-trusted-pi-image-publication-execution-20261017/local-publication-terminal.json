@@ -1,0 +1,26 @@
+{
+  "credentialPostAttempted": true,
+  "credentialStdinSent": false,
+  "endedAt": "2026-10-17T15:32:51.268314+00:00",
+  "errorCode": "auth-api-explicit-http-failure-no-retry",
+  "finalPublicationAckVerified": false,
+  "independentOriginalCredentialAndRouteCleanupRequired": true,
+  "localStopErrors": [],
+  "mergeAllowed": false,
+  "originalSshReaped": true,
+  "remoteStoppedByLocalCleanupProved": false,
+  "requestId": "c3e04c41-72da-409b-a2b1-f924e6cc67fa",
+  "safeRemoteEvents": [],
+  "schema": "trusted-pi-publication-local-terminal/v1",
+  "sshExitCode": 255,
+  "streams": {
+    "stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stdout": {
+      "bytes": 8937,
+      "sha256": "99cfee93d066fc4f5ee05092f7dd100d05ca36975707315f9974564c60596074"
+    }
+  }
+}

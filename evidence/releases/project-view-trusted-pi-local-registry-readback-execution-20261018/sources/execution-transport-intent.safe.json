@@ -1,0 +1,17 @@
+{
+  "argv": [
+    "/Library/Developer/CommandLineTools/usr/bin/python3",
+    "/Users/jihegao/apps/riffology-cloud/.local/jhg46-native-resource-snapshot-host-publication-execution-20261018/registry-local-readback-v1/operations/local-recovery.py",
+    "--execute",
+    "--grant-file",
+    "/Users/jihegao/apps/riffology-cloud/.local/jhg46-native-resource-snapshot-host-publication-execution-20261018/registry-local-readback-v1/human-grant.json",
+    "--grant-sha256",
+    "d80be132a0cba57abba491965451b0988d59e052d5f9cf16be6a5d725473a904"
+  ],
+  "attempts": 1,
+  "driverUnmodified": true,
+  "rawSafeDriverStdoutCaptured": true,
+  "schema": "jhg46-local-readback-original-main-transport/v1",
+  "startedAt": "2026-10-18T14:29:38.570685+00:00",
+  "stderrPersistence": "hash-and-length-only"
+}

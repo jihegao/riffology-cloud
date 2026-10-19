@@ -1,0 +1,12 @@
+{
+  "schema": "jhg46-sdk-gate-local-first-transition-check/v1",
+  "recordedAt": "2026-10-18T17:51:50.478704+00:00",
+  "exitCode": 1,
+  "tests": 6,
+  "pass": 5,
+  "fail": 1,
+  "testSha256": "5495dbde91c753ea368955a038a937e655ff13051220399c31c8f052188e904c",
+  "failure": "One fixture cloned Buffer via structuredClone and JSON.parse saw a Uint8Array before reaching the negative assertion; not a product or live failure.",
+  "network": 0,
+  "cloudWrites": 0
+}

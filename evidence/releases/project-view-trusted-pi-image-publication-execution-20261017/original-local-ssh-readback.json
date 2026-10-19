@@ -1,0 +1,11 @@
+{
+  "currentPidAbsent": true,
+  "localDriverRecordedReaped": true,
+  "originalPid": 12027,
+  "originalRecordedStartedAt": "2026-10-17T15:32:35.858100+00:00",
+  "priorSandboxPsDenied": true,
+  "psExitCode": 1,
+  "remoteTerminationNotInferredFromLocalReaping": true,
+  "requestId": "c3e04c41-72da-409b-a2b1-f924e6cc67fa",
+  "schema": "trusted-pi-publication-original-local-ssh-readback/v1"
+}

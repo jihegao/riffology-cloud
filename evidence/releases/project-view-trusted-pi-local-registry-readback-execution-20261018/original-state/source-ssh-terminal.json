@@ -1,0 +1,21 @@
+{
+  "endedAt": "2026-10-18T14:29:45.954561+00:00",
+  "errorCode": null,
+  "exitCode": 0,
+  "operationId": "registry-local-readback-v1",
+  "originalReaped": true,
+  "pid": 12189,
+  "requestId": "c263a2f3-f445-430e-b562-2e48f1eeb637",
+  "stderrPersisted": false,
+  "stopErrors": [],
+  "streams": {
+    "stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stdout": {
+      "bytes": 11226,
+      "sha256": "c01375cfb18ecc969d50da5e4d7bbad5eaed0794196aa0e91c350c494f852574"
+    }
+  }
+}

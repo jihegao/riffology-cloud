@@ -1,0 +1,50 @@
+{
+  "schema": "trusted-pi-original-pull-independent-readback/v1",
+  "authority": "source_audit exact reviewed operator readback-only plus local original-PID ps; no mutation",
+  "originalRequestId": "57a70587-2b21-4a56-aed1-09c8a32d868a",
+  "startedAt": "2026-10-17T11:54:47.049301+00:00",
+  "endedAt": "2026-10-17T11:54:51.074816+00:00",
+  "operatorSha256": "4ef6352c4a48e52c8b1cd6ca1c0120d2b296c71851380b92d06ec8748fe934e7",
+  "grantSha256": "d241c2ee9c47a8f3327ab4220f3d845f24777e036aa450f3f542e4776b53e0f1",
+  "operationsManifestSha256": "05100f4a7c8aa2448b289d1525498dbd10542612873630e6b1cfd980dbb87512",
+  "mode": "readback-only",
+  "exitCode": 0,
+  "stdoutBytes": 747,
+  "stdoutSha256": "0760ebc6cb994975e12ecf6747b351753d7bbc70ed135fd4c7784905f904f8c7",
+  "stderrBytes": 0,
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "readback": {
+    "authConfigAbsent": true,
+    "cleanupConfirmed": true,
+    "grantSha256": "d241c2ee9c47a8f3327ab4220f3d845f24777e036aa450f3f542e4776b53e0f1",
+    "operationsManifestSha256": "05100f4a7c8aa2448b289d1525498dbd10542612873630e6b1cfd980dbb87512",
+    "originalReceiverAbsent": true,
+    "remote7897Absent": true,
+    "remote7897ConnectErrno": 111,
+    "remote7897ListenerAddresses": [],
+    "requestId": "57a70587-2b21-4a56-aed1-09c8a32d868a",
+    "schema": "trusted-pi-pull-cleanup-readback/v1",
+    "terminal": {
+      "authConfigAbsent": true,
+      "endedAt": "2026-10-17T11:49:52.523207+00:00",
+      "errorCode": "stdin-eof",
+      "requestId": "57a70587-2b21-4a56-aed1-09c8a32d868a",
+      "routeBindAddressesBeforeCredential": [
+        "127.0.0.1"
+      ],
+      "schema": "trusted-pi-pull-terminal/v1",
+      "status": "unknown-stopped"
+    }
+  },
+  "localOriginalSsh": {
+    "pid": 85463,
+    "psExitCode": 1,
+    "psStdout": "",
+    "absent": true,
+    "noSignalSent": true
+  },
+  "newCredentialPosts": 0,
+  "newForwardingOrExecutionReceiver": false,
+  "pullBuildOrContainerRequests": 0,
+  "unknownCredentialMintIsNotRuledOut": true
+}

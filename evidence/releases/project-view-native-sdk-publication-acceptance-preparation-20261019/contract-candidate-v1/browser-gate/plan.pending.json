@@ -1,0 +1,28 @@
+{
+  "schema": "jhg46-owned-finite-browser-plan-pending/v1",
+  "requestId": "95b9b8c6-8d52-566d-8476-dfa3e02f6b79",
+  "parentBatchRequestId": "fb07e239-2cb4-4379-9581-5711d86a0f30",
+  "finalized": false,
+  "grantSha256": null,
+  "startsAt": null,
+  "endsAt": null,
+  "scope": null,
+  "actor": null,
+  "generation": null,
+  "sourceGatewayVersion": null,
+  "sourceGatewayBundleSha256": null,
+  "currentControlAndMetadataWitness": null,
+  "originalCreateR2MeIdentityReceiptQuartet": null,
+  "policyBody": null,
+  "transmittedBody": null,
+  "ownOpenAck": null,
+  "ownCloseAck": null,
+  "factorySource": {
+    "file": ".local/jhg46-next-stage-preparation-20261018/browser-gate-ops-v1/requests.mjs",
+    "bytes": 4798,
+    "sha256": "8920716d09899d924f5226afd4d50c4fbbb66e8d8d3fbfd98a175132940ba752"
+  },
+  "factoryReuseIsSemanticNotBlindReplayOfOldPlan": true,
+  "scopeLimit": "One newly created approved project/owner/generation, only within new explicit window, open after original R2 save/release and close same acknowledged owned request on failure or final success. One PUT/one DELETE; no old gate/version/request replay.",
+  "unknownOpenOrCloseResult": "Retain original lock and reconcile read-only under original request; no blind DELETE/new key or untrusted-ACK finalization."
+}

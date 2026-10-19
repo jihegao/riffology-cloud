@@ -1,0 +1,31 @@
+{
+  "schema": "jhg46-root-cached-base-build-transport-result/v1",
+  "requestId": "57a70587-2b21-4a56-aed1-09c8a32d868a",
+  "endedAt": "2026-10-17T12:05:15.711223+00:00",
+  "sshExitCode": 1,
+  "outerTransportTimedOut": false,
+  "ownedSshReaped": true,
+  "runnerSha256": "1066f2331c6d411b5d9c8c8f7d48cb03e5f537b0ebd0273abe1b89088254000f",
+  "streams": {
+    "stdout": {
+      "bytes": 352,
+      "sha256": "a6aa423da16c96cc531ecc844a2d438d1fc3b5f6bb3595d120e3859e00d8508c"
+    },
+    "stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "remoteResult": {
+    "cleanup": {
+      "cleanupConfirmed": true,
+      "containerCreateNeverAttempted": true
+    },
+    "endedAt": "2026-10-17T12:05:11.827272+00:00",
+    "errorCode": "command-nonzero-default-builder-inspect",
+    "noCloudOrProviderAcceptanceClaim": true,
+    "requestId": "57a70587-2b21-4a56-aed1-09c8a32d868a",
+    "schema": "trusted-pi-build-probe-result/v1",
+    "status": "unknown-stopped"
+  }
+}

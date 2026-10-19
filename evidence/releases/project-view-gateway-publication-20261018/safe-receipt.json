@@ -1,0 +1,116 @@
+{
+  "schema": "jhg46-gateway-replacement-publication/v1",
+  "result": "worker-and-independent-preservation-readback-passed",
+  "requestId": "f953bc1e-3ea1-4786-821c-26ecf68916a0",
+  "actualDeploymentId": "cf7337f5-2332-4436-b2b9-ec211def147b",
+  "actualVersionId": "5a840cbc-49c5-45cd-badc-b75553c78566",
+  "acknowledgedAt": "2026-10-18T08:56:30.566Z",
+  "beforeFile": {
+    "sha256": "f503861acd1ebb1a57e4a4e6b2b9a9f15a38882ccccf306813e152d01e38e30c",
+    "bytes": 83451
+  },
+  "afterFile": {
+    "sha256": "9a74070de069a05efb24dd641ceec1750d01b3f27000a5a7d6cd1722be2ee631",
+    "bytes": 83535
+  },
+  "ackTimeFile": {
+    "sha256": "ce454ce97d1e94ab0f97792ad6a39cc80759fa4e8b841e7e09801c49388958f5",
+    "bytes": 106
+  },
+  "ackFile": {
+    "sha256": "126e2dde8105198f8e42cae0e869adbfbf8851bc1745d757e686559af1ff2c1d"
+  },
+  "intentFile": {
+    "sha256": "4b7cc6ad82cb97b493e234f009953b338d2f1be20f537af6c540e180de7bc7f8"
+  },
+  "source": {
+    "mainModule": "index.js",
+    "bytes": 5771650,
+    "sha256": "9c8e4b6b763e9887d1624f00ed3a8efb2a8a24d984d96bc68fdb289cb4d362c3"
+  },
+  "bindings": 106,
+  "exports": 25,
+  "containerAssociations": 6,
+  "namespaces": 50,
+  "assets": 96,
+  "remoteClosed": true,
+  "browserBindingAbsent": true,
+  "independentAll16AppsVersionsRegistryPreservation": "complete",
+  "assetsPublicByteReadback": "pending",
+  "userAcceptance": false,
+  "afterWitness": {
+    "data": {
+      "schema": "jhg46-gateway-preservation-witness/v1",
+      "authority": "Personal Cloudflare connector",
+      "accountId": "8b0d70250211aa10d89e20605a1c7e5e",
+      "worker": "riffology-m1-gateway-staging",
+      "requestId": "f953bc1e-3ea1-4786-821c-26ecf68916a0",
+      "phase": "after-worker-put",
+      "workerVersionId": "5a840cbc-49c5-45cd-badc-b75553c78566",
+      "startedAt": "2026-10-18T08:57:03.069Z",
+      "endedAt": "2026-10-18T08:57:05.525Z",
+      "onlyGet": true,
+      "complete": true,
+      "cloudWrites": 0,
+      "actualCredentialValueGuardPassed": true,
+      "credentialGuardCoverage": {
+        "settingsReads": 2,
+        "workerVersionBindings": 1,
+        "applicationListReads": 2,
+        "applicationVersionLists": 16,
+        "applicationVersionReadsPerApp": 1,
+        "workerSecretValueFields": 0,
+        "containerEnvironmentValueFields": 0
+      },
+      "counts": {
+        "bindings": 106,
+        "exports": 25,
+        "containerAssociations": 6,
+        "namespaces": 50,
+        "apps": 16,
+        "appVersionLists": 16
+      },
+      "originalAppInstanceListCount": 0,
+      "appsCanonicalSha256": "181ac23db4bff92b16a0743e4512af3a3d55e688727840ca551e31329b2b14e4",
+      "appVersionsCanonicalSha256ById": {
+        "a031ae38-f967-483f-ae2e-3dbed3d35268": "0df8df4030dc63c29c334d87ed39e6d751415e230a892cd6d0a06811655a57f1",
+        "a03836ca-d275-4f7d-898f-bc16d0875089": "5d061bc5a0b0a841114ee6414ca224bafd1050b3258974e38a2349dbd7933324",
+        "a03c0a4c-7533-4190-ba2b-ff4fecaabb48": "04fa8bf7dab41ffdaa548f0ecdcf08948c9204ae876f4c2a2bc63b4ef99e8748",
+        "a03628c4-f032-461f-a65b-612ccac11a06": "35a051ed1fb0e983a7783f2df973530f1c482bbf94fb60d6df7162f45032d067",
+        "a03156a6-9bf5-43fb-8b7f-a1f5b8d1a650": "7b595660b679b24cebc54a4f7ae511d78ec723a0e9e33c7cacdb011cbce8b4ae",
+        "a035c941-2207-406e-97aa-a42ab6e9d249": "7feb85f1cdf520ace62c4f1b7c2e763509d01f35b4224f52cec6af9f33e67298",
+        "a03693b8-f5be-4247-9280-f0c38435d911": "adec504a97205a5b1b9ec42cc733634d1b5f799d1a724e642dee325898b7aab1",
+        "a03a6e91-25cb-4a8d-89a8-be522368dde4": "c0b24bc013795ad6f6aa8575041b23c423a35d8d1a569b49d37f501fe537f6cf",
+        "a039ed42-159d-43db-be13-69315bce5189": "f195ca2f59f445d3e0b8ac77cb59d74fa251e26b5085e4c2a7cc20f6e8c0c9c3",
+        "a03ddc7e-1c6e-4cea-93ec-ac03d7b0073a": "adec504a97205a5b1b9ec42cc733634d1b5f799d1a724e642dee325898b7aab1",
+        "a0321718-f17e-4ccf-974a-fd447dde5920": "adec504a97205a5b1b9ec42cc733634d1b5f799d1a724e642dee325898b7aab1",
+        "a036b418-dcce-4d2f-bd3d-6debf982ea6f": "adec504a97205a5b1b9ec42cc733634d1b5f799d1a724e642dee325898b7aab1",
+        "a03c0d4b-d529-4d81-a2b6-bfb901222a18": "f195ca2f59f445d3e0b8ac77cb59d74fa251e26b5085e4c2a7cc20f6e8c0c9c3",
+        "a0332851-f795-46df-9f8e-ee0ddc220095": "f6c4da8b12dedf6d5a9037b299e767fee61b0de8167aad9fa242da50b802676b",
+        "a03313e4-fa9d-4de2-ac2c-d2cc69efd875": "f195ca2f59f445d3e0b8ac77cb59d74fa251e26b5085e4c2a7cc20f6e8c0c9c3",
+        "a03ea65b-b039-4f56-8422-36c719b87b72": "adec504a97205a5b1b9ec42cc733634d1b5f799d1a724e642dee325898b7aab1"
+      },
+      "controlCanonicalSha256": {
+        "settings": "287e543a73d17c4003570a1bcf8715f3581271f19332166538f930bc976607b7",
+        "deployments": "4099aac29875dc82018a3f84822fbca72dc85531f271f45da23b610f8417d1dd",
+        "schedules": "391d627b3aa458fc3da2e7010304314516240dcaa82473a4639853058a8ea876",
+        "subdomain": "30e312825bb06c36721a0f40088937653e78764ef3e27582bc25848ef0cd5d3c",
+        "domains": "17519fa58b6cfbd401f7415fcd3d0c7deb08433f648d54d8abeab27d5e157475",
+        "routes": "b92bf62b3267304dfecb00a6c074ce9b3a1372ecfd1f8e02bee22e59daeaddf2",
+        "namespaces": "1260b695fc9ec54c8abd8cdeffc6c201544e16e67a05cbf91633c1f7de67f417",
+        "registries": "cd620e3f5495c79d1b15047de25e2ddbd6944fac285d6ba6856608e8d5056d8d"
+      },
+      "workerVersionCanonicalSha256": "de19042b508dcd20ca63f64363244fdae074a95614d830bc609ada21e0808766",
+      "actualServingModule": {
+        "mainModule": "index.js",
+        "bytes": 5771650,
+        "sha256": "9c8e4b6b763e9887d1624f00ed3a8efb2a8a24d984d96bc68fdb289cb4d362c3"
+      }
+    },
+    "sha256": "dbe18df9abb9da1761fc49257c9da840571a818b660fe84a4420491b7994511d",
+    "path": "publication-attempts/f953bc1e-3ea1-4786-821c-26ecf68916a0/after-witness.actual.json"
+  },
+  "credentialsReadDuringFinalize": false,
+  "cloudWritesDuringFinalize": 0,
+  "publicAssetsReadback": "pending-separate-96-byte-check"
+}

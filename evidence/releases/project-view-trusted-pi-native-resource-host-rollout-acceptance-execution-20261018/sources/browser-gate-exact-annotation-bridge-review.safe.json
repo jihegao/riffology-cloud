@@ -1,0 +1,92 @@
+{
+  "schema": "jhg46-browser-gate-exact-deployment-annotation-bridge-independent-review/v1",
+  "recordedAt": "2026-10-18T16:55:11.701161Z",
+  "reviewMode": "Pure local source/original file/hash/structural comparison; no new witness invocation or factory execution",
+  "bindings": [
+    {
+      "file": "browser-gate/open-metadata-normalization-candidate.private.json",
+      "bytes": 2885,
+      "sha256": "23f37f2b73402bd24a91feaad62a604fe6be0cee4564cdc47f25a1ee6990046a"
+    },
+    {
+      "file": "browser-gate/closed-witness-v3-original.tool-result.private.json",
+      "bytes": 14701,
+      "sha256": "174f834d7d44a89aeebe5d7ba33f470e96aac71693bc8df84218b65f89760902"
+    },
+    {
+      "file": "browser-gate/open-witness-v3-original.tool-result.private.json",
+      "bytes": 14778,
+      "sha256": "baa9bc0d53fe440d195432eebdc714b90eea9f2dbf6bdb4713e77de60c5f0b39"
+    },
+    {
+      "file": "browser-gate/open-projection-diagnosis-original.tool-result.private.json",
+      "bytes": 1619,
+      "sha256": "3a8dca2eba6dd7115bb7c0a730567b0e8f632cda14dd36f0158c3fb80745a703"
+    },
+    {
+      "file": "browser-gate/settings-root-diagnosis-original.tool-result.private.json",
+      "bytes": 2315,
+      "sha256": "dc8076ddda6774c675aa49ac86d64fe151db6010dddadd02b2f64c5189be6e89"
+    },
+    {
+      "file": "browser-gate/metadata-only-reconstruction-original.tool-result.private.json",
+      "bytes": 2152,
+      "sha256": "757897e40b45712d1caa48d937df7fa2cb160f454970d24945490a4cf660162f"
+    },
+    {
+      "file": "browser-gate/metadata-only-reconstruction.request.txt",
+      "bytes": 3749,
+      "sha256": "56c9dcdafd3926d9b791c518d1974c1e6b378b99848c3b17662ed1710dc9301c"
+    }
+  ],
+  "factorySourceSha256": "8920716d09899d924f5226afd4d50c4fbbb66e8d8d3fbfd98a175132940ba752",
+  "sourcePreservation": {
+    "originalsUnmodified": true,
+    "normalizedWitnessEqualsExactOriginalOpenWitnessExceptStableMetadataSha256": true,
+    "closedAndOpenControlPlaneSha256Equal": true,
+    "openOriginalComplete54GetCredentialGuardPassed": true,
+    "fixedOriginalVersion": "5a840cbc-49c5-45cd-badc-b75553c78566",
+    "fixedAcknowledgedOpenVersion": "ba8d19c9-3a87-49f5-bccb-a97f2d5955ee",
+    "rawStableMetadataSha256": "64d4d58d0822536915b6f8efab957059fcff0a4b315b4e7edc96e394b5277c19",
+    "bridgedStableMetadataSha256": "2b8867424e00a39e61fe237fe9790462275f0598e5613f0852ca38709d4ebf44",
+    "rawHashIsNotClaimedEqualToClosed": true
+  },
+  "exactBridgeEvidence": {
+    "actualVersionFullProjectionDiffOnlyThreeAnnotationLeaves": true,
+    "settingsAnnotationsEqualActualNewVersionAnnotations": true,
+    "oldAnnotationSha256": "0ac38444ba9751b6694f0faec284ec006e7b25103fe2b16397c42b834f9421b9",
+    "newAnnotationSha256": "83f734a801bb2c6f97915ecb2cf714cf818919371497183b25f2df90338b0638",
+    "actualCompleteProjectionReconstructionEqualsOriginalClosed": true,
+    "reconstructionAuthority": "Existing four-GET original tool result plus reviewed source: full current normalized settings combined with immutable original version; replace only settings.annotations with that original version annotations, yielding exact original closed digest. Earlier full projection diff establishes current-vs-original version differs only the three annotation leaves. No full configuration response copied.",
+    "additionalOfflineSettingsReconstruction": {
+      "baselineSourceSha256": "4386ea1a12dc21191bb382cfb3728c2ad3390a4fff4ca5dcae7b466040729e1e",
+      "actualPutMetadataSourceSha256": "8058ff9de79cfb891882058c793ff839d0635aa48bd1586b8ea996243524d079",
+      "change": "Keep all106 original settings bindings and every setting; substitute only the actual5a840 PUT annotations. Do not use the95-binding PUT metadata as a settings replacement.",
+      "reconstructedOriginalSettingsSha256": "287e543a73d17c4003570a1bcf8715f3581271f19332166538f930bc976607b7",
+      "sameSettingsWithExactCurrentSecretAnnotationSha256": "3926e958af229da1e20ca35a0532147b520e7aded2a4251c8d665200735ca5f3",
+      "currentRootDiagnosticHashMatches": true,
+      "originalAndCurrentTagsAreEmptyArray": true
+    }
+  },
+  "decision": {
+    "mustFix": [],
+    "explicitBridgeCandidateAcceptableForAlreadyAuthorizedV1": true,
+    "reason": "The original operation contract permits documented version/deployment identity metadata differences. Actual secret deployment annotations are now exhaustively bound to this exact original/ACK version pair and complete old projection, rather than broadly omitted. The original pure factory need not change.",
+    "doesNotProveV1BrowserArtifactOrT3Acceptance": true,
+    "newPutDeleteOrRolloutByThisReview": false
+  },
+  "limits": [
+    "This is an explicit derived comparison witness. Preserve raw64d4 and normalization source beside the derived2b886; do not relabel raw metadata equality.",
+    "Only settings.annotations and version.annotations for this exact0ac384→83f734 mapping qualify. No recursive deletion, arbitrary future annotations, configuration substitution or ignored resource changes.",
+    "Any later close/result witness still requires its actual original ACK/current-version/source/control/owned-body authority; this review does not authorize a new mutation or waive fresh comparison."
+  ],
+  "privacy": {
+    "actorIdentityRawSettingBindingValuesCredentialsOrConfigurationCopied": false,
+    "onlyMetadataKeysResourceVersionIdsAndHashes": true
+  },
+  "reviewerActions": {
+    "networkBrowserAuthSqlDockerModelCalls": 0,
+    "candidateFunctionsOrFixturesRun": 0,
+    "authorSourceChanged": false
+  }
+}

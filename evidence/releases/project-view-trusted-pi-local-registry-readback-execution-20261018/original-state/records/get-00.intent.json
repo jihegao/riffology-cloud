@@ -1,0 +1,14 @@
+{
+  "at": "2026-10-18T14:29:53.958466+00:00",
+  "expectedDescriptor": {
+    "digest": "sha256:ec8dbe9efe229a1626ea3202b618653f82f8d29d9da8b19310c3b3838f2a2623",
+    "mediaType": "application/vnd.oci.image.manifest.v1+json",
+    "size": 9585
+  },
+  "operationId": "registry-local-readback-v1",
+  "path": "manifests/jhg46-native-resource-host-20261018-0bb9af7a",
+  "requestId": "c263a2f3-f445-430e-b562-2e48f1eeb637",
+  "retryAllowed": false,
+  "schema": "trusted-pi-local-registry-get-intent/v1",
+  "slot": 0
+}

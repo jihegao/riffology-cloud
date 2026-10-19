@@ -1,0 +1,115 @@
+{
+  "cleanupConfirmed": true,
+  "cliLifecycles": [
+    {
+      "currentOriginalProcessAbsent": true,
+      "exitCode": 0,
+      "name": "base-inspect",
+      "originalCliReaped": true
+    },
+    {
+      "currentOriginalProcessAbsent": true,
+      "exitCode": 0,
+      "name": "default-builder-inspect-plain",
+      "originalCliReaped": true
+    },
+    {
+      "currentOriginalProcessAbsent": true,
+      "exitCode": 0,
+      "name": "build-help",
+      "originalCliReaped": true
+    },
+    {
+      "currentOriginalProcessAbsent": true,
+      "exitCode": 1,
+      "name": "derived-tag-before",
+      "originalCliReaped": true
+    },
+    {
+      "currentOriginalProcessAbsent": true,
+      "exitCode": 0,
+      "name": "build-once",
+      "originalCliReaped": true
+    },
+    {
+      "currentOriginalProcessAbsent": true,
+      "exitCode": 0,
+      "name": "derived-image-inspect",
+      "originalCliReaped": true
+    },
+    {
+      "currentOriginalProcessAbsent": true,
+      "exitCode": 0,
+      "name": "probe-label-before",
+      "originalCliReaped": true
+    },
+    {
+      "currentOriginalProcessAbsent": true,
+      "exitCode": 0,
+      "name": "create-once",
+      "originalCliReaped": true
+    },
+    {
+      "currentOriginalProcessAbsent": true,
+      "exitCode": 0,
+      "name": "created-original-inspect",
+      "originalCliReaped": true
+    },
+    {
+      "currentOriginalProcessAbsent": true,
+      "exitCode": 0,
+      "name": "start-original-once",
+      "originalCliReaped": true
+    },
+    {
+      "currentOriginalProcessAbsent": true,
+      "exitCode": 0,
+      "name": "wait-original",
+      "originalCliReaped": true
+    },
+    {
+      "currentOriginalProcessAbsent": true,
+      "exitCode": 0,
+      "name": "completed-original-inspect",
+      "originalCliReaped": true
+    },
+    {
+      "currentOriginalProcessAbsent": true,
+      "exitCode": 0,
+      "name": "cleanup-label-before",
+      "originalCliReaped": true
+    },
+    {
+      "currentOriginalProcessAbsent": true,
+      "exitCode": 0,
+      "name": "cleanup-original-before",
+      "originalCliReaped": true
+    },
+    {
+      "currentOriginalProcessAbsent": true,
+      "exitCode": 0,
+      "name": "cleanup-original-remove",
+      "originalCliReaped": true
+    },
+    {
+      "currentOriginalProcessAbsent": true,
+      "exitCode": 1,
+      "name": "cleanup-original-after",
+      "originalCliReaped": true
+    },
+    {
+      "currentOriginalProcessAbsent": true,
+      "exitCode": 0,
+      "name": "cleanup-label-after",
+      "originalCliReaped": true
+    }
+  ],
+  "dockerGets": 2,
+  "imageId": "sha256:0bb9af7a5909c41187cf56402a21420100c72a8de0025b0a7152f8804e85d191",
+  "labelListEmpty": true,
+  "originalContainerId": "6bc8aab107db59fc1c67183145ac103355258ac0982866256e7993e2e8292572",
+  "originalIdNotFound": true,
+  "probePassed": true,
+  "requestId": "695e8875-459a-41b3-a148-2e228f2c3727",
+  "schema": "trusted-pi-native-resource-snapshot-host-independent-readback/v1"
+}

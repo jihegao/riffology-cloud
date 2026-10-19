@@ -1,0 +1,29 @@
+{
+  "schema": "jhg46-original-rollout-ack-safe-projection/v1",
+  "source": {
+    "originalFile": "rollout-original-ack.json",
+    "bytes": 2383,
+    "sha256": "5b1593c981a16c45aef1d9a8f3a6009649c98a4c52e0c8b641b63c32ed4bdab0"
+  },
+  "requestId": "5b3d8392-7917-493f-a705-2205b7e1b470",
+  "sentAt": "2026-10-18T09:27:26.864Z",
+  "ackAt": "2026-10-18T09:27:27.669Z",
+  "status": 201,
+  "success": true,
+  "rolloutId": "f1a653cc-44c2-49b9-87f3-33bb8940a540",
+  "createdAt": "2026-10-18T09:27:27.612999936Z",
+  "statusAtAck": "progressing",
+  "kind": "full_auto",
+  "strategy": "rolling",
+  "rolloutRecordCurrentVersion": 11,
+  "targetVersion": 12,
+  "targetImage": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-issue165-trusted-pi@sha256:f18a826d40b2fd60e2cf8c49d7f7b8f595fa609fe2be4c28593479ae846960ea",
+  "steps": [
+    {
+      "id": 1,
+      "status": "progressing",
+      "started_at": "2026-10-18T09:27:27.612999936Z"
+    }
+  ],
+  "configurationActorOrCredentialBodiesIncluded": false
+}

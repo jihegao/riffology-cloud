@@ -1,0 +1,72 @@
+{
+  "applicationSessions": {
+    "appOrigin": "https://app.riffoid.com",
+    "browser": "existing Safari user profile",
+    "cookieOrPasswordReadExport": false,
+    "identities": [
+      "original approved operator Google identity for maintenance only",
+      "original approved ordinary invited-owner Google identity for newproject/twoSessions/threeTurns"
+    ],
+    "identityCount": 2,
+    "operatorFreshChecks": [
+      "/api/me + active operator maintenanceGET",
+      "server actual principal/authVersion binds original maintenance request/ACK"
+    ],
+    "ordinaryFreshChecks": [
+      "/api/me bracket + reviewed singleSELECT activepersonalowner/acceptedinvitation/authVersion2/nonoperator role",
+      "same original approved ordinary identity, no other accounts or old project restore"
+    ],
+    "privateEmailsOrIdentityRowsCopiedIntoCandidate": false,
+    "switchMethod": "normal app sign-out/Google sign-in flow only as necessary, no cookie/session export or direct auth DB write"
+  },
+  "boundedHumanWindow": "new execution authorization<=4h and<=October20 ceiling; existing persistent same-scope OAuth or Google session does not expire/revoke merely because this window ends",
+  "cloudflare": {
+    "accountId": "8b0d70250211aa10d89e20605a1c7e5e",
+    "alternativeExistingLocalPath": "if the preselected supported execution path uses local OAuth, only necessary normal token retrieval/refresh of existing same-user exact six scopes; no new login/consent/scopes, no replay of an unknown authentication outcome",
+    "credentialToAmd": false,
+    "existingPersistentAuthorizationNotRevokedAtRuntimeWindowEnd": true,
+    "expectedScopes": [
+      "user:read",
+      "offline_access",
+      "account:read",
+      "workers:write",
+      "workers_scripts:write",
+      "containers:write"
+    ],
+    "fixedExpectedUserIdSha256": "c8d5e2a134d99693a4585510f761b811d67b3e36c413eb3c9d34d060cccc986d",
+    "noRawOauthOrTokenOutputInEvidence": true,
+    "nodeExecutable": "/opt/homebrew/bin/node",
+    "normalTokenArguments": [
+      "auth",
+      "token",
+      "--json",
+      "--profile",
+      "default",
+      "--env-file",
+      "/dev/null"
+    ],
+    "oauthProfileOnlyWhenNewGrantActive": true,
+    "primarySupportedConnector": "existing Personal Cloudflare connection to this same account; no new app/connector/key permission",
+    "registryCredentials": {
+      "endpointOrJwt": false,
+      "metadataRegistryListOnlyForExistingPreservationWitness": true,
+      "readOrMint": false
+    },
+    "sourceContract": "reuse previous pinned normal-token/CI/no-login/no-extra-scope/no-disk-logs behavior; no new auth runner authored",
+    "sshDockerRegistryOrProxyRouteSetup": false,
+    "unknownOrPermissionFailure": "stop original identity; no automatic connector/credential/login/provider fallback after unknown",
+    "wranglerCliPath": "/Users/jihegao/apps/riffology-cloud/node_modules/wrangler/wrangler-dist/cli.js",
+    "wranglerCliSha256": "0a7bc2107ca92b2cc6db58b6a36d38d44b549eebd7db7ec34c36db9da7a91264",
+    "wranglerVersion": "4.129.0"
+  },
+  "newGrantPresent": false,
+  "notPerformed": {
+    "apiCall": true,
+    "cookieReadOrExport": true,
+    "credentialMint": true,
+    "login": true,
+    "oauthReadOrRefresh": true
+  },
+  "reviewOnly": true,
+  "schema": "jhg46-next-runtime-existing-authentication-contract/v1"
+}

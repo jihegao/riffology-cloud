@@ -1,0 +1,61 @@
+{
+  "schema": "jhg46-original-scheduler-placement-safe-projection/v1",
+  "observations": [
+    {
+      "source": {
+        "originalFile": "scheduler-deployments-original-read.private.json",
+        "bytes": 3833,
+        "sha256": "f0cfddc916df12faec2d395b762e8303ab8e252fc3b81ba94b274bc5ac07a47a"
+      },
+      "observedAt": "2026-10-18T09:33:36.703Z",
+      "onlyGet": true,
+      "status": 200,
+      "applicationId": "a03628c4-f032-461f-a65b-612ccac11a06",
+      "deploymentId": "d030d0a3-5a0c-4aa3-a4f2-f2bc156ca905",
+      "appVersion": 12,
+      "createdAtAsReturned": "2026-10-18T09:27:42.487000064Z",
+      "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-issue165-trusted-pi@sha256:f18a826d40b2fd60e2cf8c49d7f7b8f595fa609fe2be4c28593479ae846960ea",
+      "state": null,
+      "placement": {
+        "id": "758d8e05-8835-dacf-6b77-0b8cfda700ca",
+        "createdAt": "2026-10-18T09:27:46.264Z",
+        "deploymentId": "d030d0a3-5a0c-4aa3-a4f2-f2bc156ca905",
+        "deploymentVersion": 12,
+        "terminate": false,
+        "vmHealth": "running",
+        "containerStatus": "stopped"
+      }
+    },
+    {
+      "source": {
+        "originalFile": "scheduler-original-deployment-exact.private.json",
+        "bytes": 2061,
+        "sha256": "61f0fe04100d81c99bb8c553cba9cd234c3658c12c4f96ac80bc1dc2af600ef2"
+      },
+      "observedAt": "2026-10-18T09:35:16.425Z",
+      "onlyGet": true,
+      "status": 200,
+      "applicationId": "a03628c4-f032-461f-a65b-612ccac11a06",
+      "deploymentId": "d030d0a3-5a0c-4aa3-a4f2-f2bc156ca905",
+      "appVersion": 12,
+      "createdAtAsReturned": "2026-10-18T09:27:45.411000064Z",
+      "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-issue165-trusted-pi@sha256:f18a826d40b2fd60e2cf8c49d7f7b8f595fa609fe2be4c28593479ae846960ea",
+      "state": "placed",
+      "placement": {
+        "id": "758d8e05-8835-dacf-6b77-0b8cfda700ca",
+        "createdAt": "2026-10-18T09:27:46.264Z",
+        "deploymentId": "d030d0a3-5a0c-4aa3-a4f2-f2bc156ca905",
+        "deploymentVersion": 12,
+        "terminate": false,
+        "vmHealth": "running",
+        "containerStatus": "stopped"
+      }
+    }
+  ],
+  "sameDeploymentAndPlacementAcrossReads": true,
+  "returnedCreationTimestampsPreservedSeparately": true,
+  "resourceReleaseConfirmed": false,
+  "rolloutForeignKeyProvided": false,
+  "associationLimit": "Observed after the rollout with same target version/image and single-writer window; no rollout_id foreign key. No causal or never-attached claim.",
+  "hostLocationEventsEnvironmentSecretsSshKeysAndLabelsIncluded": false
+}

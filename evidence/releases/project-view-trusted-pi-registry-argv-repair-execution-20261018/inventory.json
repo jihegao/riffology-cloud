@@ -1,0 +1,158 @@
+{
+  "schema": "jhg46-fb99-actual-public-evidence-inventory/v1",
+  "requestId": "fb99c7e4-21a7-4215-8261-c17dd7c148aa",
+  "entries": [
+    {
+      "path": "README.md",
+      "bytes": 7287,
+      "sha256": "8dd7c5810670c0002b75d201c473d4adbb4719c3966623f3058a976b095dde68"
+    },
+    {
+      "path": "result.json",
+      "bytes": 17413,
+      "sha256": "40b967ae9be8ac868dd15df4fed808e431d339c329b870c76504064105ca171f"
+    },
+    {
+      "path": "sources/authorization/grant-binding-safe.json",
+      "bytes": 842,
+      "sha256": "c26b37d5cd3fb348504e61cba34d245ce36a71501c12d74302314422f390b7db"
+    },
+    {
+      "path": "sources/ci/prior-abd-original-run-terminal.json",
+      "bytes": 5913,
+      "sha256": "49d360e238eeb7852643d4b3be322ac458798f1909bd4feb033d059e70fb9688"
+    },
+    {
+      "path": "sources/independent/independent-local-stop-review.json",
+      "bytes": 3855,
+      "sha256": "34915838f6d02ff28f49d485cd9c2093ee7b6d6ef6a0ffd59e40448421302c18"
+    },
+    {
+      "path": "sources/independent/independent-remote-cleanup.json",
+      "bytes": 5274,
+      "sha256": "d3f0af3ea58cd8d9049a25fbd1fcd7cfdbe8b5a7e4ce4e82cd45c6c89b9d3632"
+    },
+    {
+      "path": "sources/independent/readonly-invocation.safe.json",
+      "bytes": 1211,
+      "sha256": "e4ba44fad38779c3fdd40748884edaa69e46db0d550e5c03f9f67938cbc18b22"
+    },
+    {
+      "path": "sources/independent/root-terminal-and-input-review.json",
+      "bytes": 1221,
+      "sha256": "33e3580a2ed65f26f4765c9d9c6687c7b9afd93ba823eac776ee60efcc386b47"
+    },
+    {
+      "path": "sources/local/credential-http-response.json",
+      "bytes": 315,
+      "sha256": "d96b9d306766f1748882f182dc1886e81d58290410a955e3b89e21e2621a6314"
+    },
+    {
+      "path": "sources/local/credential-post-once-intent.json",
+      "bytes": 218,
+      "sha256": "01b7f03ddc59a0ba0bfcbbc9badc6cf3e7588289cee049c95a6f39b72cdb1aee"
+    },
+    {
+      "path": "sources/local/intent.json",
+      "bytes": 290,
+      "sha256": "20fe0e89809dc016ff088566fd61722e934fa099d2b3f847ca8ee50ad867d6ae"
+    },
+    {
+      "path": "sources/local/normal-login-identity-safe.json",
+      "bytes": 420,
+      "sha256": "4f2e9cad4cf4df735b4f79d96ed95c504ecfcc409e885f67e15bb75e62951401"
+    },
+    {
+      "path": "sources/local/oauth-consent-once-intent.safe.json",
+      "bytes": 1061,
+      "sha256": "a3223a764f1953bfec22ba49784d03843d15e40651fc4c6015b7861869e278be"
+    },
+    {
+      "path": "sources/local/oauth-consent-once-original-cli.json",
+      "bytes": 70,
+      "sha256": "b589846bf4686a9d2e88693427b95dca28d75a60306f6fd08015a9804d721aca"
+    },
+    {
+      "path": "sources/local/oauth-consent-once-terminal.json",
+      "bytes": 159,
+      "sha256": "b17fbd35ab6edc629e9ebbf8c3595c4e07413d1f687371353302d370155d576d"
+    },
+    {
+      "path": "sources/local/oauth-consent-success-safe.json",
+      "bytes": 72,
+      "sha256": "e396dbf6fe6347d7a87804a5f265e36280fdaa8e2ee1e70a20694e08ff62bb5f"
+    },
+    {
+      "path": "sources/local/oauth-token-once-intent.safe.json",
+      "bytes": 883,
+      "sha256": "e4961ec5443e22a9ca2037e13ed51f232416608436fe6a95c0f83f4103d4a63c"
+    },
+    {
+      "path": "sources/local/oauth-token-once-original-cli.json",
+      "bytes": 70,
+      "sha256": "08bddd71b49747a5c557dde16ef64cfeb5f6e18dd5452940145c31ed950b3756"
+    },
+    {
+      "path": "sources/local/oauth-token-once-terminal.json",
+      "bytes": 159,
+      "sha256": "e83f89eac33350ef111f172783e6e3a8c1cb41318e6ab6694075a4c97b02da62"
+    },
+    {
+      "path": "sources/local/original-ssh.json",
+      "bytes": 148,
+      "sha256": "0b257070345d970a5765a22d4708dfdc125a0566b0584019d1c92c377031b394"
+    },
+    {
+      "path": "sources/local/route-once-intent.json",
+      "bytes": 307,
+      "sha256": "8995cdaa0d42a9a1dde6ab48474b3d5215f1988ff278b3e2aa33764603aae8a9"
+    },
+    {
+      "path": "sources/local/terminal.json",
+      "bytes": 13982,
+      "sha256": "22b360150dfbcd30e7d49c6933d8637367fc509dda3b784ccfc58656bb3c80f8"
+    },
+    {
+      "path": "sources/local/verified-ready-before-credential.json",
+      "bytes": 10913,
+      "sha256": "c5a4530ed5da80d7ef88cc979df17270fbecae90d3b1fc449ad93a1a3692b1f2"
+    },
+    {
+      "path": "sources/remote/intent.json",
+      "bytes": 606,
+      "sha256": "b9b09c110efaeb0fd778de312dded6d65f6012eff6aef16f24b8287d00b3b4ef"
+    },
+    {
+      "path": "sources/remote/push-once-intent.json",
+      "bytes": 349,
+      "sha256": "6710240b6e1ba5d1c399f86792a922cedd4a3e2cf594deb141be86280a43a6fb"
+    },
+    {
+      "path": "sources/remote/raw-verification.json",
+      "bytes": 10209,
+      "sha256": "21d3b5cf87f74e3168bef605109dd214ea70f8c9747c2a999152db612bac1ce1"
+    },
+    {
+      "path": "sources/remote/registry-readback.json",
+      "bytes": 17356,
+      "sha256": "a7b3cae2cb48b89da0856d440815c5fe58bbcfc4ee81a45b9a8dbd4d89dba3f5"
+    },
+    {
+      "path": "sources/remote/remote-tag-absence.json",
+      "bytes": 38,
+      "sha256": "cfd16ef32a5240fb64cbe615d85b1225fdfe9ad6f52f183ae005bdec6740492e"
+    },
+    {
+      "path": "sources/remote/safe-record-retrieval.safe.json",
+      "bytes": 2691,
+      "sha256": "a5cf83eb6835355ec68da8530f9c05638ac82fcdfe84c1cf6fdaabfc6b70256f"
+    },
+    {
+      "path": "sources/remote/terminal.json",
+      "bytes": 1075,
+      "sha256": "c8d30762451a3f3ab5b8365473efff52cd7e1b7159ca10671c61c419aed10261"
+    }
+  ],
+  "excludesSelfAndIndependentSiblingReview": true,
+  "noPrivateGrantReplyOauthConfigOrRawAuthOutput": true
+}

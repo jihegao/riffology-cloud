@@ -1,0 +1,32 @@
+{
+  "after": {
+    "expiresAt": "2026-10-17T16:29:09.816Z",
+    "scopes": [
+      "user:read",
+      "offline_access",
+      "account:read",
+      "workers:write",
+      "workers_scripts:write"
+    ]
+  },
+  "before": {
+    "expiresAt": "2026-10-17T12:03:24.244Z",
+    "scopes": [
+      "user:read",
+      "offline_access",
+      "account:read",
+      "workers:write",
+      "workers_scripts:write"
+    ]
+  },
+  "commandReaped": true,
+  "newLoginAttempted": false,
+  "normalRefreshSucceeded": true,
+  "oauthSentToAmd": false,
+  "observedAt": "2026-10-17T15:29:12.475324+00:00",
+  "requestId": "c3e04c41-72da-409b-a2b1-f924e6cc67fa",
+  "schema": "trusted-pi-publication-normal-same-scope-oauth-renewal/v1",
+  "scopeExpansion": false,
+  "secretStdoutOrStderrStored": false,
+  "wranglerDiskLoggingDisabled": true
+}

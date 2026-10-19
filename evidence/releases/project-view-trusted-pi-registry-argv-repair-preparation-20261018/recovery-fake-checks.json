@@ -1,0 +1,17 @@
+{
+  "command": [
+    "/usr/bin/python3",
+    "-B",
+    "test_recovery.py"
+  ],
+  "startedAt": "2026-10-18T01:42:05.170145+00:00",
+  "endedAt": "2026-10-18T01:42:05.450395+00:00",
+  "exitCode": 0,
+  "stdoutBytes": 0,
+  "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderrBytes": 225,
+  "stderrSha256": "0eaa3e5019cd0249f8c95ea01071159d17460da14bd884b3a4f06b1d2b4936e0",
+  "operationsManifestSha256": "89f2f285f5f732a6f3c9b8705a47fde4b5f073970e585e779371fb20ac2680fa",
+  "realExecution": false,
+  "authNetworkSshDockerCalls": 0
+}

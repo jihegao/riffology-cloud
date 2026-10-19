@@ -1,0 +1,35 @@
+{
+  "schema": "jhg46-registry-readback-independent-reader-offline-checks/v1",
+  "recordedAt": "2026-10-18T12:59:29.080565+00:00",
+  "passed": 11,
+  "failed": 0,
+  "files": [
+    {
+      "file": "independent-readback-readonly.py",
+      "bytes": 29295,
+      "sha256": "ad6f018ff89af088a0a04d5748ca71bf056f6a8deb1b3beb2063a190b82dc1f3"
+    },
+    {
+      "file": "test_independent_readback.py",
+      "bytes": 7652,
+      "sha256": "ca963023e4b7d1f263d3c4cf0baceb07d631dda741a899c0b550573a5bf4b7b5"
+    }
+  ],
+  "fixtureLog": {
+    "bytes": 1115,
+    "sha256": "444597da11c3ae1873c7d132665431887f726a8ecdb4ace1b36cba6963bcb645"
+  },
+  "scope": "Synthetic bounded record files/process/socket mocks only. No authentication/SSH/Docker/Registry/API/provider execution.",
+  "checks": [
+    "52 ordered intents/terminal bytehash/proofs and complete52 record hash binding.",
+    "Partial failed-slot diagnostic projection retains publication false.",
+    "Missing/hash/size drift and private/symlink records fail closed.",
+    "Original active supervisor, remaining route/auth paths prevent cleanup success.",
+    "Partial error text constrained to safe codes, no arbitrary message export.",
+    "Reader cannot attest local Mac ACK: publicationVerified false, root must combine unique local original ACK and full52 proof/cleanup."
+  ],
+  "limits": [
+    "No archive or raw Config/Env/credential/body read by independent reader.",
+    "Actual new original-archive revalidation,52Registry GETs, terminal ACK and cleanup remain unexecuted until separately approved."
+  ]
+}

@@ -1,0 +1,147 @@
+{
+  "schema": "trusted-pi-registry-argv-order-repair-public-inventory/v1",
+  "requestId": "fb99c7e4-21a7-4215-8261-c17dd7c148aa",
+  "entries": [
+    {
+      "path": "AUTHORIZATION.md",
+      "bytes": 4784,
+      "sha256": "927dbf5fa58f22785f0fa93f6dff04480bc07fd6d95ee12d88133bb8123aa4f6"
+    },
+    {
+      "path": "EXECUTION.md",
+      "bytes": 5380,
+      "sha256": "32c4bd44b98a2649c6b7a29426d62ced7ff0ffdba953dd1bf7aaa7bdc81ed3d9"
+    },
+    {
+      "path": "README.md",
+      "bytes": 3489,
+      "sha256": "96db4af2042a457cc9aea6123f70da409996c9556a0e400a98f8e7264d6cb311"
+    },
+    {
+      "path": "argv-order-diagnosis.json",
+      "bytes": 5741,
+      "sha256": "d9c60e3d6cdeb4d22a609c3b075122780b7b24c3f4f4bc1adf9981bb0a5483b2"
+    },
+    {
+      "path": "candidate-source-binding.json",
+      "bytes": 4338,
+      "sha256": "aa79181f8c699706bd04c8cb09536ab885db3b66fbf857b6e5ce5be2c188e507"
+    },
+    {
+      "path": "independent-cleanup-readonly.py",
+      "bytes": 9065,
+      "sha256": "2207c49844d8bfa4777510d6c60d4333f509dd1d7ab42fabf71e6188c77d6266"
+    },
+    {
+      "path": "independent-reader-checks.json",
+      "bytes": 651,
+      "sha256": "f0f498ed22ca86071b1f46fa67bb0eeec23c5e09d035350416ead5a1375ce799"
+    },
+    {
+      "path": "independent-reader-checks.stderr",
+      "bytes": 215,
+      "sha256": "d39789180b50e37364f6279ace2b0884825cb392af2977acedd445cc5b689036"
+    },
+    {
+      "path": "independent-reader-checks.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "local-recovery.py",
+      "bytes": 19225,
+      "sha256": "c6923da17446f0b3b2473c554c149963636f632b950b26fa5b1ff553b891a600"
+    },
+    {
+      "path": "oci_verify.py",
+      "bytes": 5748,
+      "sha256": "0a23618e34b9a2acf608acc86d281ebd68f60a62ba2b102ecda92502c294acea"
+    },
+    {
+      "path": "offline-checks.json",
+      "bytes": 1793,
+      "sha256": "e6723e9b0029e2d92fefcfac5cfcc8cbdca9d18d6dae9eaf4320c2b7ee906020"
+    },
+    {
+      "path": "operations-manifest.json",
+      "bytes": 1313,
+      "sha256": "89f2f285f5f732a6f3c9b8705a47fde4b5f073970e585e779371fb20ac2680fa"
+    },
+    {
+      "path": "parse-fixed-wrangler-argv.mjs",
+      "bytes": 5944,
+      "sha256": "164062cd1f7e14f8ae89fc41290107e37c3cadc8e8f4ae4b4d93a6a61722b80c"
+    },
+    {
+      "path": "parser-check-first.receipt.safe.json",
+      "bytes": 823,
+      "sha256": "4960ccb9297cdfcc991386d2e481d5d66b43f2adf1fb74f9bed269701f5ccf68"
+    },
+    {
+      "path": "parser-check-first.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "parser-check-first.stdout",
+      "bytes": 4547,
+      "sha256": "536d84bf40786023fd03e1f289f6190b22a9d9c8c4239fb163763d7c1b843c06"
+    },
+    {
+      "path": "pub_common.py",
+      "bytes": 3291,
+      "sha256": "43e5e41b0953da9deac52fe8533d9190172f0309fd163f44fec6c5ed6250eadc"
+    },
+    {
+      "path": "public-preparation-review.json",
+      "bytes": 4350,
+      "sha256": "08a94fe157d73f4ce8dc9241850a4fd2273857489dee243ce249d3e904434f18"
+    },
+    {
+      "path": "recovery-fake-checks.json",
+      "bytes": 569,
+      "sha256": "75b9e80c1755ea8fe9dd0cae6e30553de03d2989051cf88494bc12adbca47499"
+    },
+    {
+      "path": "recovery-fake-checks.stderr",
+      "bytes": 225,
+      "sha256": "0eaa3e5019cd0249f8c95ea01071159d17460da14bd884b3a4f06b1d2b4936e0"
+    },
+    {
+      "path": "recovery-fake-checks.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "remote-recovery.py",
+      "bytes": 13818,
+      "sha256": "339aa74fd246024886ca243526bd097d39be16150719a3b117474a7fcad6a178"
+    },
+    {
+      "path": "scope.json",
+      "bytes": 5086,
+      "sha256": "33cc5a4e5124f36eef9656073404e9b8e779233c859867ae8d985edf46cc9e51"
+    },
+    {
+      "path": "source-copy-receipt.json",
+      "bytes": 1850,
+      "sha256": "af8ccc5321164333f9d5da9413f8f65e0170e10ebdfcc30359a71f8bb98cbb25"
+    },
+    {
+      "path": "source-delta.patch.base64.json",
+      "bytes": 20411,
+      "sha256": "1c5ffc859a91607792246d40f41a2d5e90b805de7beacfe11879d7bb337c90cc"
+    },
+    {
+      "path": "test_independent_reader.py",
+      "bytes": 6568,
+      "sha256": "1ccd6830166f0f2cc8447ad34b066659364c18a5d78e282b414777dfb4914eb4"
+    },
+    {
+      "path": "test_recovery.py",
+      "bytes": 16307,
+      "sha256": "08832bab64eb8048588a5c124ad64713da0c3c17ee58e0f1b256fabaf162a1b0"
+    }
+  ],
+  "excludesSelfAndSiblingReviews": true
+}

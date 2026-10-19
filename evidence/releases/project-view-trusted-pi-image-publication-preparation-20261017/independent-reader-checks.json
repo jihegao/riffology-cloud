@@ -1,0 +1,34 @@
+{
+  "endedAt": "2026-10-17T15:14:52.993873+00:00",
+  "exitCode": 0,
+  "fixtureChecks": 6,
+  "localFakeOnly": true,
+  "realApiCalls": 0,
+  "realCredentialReads": 0,
+  "realDockerCommands": 0,
+  "realSshCommands": 0,
+  "schema": "trusted-pi-image-publication-independent-reader-fake/v1",
+  "sources": [
+    {
+      "bytes": 7854,
+      "path": "independent-cleanup-readonly.py",
+      "sha256": "2cf04125f41a89804ab284fe378990529b5eb9ad11b76888202b481a45a93ab9"
+    },
+    {
+      "bytes": 5680,
+      "path": "test_independent_reader.py",
+      "sha256": "e2daaffdb663156330283bdd4bd7d448f05254c60f581ae54c8eb25818c85630"
+    }
+  ],
+  "startedAt": "2026-10-17T15:14:52.923669+00:00",
+  "streams": {
+    "stderr": {
+      "bytes": 104,
+      "sha256": "46f2d84bfe093b26b7bcf5ac58897d67f9784fc95a0494869930d59b5496eced"
+    },
+    "stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

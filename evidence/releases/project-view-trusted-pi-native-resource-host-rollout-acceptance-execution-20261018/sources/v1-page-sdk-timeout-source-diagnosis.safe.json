@@ -1,0 +1,172 @@
+{
+  "schema": "jhg46-v1-page-sdk-timeout-static-source-diagnosis/v1",
+  "recordedAt": "2026-10-18T16:58:36.189264Z",
+  "reviewMode": "Local frozen source and already saved original package only; no live reproduction or repair",
+  "sourceBindings": [
+    {
+      "file": "content-v2/services/project-views/frame-source.mjs",
+      "bytes": 7651,
+      "sha256": "c2b8ddbbf93553380fa1309741c5578618337016e692319711cda54caf23b2e3",
+      "lines": [
+        "10-11",
+        "39-50",
+        "52-67"
+      ]
+    },
+    {
+      "file": "content-v2/services/web/project-view-local.js",
+      "bytes": 4072,
+      "sha256": "f21e40c39a90073a38d354c3c67a3ff13387e1a4cb575e56ec06ed47f4d8d0f3",
+      "lines": [
+        "19-48"
+      ]
+    },
+    {
+      "file": "content-v2/services/web/project-views.js",
+      "bytes": 14900,
+      "sha256": "9da41ade420c660a61f0ad4fc46408b728e81248bdeb30bdc419e63bdc61f1c9",
+      "lines": [
+        "23-46",
+        "49-87",
+        "116-138",
+        "145-160"
+      ]
+    },
+    {
+      "file": "content-v2/services/web/simulation.js",
+      "bytes": 23498,
+      "sha256": "f18f4182feff6816187ab6781f781017de4954a23be21d1eae31ad1e0b31374d",
+      "lines": [
+        "69-80",
+        "105-123",
+        "133-135"
+      ]
+    },
+    {
+      "file": "content-v2/services/web/artifact-views.js",
+      "bytes": 5694,
+      "sha256": "2dbb9a15cc5ed772d3a2304dbd531ca0508a2d0d783f0f9c4809b99b777d93bb",
+      "lines": [
+        "10-18",
+        "25-36"
+      ]
+    },
+    {
+      "file": "content-v2/services/web/layout.js",
+      "bytes": 4859,
+      "sha256": "e67ef7ebc2af83d3ddd570ac41852ccd878e31a78ced20f9d28927ac32295f38",
+      "lines": [
+        "15",
+        "20-21"
+      ]
+    },
+    {
+      "file": "content-v2/services/web/app.js",
+      "bytes": 83635,
+      "sha256": "ab2ddcb5d7d647b4faab1041da1df2c0f78800f0b7036089aaad5ad8aa887165",
+      "lines": [
+        "60",
+        "803"
+      ]
+    },
+    {
+      "file": "content-v2/services/gateway/app.ts",
+      "bytes": 62928,
+      "sha256": "8d1e4c75a69c5ec14ca951d500c3092076a2865226f53b68fb73dba3b36feedf",
+      "lines": [
+        "365-394"
+      ]
+    },
+    {
+      "file": "content-v2/services/gateway/project-view-services.ts",
+      "bytes": 3855,
+      "sha256": "1b44b1c128166f7d08d96720b12ac2aa3896f307eceafec714fe2994c7c30fbf",
+      "lines": [
+        "21-36"
+      ]
+    }
+  ],
+  "actualEvidence": {
+    "file": "ordinary/browser-v1/first-page-failure-original.raw.private.json",
+    "bytes": 26069,
+    "sha256": "00c0179cee87672d84f7c0b58c49038b4ecdbc69c15818fa9e420c26fe71bf54",
+    "packageHttpBodyBytes": 7597,
+    "packageHttpBodySha256": "058b0d095d0722f1caa5f8ce7507a65656a795e9c1d1a4a63e6646c667ba9b98",
+    "actualMainBytes": 2542,
+    "actualMainSha256": "f35830bb9af40ff488ca423e5a376636ac981add643fc8a97a585acaa94559a2",
+    "actualDeclaredSeriesBytes": 119,
+    "actualDeclaredSeriesSha256": "da95afe93d010519d1a4ba35ac10fce6c052369ce85d15bc091f70987f7df687",
+    "seriesIsDeclaredPackageAsset": true,
+    "nonGetObserverCount": 4,
+    "sevenLaterFullPackageGetDurationsMs": [
+      2632,
+      2506,
+      2746,
+      2567,
+      2534,
+      2546,
+      2875
+    ],
+    "initialSdkIdentityRequestsCaptured": false,
+    "noSecondSessionOrThirdTurn": true
+  },
+  "establishedFindings": [
+    {
+      "source": "frame-source.mjs:10",
+      "finding": "Exact page request timeout is emitted when a private SDK pending request has no matching MessagePort response within5000ms. It is distinct from page-script-timeout5000ms, project-view-local-startup-timeout10000ms and the host liveness3000ms failure."
+    },
+    {
+      "source": "actual saved app/main.mjs:31-38",
+      "finding": "Actual start sequentially awaits riffoid.readFile(docs/series.json), parses/render, then awaits riffoid.subscribe. The one catch replaces the entire app with Load error plus error.message. Either of these two calls can produce the observed message; this text alone does not identify which call. The119B declared file exists and its bytes/SHA match the actual R2 write."
+    },
+    {
+      "source": "project-view-local.js:27-45; frame-source.mjs:52-65; project-views.js:36-50",
+      "finding": "Host connects using exact sourceWindow/null origin/nonce, child replies ready, host transfers exactly one port, child binds/starts the port before project install. Broker starts port before child start. Seeing project JS reach a riffoid request establishes useful bootstrap progress; it does not prove all later port delivery/lifecycle transitions."
+    },
+    {
+      "source": "project-views.js:55,65-70,78-84,119-127",
+      "finding": "Every file read serially awaits initial authorization, reads frozen in-memory asset, then final authorization before delivery. Each authorization independently allows10000ms HTTP. Subscribe adds an artifact-index GET also allowing10000ms between the two authorization reads. These legal host paths can exceed the child5000ms pending timeout without a host HTTP timeout or rejection. Authorization itself reconstructs the current canonical package through Gateway/Workspace and rechecks Catalog/invitation."
+    },
+    {
+      "source": "app.js:803; simulation.js:80,111; layout.js:15; project-views.js:158",
+      "finding": "Project selection enters simulation regardless of selected top-level Model panel. Declared pages can enter before Model is visible; top-level layout merely hides the main view. ProjectPages.setActive is wired to the Model internal overview/artifact tab. First clicking Model need not be the first project JS or SDK execution."
+    },
+    {
+      "source": "frame-source.mjs:64; project-views.js:25-46,83-87,96-102",
+      "finding": "SDK responses require matching request id; a timed-out pending entry is removed and a late response is ignored. Close/generation guards drop stale host results. A page-handled SDK exception is not an unhandledrejection, so the project may show its own Load error while bootstrap has already announced installed and host liveness still succeeds."
+    }
+  ],
+  "hypothesesNotConfirmed": [
+    {
+      "priority": 1,
+      "hypothesis": "End-to-end SDK deadline mismatch on actual readFile or subscribe; two serial authorization reads alone can cross5000ms. Seven later unrelated package GETs took2506-2875ms each, consistent with plausibility but not measurements of the original identity requests."
+    },
+    {
+      "priority": 2,
+      "hypothesis": "Host generation/close or visibility transition discarded a request/response after project JS started. Requires original request timing/current-package or port lifecycle evidence; source alone does not prove this happened."
+    },
+    {
+      "priority": 3,
+      "hypothesis": "A malformed/request-id/port-specific delivery failure could leave an SDK entry pending, but no actual malformed message or Safari port failure has been observed. Do not label Safari, CSP, Registry or secret configuration as established cause."
+    }
+  ],
+  "minimalOfflineRepairDirection": [
+    "Use the captured actual request stage/latency to choose one bounded timeout contract spanning child SDK, host serial reads and init script/startup. Retain both authorization boundaries, package identity/generation/close fences and no automatic retry. Increasing only one5000ms timer can expose the separate script5000ms or startup10000ms timer instead.",
+    "Add a meaningful local fixture through the real frame/broker with two independently delayed authorization responses whose total crosses5s, plus a delayed subscribe artifact index. Verify resolved correct content within the selected bound, explicit terminal timeout after the bound, no late delivery after close/revocation and no automatic page replay. Existing computation browser fixture returns identity/current immediately and does not cover this latency regime.",
+    "Only if original evidence confirms hidden startup is material, wire visibility to the existing setActive lifecycle rather than treating Model click as an execution retry. Keep this distinct from the RPC timeout repair."
+  ],
+  "limits": [
+    "No source changes or local runtime reproduction were performed. This identifies an exact source error path and a concrete budget mismatch, not the unique actual root cause.",
+    "V1 failed; V1 parameter/artifact/refresh behavior, Session2/T3 and V2 are not accepted by this diagnosis.",
+    "No new online request, model call, frame retry, gate mutation, authorization or window extension is implied."
+  ],
+  "privacy": {
+    "rawProjectScriptPromptActorTenantOrCredentialBodiesCopied": false,
+    "onlySourceLocationsSafeTimingsAndHashes": true
+  },
+  "reviewerActions": {
+    "liveNetworkBrowserCfOAuthSqlModelDockerCalls": 0,
+    "testsOrFixturesRun": 0,
+    "sourceOrFrozenInputsChanged": false
+  }
+}

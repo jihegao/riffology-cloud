@@ -1,0 +1,12 @@
+{
+  "endedAt": "2026-10-18T14:32:07.804960+00:00",
+  "exitCode": 0,
+  "originalMainPid": 12188,
+  "originalMainReaped": true,
+  "schema": "jhg46-local-readback-original-main-transport-terminal/v1",
+  "stderrBytes": 0,
+  "stderrPersisted": false,
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stdoutBytes": 1833,
+  "stdoutSha256": "c8fb75a1c8f2ad93b7ad733a4930f077b4b2ff08e78c2e69a7ef26bbe1ab1bbf"
+}

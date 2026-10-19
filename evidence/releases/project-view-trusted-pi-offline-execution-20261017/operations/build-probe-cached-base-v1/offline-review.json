@@ -1,0 +1,36 @@
+{
+  "actualRemoteExecutionByThisPreparation": false,
+  "baseSource": "existing exact immutable cache; no new mint/pull/route",
+  "cacheReadonlyReceiptSha256": "e824ecfd46fedda0ac378e8e7d4dbae7b878699e49b42a91cc1b25bf55c584db",
+  "files": {
+    "EXECUTION.md": {
+      "bytes": 4366,
+      "sha256": "91e86f4edb0801834ebc1130ed81759eaf48801a25b2e93467fa0b2f93800b39"
+    },
+    "build-probe-once.py": {
+      "bytes": 28357,
+      "sha256": "1066f2331c6d411b5d9c8c8f7d48cb03e5f537b0ebd0273abe1b89088254000f"
+    },
+    "test_build_probe.py": {
+      "bytes": 8701,
+      "sha256": "1b1c5d947ec2ecc259c81474171b548e26df41119829d290bafdd689012bcf43"
+    }
+  },
+  "inputArchiveSha256Unchanged": "c92e672ca39d10d61467801f457147e3ee9cf2cfbbbe8b96d00a618a6a208bae",
+  "noCredentialDeliveredToReceiver": true,
+  "noNewGrantScopeTokenRouteOrPayloadCreated": true,
+  "originalCredentialPostOutcome": "unknown-stopped-preserved",
+  "originalRequestId": "57a70587-2b21-4a56-aed1-09c8a32d868a",
+  "originalRunnerAndEightTestProofPreserved": true,
+  "originalRunnerSha256Unchanged": "4893ec6b7b3bfe2b4155373cfb5cc702de49dcde589fe9f1893c160acedf04a5",
+  "schema": "trusted-pi-cached-base-build-probe-local-review/v1",
+  "tests": {
+    "count": 11,
+    "exitCode": 0,
+    "failed": 0,
+    "passed": 11,
+    "reportedSeconds": 0.007,
+    "scope": "pure local fake guard tests; no actual Docker/SSH/API/credential read",
+    "skipped": 0
+  }
+}

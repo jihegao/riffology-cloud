@@ -1,0 +1,20 @@
+{
+  "all52ProofsAndTerminalVerified": false,
+  "cleanupConfirmed": true,
+  "dockerOrRegistryCalls": 0,
+  "driverAuthOrNewRouteCalled": false,
+  "errorCode": null,
+  "localOriginalAckStillRequired": true,
+  "mergeAllowed": false,
+  "observationBytes": 5301,
+  "observationSha256": "d7cda8014d99233b815250a9da943cd0b05bb61c5c46b6f7299f1ff0cf776f8a",
+  "operationId": "registry-readback-recovery-v1",
+  "publicationVerified": false,
+  "readerExitCode": 0,
+  "readerSourceSha256": "ad6f018ff89af088a0a04d5748ca71bf056f6a8deb1b3beb2063a190b82dc1f3",
+  "registryGetProofCount": 3,
+  "remoteWrites": 0,
+  "requestId": "c263a2f3-f445-430e-b562-2e48f1eeb637",
+  "schema": "jhg46-original-readback-reader-transport-result/v1",
+  "status": "observation-collected"
+}

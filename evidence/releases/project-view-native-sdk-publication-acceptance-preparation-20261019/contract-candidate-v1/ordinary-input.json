@@ -1,0 +1,155 @@
+{
+  "actualBindings": {
+    "artifactId": null,
+    "ordinaryActor": null,
+    "r1": null,
+    "r2": null,
+    "r3": null,
+    "scope": null,
+    "session1": null,
+    "session2": null,
+    "turn1": null,
+    "turn2": null,
+    "turn3": null
+  },
+  "batchRequestId": "fb07e239-2cb4-4379-9581-5711d86a0f30",
+  "executionAuthorized": false,
+  "expectedData": {
+    "V1": {
+      "factor2": 20,
+      "factor5": 50,
+      "series": [
+        2,
+        3,
+        5
+      ]
+    },
+    "V2": {
+      "factor2": 24,
+      "factor5": 60,
+      "series": [
+        2,
+        3,
+        7
+      ]
+    }
+  },
+  "hardLimits": {
+    "actualTrustedPiCallDeadlineMs": 115000,
+    "bashTimeoutMaximumMs": 30000,
+    "configuredReviewDeadline": "2026-12-31T15:59:59.999Z",
+    "effectiveExpiryRule": "min(original explicit human grant/#104 authority deadline, configured reviewAt, any narrower scoped grant); config Dec31 does not extend Oct20 human authority",
+    "humanReviewDeadline": "2026-10-20T15:59:59.999Z",
+    "monitorIntervalMs": 60000,
+    "outerPolicyMaxTurnDurationMs": 900000,
+    "outerReleaseTimeoutMs": 120000,
+    "perTurnNativeExecutionDeadlineMs": 600000,
+    "perUserActiveTurns": 1,
+    "policyMaxProviderCallDurationMs": 360000,
+    "privateBetaLogicalGlobalActiveTurns": 2,
+    "toolCommandTotalDeadlineMaximumMs": 120000,
+    "trustedPiUnderlyingGlobalSlots": 1
+  },
+  "modelPins": {
+    "gatewayId": "riffology-g5-20260916",
+    "lazyProjectEnabled": false,
+    "maxInputTokensPerCall": 262144,
+    "maxOutputTokensPerCall": 4096,
+    "model": "gpt-5.6-luna",
+    "profileSha256": "7291181d366d597b4c5ebcf365d43dd455904bfdcc4825ba7bf020aac9903341",
+    "profileVersion": "g5-openai-luna-20260916-wiring-v1",
+    "protocol": "openai-responses",
+    "provider": "openai",
+    "providerRetryOrFallback": false,
+    "trustedPiRequestDeadlineMs": 115000,
+    "workspaceRuntimeReuseEnabled": false
+  },
+  "newCreateIntent": {
+    "actualReturnedScope": null,
+    "body": null,
+    "idempotencyKey": null,
+    "maxAttempts": 1,
+    "method": "POST",
+    "path": "/api/tenants/{freshPersonalTenantId}/projects",
+    "bodyTemplate": {
+      "starterVersion": "blank-v1",
+      "title": "JHG46 Native SDK Acceptance 20261019 fb07e239"
+    },
+    "bodyTemplateIsNotWire": true
+  },
+  "noRunOrServerSimulation": true,
+  "perStepReleaseConjunction": [
+    "original turn terminal; activeTurn null",
+    "execution/persistence outcome and original canonical checkpoint/CAS/Session head exact",
+    "original runtime/tool resource dispositions and capacity release product authority match same dispatch/generation/lease; no release/recovery/resourceWait",
+    "physical/logical target resources meet approved bounded idle baseline; no extra/unknown resources",
+    "unknown stop; no next Turn/Session/new scope fallback"
+  ],
+  "prompts": [
+    {
+      "file": "../content-candidate-v1/prompts/turn-1-create-skill.md",
+      "bytes": 7193,
+      "sha256": "13302684903565b94a3187043a489033e5c91e986da989f3feab097424bd5513"
+    },
+    {
+      "file": "../content-candidate-v1/prompts/turn-2-build-v1.md",
+      "bytes": 2287,
+      "sha256": "ada18925ea4504cf81d981eb332fef66483d513b5191945fe3809ab369c98364"
+    },
+    {
+      "file": "../content-candidate-v1/prompts/turn-3-cold-edit-v2.md",
+      "bytes": 962,
+      "sha256": "c8c858c602fbc2c923c4b9c2e400696fc45527faaa25b54287eaf59434cea149"
+    }
+  ],
+  "reviewOnly": true,
+  "schema": "jhg46-new-blank-two-session-three-turn-input/v1",
+  "scope": {
+    "artifactProbeInTurn": 2,
+    "canonicalCheckpointAliases": [
+      "R1",
+      "R2",
+      "R3"
+    ],
+    "existingProjectRestores": 0,
+    "explicitProductTurns": 3,
+    "extraRepairTurnAllowed": false,
+    "newBlankProjects": 1,
+    "productSessions": 2,
+    "providerCallsNotEqualToTurnCount": true,
+    "syntheticArtifactFileBytes": 17408
+  },
+  "sessionRule": "One fresh project only. Count any actually auto-created first Session as Session1; otherwise first T1 uses the normal lazy Session1. T1/T2 share it. Only after R2/save/release AND V1 browser/artifact acceptance create the single Session2 and send its only T3. No fourth repair Turn, third Session or old project recovery.",
+  "t1OnlyDeltaFromOriginalRecipe": {
+    "oneProjectBash": {
+      "script": "mkdir -p -- .pi/skills/native-pages-check",
+      "timeoutMs": 30000
+    },
+    "mustSucceedBeforeWrite": true,
+    "skillBytes": 6056,
+    "skillSha256": "8ef3375d58464b2a74cc57031771f5f7bad21b15f09991fb3838620e9f3ae6d7",
+    "skillReferenceHelperSha256": "5a1811e1203d1bea93247ff8d238f5647b884b05aea7f5574ba5cf330fa27946",
+    "originalA25fSkillOrUnexecutedT3NotReusedAsAuthorization": true
+  },
+  "perStepReleaseConjunctionMeaning": "Same original server product authority and cold runtime source chain as the reviewed T1/T2 closures; private raw fields need not be publicly exposed. Saved/elapsed time/available/empty Dash alone is insufficient.",
+  "oldA25fActualHistory": {
+    "projects": 1,
+    "sessions": 1,
+    "turns": 2,
+    "R1R2AndV1FailureRetained": true,
+    "oldProjectOrOldLocksOrUnexecutedT3Reused": false
+  },
+  "expectedContentChecks": {
+    "helper": "../content-candidate-v1/read-checked-artifact.mjs",
+    "readMethodsOnly": [
+      "listArtifacts(cursor)",
+      "readArtifact(id,offset)"
+    ],
+    "listPagesLocalBound": 8,
+    "chunkBytes": 16384,
+    "maximumArtifactBytes": 1114112,
+    "shaBeforeJsonParseThenEnvelopeContentPrefix": true,
+    "actualBodyReceiptAndArtifactIdMustComeFromNewT2": true,
+    "old17567ArtifactReceiptIsHistoricalNotExpectedNewIdentity": true
+  }
+}

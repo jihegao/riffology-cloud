@@ -1,0 +1,59 @@
+{
+  "actualAuthSshRegistryDockerCalls": 0,
+  "all16BytesShaMatched": true,
+  "astNoAttributesDumpEqual": true,
+  "astNoAttributesDumpSha256": "9b28228a4798b03f06e6fe3ad9f98d6b1c836fb9f941eab31e063dd1998d7df8",
+  "boundFilesWithTrailingWhitespace": [],
+  "change": "Remove exactly one ASCII space from otherwise empty driver line153; no other code change",
+  "changedBoundFiles": [
+    "local-recovery.py",
+    "operations-manifest.json"
+  ],
+  "executed": false,
+  "final15ActualReceipt": {
+    "bytes": 3381,
+    "path": "author-validation/final-formatted-complete15.receipt.json",
+    "sha256": "ae8ffd1d5d60a654c5d0bc01bf75809a8069ff4810468b9e0121df2329b646aa"
+  },
+  "gitDiffNoIndexCheck": {
+    "argv": [
+      "git",
+      "diff",
+      "--no-index",
+      "--check",
+      "historical-driver",
+      "final-driver"
+    ],
+    "exitCode": 1,
+    "stderrBytes": 0,
+    "stdoutBytes": 0
+  },
+  "grantCreated": false,
+  "newCompleteSourceBindingSha256": "919648f9e77ea0a77033e9aaa1fd3aefda24510ae5dd7a55ba19ba2723571572",
+  "newDriver": {
+    "bytes": 27877,
+    "sha256": "2565c433a9c2d5364a3a77aad3aa8ef14254a234f7a74d6df6c930f0d2d4ce8c"
+  },
+  "newOperationsManifestSha256": "16313c7193782acce5cd88de7c0e2caf97c76e59c807b581b8b58ef54642eafa",
+  "oldCompleteSourceBindingSha256": "d77eada0d066040161b5daa4d23415eeaff593fdd5802da0c6e79cf30996b1c4",
+  "oldDriver": {
+    "bytes": 27878,
+    "sha256": "a2689933297ccb314e75b6c5a667b9000da2b5c285967d352fef72d8984a0080"
+  },
+  "oldExecutedSuitesRerun": false,
+  "oldOperationsManifestSha256": "f4c663dd0c7d9808144348df8a46dbc71b5f931b76429f5f2567619915d17ed3",
+  "prior15Retained": {
+    "bytes": 3336,
+    "path": "author-validation/final-complete15.receipt.json",
+    "sha256": "9af44d81707696d7d9505b36744d20480bd2c5c8fbfc1afdbe966e93a392de11"
+  },
+  "priorDocCorrectionRetained": {
+    "bytes": 1633,
+    "path": "documentation-correction.safe.json",
+    "sha256": "376483edcf7fb3419cad7291ecd7fb79bcddd3699288d495dfd65c3ae6a5079c"
+  },
+  "readerTestsRerun": false,
+  "recordedAt": "2026-10-18T13:53:18.060927+00:00",
+  "schema": "trusted-pi-local-readback-formatting-correction/v1",
+  "unchangedReuseFunctionCount": 12
+}

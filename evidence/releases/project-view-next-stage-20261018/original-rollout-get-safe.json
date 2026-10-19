@@ -1,0 +1,41 @@
+{
+  "schema": "jhg46-original-rollout-get-surface/v1",
+  "accountId": "8b0d70250211aa10d89e20605a1c7e5e",
+  "applicationId": "a03628c4-f032-461f-a65b-612ccac11a06",
+  "startedAt": "2026-10-18T03:31:20.948Z",
+  "endedAt": "2026-10-18T03:31:21.344Z",
+  "onlyGet": true,
+  "cloudWrites": 0,
+  "complete": true,
+  "limitedListNotFullHistory": true,
+  "trace": [
+    {
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a03628c4-f032-461f-a65b-612ccac11a06/rollouts",
+      "query": {
+        "limit": 1
+      },
+      "status": 200,
+      "success": true,
+      "at": "2026-10-18T03:31:21.167Z"
+    },
+    {
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a03628c4-f032-461f-a65b-612ccac11a06/rollouts/e6da2870-7da9-42e5-9cac-e37ed34208eb",
+      "query": null,
+      "status": 200,
+      "success": true,
+      "at": "2026-10-18T03:31:21.344Z"
+    }
+  ],
+  "originalRolloutId": "e6da2870-7da9-42e5-9cac-e37ed34208eb",
+  "status": "completed",
+  "kind": "full_auto",
+  "strategy": "rolling",
+  "currentVersion": 10,
+  "targetVersion": 11,
+  "currentConfigurationSha256": "5dac1fa03fb1be0a602962d06d800c5b0c0a3877c0cd0d030b2c18c926dad810",
+  "targetConfigurationSha256": "17efab851f0c5b8a449bdb254d7c3625b8becd1d68d2bdd46740c57db0e91b37",
+  "actualCredentialValueGuardPassed": true,
+  "exactReadIdentityMatched": true,
+  "rawConfigurationsExported": false,
+  "source": "fixed installed Wrangler RolloutsService list(limit=1) and exact GET; current public OpenAPI lists POST only"
+}

@@ -1,0 +1,87 @@
+{
+  "schema": "jhg46-execution-input-sha-bindings/v1",
+  "operationsManifestSHA256": "59fd2dd0f464e38b50b56e7c1d65229b6d81d86b12c935a822d5eeefead74342",
+  "completeSourceBindingSHA256": "1dc5e1dbadd9c7496a2f6ac0ed609240df1f9fc48f486c2d4e43445eb76488ab",
+  "all16ActualInputBytesMatched": true,
+  "files": {
+    "AUTHORIZATION.md": {
+      "bytes": 2318,
+      "sha256": "db3c76cf4959f42d1a5871f507bcc41962d4235f5d3240a415863f4b4de2f60d"
+    },
+    "EXECUTION.md": {
+      "bytes": 4398,
+      "sha256": "079eecb8c3a0b5a317472d42529fd595e86b7b4baa482275e484bf841d94c152"
+    },
+    "independent-readback-readonly.py": {
+      "bytes": 29295,
+      "sha256": "ad6f018ff89af088a0a04d5748ca71bf056f6a8deb1b3beb2063a190b82dc1f3"
+    },
+    "local-recovery.py": {
+      "bytes": 19254,
+      "sha256": "971c91d7ea182e8b6540cdf98b3303431e08b0ad0fc1103d48ff60247774b21b"
+    },
+    "oci_verify.py": {
+      "bytes": 5748,
+      "sha256": "0a23618e34b9a2acf608acc86d281ebd68f60a62ba2b102ecda92502c294acea"
+    },
+    "offline-checks.safe.json": {
+      "bytes": 2474,
+      "sha256": "6e821bde70d125fd25879bab67860358b70341bd6525bb85cf0e2c62f7412096"
+    },
+    "operations-manifest.json": {
+      "bytes": 2058,
+      "sha256": "59fd2dd0f464e38b50b56e7c1d65229b6d81d86b12c935a822d5eeefead74342"
+    },
+    "pub_common.py": {
+      "bytes": 5271,
+      "sha256": "17386129c3f25512f0d11f460232705de8076ed23858cf8cb76e57c78619cb07"
+    },
+    "reader-offline-checks.safe.json": {
+      "bytes": 1562,
+      "sha256": "96d841cb59b4ea79038b7c16b0eefecec491754e7541c716ce9230eca9f0186e"
+    },
+    "remote-recovery.py": {
+      "bytes": 14306,
+      "sha256": "1c35225815e0654a9699479148412d2daf9b21bedffabe1ce57c14b25e4c0fa6"
+    },
+    "renewal-source-contract.json": {
+      "bytes": 2497,
+      "sha256": "0593104af3bcc19871b2b55074d85aae105e2a04fef8f9041ab3e31887775f60"
+    },
+    "scope.json": {
+      "bytes": 6416,
+      "sha256": "3afa843b35aca80bf6866518ec2b55fd77cd5a40533b0a9fe421031b2ccfb178"
+    },
+    "source-reuse-contract.json": {
+      "bytes": 2218,
+      "sha256": "599c9831ed0be613e5986c36ecf660151034d35ddd549a6ccd8dd5fdec020f0d"
+    },
+    "test_independent_readback.py": {
+      "bytes": 7652,
+      "sha256": "ca963023e4b7d1f263d3c4cf0baceb07d631dda741a899c0b550573a5bf4b7b5"
+    },
+    "test_recovery.py": {
+      "bytes": 11164,
+      "sha256": "c2f35fc4a1646d82bd32ad82ec2018e3ed8b2dca331015f32f1478ca37875d3f"
+    },
+    "verification-source.json": {
+      "bytes": 10398,
+      "sha256": "76a53be45c5cd33a5b322bd5dd3dabc6b49f64aa53b739b38a6331cbe998beca"
+    }
+  },
+  "auxiliaryTools": {
+    "run-independent-reader-once.py": {
+      "bytes": 9800,
+      "sha256": "948db1094a692591e51d3d6df00ca8bd7eb1c3c306b7c7ce8fadf31449b809e8"
+    },
+    "collect-safe-readback-records-once.py": {
+      "bytes": 23545,
+      "sha256": "3457296f064403d51ec85d732fd370d558a4964dcb397615e9dbe6a406e78985"
+    }
+  },
+  "collectorOriginalHistory": {
+    "bytes": 23419,
+    "sha256": "9352fecf611b82c6d017adc2516f689f502d515659448b89bff3ded2371808f1"
+  },
+  "rawGrantHumanReplyOAuthConfigAndStreamsCopied": false
+}

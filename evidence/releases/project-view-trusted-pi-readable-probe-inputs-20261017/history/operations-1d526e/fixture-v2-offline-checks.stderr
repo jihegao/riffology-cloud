@@ -1,0 +1,16 @@
+...........F
+======================================================================
+FAIL: test_successful_mock_fake_one_create_start_and_no_build (__main__.Tests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/jihegao/apps/riffology-cloud/.local/jhg46-probe-readability-20261017/candidate-v1/operations/test_probe_operations.py", line 120, in test_successful_mock_fake_one_create_start_and_no_build
+    def test_successful_mock_fake_one_create_start_and_no_build(self):self.assertEqual(self.exercise_runner()['status'],'offline-image-compatibility-mock-passed')
+AssertionError: 'unknown-stopped' != 'offline-image-compatibility-mock-passed'
+- unknown-stopped
++ offline-image-compatibility-mock-passed
+
+
+----------------------------------------------------------------------
+Ran 12 tests in 0.014s
+
+FAILED (failures=1)

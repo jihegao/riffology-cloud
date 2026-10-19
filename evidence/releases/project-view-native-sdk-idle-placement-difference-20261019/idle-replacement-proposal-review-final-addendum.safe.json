@@ -1,0 +1,44 @@
+{
+  "schema": "jhg46-fb07-idle-replacement-proposal-independent-review-addendum/v1",
+  "reviewedAt": "2026-10-18T22:30:47.428466Z",
+  "batchRequestId": "fb07e239-2cb4-4379-9581-5711d86a0f30",
+  "priorReview": {
+    "file": "reviews/idle-replacement-proposal-review.safe.json",
+    "bytes": 9081,
+    "sha256": "ba88161735efc364fd03b70cd1610d6035363e496e55bdbb6ad848c3b7ab4df0",
+    "preservedUnchanged": true
+  },
+  "finalProposal": {
+    "file": "public-difference-v1/proposal.md",
+    "bytes": 4887,
+    "sha256": "9234f367be9d513c57e7f8f53753b1f299c8655b95fdea74628bafa0160de6a2"
+  },
+  "finalSafeProjection": {
+    "file": "public-difference-v1/evidence/difference-proposal.safe.json",
+    "bytes": 4126,
+    "sha256": "8712ce617bb7af6740c93265328196c7230d7d502fe3fcd16a897eed9cf1014f"
+  },
+  "narrowDelta": {
+    "markdownOnlyOneScopePhrase": true,
+    "reverseMarkdownMatchesPreviouslyReviewedBytes": true,
+    "jsonOnlyAddsProposedRuleCurrentExposureScope": true,
+    "currentExposureScope": "Same original application current complete unfiltered exposed scope only; no historical disposal or global VM-count inference",
+    "removingAddedFieldMatchesPreviouslyReviewedBytes": true
+  },
+  "decision": "PASS: current complete exposed scope of the same original application is the maximum-one observation domain. No historical8ef5 disposal, global all-history VM count or zero fee is inferred. This clarifies the prior review existing limit; all original runtime/tool/capacity release, same-deployment/version/image/profile, count/window and pending-human-acceptance boundaries remain unchanged.",
+  "mustFix": [],
+  "humanAcceptanceStillPending": true,
+  "actions": {
+    "localFileReadAndNewAddendumWriteOnly": true,
+    "networkCalls": 0,
+    "apiCalls": 0,
+    "uiCalls": 0,
+    "authReads": 0,
+    "cloudWrites": 0,
+    "sourceEdits": 0,
+    "testsRun": 0
+  },
+  "privacy": {
+    "privateResponseOrIdentityBodyCopied": false
+  }
+}

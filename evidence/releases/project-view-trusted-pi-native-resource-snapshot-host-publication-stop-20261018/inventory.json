@@ -1,0 +1,77 @@
+{
+  "schema": "trusted-pi-c263-stop-evidence-inventory/v1",
+  "requestId": "c263a2f3-f445-430e-b562-2e48f1eeb637",
+  "files": {
+    "README.md": {
+      "bytes": 3136,
+      "sha256": "d9074aa6a123a259df73e756c2d05e12d0d2562cd70976f5a8f5d77786057835"
+    },
+    "result.json": {
+      "bytes": 5843,
+      "sha256": "fd8f3bd87f45033f508580c19bee34bdb4858d82cb1d948e7bab07f4b8f33a7c"
+    },
+    "sources/actual-stop-independent-review.json": {
+      "bytes": 5365,
+      "sha256": "7d1524ac8c6b0e6018e148c542d58574063c2c12a5e8be292976633ce0ec985c"
+    },
+    "sources/authorization.safe.json": {
+      "bytes": 1331,
+      "sha256": "af5a355be905f5bebae58f7fc6ca54fbbaf6a26d48cd4de2fdf249aeda6979f7"
+    },
+    "sources/identity-safe.json": {
+      "bytes": 420,
+      "sha256": "0d1835cac735535e39451db2c05baefaf9260db3081c926dda10cc88eb9ed92f"
+    },
+    "sources/local-intent.json": {
+      "bytes": 290,
+      "sha256": "a1858a04bfb8dcdb1591e88162a70b1025618db0270a5eef100574a30685c64e"
+    },
+    "sources/local-terminal.json": {
+      "bytes": 826,
+      "sha256": "76f6db8fd64b1434473fa665b47ebf2ab979ce79f0c573f6ddd6e0eea448926f"
+    },
+    "sources/oauth-token-intent.safe.json": {
+      "bytes": 537,
+      "sha256": "4d3ca29b0b9b6fa5e75ad9472f077358ea25b61b0af3bb703cb65b74a79a786f"
+    },
+    "sources/oauth-token-original-cli.json": {
+      "bytes": 70,
+      "sha256": "7d5289b35dcb2350cd9afbfefdde63359b5a6bb56070981d36ca241c40cf91a5"
+    },
+    "sources/oauth-token-terminal.json": {
+      "bytes": 159,
+      "sha256": "e83f89eac33350ef111f172783e6e3a8c1cb41318e6ab6694075a4c97b02da62"
+    },
+    "sources/original-driver-stdout.json": {
+      "bytes": 746,
+      "sha256": "ee8a4bdeda41e50e7594ad1519774d4288c904a070ce88b6ab8008419491fbed"
+    },
+    "sources/original-ssh.json": {
+      "bytes": 148,
+      "sha256": "4356e4c03cf0f59075c541226ea18f81955210b9cb114882aa0eec1c0e8088ab"
+    },
+    "sources/preflight-local-only.json": {
+      "bytes": 471,
+      "sha256": "616bc1f8a2fae68089dc610265a9be10adc5eab8dad896b24944ab7c3a302ad8"
+    },
+    "sources/route-intent.json": {
+      "bytes": 307,
+      "sha256": "8331aaa94260d2cc5d34eb7a1cfaf75ca89b4e69cd4bb2eca516da4bad0a2d41"
+    },
+    "sources/stop-readback-intent.json": {
+      "bytes": 222,
+      "sha256": "f5c52fb01a7dccb97fe283d8fc89ebdf87940cd5edda012787affe253ee2141c"
+    },
+    "sources/stop-readback-observation.json": {
+      "bytes": 774,
+      "sha256": "99bbf7e36fd112f2b2625896d7453f5ed6b38f7142f3be64d7688eb0f08c07e6"
+    },
+    "sources/wire-diagnosis.safe.json": {
+      "bytes": 4459,
+      "sha256": "32c3570ed810a650c95d92496cab18019b25e913c40ff94e6e0ef51964942748"
+    }
+  },
+  "fileCount": 17,
+  "totalBytes": 25104,
+  "note": "Inventory excludes itself. Raw grant/reply/OAuth and private output bodies are not published."
+}

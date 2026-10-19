@@ -1,0 +1,37 @@
+{
+  "schema": "jhg46-gateway-original-write-safe-projection/v1",
+  "recordedAt": "2026-10-18T09:04:51.138149+00:00",
+  "requestId": "f953bc1e-3ea1-4786-821c-26ecf68916a0",
+  "assetSessionRequests": 1,
+  "serverRequestedBuckets": 0,
+  "assetUploadRequests": 0,
+  "workerPutRequests": 1,
+  "intents": [
+    {
+      "file": "asset-session-intent.json",
+      "requestId": "f953bc1e-3ea1-4786-821c-26ecf68916a0",
+      "method": "POST",
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/scripts/riffology-m1-gateway-staging/assets-upload-session",
+      "bodyBytes": 14174,
+      "bodySha256": "36d246e1ca27fd4340cd42d9e625987ffa43e6784b363dde3ad0532bfcfb22ef",
+      "requestedAt": "2026-10-18T08:56:03.089Z",
+      "automaticRetry": false,
+      "recordSha256": "965591a600024c401c4d4eb68214d7a7ee9d748b3f0f77773253ab21729e78a3"
+    },
+    {
+      "file": "worker-put-intent.json",
+      "requestId": "f953bc1e-3ea1-4786-821c-26ecf68916a0",
+      "method": "PUT",
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/scripts/riffology-m1-gateway-staging?bindings_inherit=strict",
+      "bodyBytes": 5798272,
+      "bodySha256": "b4276616d1b3cf59b2348505b57cc178bffb5f8fee0311a1fcea87c9556633d4",
+      "requestedAt": "2026-10-18T08:56:25.288Z",
+      "automaticRetry": false,
+      "recordSha256": "4b7cc6ad82cb97b493e234f009953b338d2f1be20f537af6c540e180de7bc7f8"
+    }
+  ],
+  "sessionJwtOrPrivateWireIncluded": false,
+  "noRollbackOrAutomaticRetry": true,
+  "originalCliSession": 32014,
+  "originalCliExitCode": 0
+}

@@ -1,0 +1,26 @@
+{
+  "schema": "project-view-image-layer-metadata-offline-fake-history/v1",
+  "recordPreparedAt": "2026-10-17T12:44:11.900758+00:00",
+  "executedInspector": {
+    "path": "executed-98dc.py",
+    "bytes": 24927,
+    "sha256": "98dc761c4dd09271793cf06c5ccf25e7dd27798453bd1dd4690a6759992cdc5e"
+  },
+  "preExecutionTestSource": {
+    "path": "executed-98dc-test.py",
+    "bytes": 9430,
+    "sha256": "1bb7eb7ef3beb54b90b91f0deee6333e39c363f2ed4f76641b8e1e9c00f1e09c"
+  },
+  "priorActualLocalFakeRun": {
+    "tests": 11,
+    "passed": 11,
+    "failed": 0,
+    "exitCode": 0,
+    "startedAt": null,
+    "endedAt": null,
+    "durationSeconds": null,
+    "limitation": "The prior local fake run was reported before the real image read. Exact UTC start/end and raw console capture were not retained; this receipt is a later historical attestation, not a new run. Later twelve-test results are not attributed to this source."
+  },
+  "postExecutionLimitation": "98dc rejected direct target/ancestor link names but did not retain/check unrelated link aliases into targets or ancestors. The safe summary cannot retroactively exclude them. Its real output is direct layer-entry metadata/bytes with layer/blob/diffID binding, not runtime filesystem stat or exhaustive alias proof. No second image save is requested or executed here.",
+  "sourceReconstruction": "Source and test were independently reconstructed by reversing only the later alias patch; both exact historical SHA256 and byte lengths matched. Reconstructed files are evidence copies, not a claim these were deployed later."
+}

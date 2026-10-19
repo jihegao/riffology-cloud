@@ -1,0 +1,114 @@
+{
+  "schema": "jhg46-ordinary-t1-actual-result/v1",
+  "recordedAt": "2026-10-18T10:32:31.842349+00:00",
+  "result": "ordinary-invited-user-t1-failed-original-release-cleared",
+  "acceptancePassed": false,
+  "done": false,
+  "schemaVersion": 1,
+  "projectId": "e7044b0b-839a-4e44-9636-ab0c3b77b7ae",
+  "workspaceId": "3e1e0106-503e-42e1-89ce-35a26612935e",
+  "workspaceGeneration": 1,
+  "scopeSha256": "9949802a2876284ffa2b604411b9283de83fa45c806c24bd7ab2981ff5059286",
+  "sessionId": "bc034608-8a61-47c4-b323-9f6143bca607",
+  "turnId": "bd291436-baeb-43bb-9cc2-b92f62c06c78",
+  "deploymentContext": {
+    "gatewayVersion": "5a840cbc-49c5-45cd-badc-b75553c78566",
+    "gatewayBundleSha256": "9c8e4b6b763e9887d1624f00ed3a8efb2a8a24d984d96bc68fdb289cb4d362c3",
+    "applicationVersion": 12,
+    "imageManifestSha256": "f18a826d40b2fd60e2cf8c49d7f7b8f595fa609fe2be4c28593479ae846960ea",
+    "originalMaintenanceEndConfirmedSeparately": true,
+    "acceptedIdleBaselineVmReleased": false
+  },
+  "ordinaryIdentity": {
+    "authVersion": 2,
+    "acceptedInvitation": true,
+    "activePersonalOwner": true,
+    "activePlatformRole": false
+  },
+  "actualExecutorScope": {
+    "newBlankProjects": 1,
+    "sessionsCreated": 1,
+    "t1UiSubmissions": 1,
+    "t1AckStatus": 202,
+    "t1Replayed": false,
+    "t2Submitted": false,
+    "t3Submitted": false,
+    "secondSessionCreated": false,
+    "gatePutSent": false,
+    "gateDeleteSent": false,
+    "automaticRetryOrProviderFallbackUsed": false,
+    "scopeLimit": "Counts describe the original recorded acceptance executor flow; no account-global zero-execution claim."
+  },
+  "t1": {
+    "provider": "openai",
+    "model": "gpt-5.6-luna",
+    "bodyBytes": 3473,
+    "bodySha256": "36ee35cbd1a879f0b2ac8771f7bc1410ec6d82415f1b9f80f4d1d56ecb51f16c",
+    "sentAt": "2026-10-18T10:12:17.477Z",
+    "ackAt": "2026-10-18T10:12:22.266Z",
+    "terminalStatus": "failed",
+    "executionOutcome": "failed",
+    "errorCode": "turn-native-exit-failed",
+    "persistenceOutcome": "failed",
+    "persistenceErrorCode": "turn-checkpoint-unknown",
+    "checkpoint": null,
+    "sessionHead": null,
+    "providerHttp200ResponsesObserved": 2,
+    "projectWriteCompletedIsError": true,
+    "rawToolEffectCause": "unknown",
+    "nativeToolSideEffects": "unknown"
+  },
+  "canonical": {
+    "r1Produced": false,
+    "revision": null,
+    "r2Produced": false,
+    "r3Produced": false
+  },
+  "release": {
+    "pendingObservedAt": "2026-10-18T10:14:03.337Z",
+    "originalReasonCode": "trusted-pi-release-assignment-guard",
+    "clearedObservedAt": "2026-10-18T10:23:07.527Z",
+    "currentReleaseHold": null,
+    "recoveryHold": null,
+    "resourceWait": null,
+    "activeTurnId": null,
+    "allOtherFullSnapshotDataUnchanged": true,
+    "clearedOriginalBytesSha256": "25af38c388539edc2c842c3f698ae8f2670c328a552269c7e0412aa36de5ad18",
+    "betaAvailableObservedAt": "2026-10-18T10:23:09.641Z",
+    "betaHttpStatus": 200,
+    "betaState": "available",
+    "authority": "Product projection from the same original scope; raw stop/ticket proof not fetched, no zero-VM claim."
+  },
+  "diagnosisBoundaries": {
+    "toolReceipt400": "Invalid read missing name/revision query inputs; not the original tool error or pipe root cause.",
+    "canonicalToolReceiptReadForR1": "Unavailable because no canonical R1/revision exists; no invented revision authority.",
+    "issue252": "Independent local host-resources reproduction is tracked in #252 In progress. It does not establish the raw project_write failure cause and is not a deployed or accepted fix.",
+    "productWriteRootCauseEstablished": false
+  },
+  "nextAction": "Stop remaining T2/T3/gate. Preserve original project, Session, request, usage, fee reservations and evidence. Diagnose the smallest actual defect separately; no retry, replacement project/Session/key or fourth repair Turn follows from this evidence.",
+  "fees": {
+    "usageReconciled": false,
+    "amount": null,
+    "zeroClaimed": false,
+    "historyAndReservationsPreserved": true
+  },
+  "originalBatchEndsAt": "2026-10-18T12:42:46Z",
+  "deadlineExtended": false,
+  "limits": [
+    "Actual invited-user model/tool acceptance failed; UI or provider HTTP200 and deployed code do not establish feature acceptance.",
+    "Failure and product release completion are distinct observations. Clearing releaseHold does not create a saved R1 or pass T1.",
+    "Browser page/gate/refresh/cold recovery and full JHG-56 matrix were not reached. JHG-46 remains incomplete.",
+    "No browser/API/auth/provider/paid execution, tests, builds, source mutation or additional cloud action was performed while authoring this safe evidence."
+  ],
+  "safeSources": [
+    "beta-available.safe.json",
+    "canonical-head.safe.json",
+    "failure-release-cleared.safe.json",
+    "failure-release-pending.safe.json",
+    "identity-and-initialization.safe.json",
+    "invalid-tool-receipt-read.safe.json",
+    "original-ui-request.safe.json",
+    "selected-failure-events.safe.json",
+    "source-observation-bindings.json"
+  ]
+}

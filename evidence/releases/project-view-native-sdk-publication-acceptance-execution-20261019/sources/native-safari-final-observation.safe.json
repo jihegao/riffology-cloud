@@ -1,0 +1,14 @@
+{
+  "schema": "jhg46-fb07-final-native-safari-observation/v1",
+  "recordedAt": "2026-10-19T00:48:42.091116+00:00",
+  "authority": "supported native Safari CUA AX after full document exit",
+  "projectListVisible": true,
+  "webInspectorConsolePresent": false,
+  "projectFramesPresent": false,
+  "sameOriginalRiffoidTab": true,
+  "noOldProjectOpenedOrRestored": true,
+  "noS2OrT3": true,
+  "browserPortListenerRawCountersNotExposed": true,
+  "previousPreviewSelectionDidNotProvePollStop": true,
+  "fullDocumentContextExit": true
+}

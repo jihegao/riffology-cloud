@@ -1,0 +1,149 @@
+{
+  "schema": "trusted-pi-native-host-publication-stopped-public-result/v1",
+  "draft": false,
+  "requestId": "c263a2f3-f445-430e-b562-2e48f1eeb637",
+  "result": "stopped-before-export-with-original-scope-cleanup-observed",
+  "authorization": {
+    "source": "direct-human-question-reply",
+    "answerUtf8Sha256": "c41bb2870a18c70b428bcb6626511601a1f01efb0720b00faf2d26c2fce5a9a7",
+    "humanGrantSha256": "52c85c3501a881891516f37384033d016fefc57b809ff4493896a57da835d048",
+    "receivedAndRecordedAt": "2026-10-18T12:19:47.976117+00:00",
+    "approvalTimeIsLocalObservationOfReply": true,
+    "publicationPacketCommit": "d948b08324d288c1c88d428d5331acfff2d03121",
+    "operationsManifestSha256": "6fd9aefcdb09cf0465b3062a0270e4ef3817f74d8829fa99cbfe1f3d031efd8c",
+    "completeSourceBindingSha256": "08466e9d852deaff0e9b6bf315253d259a29356a9cccb7f645a693a27905b7ae",
+    "oauthNotTransferred": true,
+    "scopeChangesOrNewConsentAllowed": false,
+    "conditionalRootNormalMerge": {
+      "approved": true,
+      "pr": 253,
+      "expectedHead": "0a10da572264470aaac111e6f5da2bd20b2f2c45",
+      "onlyAfterTrustedPublicationAndIndependentCleanup": true,
+      "normalCurrentProtectionReviewChecks": true,
+      "noAdminOrCheckBypass": true
+    },
+    "runtimeOriginalWindowExtended": false,
+    "newTurnAuthorized": false,
+    "costCap": null,
+    "arrearsNotify": true,
+    "schema": "trusted-pi-c263-authorization-safe/v1",
+    "originalReceipt": {
+      "bytes": 1183,
+      "sha256": "bc35e2f86a38cb07ceaf3f154bf38da93d2482934e2f53caf9e39787ea4e556a"
+    },
+    "rawHumanReplyPublished": false,
+    "rawGrantPublished": false
+  },
+  "attempt": {
+    "localIntentAt": "2026-10-18T12:20:01.758269+00:00",
+    "normalTokenCli": {
+      "exitCode": 0,
+      "originalReaped": true,
+      "outputPersisted": false,
+      "stdoutBytes": 130,
+      "stderrBytes": 136
+    },
+    "identity": {
+      "accountId": "8b0d70250211aa10d89e20605a1c7e5e",
+      "expiresAt": "2026-10-18T13:20:05.170Z",
+      "oauthNotTransferred": true,
+      "requestId": "c263a2f3-f445-430e-b562-2e48f1eeb637",
+      "scopes": [
+        "user:read",
+        "offline_access",
+        "account:read",
+        "workers:write",
+        "workers_scripts:write",
+        "containers:write"
+      ],
+      "userIdSha256": "c8d5e2a134d99693a4585510f761b811d67b3e36c413eb3c9d34d060cccc986d"
+    },
+    "sshStartedAt": "2026-10-18T12:20:11.138239+00:00",
+    "localTerminalAt": "2026-10-18T12:20:18.483962+00:00",
+    "sshExitCode": 1,
+    "errorCode": "original-publication-ssh-nonzero",
+    "originalSshReaped": true,
+    "localStopErrors": [],
+    "readyEventCount": 0,
+    "credentialPostAttempted": false,
+    "credentialStdinSent": false,
+    "finalPublicationAckVerified": false,
+    "localOnceConsumed": true
+  },
+  "observedStop": {
+    "archiveExists": false,
+    "credentialContentsRead": false,
+    "dockerOrRegistryCalls": 0,
+    "observedAt": "2026-10-18T12:21:53.621814+00:00",
+    "remoteRecordsExist": false,
+    "remoteRootExists": false,
+    "remoteRootIsSymlink": false,
+    "remoteWrites": 0,
+    "requestId": "c263a2f3-f445-430e-b562-2e48f1eeb637",
+    "route7897Listeners": 0,
+    "routeConnectErrno": 111,
+    "schema": "c263-stopped-original-readonly-observation/v1",
+    "temporaryAuthDirectoryExists": false,
+    "localOriginalProcesses": [
+      {
+        "sourceRecord": "original-ssh.json",
+        "originalPid": 96233,
+        "pidAbsent": true
+      },
+      {
+        "sourceRecord": "oauth-token-once-original-cli.json",
+        "originalPid": 95869,
+        "pidAbsent": true
+      }
+    ],
+    "originalReadonlySshExitCode": 0
+  },
+  "wireDiagnosis": {
+    "actualGrantBytes": 4632,
+    "actualGrantSha256": "52c85c3501a881891516f37384033d016fefc57b809ff4493896a57da835d048",
+    "actualGrantNewlines": 119,
+    "wholeGrantValidJson": true,
+    "wireFirstLineBytes": 2,
+    "wireFirstLineHex": "7b0a",
+    "genericJsonParseErrorClass": "JSONDecodeError",
+    "sourceFailureBeforeRemoteDirectoryCreation": true,
+    "actualRemoteStderrOriginalPersisted": false,
+    "stderrOnlyBytesAndSha": {
+      "bytes": 771,
+      "sha256": "a2e7627af8cdb22d69ec2e2f4f1be21e48060a566b564b1ff20923e36e05a522"
+    },
+    "diagnosisIsPureLocalNotObservedRemoteTraceback": true
+  },
+  "imageIdentity": {
+    "sourceEngineOrIndex": "sha256:0bb9af7a5909c41187cf56402a21420100c72a8de0025b0a7152f8804e85d191",
+    "sourceIndexBytes": 856,
+    "expectedRootfsLayers": 49,
+    "newArchiveIdentityKnown": false,
+    "runnableManifestKnown": false,
+    "configDigestKnown": false,
+    "registryPublicationVerified": false
+  },
+  "scopeBoundary": {
+    "sameUserSameSixScopeNormalTokenAndIdentityRequestsOccurred": true,
+    "newConsentOrScopeChangeAllowed": false,
+    "oauthNotTransferred": true,
+    "remoteExportStageReached": false,
+    "remoteDirectoryWasCreated": false,
+    "registryCredentialPostAttempted": false,
+    "pushStageReached": false,
+    "successOnlyIndependentReaderRun": false,
+    "rootSeparateStopReadbackRun": true,
+    "mergeConditionsSatisfied": false,
+    "mergeAllowedFromThisResult": false,
+    "pr253MergedByBatch": false,
+    "applicationGatewayGateChangedByBatch": false,
+    "newTurnOrProjectExecutedByBatch": false,
+    "oldRealAcceptanceDeadlineUtc": "2026-10-18T12:42:46Z",
+    "deadlineExtended": false,
+    "globalCountersRead": false,
+    "usageFees": "unreconciled-not-zero",
+    "jhg46Complete": false
+  },
+  "history": "Original local once/source/grant/terminal/stream hashes and the absent original remote identity remain preserved.695e successful image mock and all earlier T1/Registry/deployment/fee histories remain unchanged.",
+  "nextStep": "Any same-original-identity continuation must be separately prepared/reviewed with explicit fixed-input authorization; no recovery execution or new grant is recorded here."
+}

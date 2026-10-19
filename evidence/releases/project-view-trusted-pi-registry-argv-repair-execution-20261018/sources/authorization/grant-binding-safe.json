@@ -1,0 +1,16 @@
+{
+  "schema": "jhg46-fb99-human-grant-binding/v1",
+  "actualReplyAnswerSha256": "246c50b61d5d69ae7ca1337aa24c281deed8cbfbd3a5dceba99dc0e82afbef33",
+  "questionItemId": "[\"request_user_input_async\",\"call_ecd19ac3a7e44f46ac71c74e986547d9\",0]",
+  "contractCommit": "abd265e503c77a5fb2a9256dd8365f5849d2df05",
+  "requestId": "fb99c7e4-21a7-4215-8261-c17dd7c148aa",
+  "operationsManifestSha256": "89f2f285f5f732a6f3c9b8705a47fde4b5f073970e585e779371fb20ac2680fa",
+  "grantSha256": "64595e07c5075ce96d82f2e2f51add8ecf343de5dd744bb5a9e07a715ade1999",
+  "grantBytes": 4277,
+  "approvedAtRecorded": "2026-10-18T01:58:56.016093+00:00",
+  "expiresAt": "2026-10-18T02:58:56.016093+00:00",
+  "actualMessageTimestampUnavailable": true,
+  "grantDerivedAfterActualAnswer": true,
+  "newScopeBeyondApprovedSix": false,
+  "realAuthOrDriverStarted": false
+}

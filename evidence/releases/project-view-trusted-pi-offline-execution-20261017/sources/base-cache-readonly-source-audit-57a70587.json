@@ -1,0 +1,131 @@
+{
+  "schema": "trusted-pi-fixed-base-independent-cache-observation/v1",
+  "requestId": "57a70587-2b21-4a56-aed1-09c8a32d868a",
+  "startedAt": "2026-10-17T12:00:50.004757+00:00",
+  "endedAt": "2026-10-17T12:00:51.554708+00:00",
+  "sshExitCode": 0,
+  "remoteCodeSha256": "23a80ff3b0cdf7ea64af36fe2248585e002c8dd5116f75e6ca5fcd90e73eb8ec",
+  "remoteObservation": {
+    "baseImage": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-issue165-trusted-pi@sha256:9b76ab9ee7a4f31d250957fbbeefc62d71056e6bd1eb24686ebbeaff3d65873c",
+    "command": "image inspect only",
+    "credentialOrRouteCreated": false,
+    "endedAt": "2026-10-17T12:00:47.706339+00:00",
+    "environmentValuesIncluded": false,
+    "exitCode": 0,
+    "fixedDocker": "/usr/bin/docker",
+    "fixedSocket": "unix:///var/run/docker.sock",
+    "identityMatchesFixedReference": true,
+    "image": {
+      "Architecture": "amd64",
+      "Cmd": null,
+      "Descriptor": {
+        "annotations": {
+          "config.digest": "sha256:e323d0348528d552d3a7bc9b2c9fe652763c2c2583f52220332c554d07e7b5a4"
+        },
+        "digest": "sha256:9b76ab9ee7a4f31d250957fbbeefc62d71056e6bd1eb24686ebbeaff3d65873c",
+        "mediaType": "application/vnd.oci.image.manifest.v1+json",
+        "size": 7883
+      },
+      "Entrypoint": [
+        "/container-server/sandbox"
+      ],
+      "EnvKeyHashes": [
+        {
+          "entrySha256": "3df505b4bf853c456422990cd474612e074d20d307e66398a090b4bfa519348b",
+          "key": "PATH"
+        },
+        {
+          "entrySha256": "710f551e9935e142311836394618b34e396f54727acfff964b5fe729cb1c62a3",
+          "key": "DEBIAN_FRONTEND"
+        },
+        {
+          "entrySha256": "1565b124fb14431da900713ba61b75f0107f12cb6974b530d440779debebec82",
+          "key": "SANDBOX_VERSION"
+        },
+        {
+          "entrySha256": "626209efeecc079b28a0a5963bf282b3a81ad999ab7259c7bc3e73d67afd1385",
+          "key": "PYTHON_POOL_MIN_SIZE"
+        },
+        {
+          "entrySha256": "663190793bee50119b54b305ab3b1c394a6a36403c2731d0870c81736708d2fe",
+          "key": "JAVASCRIPT_POOL_MIN_SIZE"
+        },
+        {
+          "entrySha256": "350f9dfcfb6f40916dd4c46f211b02afb8645422984045e8ce79b7c54a3d1a57",
+          "key": "TYPESCRIPT_POOL_MIN_SIZE"
+        }
+      ],
+      "Id": "sha256:9b76ab9ee7a4f31d250957fbbeefc62d71056e6bd1eb24686ebbeaff3d65873c",
+      "Os": "linux",
+      "RepoDigests": [
+        "riffology-issue165-trusted-pi@sha256:9b76ab9ee7a4f31d250957fbbeefc62d71056e6bd1eb24686ebbeaff3d65873c",
+        "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-issue165-trusted-pi@sha256:9b76ab9ee7a4f31d250957fbbeefc62d71056e6bd1eb24686ebbeaff3d65873c"
+      ],
+      "RootFS": {
+        "Layers": [
+          "sha256:c0359c5b6ede84d4a083d06d35ee77f0b338dfb17423771854d007d89953fb3e",
+          "sha256:3d65b9874032d7fcc188f6bdfaf5b13788ab5b0bbefa77f4a5ac28c598bf1941",
+          "sha256:0576eb869f395313a1aa5f621268dfb9b5682ec97cf15fe71e371483f5c80fba",
+          "sha256:15ded8de01e6eca481f1a339c99bb4cfda5d23b1dfbc82a4cebb24c5c9a017a8",
+          "sha256:86a3be679e01b1fcee6c778834a25689e30f6071f66576d25fbffc5fce5aa98e",
+          "sha256:f334ab63d20359b7cffc52ca264dd415747a8d4ff7bfbb6149008b8683965dee",
+          "sha256:9b70e64f8f280bd9fa74b9185f0bf19604eaef611dd83c275886a24799d154e5",
+          "sha256:713264a10ffa9ed08c39191b9e03b8f298baa0a1d87f6e58589c8990a25743f3",
+          "sha256:1e82d0f1454bb6187960082585b9b98906b7a52f6ae24fdf1f51fe9e6e91e0e6",
+          "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+          "sha256:55394ae40b31c896ec476b35271dc2785c15c370ba8395e115d5a8b20a095f61",
+          "sha256:703eb6bf565d44cb0066bd69bf4b74dd6d5160e55cb1728bc0b1abb242c1a489",
+          "sha256:b7cb327a353f555554a14193e784b45adaf249df9b105bbbe7fd1632fc8bf515",
+          "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+          "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+          "sha256:6996f5cb764794f926da271d756055e0885640baf700c5467fe6cd5a86623b0e",
+          "sha256:4e52759b8746781db6506ca2dcbacd24e6930e844e72f84bbed3dcf84095e8cf",
+          "sha256:d046221a87ad549a2b8c422442c599d884fada666e0ad514529248a68264533f",
+          "sha256:a07f0fd21a039d53d1a8b570dba45f06e2105dbe09387f538cd64ec206f2037a",
+          "sha256:987f78f14e7466e79ca69151b1ffe93521e6d767de288c6ecdec7ab5de0a7608",
+          "sha256:9eec22a452a78c5b6c09e7876a35359c561543a57864b81ea686db90d12edb8d",
+          "sha256:67a8162b3d5016d9f1d6986738e2ac90d9435d1b19bbeda228525c289257fab0",
+          "sha256:23223ce0c6e4eea1180c40d303dc0572b7721e45f73ae1efd9c5bd2653b8b2b2",
+          "sha256:68fa2c1811cb3e047e0ed221522be6478cb6ed3611ec3f823f9a024c6d4e079c",
+          "sha256:ee976f8a390d1f74c593bbb2fa594e3edd39b093d2bb82ca9083d4bcdcf412ba",
+          "sha256:1437b43f4faa67abda3f415ff82df40578f39add39518a1b6a1bc30b63e1c57d",
+          "sha256:a96e0a797b05dfdd4fa5d334a6b61b0d7977e797180ab8256e96337c3e59a75f",
+          "sha256:85bde228e4afbb5afea9a10192ea098900b9592cd1bfd28942d20c54b0781330",
+          "sha256:ad051baa272a47b245c9fa6575e69090c9c80a3ac26498f2c4bcd0b8d8738f93",
+          "sha256:54a57586f2bf80a35a8e43613f3a1f90c163a6f893e469bf68b535680c4baa7f",
+          "sha256:3ff2f71acf320d7a8c7e9f31497655443a629b712264089bab50cbae88398b96",
+          "sha256:b39597252325de1dbbb169f514ee8b3125a3aca57f303c3bffad0a5e4d14a0ee",
+          "sha256:771a1985fae19d0baa6778b7853b63aeca1e62592f275ab86099e15db2164c85",
+          "sha256:d6e33ac68343d20a9f7944774d62ce3d5809463d891daf1d2b6f94509905b280",
+          "sha256:97196106475784cf7fe5c44ab467679ad57100c57bb686b8c9fa8a9e7947a410",
+          "sha256:8bd3c95731165074ab51992cd165c39d6b2224057d76155dbfb791f7ba36aa8d",
+          "sha256:af4f207aff77940b76562d0bd2f2f983997a20f2588b5a578cc1fefe64ba6bd6",
+          "sha256:b15c7e24d9641014e4bc055bcc559c16ef1ba80ad21db84785a761de84d0d3a0",
+          "sha256:491e5b439e5dc4a1423e3d58aef875d7575c263660ca328a347336e217bc65cb",
+          "sha256:75df2525c118b87d9a8093cf66bf6120caef8bf4a7c1d9c67c87860a8038a0fc"
+        ],
+        "Type": "layers"
+      },
+      "Size": 1820661426,
+      "User": "root",
+      "WorkingDir": "/container-server"
+    },
+    "outcome": "present",
+    "pullBuildOrContainerRequested": false,
+    "registryNetworkRequests": 0,
+    "schema": "trusted-pi-fixed-base-cache-readonly/v1",
+    "socketIsUnixSocket": true,
+    "startedAt": "2026-10-17T12:00:47.634941+00:00",
+    "stderrBytes": 0,
+    "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdoutBytes": 4908,
+    "stdoutSha256": "ece74f06a98d0f3977efc8a9ce3a8f8c24278dd526d9ab0ab21a690a20ffd1a1"
+  },
+  "sshStdoutBytes": 5456,
+  "sshStdoutSha256": "440cf4e545435539e48cc39338e2f212f10dd848d94cb350ec4e1eea087fea04",
+  "sshStderrBytes": 0,
+  "sshStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "noForwarding": true,
+  "noCredentialMutation": true,
+  "noPullBuildContainerOrCloudApi": true
+}

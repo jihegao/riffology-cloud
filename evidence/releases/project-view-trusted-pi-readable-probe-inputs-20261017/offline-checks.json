@@ -1,0 +1,46 @@
+{
+  "endedAt": "2026-10-17T14:04:06.265205+00:00",
+  "exitCode": 0,
+  "noRealSshDockerAuthApi": true,
+  "operationsManifestSha256": "ae0614dafe7067367703ad41a9e0ff19f25de3ab7c788b85f01c1ff5c6b4fffd",
+  "preparationFailureHistory": [
+    {
+      "errors": 1,
+      "failures": 2,
+      "initialTests": 12,
+      "kind": "fixture-path-normalization",
+      "reason": "macOS /var symlink not resolved for fake private parents; fixture Path.resolve fixed, runner guard retained"
+    },
+    {
+      "errors": 0,
+      "failures": 1,
+      "kind": "fixture-manifest-location",
+      "preserved": "fixture-v2-offline-checks.json",
+      "reason": "fake runner ROOT was not pointed at local public fixture; fixture patch only, original strict runner retained",
+      "secondTests": 12
+    }
+  ],
+  "priorCandidate": {
+    "fakePassed": 12,
+    "historyDirectory": "history/operations-1d526e",
+    "operationsManifestSha256": "1d526ed79464cbc172cbb0f1bfa0af06d449e055fd2b005cd3a105ac47a7f5c8"
+  },
+  "reviewRevisions": [
+    "exact local transfer ACK gate before SSH launch",
+    "persist SSH terminal/private streams despite poll/wait/stop faults; local reaping does not prove remote stopped",
+    "bounded nofollow fd reads for bootstrap manifest/grant before bytes"
+  ],
+  "schema": "trusted-pi-probe-readable-offline-checks/v2",
+  "startedAt": "2026-10-17T14:04:06.195944+00:00",
+  "streams": {
+    "stderr": {
+      "bytes": 114,
+      "sha256": "b565133ab43eb843485dd8441615b1c2f89b21ce2bae650170287548bd6b07bf"
+    },
+    "stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "testsExpected": 15
+}

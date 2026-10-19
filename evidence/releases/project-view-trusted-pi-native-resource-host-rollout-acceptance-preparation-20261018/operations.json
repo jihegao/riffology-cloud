@@ -1,0 +1,180 @@
+{
+  "batchRequestId": "d0b12dd5-c04e-41d9-9a05-c685431d6695",
+  "executed": false,
+  "executionAuthorized": false,
+  "futureNullOrPlaceholderInputsMayNeverBeSent": true,
+  "newCloudWriteCeilings": {
+    "browserSecretDelete": 1,
+    "browserSecretPut": 1,
+    "imageRollout": 1,
+    "maintenanceBegin": 1,
+    "maintenanceEnd": 1,
+    "newAppNamespaceOrWorkerAssetsPut": 0
+  },
+  "old34ContractSource": {
+    "file": ".local/jhg46-next-stage-preparation-20261018/next-phase-contract-v4/operations.json",
+    "semanticReuseNotBlindReplay": true,
+    "sha256": "57c29f29d7a2841a5f2c2e79f7331a1061f82cd4248ab9bcb42768a593c4915a"
+  },
+  "operations": [
+    {
+      "guard": "must exactly same original owner/request; failed/nullR1 history stays; all holds clear/capacity product authority; physical still separate",
+      "id": "read-old-owner-original-execution",
+      "method": "GET",
+      "path": "original-owner me bracket/workspace/originalSession-originalKey receipt/capacity",
+      "reviewedOldOperation": "original-workspace-read + original-turn-receipt-read"
+    },
+    {
+      "guard": "same source9c8 solecurrent/defaultclosed/full resources/all16apps/versions and oldactual identities; no drift; preserve snapshot before mutation",
+      "id": "fresh-operator-and-resource-preservation",
+      "method": "GET",
+      "path": "fresh-read-contract.json",
+      "reviewedOldOperation": "operator-me/operator-role-and-state + app/versions/instances/rawdash before"
+    },
+    {
+      "attempts": 1,
+      "bodyFile": "maintenance/input.pending.json#begin",
+      "guard": "new explicit <=4h grant and both choices; fresh state.revision/policy; exact fourkeys/sameoperator",
+      "id": "new-original-maintenance-begin",
+      "method": "POST",
+      "path": "/api/admin/private-beta/maintenance",
+      "reviewedOldOperation": "maintenance-begin"
+    },
+    {
+      "guard": "samehold ledger/native coldpair/originalterminal disposition + full logical/scheduler/dash physical baseline; unknown holds; never pause/cancel",
+      "id": "natural-drain-joint-and-physical",
+      "method": "GET",
+      "path": "fresh-read-contract.json",
+      "reviewedOldOperation": "hold-and-beta-read/native-quiescence/physical-before"
+    },
+    {
+      "attempts": 1,
+      "bodyFile": "rollout/body.wire.json",
+      "guard": "lastfresh configuration all nonimage fields match; samehold/singlewriter; exact immutable plannedwire; persist originalACK first",
+      "id": "single-fixed-ec8-rollout",
+      "method": "POST",
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a03628c4-f032-461f-a65b-612ccac11a06/rollouts",
+      "reviewedOldOperation": "rollout-once"
+    },
+    {
+      "guard": "same original ACK target/image/nonimage; actualcompleted; two selected conditions; other15allversions and Gateway preserved; freshjoint/physical",
+      "id": "original-ack-rollout-and-preservation-readback",
+      "method": "GET",
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a03628c4-f032-461f-a65b-612ccac11a06/rollouts/{actualAckRolloutId}",
+      "reviewedOldOperation": "exact-rollout-read/app-after/versions-after/instances-after/rawdash-after"
+    },
+    {
+      "attempts": 1,
+      "bodyFile": "maintenance/input.pending.json#end",
+      "guard": "samehold sameowner fresh state.revision/policy/control; allconditions hold; resumes Pi newadmissions",
+      "id": "same-owner-original-maintenance-end",
+      "method": "POST",
+      "path": "/api/admin/private-beta/maintenance",
+      "reviewedOldOperation": "maintenance-end"
+    },
+    {
+      "guard": "exactoriginal endreceipt and currentholdnull independently; not physicalrelease",
+      "id": "same-original-end-independent-read",
+      "method": "GET",
+      "path": "/api/admin/private-beta/maintenance?requestId=c1f9e955-96a6-56dc-acd2-4a0e84410442",
+      "reviewedOldOperation": "maintenance-end-read"
+    },
+    {
+      "guard": "no operator reused; mebracket+existing singleSELECT actualauthVersion2/acceptedinvitation/personalowner/no active platformroles; querymeta no writes",
+      "id": "ordinary-auth-and-fresh-identity",
+      "method": "product UI + bounded read-only SELECT",
+      "path": "ordinary original approved account",
+      "reviewedOldOperation": "ordinary-sign-in/me-before/extra-identity-projection/me-after"
+    },
+    {
+      "attempts": 1,
+      "guard": "onefixed UI originalkey/body, actualscope/generation, originalprovisioning ready+runtime/fence/quotaReleased productprojection",
+      "id": "one-original-blank-create",
+      "method": "product UI POST",
+      "path": "/api/tenants/{actualPersonalTenantId}/projects",
+      "reviewedOldOperation": "create-one-blank"
+    },
+    {
+      "guard": "fixed T1/newkey; mkdir30s success then2698Bskill; canonicalR1+original runtime/tool/container/capacity release beforecontinue",
+      "id": "T1-only-mkdir-then-fixed-skill",
+      "method": "product UI POST",
+      "path": "/api/workspaces/{actualWorkspaceId}/sessions/{actualSession1}/turns",
+      "prompt": "prompts/turn-1-create-skill.md",
+      "reviewedOldOperation": "three-turns-only",
+      "turnOrdinal": 1
+    },
+    {
+      "guard": "exact original T2 bytes; real slashloader/R1; 17KiBtoolJSONartifact; canonicalR2+release before browsergate",
+      "id": "T2-sameSession-frozen-R1-build",
+      "method": "product UI POST",
+      "path": "/api/workspaces/{actualWorkspaceId}/sessions/{actualSession1}/turns",
+      "prompt": "prompts/turn-2-build-v1.md",
+      "reviewedOldOperation": "three-turns-only",
+      "turnOrdinal": 2
+    },
+    {
+      "attempts": 1,
+      "factory": "browser-gate/plan.pending.json#factorySource",
+      "guard": "R2 actual scope/actor/generation receipt quartet; currentsoleactive/defaultclosed/fullpreservation; samewindow; originalfactory only",
+      "id": "derive-single-project-browser-open",
+      "method": "PUT",
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/scripts/riffology-m1-gateway-staging/secrets",
+      "reviewedOldOperation": "browser-gate-open"
+    },
+    {
+      "guard": "two pages20/50/params/pause/subscription; bytesandartifact chunks rehash; refresh/leave rebuild; no writes/provider",
+      "id": "ordinary-V1-browser-and-artifact",
+      "method": "GET + local DOM",
+      "path": "/api/workspaces/{actualWorkspaceId}/project-views (+ original broker APIs)",
+      "reviewedOldOperation": "browser-package-read/browser-artifact-list/browser-artifact-chunk"
+    },
+    {
+      "guard": "only afterR2+release; only newSession2; original T3 bytes; only docsseries changes; canonicalR3+release",
+      "id": "T3-only-newSession2-frozen-R2-edit",
+      "method": "product UI POST",
+      "path": "/api/workspaces/{actualWorkspaceId}/sessions/{actualSession2}/turns",
+      "prompt": "prompts/turn-3-cold-edit-v2.md",
+      "reviewedOldOperation": "three-turns-only",
+      "turnOrdinal": 3
+    },
+    {
+      "guard": "24/60/twopages, sameartifactId and unrelatedfiles bytes preserved; newbrowsercontext/sourcefromR3 notoldJS memory; no4thTurn",
+      "id": "ordinary-V2-cold-restoration",
+      "method": "GET + local DOM",
+      "path": "same actual project via existing authenticated UI",
+      "reviewedOldOperation": "ordinary recipe"
+    },
+    {
+      "attempts": 1,
+      "factory": "browser-gate/plan.pending.json#factorySource",
+      "guard": "same acknowledged original gate request/version/actor/bodySHA and fullstable source/resources; exactlyonce with explicitcleanup grant",
+      "id": "owned-finite-browser-close",
+      "method": "DELETE",
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/scripts/riffology-m1-gateway-staging/secrets/PROJECT_VIEW_BROWSER_POLICY_JSON",
+      "reviewedOldOperation": "browser-gate-close"
+    },
+    {
+      "guard": "gateabsent/defaultclosed/source+allresources preserved, originalframe/port/listeners/graphics closed; everyoriginal release proof; preserve canonical/usage/history; no extrapolate zeroOSVM/fees",
+      "id": "original-resources-final-read",
+      "method": "GET",
+      "path": "same original keys/resources",
+      "reviewedOldOperation": "closeReadback + ordinary recipe"
+    }
+  ],
+  "ordinaryProductCeilings": {
+    "blankProjects": 1,
+    "explicitTurns": 3,
+    "extraRepairTurns": 0,
+    "sessions": 2
+  },
+  "preparedAt": "2026-10-18T14:50:23.333069+00:00",
+  "ready": false,
+  "removedCompletedSteps": [
+    "Gateway WorkerPUT/assetSession/uploads",
+    "ordinary merges239/246/250/253",
+    "Registry credential/export/push/readback/Docker/SSH route"
+  ],
+  "reviewOnly": true,
+  "schema": "jhg46-ec8-maintenance-single-rollout-three-turn-contract/v1",
+  "unknownPolicy": "persist original intent/ACK/identity then stop; same original read-only reconciliation only; no new key/project/policy/owner/provider fallback/retry/rollback/stop/delete as bypass"
+}

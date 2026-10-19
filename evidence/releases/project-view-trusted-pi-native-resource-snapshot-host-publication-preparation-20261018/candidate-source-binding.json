@@ -1,0 +1,110 @@
+{
+  "actualInputEvidence": {
+    "actualConfigDigestKnown": false,
+    "actualRunnableDigestKnown": false,
+    "originalSafeFiles": {
+      "build-probe-once/derived-image-identity.json": {
+        "bytes": 2819,
+        "sha256": "ecd37de0aecc83e1fc1d240ec15cd658f4c505445d8e3e80728eaab0a803f101"
+      },
+      "build-probe-once/probe-report.json": {
+        "bytes": 3706,
+        "sha256": "c7c9dc4cd54962eff4788e571ac117512c6c003230fdbaba84f8b0bf49017118"
+      },
+      "build-probe-once/result.json": {
+        "bytes": 1093,
+        "sha256": "335ac959cee8aeb03119a014ad22c426d368e8a13f62bea9f4af9610f481affb"
+      },
+      "independent-readback-once/result.json": {
+        "bytes": 2964,
+        "sha256": "9d35ab43de3fb2ca2f9ffba5c527ce4b4258d4a6487850ad13056d0ed215f105"
+      }
+    },
+    "publicCommit": "66515084f904f161b581d61829c7f1ff7a2d3719"
+  },
+  "additionalManifestBoundSources": 3,
+  "authorization": {
+    "executionAuthorized": false,
+    "mergeAuthorized": false,
+    "newTurnAuthorized": false,
+    "noPaidDeadlineExtension": true,
+    "preparedOnly": true
+  },
+  "coreFiles": 8,
+  "files": {
+    "AUTHORIZATION.md": {
+      "bytes": 1620,
+      "sha256": "b32305821007e7ab86c4d1dfcff846980071344d68199105687d53fec4600a57"
+    },
+    "EXECUTION.md": {
+      "bytes": 4340,
+      "sha256": "8145ea3d2d5cd034d941cdddfc13f75bc65c28709b9a5484c12a5183f9264ec2"
+    },
+    "README.md": {
+      "bytes": 2876,
+      "sha256": "042ae544277b4641671ee4ac1975f8b813275c942ffb12ed91b498f083b9b2a3"
+    },
+    "independent-cleanup-readonly.py": {
+      "bytes": 10731,
+      "sha256": "b3ef15d9aefea3bbaf8d7e7c68e3c51a9c4cedeff16b8837b970330a742f4d26"
+    },
+    "local-recovery.py": {
+      "bytes": 17623,
+      "sha256": "ac057dd758529e7073ce1214cb63f7c8cae3ea3a42e7eddf5aeaa9998ab8e50b"
+    },
+    "oci_verify.py": {
+      "bytes": 5748,
+      "sha256": "0a23618e34b9a2acf608acc86d281ebd68f60a62ba2b102ecda92502c294acea"
+    },
+    "offline-checks.safe.json": {
+      "bytes": 1668,
+      "sha256": "d4b01a634ff5e7117cc390a355453133d23c814ff0b1f33501c1922344b7eaf7"
+    },
+    "operations-manifest.json": {
+      "bytes": 1795,
+      "sha256": "6fd9aefcdb09cf0465b3062a0270e4ef3817f74d8829fa99cbfe1f3d031efd8c"
+    },
+    "pub_common.py": {
+      "bytes": 5833,
+      "sha256": "6e623f79dc8078b0b25fb16a77b674aefd16bf0e9d3ba8f86e446737cda22897"
+    },
+    "publication-fakes-final.json": {
+      "bytes": 1329,
+      "sha256": "98537534bf129f1d55558481ac797a52e7e11dd12a347ac4c43025d3c88913c2"
+    },
+    "reader-offline-checks.safe.json": {
+      "bytes": 1896,
+      "sha256": "c75315cb7b1f2b12c1c627f38f8482989dc337f73a799f53a586ca31fb1a3fed"
+    },
+    "remote-recovery.py": {
+      "bytes": 13876,
+      "sha256": "fd642a57029c2b782db4df0582365ee494ab3b9ddabc97eac2446c5793036795"
+    },
+    "renewal-source-contract.json": {
+      "bytes": 2497,
+      "sha256": "0593104af3bcc19871b2b55074d85aae105e2a04fef8f9041ab3e31887775f60"
+    },
+    "scope.json": {
+      "bytes": 5036,
+      "sha256": "5706179ecc40a18e52f726c712ed7d480fecb7b7741eb6debd14f87531649577"
+    },
+    "test_independent_reader.py": {
+      "bytes": 7676,
+      "sha256": "4c5914379229436d8599208272dfaf9a502147ce8acbdf2636791d954be99830"
+    },
+    "test_recovery.py": {
+      "bytes": 18086,
+      "sha256": "a876a530762affb641e739f55891126dde6b8d249cf65fc8c4db7b2fb9773711"
+    }
+  },
+  "recordedAt": "2026-10-18T12:02:38.395001+00:00",
+  "requestId": "c263a2f3-f445-430e-b562-2e48f1eeb637",
+  "schema": "trusted-pi-native-host-publication-candidate-source-binding/v1",
+  "sourceReuse": {
+    "fb99Base": ".local/jhg46-pi-registry-recovery-arg-order-repair-20261018/candidate-v1",
+    "ociVerifierByteExactUnchanged": true,
+    "ociVerifierSha256": "0a23618e34b9a2acf608acc86d281ebd68f60a62ba2b102ecda92502c294acea",
+    "oldScopesAndLocksUnchanged": true,
+    "originalExporterBase": ".local/jhg46-pi-publication-preparation-20261017/candidate-v1/remote-publication.py"
+  }
+}

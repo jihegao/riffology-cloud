@@ -1,0 +1,40 @@
+{
+  "batchRequestId": "d0b12dd5-c04e-41d9-9a05-c685431d6695",
+  "browserGateRequestId": "db65c5b8-799b-5dc7-ab0a-6eb56b7927ae",
+  "executed": false,
+  "executionAuthorized": false,
+  "fixedCompletedSource": {
+    "gatewayMustBeFreshlyReadNotRepublished": true,
+    "gatewaySha256": "9c8e4b6b763e9887d1624f00ed3a8efb2a8a24d984d96bc68fdb289cb4d362c3",
+    "gatewayVersionLastRecorded": "5a840cbc-49c5-45cd-badc-b75553c78566",
+    "mergeCommit": "240378f65fee54d917b053f565087095a07244db",
+    "mergeTree": "576793bfe8b17639fb03db04fbdb951fd41f2d73",
+    "mergedHostPr": 253,
+    "sourceHead": "0a10da572264470aaac111e6f5da2bd20b2f2c45",
+    "sourceHeadTreeEqual": true
+  },
+  "futureRuntimeIdentitiesRemainUnresolved": [
+    "grant window",
+    "operator original actual principal/authVersion",
+    "maintenance state.revision/policySha/control",
+    "fresh target app version/full configuration/resources",
+    "rollout ACK ID/targetVersion",
+    "ordinary fresh identity/scope",
+    "new project/workspace/generation",
+    "Session1/2 and Turn1/2/3 original keys/IDs",
+    "R1/R2/R3/artifactId",
+    "browser gate actual Worker versions/serialized sent body"
+  ],
+  "grantCreated": false,
+  "maintenanceRequestId": "c1f9e955-96a6-56dc-acd2-4a0e84410442",
+  "preparedAt": "2026-10-18T14:49:01.625545+00:00",
+  "previousRequestsMustNotBeReused": [
+    "6c6 maintenance (ended)",
+    "5b3 rollout (completed)",
+    "old failed T1 and old remaining T2/T3"
+  ],
+  "reviewOnly": true,
+  "rolloutRequestId": "35abe255-f107-522d-a0f0-e86618c656a9",
+  "runtimeOnceLocksCreated": false,
+  "schema": "jhg46-native-resource-host-next-runtime-preparation/v1"
+}

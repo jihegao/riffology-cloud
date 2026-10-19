@@ -1,0 +1,214 @@
+{
+  "schema": "trusted-pi-original-build-preflight-independent-safe-observation/v1",
+  "localStartedAt": "2026-10-17T12:08:30.882632+00:00",
+  "localEndedAt": "2026-10-17T12:08:33.181690+00:00",
+  "sshExitCode": 0,
+  "safeReadCodeSha256": "83d99033d0214ce977c0487499919a8bbd775570d012865ec665ce5f1c4e9588",
+  "sshStdoutBytes": 5536,
+  "sshStdoutSha256": "869a8169ddcb3cee3b1d67e82365526e80111dcbecf783baf118f45cae3b4da2",
+  "sshStderrBytes": 0,
+  "sshStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "remoteObservation": {
+    "buildMetadataPresent": false,
+    "buildOnceIntentPresent": false,
+    "cidPresent": false,
+    "createIntentPresent": false,
+    "dockerOrRemoteMutations": 0,
+    "environmentValuesReadForProjection": false,
+    "expectedPublicError": "unknown flag: --format",
+    "iidPresent": false,
+    "rawBodiesReturned": false,
+    "records": [
+      {
+        "bytes": 573,
+        "directory": false,
+        "name": "base-inspect.intent.json",
+        "regular": true,
+        "sha256": "fbee78a85f0979c6a2b59fd715b155d9535eb8a826dacf4f4f5beb1e85882663"
+      },
+      {
+        "bytes": 107,
+        "directory": false,
+        "name": "base-inspect.original-cli.json",
+        "regular": true,
+        "sha256": "b475f3b7bd30dc0277d46d7b88f2d031ec8854c60b50b5be4a99838ad203cfa7"
+      },
+      {
+        "bytes": 605,
+        "directory": false,
+        "name": "base-inspect.result.json",
+        "regular": true,
+        "sha256": "71bcd2d2df0c0922b35b62f7f726490099631dcf6d6500ed6971d17d937ac186"
+      },
+      {
+        "bytes": 0,
+        "directory": false,
+        "name": "base-inspect.stderr",
+        "regular": true,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 4908,
+        "directory": false,
+        "name": "base-inspect.stdout",
+        "regular": true,
+        "sha256": "ece74f06a98d0f3977efc8a9ce3a8f8c24278dd526d9ab0ab21a690a20ffd1a1"
+      },
+      {
+        "bytes": 562,
+        "directory": false,
+        "name": "cached-base-entry-guard.json",
+        "regular": true,
+        "sha256": "8074d3aee3afef04deb54fdb50f424194c09492cdf5c3ef34b5b393cb53116c1"
+      },
+      {
+        "bytes": 423,
+        "directory": false,
+        "name": "default-builder-inspect.intent.json",
+        "regular": true,
+        "sha256": "ecb612b0ec84247aaa16b71ce8f8cadc5cadd897cb551dd13a687484cce1839c"
+      },
+      {
+        "bytes": 107,
+        "directory": false,
+        "name": "default-builder-inspect.original-cli.json",
+        "regular": true,
+        "sha256": "7a62acd326b83626bd223ed03cd5981cc147bf1a1969f9ccb8217615a6a16ae9"
+      },
+      {
+        "bytes": 605,
+        "directory": false,
+        "name": "default-builder-inspect.result.json",
+        "regular": true,
+        "sha256": "6918a11e1ca40b476c5f133701695929894fe5cda77662768f9654de28500826"
+      },
+      {
+        "bytes": 118,
+        "directory": false,
+        "name": "default-builder-inspect.stderr",
+        "regular": true,
+        "sha256": "efc09f33c161340d92b67de0d7b3cdf5b7e414f3730315c879d9bfedcacb2353"
+      },
+      {
+        "bytes": 0,
+        "directory": false,
+        "name": "default-builder-inspect.stdout",
+        "regular": true,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 4096,
+        "directory": true,
+        "name": "empty-docker-config",
+        "regular": false
+      },
+      {
+        "bytes": 4096,
+        "directory": true,
+        "name": "empty-home",
+        "regular": false
+      },
+      {
+        "bytes": 532,
+        "directory": false,
+        "name": "intent.json",
+        "regular": true,
+        "sha256": "ed4480af533ac338b0e2a5a196854bdf03c771b9f118ed2c17a11758528a4dba"
+      },
+      {
+        "bytes": 380,
+        "directory": false,
+        "name": "result.json",
+        "regular": true,
+        "sha256": "41062ccf80772745c44296cd2944b6389babb88fb6206e1edc59fdd144c412a9"
+      },
+      {
+        "bytes": 13,
+        "directory": false,
+        "name": "empty-docker-config/config.json",
+        "regular": true,
+        "sha256": "81bcbd3f950f2b31b87a64e8eca0de39db52feb0060d2bc631d7d794696604eb"
+      }
+    ],
+    "remoteObservedAt": "2026-10-17T12:08:29.323662+00:00",
+    "requestId": "57a70587-2b21-4a56-aed1-09c8a32d868a",
+    "safeJsonProjection": {
+      "cached-base-entry-guard.json": {
+        "authConfigAbsent": true,
+        "cacheReadonlyEvidenceSha256": "e824ecfd46fedda0ac378e8e7d4dbae7b878699e49b42a91cc1b25bf55c584db",
+        "credentialNotDeliveredToReceiver": true,
+        "originalCredentialPostOutcome": "unknown-stopped-preserved",
+        "originalReceiverAbsent": true,
+        "originalReceiverPid": 1596009,
+        "originalReceiverStartTicks": "164451486",
+        "originalRequestId": "57a70587-2b21-4a56-aed1-09c8a32d868a",
+        "remote7897ConnectErrno": 111,
+        "remote7897ListenerAddresses": [],
+        "sourceOfBase": "pre-existing-exact-immutable-cache-no-new-mint-or-pull"
+      },
+      "default-builder-inspect.intent.json": {
+        "argvCanonicalSha256": "95443e73b193efedc95c46d54672f43a656a013a259cdb46688bb428341b4a0f",
+        "builder": "default",
+        "expectedFixedArgvMatches": true,
+        "perStreamByteLimit": 131072,
+        "startedAt": "2026-10-17T12:05:11.729217+00:00",
+        "timeoutSeconds": 15
+      },
+      "default-builder-inspect.original-cli.json": {
+        "linuxStartTicks": "164543701",
+        "observedAt": "2026-10-17T12:05:11.736345+00:00",
+        "pid": 1743008
+      },
+      "default-builder-inspect.result.json": {
+        "elapsedSeconds": 0.086,
+        "endedAt": "2026-10-17T12:05:11.821082+00:00",
+        "error": null,
+        "exitCode": 125,
+        "originalCliLinuxStartTicks": "164543701",
+        "originalCliPid": 1743008,
+        "originalCliReaped": true,
+        "streams": {
+          "stderr": {
+            "bytesObserved": 118,
+            "bytesSaved": 118,
+            "discardedBytes": 0,
+            "sha256": "efc09f33c161340d92b67de0d7b3cdf5b7e414f3730315c879d9bfedcacb2353"
+          },
+          "stdout": {
+            "bytesObserved": 0,
+            "bytesSaved": 0,
+            "discardedBytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        }
+      },
+      "intent.json": {
+        "baseImage": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-issue165-trusted-pi@sha256:9b76ab9ee7a4f31d250957fbbeefc62d71056e6bd1eb24686ebbeaff3d65873c",
+        "noRegistryPushOrCloudUpdateOrPaidProvider": true,
+        "oneBuild": true,
+        "oneCreate": true,
+        "payloadManifestSha256": "f27b35dcbe84b58e3442018332374dbf20fa0d315528a322e56ea2a2bcfea5d4",
+        "requestId": "57a70587-2b21-4a56-aed1-09c8a32d868a",
+        "schema": "trusted-pi-build-probe-original-intent/v1",
+        "startedAt": "2026-10-17T12:05:11.632620+00:00"
+      },
+      "result.json": {
+        "cleanup": {
+          "cleanupConfirmed": true,
+          "containerCreateNeverAttempted": true
+        },
+        "endedAt": "2026-10-17T12:05:11.827272+00:00",
+        "errorCode": "command-nonzero-default-builder-inspect",
+        "noCloudOrProviderAcceptanceClaim": true,
+        "requestId": "57a70587-2b21-4a56-aed1-09c8a32d868a",
+        "schema": "trusted-pi-build-probe-result/v1",
+        "status": "unknown-stopped"
+      }
+    },
+    "schema": "trusted-pi-original-build-preflight-strict-safe-read/v1",
+    "stderrClassification": "unknown-flag-format"
+  },
+  "priorBroadExportRejectedBeforeExecution": true,
+  "saferAlternativeReturnsNoRawFileBodies": true,
+  "newDockerOrMutationRequests": 0
+}

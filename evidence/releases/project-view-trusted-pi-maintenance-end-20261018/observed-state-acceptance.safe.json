@@ -1,0 +1,21 @@
+{
+  "schema": "jhg46-observed-state-human-acceptance-safe-projection/v1",
+  "source": {
+    "originalFile": "observed-state-human-grant.json",
+    "bytes": 488,
+    "sha256": "60a403b62aed426d281f654a6942ea7f2906f888f658390f6af4ff1777c63046"
+  },
+  "recordedAt": "2026-10-18T09:51:57.831023+00:00",
+  "reviewedPublicCommit": "f8b83410d73be9fddb45cac83a487e9de50a193a",
+  "proposalSha256": "b935f8781201072b61b5fbdbbc6d288eafd4c5d184df4180e61349b8140b834f",
+  "authorized": true,
+  "onlyTwoDifferencesAccepted": true,
+  "acceptedDifferences": [
+    "Version10 not visible; its current availability/usability/rollback is not guaranteed.",
+    "Exactly original d030 deployment/758 placement accepted as v12/f18/basic/max1 idle baseline; running VM is not released and may continue usage."
+  ],
+  "originalBatchEndsAt": "2026-10-18T12:42:46Z",
+  "deadlineExtended": false,
+  "freshGuardsRequired": true,
+  "rawHumanAnswerQuestionOrActorIncluded": false
+}

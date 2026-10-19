@@ -1,0 +1,59 @@
+{
+  "executedParentOpsManifestSha256": "76dfb4606c75424c01a00220805f6efb5b32afbf474fd003fe540641bb97c309",
+  "limits": [
+    "Static source equivalence only; does not rerun prior17/11 fixtures or credential/Registry action.",
+    "New remote has no Docker/push/export; original archive revalidation is a new read requiring its new grant."
+  ],
+  "requestId": "c263a2f3-f445-430e-b562-2e48f1eeb637",
+  "schema": "jhg46-original-readback-source-reuse/v1",
+  "unchangedLocalFunctions": {
+    "NoRedirect": {
+      "bytes": 100,
+      "matchesExecutedRepairSource": true,
+      "sha256": "7a8c2d043445d17654e955db97749a5374ccff227f03bfb583d561d0105744ef"
+    },
+    "api": {
+      "bytes": 1673,
+      "matchesExecutedRepairSource": true,
+      "sha256": "e1912c42aabf5b7b93e2cc9db76baaef11b6008828e291fe7d88ac865517cffc"
+    },
+    "http_metadata": {
+      "bytes": 576,
+      "matchesExecutedRepairSource": true,
+      "sha256": "c8c7bafbf1ad5e8dad57d32de046563ce33882aa2f7eba7caea4110c934e3457"
+    },
+    "normal_wrangler_memory": {
+      "bytes": 2260,
+      "matchesExecutedRepairSource": true,
+      "sha256": "cda316f757274baed400c91f3de4b8e5f7c7fde6b845137635b5bd4551bc2dff"
+    },
+    "oauth_after_new_grant": {
+      "bytes": 595,
+      "matchesExecutedRepairSource": true,
+      "sha256": "b1d5c1c814d549bea67f9314caa7a74a35ab4dbb4f8e2022517fafac2439da88"
+    },
+    "oauth_metadata_after_new_grant": {
+      "bytes": 1007,
+      "matchesExecutedRepairSource": true,
+      "sha256": "9ac27e6390fcd9830970cef76464a3c804e4b78249e3eaca42ce6c1a04da9645"
+    },
+    "ssh_config_no_inherited_forwards": {
+      "bytes": 798,
+      "matchesExecutedRepairSource": true,
+      "sha256": "5340ecc9c3912f0d10ce0d9f36c57b04abbbd2a515125699441e80113985045c"
+    },
+    "stop_owned": {
+      "bytes": 746,
+      "matchesExecutedRepairSource": true,
+      "sha256": "0b8180ca87f1077c002ca86a500c8cc97bbdc2ec5a159d202cbc8240a058ef2c"
+    }
+  },
+  "unchangedNormalTokenSourceContract": {
+    "bytes": 2497,
+    "sha256": "0593104af3bcc19871b2b55074d85aae105e2a04fef8f9041ab3e31887775f60"
+  },
+  "unchangedOciVerifier": {
+    "bytes": 5748,
+    "sha256": "0a23618e34b9a2acf608acc86d281ebd68f60a62ba2b102ecda92502c294acea"
+  }
+}

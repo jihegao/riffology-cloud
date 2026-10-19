@@ -1,0 +1,155 @@
+{
+  "schema": "jhg46-gateway-default-closed-publication-result/v1",
+  "recordedAt": "2026-10-18T09:10:54.885207+00:00",
+  "result": "deployed-preserved-and-public96-assets-verified",
+  "requestId": "f953bc1e-3ea1-4786-821c-26ecf68916a0",
+  "approvedPreparationCommit": "1b3a7811b972855491213450f592ccd4242120c6",
+  "sourceMainCommit": "65df9b771a5d0497304a5955e33974e8ea9aa9ac",
+  "normalMergedPullRequests": [
+    {
+      "number": 250,
+      "head": "c669921f4796c5b35c6f2e049c92876f4faf7c5b",
+      "mergeCommit": "82c615894d1f27751be8a6bb5aea2c46941060d2"
+    },
+    {
+      "number": 239,
+      "head": "17d6545c308c6ae7647080bdde0ba55021384700",
+      "mergeCommit": "1f2f2e9bf7e0f470adcb26f02b84cf29e811fab1"
+    },
+    {
+      "number": 246,
+      "head": "05681cf3cf53d965784df486c25c622b74421ef0",
+      "mergeCommit": "65df9b771a5d0497304a5955e33974e8ea9aa9ac"
+    }
+  ],
+  "readinessOnlyMerge": {
+    "number": 251,
+    "mergeCommit": "92fdfd72e3c69a71db26a2a2e0aa0d2fcedb7b74"
+  },
+  "worker": "riffology-m1-gateway-staging",
+  "accountId": "8b0d70250211aa10d89e20605a1c7e5e",
+  "actualVersionId": "5a840cbc-49c5-45cd-badc-b75553c78566",
+  "actualDeploymentId": "cf7337f5-2332-4436-b2b9-ec211def147b",
+  "acknowledgedAt": "2026-10-18T08:56:30.566Z",
+  "module": {
+    "mainModule": "index.js",
+    "bytes": 5771650,
+    "sha256": "9c8e4b6b763e9887d1624f00ed3a8efb2a8a24d984d96bc68fdb289cb4d362c3"
+  },
+  "originalOperation": {
+    "assetSessionRequests": 1,
+    "serverRequestedBuckets": 0,
+    "assetUploadRequests": 0,
+    "workerPutRequests": 1,
+    "noAutomaticRetryOrRollback": true,
+    "originalSenderExitCodeReported": 0,
+    "scope": "This original request and reviewed protocol; not global account counters."
+  },
+  "preserved": {
+    "bindings": 106,
+    "secretMetadataEntries": 11,
+    "configuredExports": 25,
+    "esmExportsDistinguished": 30,
+    "containerAssociations": 6,
+    "namespaces": 50,
+    "applications": 16,
+    "completeApplicationVersionLists": 16,
+    "allFullResourceRecordsPreserved": true,
+    "settingsExceptReviewedReleaseAnnotationsPreserved": true,
+    "routesSchedulesDomainsSubdomainRegistriesPreserved": true,
+    "applicationConfigurationOrImageChanged": false,
+    "newNamespaceOrMigration": false,
+    "remoteProjectViewPolicyDisabled": true,
+    "browserProjectViewPolicyBindingAbsent": true,
+    "existingPiPolicyPreservedNotClaimedDisabled": true,
+    "originalProjectViewAppInstanceListAtBothWitnesses": 0
+  },
+  "beforeWitness": {
+    "startedAt": "2026-10-18T08:54:35.999Z",
+    "endedAt": "2026-10-18T08:54:39.449Z",
+    "workerVersionId": "b62db92d-693a-4043-9ad1-f126e3a70c64"
+  },
+  "afterWitness": {
+    "startedAt": "2026-10-18T08:57:03.069Z",
+    "endedAt": "2026-10-18T08:57:05.525Z",
+    "workerVersionId": "5a840cbc-49c5-45cd-badc-b75553c78566"
+  },
+  "publicAssets": {
+    "startedAt": "2026-10-18T08:58:30.296Z",
+    "endedAt": "2026-10-18T08:58:51.761Z",
+    "singleRound": true,
+    "requests": 96,
+    "uniquePaths": 96,
+    "allStatus200": true,
+    "allBodiesBytesAndSha256Match": true,
+    "actualBytes": 53782277,
+    "retries": 0,
+    "redirects": "manual",
+    "inventorySha256": "b1fd4e1fe0b538af20cfb090242fa996f75bf26f8076e259a774ee2d5338b39a",
+    "manifestSha256": "b24e87bf762801056e447c106600e1fcee9f23e43c01830436006b5dca8ce1ad",
+    "scope": "Public static HTTP bytes only; no authenticated user acceptance, runtime release or global-zero-execution claim."
+  },
+  "originalFinalizeReceiptPendingFieldsPreserved": true,
+  "pendingFieldsExplanation": "Original safe-receipt predates the separate complete96-file public readback. Original bytes are retained; this result and independent review add the later evidence.",
+  "independentPublicationReview": {
+    "file": "independent-publication-review.json",
+    "bytes": 8757,
+    "sha256": "0e6b2b90671cc5734c1c7a059f1748249049955bf5d5f24a9c30e431b4ee8eb3"
+  },
+  "safeSources": [
+    {
+      "file": "after-witness.actual.json",
+      "bytes": 3564,
+      "sha256": "dbe18df9abb9da1761fc49257c9da840571a818b660fe84a4420491b7994511d"
+    },
+    {
+      "file": "before-witness.actual.json",
+      "bytes": 3565,
+      "sha256": "1f43cc57d99dd90be97531e83650c39e61b75c4f663a984c22861a59999bb006"
+    },
+    {
+      "file": "independent-publication-review.json",
+      "bytes": 8757,
+      "sha256": "0e6b2b90671cc5734c1c7a059f1748249049955bf5d5f24a9c30e431b4ee8eb3"
+    },
+    {
+      "file": "original-write-safe-projection.json",
+      "bytes": 1545,
+      "sha256": "b745936cac15bd634f3fd743014cabbf0ab08a6ea5f6f710530cfebf3b089b7d"
+    },
+    {
+      "file": "public-assets-actual.json",
+      "bytes": 48881,
+      "sha256": "d7b3b13514087484b238eeaa3f2cbd1070c13459ac7624d86641e3f2d26419bf"
+    },
+    {
+      "file": "safe-receipt.json",
+      "bytes": 5899,
+      "sha256": "a2381e33685ce020c3226b5ef17263c1750241d63996959c94fb5110505e714e"
+    },
+    {
+      "file": "worker-multipart-review.json",
+      "bytes": 415,
+      "sha256": "9ff62b4c13dd55787aa968e4556a1b1346dc966d1219c71e06448a65172baad3"
+    },
+    {
+      "file": "worker-put-ack-time.json",
+      "bytes": 106,
+      "sha256": "ce454ce97d1e94ab0f97792ad6a39cc80759fa4e8b841e7e09801c49388958f5"
+    },
+    {
+      "file": "worker-put-intent.json",
+      "bytes": 539,
+      "sha256": "4b7cc6ad82cb97b493e234f009953b338d2f1be20f537af6c540e180de7bc7f8"
+    }
+  ],
+  "limits": [
+    "Publication and dated resource/static observations do not prove ordinary invited-user acceptance, canonical project saves/recovery, real skill loading or runtime/container/capacity release.",
+    "TrustedPi application rollout, maintenance begin/end, ordinary new project/twoSessions/threeTurns and browser policy lifecycle have not been performed by this Gateway publication.",
+    "Operator login and read-only maintenance inspection are separate root observations, not model/provider validation.",
+    "No private settings snapshots, JWT, wire body, persistent OAuth, email or catalog rows are copied. References to private records are hash-only.",
+    "No new local test/CI/build or cloud execution was performed to assemble this evidence. Existing local/CI source-specific results retain their original attribution.",
+    "JHG-46 remains Acceptance and the full JHG-56 matrix remains separate; no Done or closure.",
+    "No global-zero-activity, zero-fee, provider-credential-validity or server-side credential-revocation claim."
+  ]
+}

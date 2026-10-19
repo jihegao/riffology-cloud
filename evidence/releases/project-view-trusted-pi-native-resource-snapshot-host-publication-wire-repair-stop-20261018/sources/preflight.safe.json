@@ -1,0 +1,21 @@
+{
+  "allFrozenInputAndGrantValidationPassed": true,
+  "at": "2026-10-18T12:34:29.914420+00:00",
+  "authNetworkSshDockerOrRegistryCalls": 0,
+  "copiedBindingFileCount": 19,
+  "grantBytes": 4022,
+  "grantIsExactlyOneJsonLineWithOneTerminalLf": true,
+  "grantSha256": "0b63246cfc0dda411a3405f401aaf9bfd2887483b2067242ca945741d7dac911",
+  "newExecutionCopy": "<private-repair-execution-copy>",
+  "newOnceStateAbsent": true,
+  "oldStateBytePreserved": true,
+  "operationsManifestSha256": "76dfb4606c75424c01a00220805f6efb5b32afbf474fd003fe540641bb97c309",
+  "producerConsumerExactRawAndShaIdentity": true,
+  "requestId": "c263a2f3-f445-430e-b562-2e48f1eeb637",
+  "schema": "jhg46-c263-wire-repair-preflight-local-only/v1",
+  "originalReceipt": {
+    "bytes": 820,
+    "sha256": "3698ebff0738de44b08bd8cdb5d393f21b702c1da38e6473957ffef8669f7b91"
+  },
+  "projection": "Only private local execution path replaced; pre-execution zero-call fields remain dated snapshot."
+}

@@ -1,0 +1,233 @@
+{
+  "schema": "jhg46-next-stage-public-evidence-staging/v1",
+  "preparedAt": "2026-10-18T03:48:12.569768+00:00",
+  "files": [
+    {
+      "file": "maintenance-author-validation.json",
+      "bytes": 5857,
+      "sha256": "2d0f6ca5a88b1b5601f51f59f174cc8562b9bcc74bec8f85fe00daa36899ac06",
+      "source": ".local/jhg46-pi-maintenance-admission-20261018/author-validation/receipt.json",
+      "copy": "byte-identical safe record; not original private configuration"
+    },
+    {
+      "file": "maintenance-quiescence-validation.json",
+      "bytes": 5143,
+      "sha256": "1f20850ae07c980a239a36fd4577d7e56542dd98bf3faa6c8df79aab8c792ac2",
+      "source": ".local/jhg46-pi-maintenance-admission-20261018/author-validation/quiescence-v2/receipt.json",
+      "copy": "byte-identical safe record; not original private configuration"
+    },
+    {
+      "file": "maintenance-independent-review.json",
+      "bytes": 7895,
+      "sha256": "553f0e062168453d513c9ba771043c4146ef239dac8fc5f13aef475402fdc8d4",
+      "source": ".local/jhg46-pi-maintenance-admission-20261018/independent-source-review/review.json",
+      "copy": "byte-identical safe record; not original private configuration"
+    },
+    {
+      "file": "maintenance-quiescence-independent-review.json",
+      "bytes": 3863,
+      "sha256": "2442bbf1ad84e0e4e1da47fc3db7e53c3367341806971ebbf63849b4142513f2",
+      "source": ".local/jhg46-pi-maintenance-admission-20261018/independent-source-review/quiescence-v2/review.json",
+      "copy": "byte-identical safe record; not original private configuration"
+    },
+    {
+      "file": "maintenance-ci-terminal.json",
+      "bytes": 5350,
+      "sha256": "fd6cfacd6157504d2e1af163b3d388febfcf1edde134024614b6b5c95c6fdb61",
+      "source": ".local/jhg46-pi-maintenance-admission-20261018/current-ci/final-terminal.json",
+      "copy": "byte-identical safe record; not original private configuration"
+    },
+    {
+      "file": "combined-source-binding.json",
+      "bytes": 10978,
+      "sha256": "786cdb428a40e1d996539b8d6157d8705bf73eade02ca6d8ba4bddc7a1fcfeaf",
+      "source": ".local/jhg46-next-stage-preparation-20261018/combined-v2/source-content-binding.json",
+      "copy": "byte-identical safe record; not original private configuration"
+    },
+    {
+      "file": "combined-source-inventory.json",
+      "bytes": 160700,
+      "sha256": "a00991d336d395b2923d1b98e6f8228d1562655b7670207dcf51ca2ea2777d7e",
+      "source": ".local/jhg46-next-stage-preparation-20261018/combined-v2/source-input-inventory.json",
+      "copy": "byte-identical safe record; not original private configuration"
+    },
+    {
+      "file": "combined-build-manifest.json",
+      "bytes": 5233,
+      "sha256": "ffda5ffa12e0a7a1c241eb63a5abc553c4eff521505c825a5b58c5978c52985d",
+      "source": ".local/jhg46-next-stage-preparation-20261018/gateway-build-v2/build-manifest.json",
+      "copy": "byte-identical safe record; not original private configuration"
+    },
+    {
+      "file": "combined-build-independent-review.json",
+      "bytes": 9544,
+      "sha256": "3a697039ebb439c3322f795cd071e18c9f0db5d662f516892f6baca3d6a92882",
+      "source": ".local/jhg46-next-stage-preparation-20261018/independent-combined-v2-build-input-review.json",
+      "copy": "byte-identical safe record; not original private configuration"
+    },
+    {
+      "file": "gateway-ops-independent-review.json",
+      "bytes": 8333,
+      "sha256": "f5701d18ad843e66119c95d994279ae1bf3398d94a12f3da22d3b25a34e8086d",
+      "source": ".local/jhg46-next-stage-preparation-20261018/gateway-ops-v3-independent-review/review.json",
+      "copy": "byte-identical safe record; not original private configuration"
+    },
+    {
+      "file": "gateway-metadata-safe.json",
+      "bytes": 892,
+      "sha256": "dd5894817e13e86185ceefada71b6822cf3f6daa6f7322c672a139c42fdb6a66",
+      "source": ".local/jhg46-next-stage-preparation-20261018/gateway-ops-v3/metadata-preparation-safe.json",
+      "copy": "byte-identical safe record; not original private configuration"
+    },
+    {
+      "file": "ordinary-recipe-independent-review.json",
+      "bytes": 10238,
+      "sha256": "67ae1979eeb338aa8048a8b049e12a24e696e2f65ce1a5fb739da67fbe43f404",
+      "source": ".local/jhg46-next-stage-preparation-20261018/independent-ordinary-recipe-v2-review.json",
+      "copy": "byte-identical safe record; not original private configuration"
+    },
+    {
+      "file": "original-pi-instance-list-safe.json",
+      "bytes": 1820,
+      "sha256": "8d3a5384238e311f62963b4fd8fdd8ce55c721229e5e8c6c2c2c73c2776753ee",
+      "source": ".local/jhg46-next-stage-preparation-20261018/pi-rollout-preparation-v2/a036-instances-safe.json",
+      "copy": "byte-identical safe record; not original private configuration"
+    },
+    {
+      "file": "original-pi-placement-safe.json",
+      "bytes": 1817,
+      "sha256": "2dcbd02f16eff558af1237d1f4fca5a1e182e59970a352fc88c3c09b43ef391c",
+      "source": ".local/jhg46-next-stage-preparation-20261018/pi-rollout-preparation-v2/dash-placement-safe.json",
+      "copy": "byte-identical safe record; not original private configuration"
+    },
+    {
+      "file": "original-rollout-get-safe.json",
+      "bytes": 1542,
+      "sha256": "05eb7cb8c854df3c855c3d631548aa3d32975dabba17c3f304be2ff88dd1451d",
+      "source": ".local/jhg46-next-stage-preparation-20261018/pi-rollout-preparation-v2/rollout-get-surface-v2-safe.json",
+      "copy": "byte-identical safe record; not original private configuration"
+    },
+    {
+      "file": "rollout-input-independent-review.json",
+      "bytes": 3858,
+      "sha256": "9a76cc752e008f18d4aa2a4c97c8b8cb4b1fc5a5281ec9467a138fbd1a275c2d",
+      "source": ".local/jhg46-next-stage-preparation-20261018/independent-rollout-v2-input-review.json",
+      "copy": "byte-identical safe record; not original private configuration"
+    },
+    {
+      "file": "identity-read-safe-preparation.json",
+      "bytes": 892,
+      "sha256": "ee156a1c5c1d7191ce848e6dd4e2e49b3bfadce6c08cfcd93aaa474760129d72",
+      "source": ".local/jhg46-next-stage-preparation-20261018/identity-read-preparation-v1/safe-preparation.json",
+      "copy": "byte-identical safe record; not original private configuration"
+    },
+    {
+      "file": "preservation-final-witness-safe.json",
+      "bytes": 3952,
+      "sha256": "7d758118e1dd5e84b6bc4135dd1a059ffd6b13adde6191ee57fa60e6022b316e",
+      "source": ".local/jhg46-next-stage-preparation-20261018/baseline-sectioned-actual-v2/final-witness.safe-receipt.json",
+      "copy": "byte-identical safe record; not original private configuration"
+    },
+    {
+      "file": "physical-read-independent-review.json",
+      "bytes": 11447,
+      "sha256": "98cb0da492b4603e6196a7668161d772d3401c8ce4c85b42c44508e1ed5fedd0",
+      "source": ".local/nextstage/pi-rollout-preparation-v2/physical-read-contract-review.json",
+      "copy": "byte-identical safe review; no private configuration"
+    },
+    {
+      "file": "browser-gate-manifest.json",
+      "bytes": 3871,
+      "sha256": "5914927bf64d9bb5f15092d3e89c39ac506569bd03569f4843522a770e5c3650",
+      "source": ".local/jhg46-next-stage-preparation-20261018/browser-gate-ops-v1/operations-manifest.json",
+      "copy": "byte-identical safe review/input; execution paths refer to original local package"
+    },
+    {
+      "file": "browser-gate-independent-review.json",
+      "bytes": 6798,
+      "sha256": "047c822d30f2cf29343932d25e148922f9eb8b1f4cdf4e30227bb4d97058d4b6",
+      "source": ".local/jhg46-next-stage-preparation-20261018/independent-browser-gate-v1-review.json",
+      "copy": "byte-identical safe review/input; execution paths refer to original local package"
+    },
+    {
+      "file": "browser-gate-requests.mjs",
+      "bytes": 4798,
+      "sha256": "8920716d09899d924f5226afd4d50c4fbbb66e8d8d3fbfd98a175132940ba752",
+      "source": ".local/jhg46-next-stage-preparation-20261018/browser-gate-ops-v1/requests.mjs",
+      "copy": "byte-identical safe review/input; execution paths refer to original local package"
+    },
+    {
+      "file": "gateway-witness-manifest.json",
+      "bytes": 4940,
+      "sha256": "b774dc1d6b34729c6b45022bd76ee4c5e54f219da0120a2381c9f253b8f11041",
+      "source": ".local/jhg46-next-stage-preparation-20261018/gateway-preservation-witness-v2/operations-manifest.json",
+      "copy": "byte-identical safe review/input; execution paths refer to original local package"
+    },
+    {
+      "file": "gateway-witness-before.request.txt",
+      "bytes": 14537,
+      "sha256": "18dee04d513bfb1b3671d765d467b6c5e099d750f0bf15117d8e62b66a8a00b1",
+      "source": ".local/jhg46-next-stage-preparation-20261018/gateway-preservation-witness-v2/before-worker-put.request.txt",
+      "copy": "byte-identical safe review/input; execution paths refer to original local package"
+    },
+    {
+      "file": "gateway-witness-after.request.txt",
+      "bytes": 14536,
+      "sha256": "a126e12bedf636b85ba1af13c0362645e30a04943dfc23ccae7efd29f4318fef",
+      "source": ".local/jhg46-next-stage-preparation-20261018/gateway-preservation-witness-v2/after-worker-put.request.txt",
+      "copy": "byte-identical safe review/input; execution paths refer to original local package"
+    },
+    {
+      "file": "gateway-publication-sender.mjs",
+      "bytes": 38114,
+      "sha256": "f2c4895ec4f269aeb8ef58b87b5635a93ca5bf4695c05223b7ee808b56e15d7b",
+      "source": ".local/jhg46-next-stage-preparation-20261018/gateway-ops-v3/publish-gateway-replacement.mjs",
+      "copy": "byte-identical safe review/input; execution paths refer to original local package"
+    },
+    {
+      "file": "gateway-publication-manifest.json",
+      "bytes": 5896,
+      "sha256": "77899ca757e87fe737c7db91e054158202a045204d5db235e129484ba5981ed0",
+      "source": ".local/jhg46-next-stage-preparation-20261018/gateway-ops-v3/operations-manifest.json",
+      "copy": "byte-identical safe review/input; execution paths refer to original local package"
+    },
+    {
+      "file": "gateway-witness-independent-review.json",
+      "bytes": 6938,
+      "sha256": "a1bfdf7ad1d990eaf5060373c491d624d6b6611acb0e09beb140a9f1c11c826a",
+      "source": ".local/jhg46-next-stage-preparation-20261018/gateway-preservation-witness-v2-independent-review/review.json",
+      "copy": "byte-identical safe independent review"
+    },
+    {
+      "file": "gateway-witness-output-measurement.json",
+      "bytes": 1231,
+      "sha256": "8887cea5c805467ea50657babceda763b36b186c1b242bb819c4214647b3c79d",
+      "source": ".local/jhg46-next-stage-preparation-20261018/gateway-preservation-witness-v2-independent-review/measurement-receipt.json",
+      "copy": "byte-identical safe independent review"
+    },
+    {
+      "file": "operation-contract.public.json",
+      "bytes": 94347,
+      "sha256": "91f55a594f672e02a6c1225e3681299b814ee46985fe7cb7b336727c76b86775",
+      "source": ".local/jhg46-next-stage-preparation-20261018/next-phase-contract-v4/operations.json",
+      "copy": "public projection with account email redacted; execution input is original local SHA pinned in envelope"
+    },
+    {
+      "file": "original-pr-status-safe.json",
+      "bytes": 1177,
+      "sha256": "7a9a66276760cd02161ccd2f59acc640780a8fb94a5f0ed9230d47f55e997f77",
+      "source": "root original gh API projection",
+      "copy": "safe recorded response fields; no raw credential or private body"
+    },
+    {
+      "file": "operation-contract-independent-review.json",
+      "bytes": 7109,
+      "sha256": "6bb7732f54bfec8f704cf3fae7f469b0d21a711958a263fdb18766497cf5e594",
+      "source": ".local/jhg46-next-stage-preparation-20261018/next-phase-contract-v4-independent-review/review.json",
+      "copy": "byte-identical independent static review; not actual runtime/identity acceptance"
+    }
+  ],
+  "privateConfigurationCopied": false,
+  "credentialsCopied": false,
+  "publicationPerformed": false
+}

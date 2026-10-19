@@ -1,0 +1,44 @@
+{
+  "schema": "jhg46-original-pr-readonly-snapshot/v1",
+  "recordedAfterReadsAt": "2026-10-18T04:09:19.669592+00:00",
+  "transport": "gh api, original successful GETs after sandbox network denial; no GitHub mutation",
+  "base": "638a366d31a37f7bc1d7dcd124e0b5ba753d6401",
+  "pullRequests": [
+    {
+      "number": 239,
+      "head": "17d6545c308c6ae7647080bdde0ba55021384700",
+      "state": "open",
+      "draft": false,
+      "mergeable": true,
+      "mergeable_state": "clean",
+      "merged_at": null
+    },
+    {
+      "number": 246,
+      "head": "05681cf3cf53d965784df486c25c622b74421ef0",
+      "state": "open",
+      "draft": false,
+      "mergeable": true,
+      "mergeable_state": "clean",
+      "merged_at": null
+    },
+    {
+      "number": 250,
+      "head": "c669921f4796c5b35c6f2e049c92876f4faf7c5b",
+      "state": "open",
+      "draft": false,
+      "mergeable": true,
+      "mergeable_state": "clean",
+      "merged_at": null
+    },
+    {
+      "number": 236,
+      "head": "819352ac6316a5b4ad613f5be5e845717eeb6dd4",
+      "state": "open",
+      "draft": false,
+      "mergeable": true,
+      "mergeable_state": "clean",
+      "merged_at": null
+    }
+  ]
+}

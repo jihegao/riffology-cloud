@@ -1,0 +1,11 @@
+{
+  "at": "2026-10-17T15:40:39.691091+00:00",
+  "dockerCommands": false,
+  "failureReaderSha256": "fe4acbcdace1167d0815d23b8b0642567f3b3b01abc9fca29ef30dc12e380949",
+  "memoryBootstrapSha256": "0e8babde25a4c92edddde4d58f9c4d312abe9febac384df566e082c3985f8ad6",
+  "noForwardingOrAgent": true,
+  "readerSha256": "2cf04125f41a89804ab284fe378990529b5eb9ad11b76888202b481a45a93ab9",
+  "remoteWrites": false,
+  "requestId": "c3e04c41-72da-409b-a2b1-f924e6cc67fa",
+  "schema": "trusted-pi-failure-readonly-transport/v1"
+}

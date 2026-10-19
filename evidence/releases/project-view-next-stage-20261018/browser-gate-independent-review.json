@@ -1,0 +1,136 @@
+{
+  "actionsPerformed": {
+    "credentialsRead": 0,
+    "localStaticReadAndHashOnly": true,
+    "network": 0,
+    "ordinaryProjectOrTurn": 0,
+    "realApiOrCloudWrite": 0,
+    "sourceChanged": 0,
+    "testsRepeated": 0
+  },
+  "boundFiles": [
+    {
+      "bytes": 4798,
+      "file": "requests.mjs",
+      "sha256": "8920716d09899d924f5226afd4d50c4fbbb66e8d8d3fbfd98a175132940ba752"
+    },
+    {
+      "bytes": 4951,
+      "file": "requests.test.mjs",
+      "sha256": "9ceb523dbd3290e7bfe1d1a157b3a18be6ce2eb6e2f3d3e35438f14e2de04018"
+    },
+    {
+      "bytes": 6295,
+      "file": "README.md",
+      "sha256": "a79f57b61cd6650b0a394ade39a585916109c55d1b0e8d86738f492951b2bf5e"
+    },
+    {
+      "bytes": 2737,
+      "file": "schema-source.json",
+      "sha256": "e2aedfbd953fda94986f985e5e7c68b3a6f09c044aebb8ffa855b5b2819be76a"
+    },
+    {
+      "bytes": 1025,
+      "file": "plan.pending.json",
+      "sha256": "5932e9fe569394ed655a63fa5eaca8321180a8a1d6a404bce3bc5a887bf5dd97"
+    },
+    {
+      "bytes": 741,
+      "file": "targeted-tests.log",
+      "sha256": "839fd9bbda79f75dbafdedf1b9d3b516e544fd8480744d890f6ef14a0e95d333"
+    },
+    {
+      "bytes": 3871,
+      "file": "operations-manifest.json",
+      "sha256": "5914927bf64d9bb5f15092d3e89c39ac506569bd03569f4843522a770e5c3650"
+    }
+  ],
+  "executionAuthorized": false,
+  "existingFixtureEvidence": {
+    "exitCode": 0,
+    "fail": 0,
+    "initialAliasedNegativeFixtureCorrectionExplicit": true,
+    "logSha256": "839fd9bbda79f75dbafdedf1b9d3b516e544fd8480744d890f6ef14a0e95d333",
+    "pass": 5,
+    "reviewerReranTests": false,
+    "scope": "Supplied author log/static test source only; not real service/auth acceptance or independent process attestation.",
+    "tests": 5
+  },
+  "installedWranglerSha256Verified": "0a7bc2107ca92b2cc6db58b6a36d38d44b549eebd7db7ec34c36db9da7a91264",
+  "mustFix": [],
+  "pendingTotalRunnerResponsibilities": [
+    "Resolve original create/R2/currentme/minimalCatalog authority into exact scope/generation/ordinary actor authVersion2; hashes alone do not prove ownership/invitation/identity.",
+    "Bind real finite human grant, actual source version and fresh latest/sole100%active before eachwrite. Normalized witness checkedAt order within humanwindow is not independent freshness/authentication or serverCAS.",
+    "Freeze exact complete stableMetadata projection excluding only this gate and documented dynamic version/deployment fields; preserve all other106 originalbindings/secret types/configuration/resources. ControlPlane hash must be authoritative.",
+    "Exclusive original intents and actual transmitted UTF8 JSONbytes/SHA, trustedACKs, raw originalversion/source readback; preserveunknown locks. No automaticPUT/DELETE/rollback/draft.",
+    "After open, probe only existing exact-actor/scope/generation projectviews route for intendedbrowser admission. After close require gateabsence and originaldefaultclosed behavior with remote policy keptclosed; no paidfallback.",
+    "Final total-operation witnesses/executionseal and explicit open/close authority remain pending; pendingnullplan is not executable."
+  ],
+  "privateDataIncluded": false,
+  "readyForExecution": false,
+  "result": "passed-no-must-fix-offline-preparation-only",
+  "reviewedAt": "2026-10-18T04:03:34.454734+00:00",
+  "reviewerAuthoredVersion": false,
+  "schema": "jhg46-independent-browser-gate-offline-operations-review/v1",
+  "sourceReferences": [
+    {
+      "bytes": 2713,
+      "file": "../content-v2/services/project-views/browser-policy.ts",
+      "sha256": "d7e3d0543c2d0982eb7138b2c3dd6a00555429163541cae21e7660635e67f179"
+    },
+    {
+      "bytes": 3855,
+      "file": "../content-v2/services/gateway/project-view-services.ts",
+      "sha256": "1b44b1c128166f7d08d96720b12ac2aa3896f307eceafec714fe2994c7c30fbf"
+    },
+    {
+      "bytes": 16671,
+      "file": "../content-v2/services/turn/protocol.ts",
+      "sha256": "c7baf98da32177386b631fe387fab32a2c347560f1ad4af9154203d00182311d"
+    },
+    {
+      "bytes": 10978,
+      "file": "../public-evidence-v1/combined-source-binding.json",
+      "sha256": "786cdb428a40e1d996539b8d6157d8705bf73eade02ca6d8ba4bddc7a1fcfeaf"
+    },
+    {
+      "bytes": 2347,
+      "file": "../gateway-ops-v3/publication-attempts/f953bc1e-3ea1-4786-821c-26ecf68916a0/plan.json",
+      "sha256": "b0cdb7ff1a785a1b8a15c3cd52e1e31910c866e329d221d28953bcd13f311db2"
+    }
+  ],
+  "staticFindings": {
+    "exactPayload": {
+      "closeBodyAbsent": true,
+      "closeMethod": "DELETE",
+      "closePathSuffix": "/secrets/PROJECT_VIEW_BROWSER_POLICY_JSON",
+      "name": "PROJECT_VIEW_BROWSER_POLICY_JSON",
+      "openKeys": [
+        "name",
+        "type",
+        "text"
+      ],
+      "openMethod": "PUT",
+      "openPath": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/scripts/riffology-m1-gateway-staging/secrets",
+      "otherWorkerAssetPutGenerated": false,
+      "type": "secret_text"
+    },
+    "noCliDraftFallback": "Static installed4.129 directPUT/DELETE paths match. Full wrangler secret put WorkerNotFound/createDraft/re-PUT path is excluded. No new scopes/fallback/versionsAPI.",
+    "productPolicyParserReused": true,
+    "pureFactories": "Only inert HTTP objects; no network/auth/filesystem/sender/retry/CLI. Parser dependencies are fixed local source; factories do not authenticate witness origin.",
+    "scopeAndActor": "Production parsers enforce exact scope/actor keysets, safe positive generation/authVersion and IDs; create/R2/SQL scopes all match sole policy grant including generation; me/SQL/policy/witness actors match. Receipt SHA format is checked but authority is external.",
+    "secretApiCas": false,
+    "turnScopeActorParsersReused": true,
+    "versionAndPreservation": "Open requires expected latest=sole100% active version, source9c8, absent gate,106bindings/11secrets. Close requires acknowledged own open version different from originalclosed, same request/bodySHA/actor, current latest=sole100%ownedopen,107bindings/12secrets. Stable metadata/control-plane hashes match; counts supplement complete runner projection, do not replace it.",
+    "window": {
+      "closeAfterPolicyExpiryAllowedOnlyWhileExplicitHumanGrantStillLive": true,
+      "humanMaximumEnd": "2026-10-20T15:59:59.999Z",
+      "maximumPolicyTtlMs": 14400000,
+      "oneGrant": true,
+      "openBeforePolicyExpiry": true,
+      "policyInsideExplicitHumanWindow": true,
+      "productionMaximum24hNotWidened": true
+    },
+    "writeOnlyEvidence": "Open text is writeOnly per bound schema. GET secrets exposes names/types, not plaintext/hash. Evidence must bind actual transmitted serialization+trustedACK+newcurrentversion/source+completepreservation+intended originalroute admission. Factory body JSON SHA is only preparation until real wire serialization bound."
+  }
+}

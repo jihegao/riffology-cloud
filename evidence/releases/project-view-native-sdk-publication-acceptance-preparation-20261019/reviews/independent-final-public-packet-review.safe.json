@@ -1,0 +1,61 @@
+{
+  "schema": "jhg46-final-sdk-public-packet-independent-review/v1",
+  "recordedAt": "2026-10-18T18:01:49.519914+00:00",
+  "checks": {
+    "inventoryPin": true,
+    "exact93Evidence": true,
+    "frozenInputPin": true,
+    "inventoryAndCopiedSourceMatches": true,
+    "privateFilesAbsent": true,
+    "noExecutionClaim": true,
+    "scopeWindowStopCleanup": true,
+    "checkAttributionHonest": true,
+    "allLinksExist": true,
+    "publicPacketMaterializationPin": true,
+    "publicReadmeMaterializationPin": true
+  },
+  "mustFix": [],
+  "reviewedFiles": [
+    {
+      "file": "docs/project-view-native-sdk-publication-acceptance-packet-20261019.md",
+      "bytes": 12685,
+      "sha256": "be1f835cfacf4e0e71def4ad437aa6d7e04cd7ae5abb3c4780bb85531c27b569"
+    },
+    {
+      "file": "evidence/releases/project-view-native-sdk-publication-acceptance-preparation-20261019/README.md",
+      "bytes": 3307,
+      "sha256": "5f65a6ec8df041daa8cad99b6e9a2605bc7a6158b10c6def4b693830122f5fa7"
+    },
+    {
+      "file": "evidence/releases/project-view-native-sdk-publication-acceptance-preparation-20261019/root-final-materialization.safe.json",
+      "bytes": 2750,
+      "sha256": "6514f40b7dbf60e04a2b785e7cf4f165e01d3d349b9d7afe82dbb35f456b40e8"
+    },
+    {
+      "file": "evidence/releases/project-view-native-sdk-publication-acceptance-preparation-20261019/inventory.json",
+      "bytes": 17931,
+      "sha256": "f151bcd1e2181fc82d0f88b4ae558216770a6759a39847572dbe53835ddd3680"
+    },
+    {
+      "file": "evidence/releases/project-view-native-sdk-publication-acceptance-preparation-20261019/final-freeze-v1/frozen-inputs.final.safe.json",
+      "bytes": 11160,
+      "sha256": "c65b9f38a1086748617f1651fb8a448c19b80253619aba29c711b2d09238e657"
+    }
+  ],
+  "evidenceFiles": 93,
+  "byteExactLocalSourceCopiesCompared": 86,
+  "relativeLinkCount": 43,
+  "relativeLinksAllExist": true,
+  "findings": [
+    "Root total document/README/final frozen inputs/inventory describe preparation complete and execution unauthorised, actual grant/merge/ACK/project pending.",
+    "Component reviews and original checks attributed; early helper57, final Chromium3/WebKit3, historical initial13 without stdout, final dummy39/53GET and8synthetic are not conflated with live acceptance or billing recovery.",
+    "One new Gateway/assets defaultclosed; fresh project/twoSessions/planned3Turns, finite acceptedDOM policy, phasefailurestop and conditional originalownedDELETE cleanup; noRegistry/AMD/rollout/hold.",
+    "Private baseline/metadata bodies absent; exact normal source path literals are existing authorised exceptions, not new privacy rules. Old drafts and pending/provenance snapshots remain dated history."
+  ],
+  "reviewerActions": {
+    "network": 0,
+    "testsRepeated": 0,
+    "inputsEdited": 0,
+    "gitWrites": 0
+  }
+}

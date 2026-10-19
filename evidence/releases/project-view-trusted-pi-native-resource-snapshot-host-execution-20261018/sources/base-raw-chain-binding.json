@@ -1,0 +1,8 @@
+{
+  "configSha256": "07c199e17490cc4fdf3e8027770f8a7413090d4e7c3a1f44aa9064e115641059",
+  "indexSha256": "a946b164d10d074fcc9859f6c54c3b65d1901b41696c5ee8d8e31e275ddd1593",
+  "launchConfigMatched": true,
+  "manifestSha256": "f18a826d40b2fd60e2cf8c49d7f7b8f595fa609fe2be4c28593479ae846960ea",
+  "noRepoDigestClaim": true,
+  "rootfsLayers": 48
+}
