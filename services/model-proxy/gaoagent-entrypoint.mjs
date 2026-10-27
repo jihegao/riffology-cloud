@@ -22,7 +22,7 @@ export class GaoAgentModel extends WorkerEntrypoint {
       const { done, value } = await reader.read();
       if (done) break;
       n += value.length;
-      if (n + 4096 > 12000) {
+      if (n + 4096 > 32000) {
         await reader.cancel();
         return new Response("Too large", { status: 413 });
       }
