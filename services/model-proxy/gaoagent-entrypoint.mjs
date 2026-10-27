@@ -49,7 +49,7 @@ export class GaoAgentModel extends WorkerEntrypoint {
       !/^[a-z0-9-]+$/.test(g.gatewayId)
     )
       return new Response("Unavailable", { status: 503 });
-    return fetch(
+    const upstream = await fetch(
       `https://gateway.ai.cloudflare.com/v1/${g.accountId}/${g.gatewayId}/openai/responses`,
       {
         method: "POST",
@@ -63,8 +63,11 @@ export class GaoAgentModel extends WorkerEntrypoint {
         },
         body: JSON.stringify(approved),
         signal: AbortSignal.any([request.signal, AbortSignal.timeout(30000)]),
-        redirect: "error",
+        redirect: "manual",
       },
     );
+    if (upstream.status >= 300 && upstream.status < 400)
+      return new Response("Upstream redirect denied", { status: 502 });
+    return upstream;
   }
 }
