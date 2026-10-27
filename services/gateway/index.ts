@@ -197,3 +197,5 @@ export default {
 } satisfies ExportedHandler<GatewayRuntimeEnv>;
 
 export { ProductionModelBudget } from '../model-budget/production-durable.ts';
+
+export { GaoAgentModel } from '../model-proxy/gaoagent-entrypoint.mjs';
