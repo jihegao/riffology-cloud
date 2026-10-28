@@ -1,5 +1,37 @@
 # Current release readiness — 2026-10-14
 
+## 2026-10-29 #212 permanent purge: target preflight executed; no content deleted
+
+The user's execution instruction applies to the original frozen 34 projects and
+associated content. A fresh SELECT-only Catalog capture matches all 34 original
+identities and aggregate digest `e418ac2d…010640`; five later projects are excluded.
+The original submission and model version match their frozen hashes. All three
+current Catalog copies of that model version belong to the target set. This is
+not a complete D1/DO/R2/shared-object reference closure.
+
+Original Beta ledger queries show no occupied target slot or unresolved target
+Beta call; TenantQuota queries show no unstopped target lease. One occupied Beta
+slot belongs to an excluded project. Legacy/G5 contain five historical unknown
+calls with isolation rows. These rows, accounting and reservations remain intact;
+their content and isolation proofs have not been independently reverified here.
+Ledger counters do not attest physical release, and cost settlement remains
+independent of purge.
+
+Gateway version `63d9ea2a-8965-4876-9693-0fece3bea507` remains unchanged. Direct
+Workspace KV metadata inspection was rejected by the platform with `SQLITE_AUTH`;
+HTTP 200 is not a successful SQL result. The offline scope verifier rejects such
+failures, missing authority coverage and identity drift. Its eight focused tests
+and diff check passed. See [selected evidence](evidence/releases/project-purge-preflight-20261029.json)
+and [execution conditions](https://github.com/jihegao/riffology-cloud/issues/212).
+
+No permanent purge fence, content deletion, model retirement, resource stop or
+product execution was performed. The project/create-key/model fences, content-free
+safety summaries, full actor/object/remote inventory and resumable purge remain
+implementation work; physical release and denial/late-write/restart acceptance
+remain pending. This preflight is not deployment or completed deletion. Delivery
+Project fields could not be read or updated because the local token lacks
+`read:project`; no status synchronization is claimed.
+
 ## 2026-10-19 固定 IR 插件 M3/M4 独立实现准备
 
 [#254](https://github.com/jihegao/riffology-cloud/issues/254) 在独立 worktree 基于 `240378f65fee54d917b053f565087095a07244db` 接入同版 `riffoid-ir-plugin@0.3.1`，包括受控 fixed skill/工具、原 Project Tools effect 路径和浏览器原生页面。两个固定包副本及逐文件 SHA 一致。SQLite/R2 运行投影保留原 effect、scope/generation、actor/authVersion 和冻结历史；普通保存后的模型展示也按 canonical 文件重建。

@@ -1,0 +1,116 @@
+{
+  "schema": "riffology-project-purge-preflight/v1",
+  "scope": {
+    "targetIdentityDigest": "e418ac2d10eba71eda7a7cb276e5cd325359dd26027fb5adaa0609049a010640",
+    "matchedProjects": 34,
+    "excludedProjects": 5,
+    "ownerCount": 4
+  },
+  "references": {
+    "matchedModelVersions": 1,
+    "matchedSubmissions": 1,
+    "copyReferences": 3,
+    "outsideProjectReferences": [],
+    "sharedObjectDeletionReady": false
+  },
+  "ledgers": {
+    "targetBetaOccupiedSlots": 0,
+    "outsideBetaOccupiedSlots": 1,
+    "targetBetaUnresolvedCalls": 0,
+    "historicalUnresolvedCalls": [
+      {
+        "ledger": "legacy",
+        "projectSha256": "4e64625e7895096339a572b83aeb03575d96f9dd3c66e4783e95e3aee0d3df06",
+        "status": "unknown",
+        "reconciliation": "pending",
+        "count": 1,
+        "isolationRows": 1
+      },
+      {
+        "ledger": "g5",
+        "projectSha256": "d3af7617cfab85dd0509cda7ea219fd58322f2ca554ab9b3ac8849e38aebccfd",
+        "status": "unknown",
+        "reconciliation": "pending",
+        "count": 1,
+        "isolationRows": 1
+      },
+      {
+        "ledger": "g5",
+        "projectSha256": "9dec48b11c7abdbeb2ebd872091d715ebacd5387be8389ff7d0a8d45d4202c06",
+        "status": "unknown",
+        "reconciliation": "pending",
+        "count": 1,
+        "isolationRows": 1
+      },
+      {
+        "ledger": "g5",
+        "projectSha256": "d2dcc1a241698c662ecf5235372e43cb6d8afb62e264c5ab17e7d92d8adf9ba1",
+        "status": "unknown",
+        "reconciliation": "pending",
+        "count": 1,
+        "isolationRows": 1
+      },
+      {
+        "ledger": "g5",
+        "projectSha256": "45af7bafaca2a736f9db9724ebc4f67223bfee979e974a7ff728f70eed54ff17",
+        "status": "unknown",
+        "reconciliation": "pending",
+        "count": 1,
+        "isolationRows": 1
+      }
+    ],
+    "targetUnreleasedTenantQuotaLeases": [],
+    "physicalReleaseVerified": false,
+    "isolationDocumentsVerified": false
+  },
+  "deletionReady": false,
+  "capturedBefore": "2026-10-28T22:26:48Z",
+  "localDate": "2026-10-29 Asia/Shanghai",
+  "sourceCommit": "2dc5e7ce113a007a238d32eea732a29fb703745e",
+  "issue": "https://github.com/jihegao/riffology-cloud/issues/212",
+  "gateway": {
+    "worker": "riffology-m1-gateway-staging",
+    "version": "63d9ea2a-8965-4876-9693-0fece3bea507",
+    "deployment": "17520c5e-b171-4bc5-ae22-459549b96814",
+    "deployedAt": "2026-10-28T15:05:45.023662Z"
+  },
+  "privateCaptureSha256": {
+    "catalog-inventory-20261029.json": "233151ab8be54ebf95327ea56a606daf085ffc221942a3f76e644af1073e82e8",
+    "catalog-references-20261029.json": "ff453e673f6f932a1522091c9ee2eebf9c6799dc9c9f2ccb84852312df835e88",
+    "beta-preflight-20261029.json": "99de2073b06b32e1648aaa1677cfdd66cfc9460a53b37f0fbcb964d3d5de9314",
+    "ledger-preflight-20261029.json": "f05b28e238653e92b7822c3cce2f66395b0cdc44afd65311e0e2aba15a68770a",
+    "quota-preflight-20261029.json": "01413c326c429ca5555cb9b2949d34d4d93e34e71668d2e26ee8f23063010cab"
+  },
+  "verification": {
+    "targetedTests": 8,
+    "testFailures": 0,
+    "diffCheck": "passed"
+  },
+  "actions": {
+    "contentDeletes": 0,
+    "resourceStops": 0,
+    "configurationWrites": 0,
+    "productModelTurnToolRunRequestsInitiated": 0
+  },
+  "incomplete": [
+    "Permanent project/workspace/generation, original create-key and model/source fences are not implemented or deployed.",
+    "Full D1/DO/R2 reference closure, manual-save content, remote Sessions and backup retention are unverified.",
+    "Physical runtime/tool/container release is unverified; ledger counters and isolation row presence are insufficient.",
+    "Content-free isolation/accounting summaries and precise immutable/FK cleanup migrations are not implemented.",
+    "No purge, authenticated denial, late-write or restart acceptance performed.",
+    "Delivery Project read/update unavailable: local GitHub token lacks read:project."
+  ],
+  "failedReadAttempts": [
+    {
+      "purpose": "Workspace KV metadata",
+      "outcome": "SQLITE_AUTH: access to _cf_KV.key is prohibited",
+      "interpretation": "KV contents remain unverified; not empty and not deleted."
+    },
+    {
+      "purpose": "Initial budget actor lookup",
+      "outcome": "Incorrect model-budget: prefix returned no such table; corrected using source tenant-model-budget: prefix.",
+      "interpretation": "Only the 12 corrected original-actor responses enter the ledger summary."
+    }
+  ],
+  "scopeLimit": "Catalog copy-reference check only; no complete global object-reference or physical release claim. Existing historical unknowns are retained independently of cost settlement; their mere existence does not block purge once execution isolation/release and content-free summary retention are verified."
+}
