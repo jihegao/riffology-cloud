@@ -82,3 +82,9 @@ on that path. Altered/unknown original response evidence stops before writes.
 An absent browser-policy binding requires an empty public-frame 503; regular
 assets must still return 200 with their complete expected bytes. Per-path status,
 length and SHA receipts are retained even when this check fails.
+
+After an observed native GET connection failure, the transport may repeat that
+same GET once inside the original request deadline. No POST/PUT retry is added.
+The version API can return the submitted image-only delta; the full application
+configuration must still preserve every non-image field. Captured old full
+version records remain archived, and the previous current version must remain.

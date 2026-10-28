@@ -65,13 +65,13 @@
     },
     {
       "file": "core/native-http-transport.mjs",
-      "bytes": 16459,
-      "sha256": "925371e14e29149bedec84a5ba1f26dc4359f643bdc9fdcbf3f4956665ee872d"
+      "bytes": 16755,
+      "sha256": "9c72476052b4eb5f300cf60c4aa34b8b0a70c50adad2423691cff7874f23101e"
     },
     {
       "file": "core/publication.mjs",
-      "bytes": 17636,
-      "sha256": "034d797d488264b5d4eba7d6b798e8eca83f76f4dcf8b08bf076c7c9628e9366"
+      "bytes": 17935,
+      "sha256": "a490bc425e4bbd02c9db9f0c003034c2369b795e259f04e86313812465ee34c6"
     },
     {
       "file": "core/reconcile-gateway.mjs",
@@ -90,8 +90,8 @@
     },
     {
       "file": "evaluate-physical-release.mjs",
-      "bytes": 19788,
-      "sha256": "82c521d28c400e5778ffc36fa0f66dc52b013f0bcd927a588030210ab1d27dbe"
+      "bytes": 19973,
+      "sha256": "bfd767f0eaa38300d760dca948dd19184bed986b25b78c3187ca47b6ac2cc39a"
     },
     {
       "file": "local-guards.mjs",

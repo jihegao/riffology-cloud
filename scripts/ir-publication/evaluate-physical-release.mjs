@@ -82,7 +82,9 @@ function classifyApp(native,id,image,now){
   need(Array.isArray(family.versions)&&new Set(family.versions.map(x=>x.version)).size===family.versions.length,'complete-unique-version-family');
   const active=family.versions.filter(x=>x.percentage!==0);
   need(active.length===1&&active[0].percentage===100&&active[0].version===app.version&&object(active[0].configuration)&&active[0].configuration.image===app.configuration.image,'one-current-fully-serving-version');
-  need(hash(Object.fromEntries(Object.entries(active[0].configuration).filter(([k])=>k!=='image')))===VERSION_CONFIG_WITHOUT_IMAGE[id],'version-api-original-shape-config-drift');
+  const originalVersionShape=hash(Object.fromEntries(Object.entries(active[0].configuration).filter(([k])=>k!=='image')))===VERSION_CONFIG_WITHOUT_IMAGE[id];
+  const imageOnlyVersionDelta=image!==OLD[id].image&&Object.keys(active[0].configuration).join(',')==='image';
+  need(originalVersionShape||imageOnlyVersionDelta,'version-api-original-shape-config-drift');
   for(const [key,value]of Object.entries(active[0].configuration))equal(value,app.configuration[key],'active-version-actual-shared-configuration-link');
   for(const row of family.versions)need(Number.isSafeInteger(row.version)&&row.version>0&&(row.percentage===0||row.percentage===100),'unknown-version-lifecycle');
   const legacy=family.legacy?.instances,v2=family.v2?.items;

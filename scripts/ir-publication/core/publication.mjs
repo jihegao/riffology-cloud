@@ -25,7 +25,8 @@ export function assertAppVersionDelta(before,after,appId,image){
     const added=next.filter(row=>!old.some(x=>x.version===row.version)),app=after.apps.find(x=>x.id===id);guard(added.length===1&&added[0].version===app.version&&added[0].percentage===100&&added[0].configuration?.image===image,'one-fully-serving-root-version-required');const beforeApp=before.apps.find(x=>x.id===id),active=old.filter(row=>row.percentage===100);
     guard(active.length===1&&active[0].version===beforeApp?.version&&active[0].configuration&&typeof active[0].configuration==='object'&&!Array.isArray(active[0].configuration)&&typeof beforeApp?.configuration?.image==='string'&&active[0].configuration.image===beforeApp.configuration.image,'before-version-real-representation-link');
     guard(app.configuration?.image===image,'after-app-version-image-crosslink');
-    same(added[0].configuration,{...active[0].configuration,image},'new-version-preserves-version-api-representation');
+    same(Object.fromEntries(Object.entries(app.configuration).filter(([k])=>k!=='image')),Object.fromEntries(Object.entries(beforeApp.configuration).filter(([k])=>k!=='image')),'new-version-full-app-configuration-drift');
+    guard(hashJSON(added[0].configuration)===hashJSON({...active[0].configuration,image})||hashJSON(added[0].configuration)===hashJSON({image}),'new-version-preserves-version-api-representation');
   }
 }
 export async function publicReadback({connection,closure,origin,store,key,deadline,signal,frameClosed=false}){

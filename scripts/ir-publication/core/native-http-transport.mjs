@@ -138,7 +138,9 @@ export function createNativeOwnerConnection({facts,credentialProvider,proxyUrl=n
       }else{body=Buffer.from(o.body);f=await validateWrite(o,body);url=new URL('https://api.cloudflare.com/client/v4'+o.path);}
       const signal=o.signal?AbortSignal.any([o.signal,lifetime.signal]):lifetime.signal;
       const auth=await authorization(o.credentialKind??'oauth',o.assetSession,signal);
-      const raw=await wire({url,method:o.method,body,contentType:o.contentType,authorization:auth,signal,maxMs:o.method==='GET'?LIMITS.requestMs:LIMITS.writeMs,maxBytes:o.path===BASE+'/content/v2'?LIMITS.maxModuleBytes:LIMITS.maxJsonBytes});
+      let raw;for(let attempt=0;;attempt++){try{raw=await wire({url,method:o.method,body,contentType:o.contentType,authorization:auth,signal,maxMs:o.method==='GET'?LIMITS.requestMs:LIMITS.writeMs,maxBytes:o.path===BASE+'/content/v2'?LIMITS.maxModuleBytes:LIMITS.maxJsonBytes});break;}catch(e){if(o.method!=='GET'||attempt!==0||e?.code!=='native-request-failed'||signal.aborted)throw e;}}
+      // One repeat of this same read after the observed connection failure,
+      // within the unchanged outer deadline. Writes are never repeated.
       if(raw.status>=200&&raw.status<300&&o.path!==BASE+'/content/v2'){
         const result=observe(o,raw);
         if(o.method==='POST'&&o.path===BASE+'/assets-upload-session'){try{validateBuckets(result,f.manifest);session={jwt:result.jwt,bucketHashes:new Set(result.buckets.map(x=>hashJSON([...x].sort()))),uploaded:new Set()};completion=result.buckets.length?null:result.jwt;}catch{session=null;completion=null;/* Return full original ACK; publisher guards stop before more requests. */}}

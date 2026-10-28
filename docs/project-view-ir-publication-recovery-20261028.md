@@ -18,7 +18,7 @@ Application version verification follows the user's accepted platform behavior: 
 
 ## Validation and remaining boundary
 
-`node --test tests/ir-publication/*.test.mjs`: 53 passed, zero failed. Coverage includes actual owner/core integration, native response capture, 400/10021, unknown writes, stale/active receipts, source and baseline drift, current multi-module source, rolling application versions, cancellation and default-disabled execution. Local Wrangler startup profiling passed. These are offline checks, not authenticated product acceptance.
+`node --test tests/ir-publication/*.test.mjs`: 56 passed, zero failed. Coverage includes actual owner/core integration, native response capture, 400/10021, unknown writes, stale/active receipts, source and baseline drift, current multi-module source, rolling application versions, cancellation and default-disabled execution. Local Wrangler startup profiling passed. These are offline checks, not authenticated product acceptance.
 
 Deployment and current online readback are recorded separately when completed. Report, cold recovery and the third Turn remain outside this deployment-only validation; no successful user acceptance is claimed by this patch.
 
@@ -33,3 +33,7 @@ The integrated core can reconcile a sealed original intent, full 200 response, A
 The actual Gateway was deployed at 2026-10-28T13:08:05Z as v240 (`94ac237c-1615-4acb-80a1-a8216b8c23c7`), deployment `5a9217d6-688f-46a3-a36b-68d6678266a4`, at 100%. Complete source/resource readback passed; 96 public static assets matched. The postdeployment check stopped before rollout. Subsequent per-path receipts identified Analytics script injection in HTML returned to the native client without Fetch headers; the standard Fetch profile returns the exact frozen bytes. Separately, the frame check now verifies empty 503 while the policy binding is absent; no gate is opened.
 
 The public reader sends an explicit Node/Fetch request profile (`User-Agent: node`, `Accept: */*`, `Accept-Language: *`, `Sec-Fetch-Mode: cors`) and compares the complete response bytes without stripping or rewriting HTML. The navigation-style response and its additional Cloudflare Analytics script remain retained as diagnostic evidence. Four independent public GETs may run concurrently; this does not repeat publication writes or resume a periodic download loop.
+
+A ProjectTools rollout completed as v4, but a subsequent GET connection failure stopped the publisher before the TrustedPi POST. The native API reader now repeats that same GET once on the observed connection-failure code within its original deadline; POST/PUT requests are never repeated. The native transport integration test injects this read failure and verifies completion without repeating writes.
+
+Fresh ProjectTools readback also established that the new version API row contains only the submitted `{image}` delta, while the full application API preserves all prior non-image configuration. The classifier accepts this exact delta representation only while verifying the full application configuration. Offline replay of the actual captured physical evidence passed (explicitly not a fresh live gate); regression tests reject hidden CPU/memory/configuration changes.
