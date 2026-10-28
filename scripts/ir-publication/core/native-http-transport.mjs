@@ -65,6 +65,7 @@ export function createNativeOwnerConnection({facts,credentialProvider,proxyUrl=n
     try{return await new Promise((resolve,reject)=>{let finished=false,res,req;const fail=code=>{if(finished)return;finished=true;res?.destroy();req?.destroy();reject(new GuardError(code));};
       const abort=()=>fail('native-request-aborted');joined.addEventListener('abort',abort,{once:true});
       const headers={'accept-encoding':'identity',connection:'close'};
+      if(url.origin===origin.origin)Object.assign(headers,{'user-agent':'node',accept:'*/*','accept-language':'*','sec-fetch-mode':'cors'});
       if(authorization)headers.authorization='Bearer '+authorization;
       if(body){headers['content-type']=contentType;headers['content-length']=String(body.length);}
       req=https.request({protocol:'https:',hostname:url.hostname,port:443,path:url.pathname+url.search,method,headers,agent,signal:joined,rejectUnauthorized:true,minVersion:'TLSv1.2',maxHeaderSize:32768},response=>{

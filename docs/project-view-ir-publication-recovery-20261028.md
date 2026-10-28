@@ -18,7 +18,7 @@ Application version verification follows the user's accepted platform behavior: 
 
 ## Validation and remaining boundary
 
-`node --test tests/ir-publication/*.test.mjs`: 52 passed, zero failed. Coverage includes actual owner/core integration, native response capture, 400/10021, unknown writes, stale/active receipts, source and baseline drift, current multi-module source, rolling application versions, cancellation and default-disabled execution. Local Wrangler startup profiling passed. These are offline checks, not authenticated product acceptance.
+`node --test tests/ir-publication/*.test.mjs`: 53 passed, zero failed. Coverage includes actual owner/core integration, native response capture, 400/10021, unknown writes, stale/active receipts, source and baseline drift, current multi-module source, rolling application versions, cancellation and default-disabled execution. Local Wrangler startup profiling passed. These are offline checks, not authenticated product acceptance.
 
 Deployment and current online readback are recorded separately when completed. Report, cold recovery and the third Turn remain outside this deployment-only validation; no successful user acceptance is claimed by this patch.
 
@@ -30,4 +30,6 @@ The runtime readback includes both legacy `serve_directly` and `raw_run_worker_f
 
 The integrated core can reconcile a sealed original intent, full 200 response, ACK, multipart hash and predeployment baseline against a fresh complete serving snapshot. Only after those checks does it continue to the two original application rollouts. It sends no asset session or Gateway PUT on this path. Missing, changed or mismatching evidence stops before further writes. Offline tests cover successful continuation with zero repeated Gateway writes and rejection of altered original response evidence.
 
-The actual Gateway was deployed at 2026-10-28T13:08:05Z as v240 (`94ac237c-1615-4acb-80a1-a8216b8c23c7`), deployment `5a9217d6-688f-46a3-a36b-68d6678266a4`, at 100%. Complete source/resource readback passed; 96 public static assets matched. The first postdeployment check stopped before rollout because it incorrectly expected the gated frame to be public. That check now verifies empty 503 while the policy binding is absent; no gate is opened.
+The actual Gateway was deployed at 2026-10-28T13:08:05Z as v240 (`94ac237c-1615-4acb-80a1-a8216b8c23c7`), deployment `5a9217d6-688f-46a3-a36b-68d6678266a4`, at 100%. Complete source/resource readback passed; 96 public static assets matched. The postdeployment check stopped before rollout. Subsequent per-path receipts identified Analytics script injection in HTML returned to the native client without Fetch headers; the standard Fetch profile returns the exact frozen bytes. Separately, the frame check now verifies empty 503 while the policy binding is absent; no gate is opened.
+
+The public reader sends an explicit Node/Fetch request profile (`User-Agent: node`, `Accept: */*`, `Accept-Language: *`, `Sec-Fetch-Mode: cors`) and compares the complete response bytes without stripping or rewriting HTML. The navigation-style response and its additional Cloudflare Analytics script remain retained as diagnostic evidence. Four independent public GETs may run concurrently; this does not repeat publication writes or resume a periodic download loop.

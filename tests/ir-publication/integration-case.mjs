@@ -88,16 +88,16 @@ mockAt('receipt-on-demand.mjs',{
 });
 mockAt('credential-channel.mjs',{async loadExistingCredentialVault(options){credentials++;assert.equal(options.mode,'collect');assert.equal(options.preflight.physicalBoundaryEvidenceSha256,null);
   if(scenario==='credential-delay')initialReceipt.body.checkedAt-=31000;
-  return {safeMetadata:{synthetic:true,noCredentialRead:true},close(){vaultClosed++;},credentialProvider(){if(scenario==='native400')return Buffer.from('SYNTHETIC_TOKEN_DO_NOT_LOG');throw Error('credential must never be requested in fake transport');}};
+  return {safeMetadata:{synthetic:true,noCredentialRead:true},close(){vaultClosed++;},credentialProvider(){if(['native400','native-success'].includes(scenario))return Buffer.from('SYNTHETIC_TOKEN_DO_NOT_LOG');throw Error('credential must never be requested in fake transport');}};
 }});
 let httpServer;
-if(scenario==='native400'){
+if(['native400','native-success'].includes(scenario)){
   httpServer=connection();
   mock.module('node:https',{defaultExport:{...https,request(options,callback){
     const request=new EventEmitter();request.destroy=()=>{};
     request.end=body=>{queueMicrotask(async()=>{
       try{
-        const response=await httpServer.request({method:options.method,path:options.path.replace(/^\/client\/v4/,''),
+        const isPublic=options.hostname==='offline-fixture.invalid';if(isPublic){assert.equal(options.headers['user-agent'],'node');assert.equal(options.headers['sec-fetch-mode'],'cors');assert.equal(options.headers.accept,'*/*');assert.equal(options.headers.authorization,undefined);}const response=isPublic?await httpServer.publicGet({origin:facts.publicOrigin,path:options.path,credentials:'omit'}):await httpServer.request({method:options.method,path:options.path.replace(/^\/client\/v4/,''),
           ...(body?{body,contentType:options.headers['content-type']}:{})});
         const bytes=Buffer.from(await response.arrayBuffer()),stream=Readable.from([bytes]);
         stream.statusCode=response.status;stream.complete=true;stream.headers={...Object.fromEntries(response.headers),'content-length':String(bytes.length)};
@@ -114,7 +114,7 @@ let result,error;try{result=await runBoundOwner('execute');}catch(e){error=e;}
 httpServer?.close();
 const writes=normal.calls.filter(x=>x.method!=='GET'),put=writes.filter(x=>x.method==='PUT');
 const readExecution=async name=>JSON.parse(await readFile(join(bindings.outputDirectory,name)));
-if(['success','credential-delay','current-multi-module','resume-gateway'].includes(scenario)){
+if(['success','credential-delay','current-multi-module','resume-gateway','native-success'].includes(scenario)){
   assert.ifError(error);assert.equal(result.status,'gateway-and-two-original-apps-full-readback-passed');
   assert.equal(put.length,scenario==='resume-gateway'?0:1);assert.equal(writes.filter(x=>x.path.endsWith('/rollouts')).length,2);
   assert.equal(normal.calls.filter(x=>x.path===BASE+'/settings').length,scenario==='resume-gateway'?8:10); // 7 core + 3 independent, no outer bootstrap.

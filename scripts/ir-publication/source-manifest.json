@@ -65,13 +65,13 @@
     },
     {
       "file": "core/native-http-transport.mjs",
-      "bytes": 16318,
-      "sha256": "5f12a64e556a925768aa6b0e2dc9076e669d8cc7c959ef8d390ef926e71e5a45"
+      "bytes": 16459,
+      "sha256": "925371e14e29149bedec84a5ba1f26dc4359f643bdc9fdcbf3f4956665ee872d"
     },
     {
       "file": "core/publication.mjs",
-      "bytes": 17170,
-      "sha256": "2d68815ee13e2f5f97a1596158e01ad69ccc8b138a2ec7fe7f6d0a563375fdfc"
+      "bytes": 17636,
+      "sha256": "034d797d488264b5d4eba7d6b798e8eca83f76f4dcf8b08bf076c7c9628e9366"
     },
     {
       "file": "core/reconcile-gateway.mjs",

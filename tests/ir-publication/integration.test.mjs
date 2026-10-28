@@ -9,7 +9,7 @@ test('actual on-demand consumer: fresh, mutated, stale, nonce, active, hold, tim
   const output=execFileSync(process.execPath,['--experimental-test-module-mocks','--require',join(fixture,'network-deny.cjs'),join(fixture,'receipt-case.mjs')],{encoding:'utf8',stdio:'pipe',timeout:5000});
   const result=JSON.parse(output);assert.equal(result.passed,true);assert.equal(result.cases,8);assert.equal(result.networkRequests,0);
 });
-for(const scenario of ['success','resume-gateway','resume-evidence-drift','current-multi-module','credential-delay','400','native400','unknown-put','disabled','expired-window','stale-receipt','physical-unreleased','unknown-execution','baseline-drift','manifest-drift','source-drift','active-work']){
+for(const scenario of ['success','native-success','resume-gateway','resume-evidence-drift','current-multi-module','credential-delay','400','native400','unknown-put','disabled','expired-window','stale-receipt','physical-unreleased','unknown-execution','baseline-drift','manifest-drift','source-drift','active-work']){
   test('integrated owner/core: '+scenario,()=>{
     const output=execFileSync(process.execPath,['--experimental-test-module-mocks','--require',join(fixture,'network-deny.cjs'),join(fixture,'integration-case.mjs'),scenario],
       {cwd:resolve('.'),encoding:'utf8',stdio:'pipe',timeout:30000});
