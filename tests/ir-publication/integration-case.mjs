@@ -11,6 +11,10 @@ import {EventEmitter} from 'node:events';
 import {Readable} from 'node:stream';
 import {buildFixture} from './build-fixture.mjs';
 import {fixture} from './synthetic-api.mjs';
+import {originalWrite} from '../../scripts/ir-publication/core/io-boundary.mjs';
+import {buildGatewayMetadata} from '../../scripts/ir-publication/core/gateway-metadata.mjs';
+import {attachAssetCompletion} from '../../scripts/ir-publication/core/assets-config.mjs';
+import {freezeMultipart} from '../../scripts/ir-publication/core/a2/reviewed-wire-primitives.mjs';
 import {privateStore,sha} from '../../scripts/ir-publication/core/io-boundary.mjs';
 import {collectBaseline,preservationProjection} from '../../scripts/ir-publication/core/collect-baseline.mjs';
 import {hashJSON,REQUEST,ACCOUNT,Stop} from '../../scripts/ir-publication/local-guards.mjs';
@@ -25,7 +29,16 @@ let responsePhase=false;
 // A clean fixture has its normal success state transitions; wrap only external HTTP.
 const normal=await fixture({a2:inputs.a2,multiModule:scenario==='current-multi-module'});
 const baseline=await collectBaseline({connection:normal.connection,store:await privateStore(join(directory,'expected-baseline')),scope:'expected',deadline:Date.now()+10000});
-facts.baselineProjectionSha256=hashJSON(preservationProjection(baseline.snapshot));normal.calls.length=0;
+facts.baselineProjectionSha256=hashJSON(preservationProjection(baseline.snapshot));
+if(scenario.startsWith('resume-')){
+ const prior=await privateStore(join(directory,'prior-put')),module=await readFile(facts.gatewayClosure.bundle.file),metadata=buildGatewayMetadata(baseline.snapshot,{tag:'ir-m3-m4-'+REQUEST,message:facts.releaseMessage,baselineProjectionSha256:facts.baselineProjectionSha256}),frozen=await freezeMultipart(attachAssetCompletion(metadata,baseline.snapshot,'SYNTHETIC'),module);
+ const ack=await originalWrite({connection:normal.connection,store:prior,key:'worker-put',method:'PUT',path:PUT,body:frozen.body,contentType:frozen.contentType,requestId:REQUEST,deadline:Date.now()+10000});
+ const file=join(prior.directory,'worker-put-response.private.bin'),raw=await readFile(file),binding=await prior.write('multipart.safe.json',{requestId:REQUEST,bodySha256:sha(frozen.body),bodyBytes:frozen.body.length,moduleSha256:sha(module),metadataWithoutCompletionCanonicalSha256:hashJSON(metadata)});
+ facts.gatewayResume={schema:'riffoid-ir-known-gateway-resume/v1',before:baseline.safe.privateArtifact,intent:ack.intent,ack:ack.ack,response:{file,bytes:raw.length,sha256:sha(raw)},multipartBinding:binding};
+ const after=await collectBaseline({connection:normal.connection,store:await privateStore(join(directory,'after-prior-put')),scope:'after',deadline:Date.now()+10000});facts.baselineProjectionSha256=hashJSON(preservationProjection(after.snapshot));
+ if(scenario==='resume-evidence-drift')facts.gatewayResume.response.sha256='0'.repeat(64);
+}
+normal.calls.length=0;
 if(scenario==='baseline-drift')facts.baselineProjectionSha256='0'.repeat(64);
 if(scenario==='expired-window')facts.endsAt=new Date(Date.now()-1).toISOString();
 if(scenario==='source-drift')await writeFile(facts.gatewayClosure.bundle.file,'changed fixture bytes');
@@ -101,10 +114,10 @@ let result,error;try{result=await runBoundOwner('execute');}catch(e){error=e;}
 httpServer?.close();
 const writes=normal.calls.filter(x=>x.method!=='GET'),put=writes.filter(x=>x.method==='PUT');
 const readExecution=async name=>JSON.parse(await readFile(join(bindings.outputDirectory,name)));
-if(['success','credential-delay','current-multi-module'].includes(scenario)){
+if(['success','credential-delay','current-multi-module','resume-gateway'].includes(scenario)){
   assert.ifError(error);assert.equal(result.status,'gateway-and-two-original-apps-full-readback-passed');
-  assert.equal(put.length,1);assert.equal(writes.filter(x=>x.path.endsWith('/rollouts')).length,2);
-  assert.equal(normal.calls.filter(x=>x.path===BASE+'/settings').length,10); // 7 core + 3 independent, no outer bootstrap.
+  assert.equal(put.length,scenario==='resume-gateway'?0:1);assert.equal(writes.filter(x=>x.path.endsWith('/rollouts')).length,2);
+  assert.equal(normal.calls.filter(x=>x.path===BASE+'/settings').length,scenario==='resume-gateway'?8:10); // 7 core + 3 independent, no outer bootstrap.
   assert.equal((await readdir(bindings.outputDirectory)).some(x=>x.startsWith('bootstrap-')),false);
   assert.equal(demands.filter(x=>x==='precredential').length,1);assert.equal(demands.filter(x=>x==='before-baseline').length,1);
   assert.equal(result.maintenanceEndPerformed,false);

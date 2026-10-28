@@ -73,3 +73,12 @@ Publishing still requires a newly authorized target/window and fresh owner,
 maintenance, source, Registry and resource evidence. Old main/hold/image pins,
 the retired October 20 window and old grants must not be silently reused.
 There is no deployment, maintenance release or user acceptance in this patch.
+
+A facts.gatewayResume record can bind the original before snapshot, PUT intent,
+full successful response, ACK and multipart binding. The core verifies these
+against a fresh complete serving baseline and frozen source before continuing
+the original two application rollouts. It never repeats assets or Gateway PUT
+on that path. Altered/unknown original response evidence stops before writes.
+An absent browser-policy binding requires an empty public-frame 503; regular
+assets must still return 200 with their complete expected bytes. Per-path status,
+length and SHA receipts are retained even when this check fails.

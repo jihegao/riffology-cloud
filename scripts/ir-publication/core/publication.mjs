@@ -1,6 +1,7 @@
 /** Fixed original Gateway PUT + two original app rollouts. Default CLI is closed.
  * Owner connections/witnesses are capabilities supplied only after real handoff.
  */
+import {reconcileGateway} from './reconcile-gateway.mjs';
 import {extname} from 'node:path';
 import {ACCOUNT,ACCOUNT_BASE,BASE,PUT,WORKER,APP_IDS,LIMITS as FIXED_LIMITS,isId} from './fixed-target.mjs';
 import {guard,sha,safeCode,boundedTask,fullResponse,apiEnvelope} from './io-boundary.mjs';
@@ -27,11 +28,11 @@ export function assertAppVersionDelta(before,after,appId,image){
     same(added[0].configuration,{...active[0].configuration,image},'new-version-preserves-version-api-representation');
   }
 }
-async function publicReadback({connection,closure,origin,store,key,deadline,signal}){
+export async function publicReadback({connection,closure,origin,store,key,deadline,signal,frameClosed=false}){
   guard(typeof connection.publicGet==='function','owner-public-get-not-bound');const paths=[...closure.assets];
   if(closure.build.frame)paths.push({path:closure.build.frame.path,bytes:closure.build.frame.bytes,sha256:closure.build.frame.sha256});
   const records=[];
-  for(const row of paths){const raw=await boundedTask(async childSignal=>fullResponse(await connection.publicGet({origin,path:row.path,credentials:'omit',signal:childSignal}),{signal:childSignal,maxBytes:LIMITS.maxAssetBytes}),{deadline,maxMs:LIMITS.requestMs,signal});guard(raw.body.length===row.bytes&&raw.sha256===row.sha256,'public-asset-body-drift');records.push({path:row.path,bytes:row.bytes,sha256:row.sha256,observedAt:raw.observedAt});}
+  for(const row of paths){const raw=await boundedTask(async childSignal=>fullResponse(await connection.publicGet({origin,path:row.path,credentials:'omit',signal:childSignal}),{signal:childSignal,maxBytes:LIMITS.maxAssetBytes,captureRejected:true}),{deadline,maxMs:LIMITS.requestMs,signal});const closedFrame=frameClosed&&row.path===closure.build.frame?.path;await store.write(key+'-public-'+String(records.length).padStart(3,'0')+'.safe.json',{path:row.path,status:raw.status,bytes:raw.body.length,sha256:raw.sha256,expectedClosed:closedFrame,observedAt:raw.observedAt});guard(closedFrame?raw.status===503&&raw.body.length===0:raw.status===200&&raw.body.length===row.bytes&&raw.sha256===row.sha256,'public-asset-body-drift');records.push({path:row.path,status:raw.status,bytes:raw.body.length,sha256:raw.sha256,expectedClosed:closedFrame,observedAt:raw.observedAt});}
   const receipt=await store.write(key+'-public-assets.safe.json',{schema:'riffoid-ir-public-full-byte-readback/v1',complete:true,origin,files:records,credentials:'omit',redirectsAccepted:false});return receipt;
 }
 export async function runPublication(options={}){
@@ -70,12 +71,16 @@ async function publishOriginal({facts,connection,phaseWitness,independentWitness
     const before=await snapshot('before');lastSnapshot=before;
     const origin=facts.publicOrigin,configured=before.controls.settings.bindings.find(x=>x.name==='APP_ORIGIN')?.text;
     guard(typeof origin==='string'&&origin===configured&&new URL(origin).protocol==='https:'&&new URL(origin).origin===origin,'fresh-original-public-origin');
-    const tag='ir-m3-m4-'+requestId,metadata=buildGatewayMetadata(before,{tag,message:facts.releaseMessage,baselineProjectionSha256:facts.baselineProjectionSha256});
+    const frameClosed=!before.controls.settings.bindings.some(x=>x.name==='PROJECT_VIEW_BROWSER_POLICY_JSON');
+    const tag='ir-m3-m4-'+requestId,metadata=facts.gatewayResume?null:buildGatewayMetadata(before,{tag,message:facts.releaseMessage,baselineProjectionSha256:facts.baselineProjectionSha256});
     // Shape validation only; this discarded local value is never a credential
     // or request payload. Unknown fields stop before even the asset-session POST.
-    attachAssetCompletion(metadata,before,'classification-only-never-sent');
+    if(!facts.gatewayResume)attachAssetCompletion(metadata,before,'classification-only-never-sent');
     const bodies=new Map();
     for(const appId of APP_IDS){const app=before.apps.find(x=>x.id===appId),registry=facts.registryByApp?.[appId];bodies.set(appId,imageOnlyRolloutRequest(app,registry?.receipt?.imageReference,{description:facts.releaseMessage,registryReadback:registry?.receipt,registryReadbackOwnerSeal:registry?.ownerSeal}));}
+    let current,workerAck;
+    if(facts.gatewayResume){phase='reconcile-original-gateway';const reconciled=await reconcileGateway(facts,closure,before);workerAck=reconciled.originalAck;current=before;await store.write('worker-source-identity-delta.safe.json',reconciled.delta);await store.write('gateway-resumed.safe.json',{requestId,originalAckSha256:workerAck.ack.sha256,putReplayed:false,assetsUploaded:false});}
+    else {
     await gate('before-assets');phase='asset-session';
     const sessionAck=await originalWrite({connection,store,key:'asset-session',method:'POST',path:BASE+'/assets-upload-session',body:Buffer.from(JSON.stringify({manifest:closure.manifest})),contentType:'application/json',requestId,deadline,signal});
     const session=sessionAck.result;validateBuckets(session,closure.manifest);let completion=session.buckets.length?null:session.jwt;
@@ -89,9 +94,10 @@ async function publishOriginal({facts,connection,phaseWitness,independentWitness
     closure=await load();const frozen=await freezeMultipart(attachAssetCompletion(metadata,before,completion),closure.module);
     await store.write('worker-multipart-binding.safe.json',{requestId,bodySha256:sha(frozen.body),bodyBytes:frozen.body.length,contentType:frozen.contentType,metadataWithoutCompletionCanonicalSha256:hashJSON(metadata),moduleSha256:sha(closure.module),completionSha256:sha(Buffer.from(completion)),credentialsAndMultipartBodyNotRetained:true});
     await gate('before-worker-put',{bodySha256:sha(frozen.body)});phase='worker-put';
-    const workerAck=await originalWrite({connection,store,key:'worker-put',method:'PUT',path:PUT,body:frozen.body,contentType:frozen.contentType,requestId,deadline,signal});
-    phase='worker-readback';let current=await snapshot('after-gateway');const sourceDelta=assertGatewayReadback(before,current,{expectedMetadata:metadata,expectedModule:{mainModule:'index.js',bytes:closure.module.length,sha256:sha(closure.module)},originalAck:workerAck,requestId,expectedMultipartSha256:sha(frozen.body)});await store.write('worker-source-identity-delta.safe.json',sourceDelta);
-    await publicReadback({connection,closure,origin,store,key:'gateway',deadline,signal});await gate('after-gateway',{originalAckSha256:workerAck.ack.sha256});await independent('after-gateway',current,workerAck.acknowledgedAt);lastSnapshot=current;
+    workerAck=await originalWrite({connection,store,key:'worker-put',method:'PUT',path:PUT,body:frozen.body,contentType:frozen.contentType,requestId,deadline,signal});
+    phase='worker-readback';current=await snapshot('after-gateway');const sourceDelta=assertGatewayReadback(before,current,{expectedMetadata:metadata,expectedModule:{mainModule:'index.js',bytes:closure.module.length,sha256:sha(closure.module)},originalAck:workerAck,requestId,expectedMultipartSha256:sha(frozen.body)});await store.write('worker-source-identity-delta.safe.json',sourceDelta);
+    }
+    await publicReadback({connection,closure,origin,store,key:'gateway',deadline,signal,frameClosed});await gate('after-gateway',{originalAckSha256:workerAck.ack.sha256});await independent('after-gateway',current,workerAck.acknowledgedAt);lastSnapshot=current;
     for(const appId of APP_IDS){
       const short=appId===APP_IDS[0]?'project-tools':'trusted-pi';phase='pre-rollout-'+short;
       const immediateApp=await snapshot('before-'+short);same(preservationProjection(immediateApp),preservationProjection(current),'state-drift-before-original-app-rollout');
@@ -108,7 +114,7 @@ async function publishOriginal({facts,connection,phaseWitness,independentWitness
       same(after.controls,current.controls,'gateway-controls-drift-during-app-rollout');same(after.source,current.source,'gateway-source-drift-during-app-rollout');same(after.version,current.version,'gateway-runtime-drift-during-app-rollout');assertWorkerHistory(current,after);assertAppVersionDelta(current,after,appId,image);
       await independent('after-'+short,after,ack.acknowledgedAt);current=after;lastSnapshot=current;
     }
-    await publicReadback({connection,closure,origin,store,key:'final',deadline,signal});await gate('final-preservation');
+    await publicReadback({connection,closure,origin,store,key:'final',deadline,signal,frameClosed});await gate('final-preservation');
     const result={schema:'riffoid-ir-original-publication-result/v1',requestId,status:'gateway-and-two-original-apps-full-readback-passed',actualMain:facts.finalMain.sha,source:current.source,finalProjectionCanonicalSha256:hashJSON(preservationProjection(current)),authenticatedUserAcceptance:false,maintenanceEndPerformed:false,providerModelOrToolExecutionPerformed:false};await store.write('complete.safe.json',result);return result;
   }catch(e){await store.write('publication-stopped.safe.json',{schema:'riffoid-ir-original-publication-stopped/v1',requestId,phase,code:safeCode(e),outcome:'stop-retain-original-identity',lastCompleteSnapshotProjectionSha256:lastSnapshot?hashJSON(preservationProjection(lastSnapshot)):null,noRetry:true,noRollback:true,noAutomaticUnlock:true,actualUserAcceptance:false});throw e;}
 }

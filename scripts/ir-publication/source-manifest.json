@@ -70,8 +70,13 @@
     },
     {
       "file": "core/publication.mjs",
-      "bytes": 16059,
-      "sha256": "82dac8bf6dfa5aa7dea16c58afcc6475fa00ad2c9140d96e3f073142a5f7590a"
+      "bytes": 17170,
+      "sha256": "2d68815ee13e2f5f97a1596158e01ad69ccc8b138a2ec7fe7f6d0a563375fdfc"
+    },
+    {
+      "file": "core/reconcile-gateway.mjs",
+      "bytes": 2956,
+      "sha256": "3e0f88bb637c2365d748c0ed54541aa3366f6a32d3132534438e13a76a7d7b2c"
     },
     {
       "file": "core/worker-response-evidence.mjs",
