@@ -1,0 +1,18 @@
+{
+  "schema": "jhg46-worker-rejection-diagnosis/v1",
+  "observedAt": "2026-10-28T13:02:04.257Z",
+  "httpStatus": 400,
+  "bodyBytes": 321,
+  "bodySha256": "aff5f6922ad14176a471fa96dca63264c46b53cc5c996f52905abf6f096c5bd3",
+  "matchesBothHistoricalBodyHashes": true,
+  "originalHistoricalBodiesRecovered": false,
+  "errorCode": 10021,
+  "errorMessage": "serve_directly and run_worker_first must not be simultaneously specified",
+  "repair": "omit deprecated serve_directly from upload; preserve run_worker_first and full readback equality",
+  "afterRejectionServingVersion": "191e6d4a-b893-4490-ae37-e2751d9d08ba",
+  "afterRejectionCompleteProjectionSha256": "9ed387d4c97cc86a1fdc932d603385dc12f162b3ea730e4d65b2d704b2ac388c",
+  "afterRejectionRolloutsSent": 0,
+  "maintenanceHeld": true,
+  "offlineTestsPassed": 46,
+  "credentialsIncluded": false
+}

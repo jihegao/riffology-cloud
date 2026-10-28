@@ -1,0 +1,12 @@
+{
+  "result": null,
+  "success": false,
+  "errors": [
+    {
+      "code": 10021,
+      "message": "serve_directly and run_worker_first must not be simultaneously specified",
+      "documentation_url": "https://developers.cloudflare.com/workers/observability/errors/#validation-errors-10021"
+    }
+  ],
+  "messages": []
+}
