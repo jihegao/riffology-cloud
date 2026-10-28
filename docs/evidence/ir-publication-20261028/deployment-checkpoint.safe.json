@@ -1,0 +1,209 @@
+{
+  "schema": "jhg46-deployment-checkpoint/v1",
+  "observedAt": "2026-10-28T14:07:40.165Z",
+  "status": "deployed-maintenance-held-static-readback-blocked",
+  "gateway": {
+    "versionNumber": 240,
+    "versionId": "94ac237c-1615-4acb-80a1-a8216b8c23c7",
+    "deploymentId": "5a9217d6-688f-46a3-a36b-68d6678266a4",
+    "percentage": 100,
+    "sourceCommit": "2dc5e7ce113a007a238d32eea732a29fb703745e",
+    "bundleSha256": "7cc5fdbeda4d406a2c36e29aef3d578cb0428b06acfb2ca404bdb78d735d402e",
+    "completeSourceAndResourceReadbackPassed": true,
+    "staticAssetsByteMatched": 96,
+    "browserFrameExpectedClosed503": true,
+    "staticAssetMatchTiming": "earlier post-Gateway readback; final post-rollout sweep incomplete"
+  },
+  "apps": [
+    {
+      "id": "a03156a6-9bf5-43fb-8b7f-a1f5b8d1a650",
+      "version": 4,
+      "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-20261001-project-tools@sha256:402381b5b2c0f460e6af44bc4e953d53f6bdb648de4c9ccbeee837815580cd8f",
+      "maxInstances": 1,
+      "errors": [],
+      "active": 0,
+      "assigned": 0,
+      "starting": 0
+    },
+    {
+      "id": "a03628c4-f032-461f-a65b-612ccac11a06",
+      "version": 14,
+      "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-issue165-trusted-pi@sha256:dcd4a5fc6f02c9d0ee1290e07c268a8dba4aba1790e75b98c5f7bb83792da487",
+      "maxInstances": 1,
+      "errors": [],
+      "active": 0,
+      "assigned": 0,
+      "starting": 0
+    }
+  ],
+  "projectToolsRollout": {
+    "id": "695c2f66-d9ab-4494-81f4-49a0cf6f494e",
+    "status": "completed",
+    "completedAt": "2026-10-28T13:30:10.296999936Z",
+    "postCount": 1
+  },
+  "trustedPiNewRolloutPostCount": 1,
+  "rootCause": {
+    "status": 400,
+    "code": 10021,
+    "message": "serve_directly and run_worker_first must not be simultaneously specified",
+    "responseBytes": 321,
+    "responseSha256": "aff5f6922ad14176a471fa96dca63264c46b53cc5c996f52905abf6f096c5bd3",
+    "matchesHistoricalHashes": true
+  },
+  "offlineTests": {
+    "passed": 56,
+    "failed": 0
+  },
+  "maintenanceEndPerformed": false,
+  "defaultRepositoryExecutionEnabled": false,
+  "modelTurnRunExecuted": false,
+  "unknownWriteRequests": 0,
+  "pending": [
+    "Investigate intermittent 503 entry_replay_unavailable and complete final public asset readback before restoring service",
+    "Report/cold recovery/third Turn acceptance: not executed in this deployment scope"
+  ],
+  "billingChanges": 0,
+  "retiredAutomationsResumed": false,
+  "trustedPiRollout": {
+    "id": "ff4be87c-7dfa-4f7b-b5de-96f792837f06",
+    "status": "completed",
+    "completedAt": "2026-10-28T14:01:05.731000064Z",
+    "postCount": 1
+  },
+  "maintenanceReadFailure": {
+    "observedAt": "2026-10-28T14:02:05.979Z",
+    "status": 503,
+    "error": "entry_replay_unavailable",
+    "writesRepeated": false
+  },
+  "independentFullReadbackVerified": true,
+  "allResourcePreservationVerified": true,
+  "finalStaticReadbackComplete": false,
+  "physical": [
+    {
+      "appId": "a03156a6-9bf5-43fb-8b7f-a1f5b8d1a650",
+      "version": 4,
+      "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-20261001-project-tools@sha256:402381b5b2c0f460e6af44bc4e953d53f6bdb648de4c9ccbeee837815580cd8f",
+      "maxInstances": 1,
+      "schedulingPolicy": "default",
+      "logicalCount": 0,
+      "currentDeploymentCount": 1,
+      "dashInstanceCount": 0,
+      "placements": [
+        {
+          "deploymentId": "d032977a-accf-41b4-b956-058887fd13a7",
+          "appVersion": 4,
+          "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-20261001-project-tools@sha256:402381b5b2c0f460e6af44bc4e953d53f6bdb648de4c9ccbeee837815580cd8f",
+          "deploymentState": "placed",
+          "placementId": "57af3955-a364-4831-c36e-6cb69ff4db14",
+          "vmHealth": "running",
+          "containerStatus": "stopped",
+          "terminate": false
+        }
+      ]
+    },
+    {
+      "appId": "a03628c4-f032-461f-a65b-612ccac11a06",
+      "version": 14,
+      "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-issue165-trusted-pi@sha256:dcd4a5fc6f02c9d0ee1290e07c268a8dba4aba1790e75b98c5f7bb83792da487",
+      "maxInstances": 1,
+      "schedulingPolicy": "default",
+      "logicalCount": 0,
+      "currentDeploymentCount": 1,
+      "dashInstanceCount": 0,
+      "placements": [
+        {
+          "deploymentId": "d039edb7-ab49-4b89-be35-9168c5991dc9",
+          "appVersion": 14,
+          "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-issue165-trusted-pi@sha256:dcd4a5fc6f02c9d0ee1290e07c268a8dba4aba1790e75b98c5f7bb83792da487",
+          "deploymentState": "placed",
+          "placementId": "415e7869-87d4-b470-7d4a-c38f894cb488",
+          "vmHealth": "running",
+          "containerStatus": "stopped",
+          "terminate": false
+        }
+      ]
+    }
+  ],
+  "maintenance": {
+    "held": true,
+    "revision": 5,
+    "controlRevision": 19,
+    "quiescent": true,
+    "activeSlots": 0,
+    "quarantinedSlots": 0,
+    "unresolvedCalls": 0,
+    "coldUnresolved": 0,
+    "pairUnresolved": 0,
+    "finalCheckAt": "2026-10-28T14:07:40.165Z"
+  },
+  "releaseProofScope": {
+    "domain": "two-original-applications-admitted-runtime-only",
+    "method": "original-authoritative-release-projection plus fresh native state and continuous maintenance barrier",
+    "independentPidEnumerationPerformed": false,
+    "allHistoricalPlacementDisposalClaimed": false,
+    "allVmsAbsentClaimed": false,
+    "feesStoppedClaimed": false
+  },
+  "staticReadFailures": [
+    {
+      "path": "/browser-preview-assets/2db2237783cbaabd16abd941a459784543ae95879c052efc429f90b4777b595f/source/contract.ts",
+      "status": 503,
+      "bytes": 36,
+      "sha256": "2ed14dcf58fe4c366a01cd0e32b5053ce04b9c6e57e98b6bfe7d76c068b6d5a3",
+      "expectedClosed": false,
+      "clientUserAgent": "node",
+      "observedAt": "2026-10-28T14:04:41.795Z",
+      "body": "{\"error\":\"entry_replay_unavailable\"}"
+    },
+    {
+      "path": "/browser-preview-assets/a8324250c1d0268eab9915ec62491ba9fce266b50d7069030507b7ef8bdf3a16/delivery/worker.bundle.mjs",
+      "status": 503,
+      "bytes": 36,
+      "sha256": "2ed14dcf58fe4c366a01cd0e32b5053ce04b9c6e57e98b6bfe7d76c068b6d5a3",
+      "expectedClosed": false,
+      "clientUserAgent": "node",
+      "observedAt": "2026-10-28T14:06:20.550Z",
+      "body": "{\"error\":\"entry_replay_unavailable\"}"
+    }
+  ],
+  "selectedPrivateEvidence": [
+    {
+      "name": "remaining-completion-v3/rollout-trusted-pi-ack.safe.json",
+      "bytes": 505,
+      "sha256": "b5831d9968e961d203c227c42a6ad3ffc7eae882fabeb073b1ae1c75ad34845e"
+    },
+    {
+      "name": "remaining-completion-v3/trusted-pi-status-025.private.bin",
+      "bytes": 1426,
+      "sha256": "f74ad773f4971d89e9886d087801272035c07149efffc1b52e6841bddfc56132"
+    },
+    {
+      "name": "final-readonly-v1/independent-final-complete.private.json",
+      "bytes": 644388,
+      "sha256": "493b809a29cdcd3b1cf3e8a1c7283a096518fdf0c44e23cfd4d3fb7be17779d6"
+    },
+    {
+      "name": "final-state-v1/final-preservation-assessment.private.json",
+      "bytes": 14386,
+      "sha256": "913de80ce7c11d4da492ac816bb6d85ad8b99ca5198bd847627a1364807313aa"
+    },
+    {
+      "name": "final-state-v1/final-state.safe.json",
+      "bytes": 3367,
+      "sha256": "66ddfd137e8037a439536f3ed2c7c3d0376dafe96e6e4f691240c7db06c7ed99"
+    },
+    {
+      "name": "integration-tests-v8.txt",
+      "bytes": 3941,
+      "sha256": "b956ebfed1ad290f3904454ba727333f6bac998e47f8dabb29561eb3714c8d34"
+    }
+  ],
+  "executionCleanup": {
+    "currentDeploymentNodeProcesses": [],
+    "browserDemandFunctionDeleted": true,
+    "periodicBrowserDownloadLoopStarted": false,
+    "newAutomationsCreated": false
+  }
+}
