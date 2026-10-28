@@ -108,13 +108,20 @@ test('valid cryptographic signatures still fail with expired/future timestamps, 
     await denied(req,verifier(k,store));
   }assert.equal(store.calls,0);
 });
+test('a durable claim completing beyond the former 2s deadline admits once and still rejects replay',async()=>{
+  const k=await keys(),req=await signed(k),nonces=new Set<string>();let claims=0;
+  const env={ENTRY_SIGNING_PUBLIC_KEYS_JSON:JSON.stringify(k.ring),ENTRY_REPLAY:{getByName(){return {async claim(v:ReplayClaim){claims++;if(nonces.has(v.nonce))return 'replay' as const;await new Promise(resolve=>setTimeout(resolve,2200));nonces.add(v.nonce);return 'accepted' as const;}};}}};
+  assert.equal((await verifyEntry(new Request(req),canonical,transport,env)).url,req.url);
+  assert.equal(claims,1);assert.equal(nonces.size,1);
+  await assert.rejects(()=>verifyEntry(new Request(req),canonical,transport,env),{message:'entry_replay_denied'});assert.equal(claims,2);
+});
 test('unresolved replay RPC times out and pre-claim cancellation fails closed (does not prove late persistence)',async()=>{
   const k=await keys(),req=await signed(k);let claims=0;
   const store={getByName(){return {claim(){claims++;return new Promise<'accepted'>(()=>{});}};}};
   await assert.rejects(()=>verifyEntry(req,canonical,transport,{ENTRY_SIGNING_PUBLIC_KEYS_JSON:JSON.stringify(k.ring),ENTRY_REPLAY:store}),{message:'entry_replay_unavailable'});assert.equal(claims,1);
   const abort=new AbortController(),fresh=await signed(k);const pending=verifyEntry(new Request(fresh,{signal:abort.signal}),canonical,transport,{ENTRY_SIGNING_PUBLIC_KEYS_JSON:JSON.stringify(k.ring),ENTRY_REPLAY:store});abort.abort();await assert.rejects(()=>pending);assert.equal(claims,1);
 });
-test('simulated store: RPC already issued may persist after timeout/cancellation; same proof replay denied, no auth or retry',{timeout:10000},async()=>{
+test('simulated store: RPC already issued may persist after timeout/cancellation; same proof replay denied, no auth or retry',{timeout:15000},async()=>{
   const k=await keys();
   for(const failure of ['timeout','cancel']){
     let resolveIssued!:()=>void,release!:()=>void,resolvePersisted!:()=>void;

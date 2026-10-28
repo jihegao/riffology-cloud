@@ -6,7 +6,10 @@ import type {ValidationClaim} from './validation-policy.ts';
 export const forwardedHeaders=['accept','accept-language','content-type','cookie','origin','referer','sec-fetch-site','sec-fetch-mode','sec-fetch-dest','idempotency-key','last-event-id','range','if-none-match','if-modified-since','user-agent',...g5ReadHeaders] as const;
 export const proofHeader='x-riffoid-entry-proof',signatureHeader='x-riffoid-entry-signature',clientIpHeader='x-riffoid-client-ip';
 export const SIGNATURE_LIFETIME_MS=30_000,FUTURE_SKEW_MS=5_000,MAX_HEADER_BYTES=16_384;
-export const REPLAY_RPC_TIMEOUT_MS=2_000;
+// Includes routing, actor startup and durable commit, not only SQL execution.
+// Production static reads hit the former 2s deadline before claim completed.
+// Keep one claim, fail closed, and recheck the 30s proof lifetime afterward.
+export const REPLAY_RPC_TIMEOUT_MS=10_000;
 const encoder=new TextEncoder(),algorithm={name:'ECDSA',namedCurve:'P-256'},signAlgorithm={name:'ECDSA',hash:'SHA-256'};
 let smallBodies=0,largeBodies=0;
 let smallRequests=0,largeRequests=0;
