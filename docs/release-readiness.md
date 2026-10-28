@@ -1,5 +1,13 @@
 # Current release readiness — 2026-10-14
 
+## 2026-10-28 23:07 上海：entry replay 修复已上线，原维护解除
+
+Gateway 已以 v241／`63d9ea2a-8965-4876-9693-0fece3bea507` 在 100% serving，deployment `17520c5e-b171-4bc5-ae22-459549b96814`。本轮修复 `entry_replay_unavailable` 的过短 RPC 等待：2 秒改为 10 秒，保留单次 claim、失败关闭与 30 秒签名有效期复核。旧请求 2002ms／503 对应原上限；更底层平台迟延原因仍未知。部署原字节仅替换该常量，96 项资产全部匹配，全部 107 bindings／11 secrets／26 exports／6 container associations、17 应用及历史版本保留。
+
+23:07:40 原维护结束 POST 返回 200，`replayed:false`，`revision:6, hold:null`；独立 GET 再确认 control enabled／未暂停，原登录 `/api/me` 200，Safari 实际项目列表加载。两个既有应用 rollout 未重复；本轮未提交模型／Turn／Run。原 Standing Beta 按既有策略恢复，独立 Browser policy 未设置，Report／冷恢复／第三次 Turn／Riffoid ACC 仍待有效范围下另行验收。#254 保持 open／Acceptance。CLI 凭据缺少 read:project；随后通过现有 Safari GitHub 会话核对 Project，#254 仍为 Acceptance／P1／@jihegao／原里程碑，保留该真实阶段。
+
+定向签名及真实 Workerd 20/20、typecheck、diff 检查通过；完整代码 CI 状态见 [40712390210](https://github.com/jihegao/riffology-cloud/actions/runs/40712390210)。[发布详情](project-view-ir-publication-recovery-20261028.md#entry-replay-repair-and-service-restoration) · [脱敏证据](evidence/ir-publication-20261028/entry-replay-release.safe.json) · [PR #263](https://github.com/jihegao/riffology-cloud/pull/263)。以下 22:07 记录保留为修复前历史状态。
+
 ## 2026-10-28 IR 部署完成，维护保持；公开回读阻塞
 
 [#263 修复与证据](https://github.com/jihegao/riffology-cloud/pull/263) 已将真实发布调用链接通，完整保留错误正文，默认执行开关仍关闭。实际 400/10021 的 321 字节响应与两次历史 SHA 相同，明确为 `serve_directly` 与 `run_worker_first` 同时提交；修复后 Gateway v240（`94ac237c…`）100% serving，原 ProjectTools v4／`402381b5…` 和 TrustedPi v14／`dcd4a5fc…` rollout 均已 completed，各一次 POST。完整资源保留及独立回读通过，包括后续 GaoAgent 资源；56 项离线测试通过。
