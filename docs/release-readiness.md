@@ -1,4 +1,84 @@
-# Current release readiness — 2026-10-14
+# Current release readiness — 2026-10-29
+
+## 2026-10-29 #212 direct clear executed; shared publication and remote Sessions pending
+
+The user explicitly requested direct clearing without a permanent revival fence.
+The frozen 34 projects, workspaces and associated submission have been deleted
+from D1. The successful transaction restored all ten original deletion triggers
+and removed its temporary metadata tables. Independent primary reads show zero
+target project/workspace/outbox/submission rows. Six later projects, four users,
+four tenants and four invitations remain.
+
+All 515 scoped R2 keys are independently absent. The 42 unselected prior objects
+remain with identical ETags. Temporary private RPCs processed 743 addresses derived
+from original scopes, including empty candidates; this is not a count of 743
+previously occupied objects. Every clear receipt reports empty KV, no alarm and
+`containerRunning:false`. Independent reads of all 102 Workspace/Revision/Managed
+roots show zero KV, retaining only 12 Managed execution/accounting summaries,
+12 original remote bindings and seven budget summaries in SQL. Seven original
+ProductRuntime isolation rows were retained. Original Legacy/G5 ledgers still
+contain one/four pending unknown calls; no capacity was returned or billing settled.
+
+A new outside copy of `netlogo-fire-python-beta@0.1.0` appeared during cleanup.
+The initial transaction rolled back on that reference. The completed transaction
+deleted only the original projects/submission; the shared model version and its
+three global publication/content objects remain pending the user's scope decision.
+Eight hosted Session references also remain pending: cleanup encountered provider
+`403 Country, region, or territory not supported`. Local input/events/content were
+removed while content-free identities and accounting survive. No provider retry,
+region bypass or new model execution was used.
+
+The temporary operator was deleted and independently returns 404. Gateway is now
+100% `06dab4dd-7ebe-4243-a1fd-94339cff067b`, deployment
+`0979a3eb-113f-4828-b6bf-968dc0974e0c`. Its 5,863,802-byte module SHA-256
+`0d6b1f1d8afabedbcaf07d76f97d1a71206fc733fbb293742767a4fc2beeb28d`
+and complete settings (107 bindings) exactly match the original version; the
+temporary RPC is absent. Permanent tombstones and anti-revival/restart acceptance
+were waived. Provider backups/time travel and external downloaded copies were
+not erased or independently verified; no new user-content backup was created.
+
+[Selected execution evidence](evidence/releases/direct-project-clear-20261029.json)
+records the actual scope, retained summaries, readbacks and limitations.
+[Draft PR #264](https://github.com/jihegao/riffology-cloud/pull/264) preserves the
+one-off source and 12 passing focused tests, including real Workerd storage and
+repeat-clear accounting preservation. The latter source-only repair was tested
+offline after the temporary entry had been removed. This is not merged source,
+ordinary-user authentication acceptance or a global physical-instance release audit.
+[#212](https://github.com/jihegao/riffology-cloud/issues/212) remains open for the
+shared/remote tail; the available token still cannot read/update Delivery Project
+fields.
+
+## Earlier 2026-10-29 #212 preflight snapshot, before direct-clear authorization
+
+The user's execution instruction applies to the original frozen 34 projects and
+associated content. A fresh SELECT-only Catalog capture matches all 34 original
+identities and aggregate digest `e418ac2d…010640`; five later projects are excluded.
+The original submission and model version match their frozen hashes. All three
+current Catalog copies of that model version belong to the target set. This is
+not a complete D1/DO/R2/shared-object reference closure.
+
+Original Beta ledger queries show no occupied target slot or unresolved target
+Beta call; TenantQuota queries show no unstopped target lease. One occupied Beta
+slot belongs to an excluded project. Legacy/G5 contain five historical unknown
+calls with isolation rows. These rows, accounting and reservations remain intact;
+their content and isolation proofs have not been independently reverified here.
+Ledger counters do not attest physical release, and cost settlement remains
+independent of purge.
+
+Gateway version `63d9ea2a-8965-4876-9693-0fece3bea507` remains unchanged. Direct
+Workspace KV metadata inspection was rejected by the platform with `SQLITE_AUTH`;
+HTTP 200 is not a successful SQL result. The offline scope verifier rejects such
+failures, missing authority coverage and identity drift. Its eight focused tests
+and diff check passed. See [selected evidence](evidence/releases/project-purge-preflight-20261029.json)
+and [execution conditions](https://github.com/jihegao/riffology-cloud/issues/212).
+
+No permanent purge fence, content deletion, model retirement, resource stop or
+product execution was performed. The project/create-key/model fences, content-free
+safety summaries, full actor/object/remote inventory and resumable purge remain
+implementation work; physical release and denial/late-write/restart acceptance
+remain pending. This preflight is not deployment or completed deletion. Delivery
+Project fields could not be read or updated because the local token lacks
+`read:project`; no status synchronization is claimed.
 
 ## 2026-10-19 固定 IR 插件 M3/M4 独立实现准备
 

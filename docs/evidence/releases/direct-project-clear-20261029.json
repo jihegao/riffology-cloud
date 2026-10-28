@@ -1,0 +1,163 @@
+{
+  "schema": "riffology-direct-project-clear/v1",
+  "localDate": "2026-10-29 Asia/Shanghai",
+  "recordedAt": "2026-10-28T23:55:46.002427+00:00",
+  "issue": "https://github.com/jihegao/riffology-cloud/issues/212",
+  "pullRequest": "https://github.com/jihegao/riffology-cloud/pull/264",
+  "authorization": {
+    "scope": "Original frozen 34 projects; later projects excluded.",
+    "targetIdentityDigest": "e418ac2d10eba71eda7a7cb276e5cd325359dd26027fb5adaa0609049a010640",
+    "permanentRevivalFence": "explicitly waived by user; not implemented",
+    "newUserContentBackupsCreated": false
+  },
+  "d1": {
+    "deletedProjects": 34,
+    "deletedWorkspaces": 34,
+    "deletedSubmissions": 1,
+    "targetProjectsAfter": 0,
+    "targetWorkspacesAfter": 0,
+    "targetOutboxAfter": 0,
+    "targetSubmissionsAfter": 0,
+    "remainingLaterProjects": 6,
+    "remainingUsers": 4,
+    "remainingTenants": 4,
+    "remainingInvitations": 4,
+    "deleteTriggersRestored": 10,
+    "temporaryScopeTablesAfter": 0,
+    "initialFullBatch": "Rolled back on an out-of-scope model-copy reference; no partial deletion.",
+    "executedBatch": "Projects/submission only; shared model version preserved."
+  },
+  "durableObjects": {
+    "classes": {
+      "ServiceRun": 67,
+      "WorkspaceAgent": 34,
+      "ProjectRuntime": 34,
+      "ProjectToolSandbox": 116,
+      "ServiceSandbox": 11,
+      "SimulationSandbox": 54,
+      "TrustedPiSandbox": 116,
+      "ManagedProductRuntime": 34,
+      "ProductTurnRuntime": 116,
+      "RevisionStore": 34,
+      "ServiceRuntime": 11,
+      "ToolBridgeAgent": 116
+    },
+    "processedActorAddresses": 743,
+    "retained": {
+      "isolationRows": 7,
+      "managedSummaries": 12,
+      "remoteBindings": 12,
+      "remoteSessionsPending": 8
+    },
+    "errors": [],
+    "independentReadback": {
+      "rootActors": 102,
+      "rootKvCount": 0,
+      "remoteSessionReferences": 8,
+      "nonEmptySqlTables": {
+        "issue212_retained_budget": 7,
+        "execution_bindings": 12,
+        "issue212_retained_execution_summaries": 12
+      }
+    }
+  },
+  "r2": {
+    "bucketBinding": "WORKSPACE_CHECKPOINTS",
+    "listedBefore": 557,
+    "requestedKeys": 515,
+    "scopedKeysAbsentAfter": 515,
+    "scopedKeysStillPresentAfter": 0,
+    "listedAfter": 42,
+    "unselectedPriorObjects": 42,
+    "unselectedPriorKeysMissing": 0,
+    "unselectedPriorEtagsChanged": 0,
+    "deletedByRoot": {
+      "simulation-results-v1": 110,
+      "tenants": 45,
+      "turn-blobs-v3": 210,
+      "turns": 116,
+      "workspaces": 34
+    },
+    "deleteApiStatus": 200,
+    "deleteApiSuccess": true,
+    "perKeyApiReceipt": "Connector abbreviated the response; full key absence was independently checked via binding pagination."
+  },
+  "sharedPublicationPending": {
+    "model": "netlogo-fire-python-beta@0.1.0",
+    "modelVersionIdentitySha256": "ea9d69b9c206f7c18645a0fa9a7963095cde9ae668d427f7fab1ec5ca83365bf",
+    "outsideCopyProjectSha256": "619b53d2cda40cfa106151734a3c3471d9b766b6a4ebefac13fdd39cdd1ada0c",
+    "outsideCopyCount": 1,
+    "workspaceBucketPublicationObjectsRetained": 2,
+    "modelContentObjectsRetained": 1,
+    "decision": "User question pending: preserve outside copy/shared content or explicitly include that copy in deletion."
+  },
+  "remoteSessionsPending": {
+    "uniqueReferences": 8,
+    "executionBindingRowsRetained": 12,
+    "providerResponse": "403 Country, region, or territory not supported",
+    "outcome": "Deletion/absence not confirmed; original metadata retained, local input/events/content removed.",
+    "providerFallbackOrRegionBypass": false,
+    "automaticRetry": false
+  },
+  "accountingAndIsolation": {
+    "managedExecutionSummariesRetained": 12,
+    "managedBudgetSummariesRetained": 7,
+    "productRuntimeIsolationRowsRetained": 7,
+    "legacyUnknownPendingAfter": 1,
+    "g5UnknownPendingAfter": 4,
+    "legacyIsolationRowsAfter": 1,
+    "g5IsolationRowsAfter": 6,
+    "quotaOrCapacityReleaseInvoked": false,
+    "billingSettledClaim": false
+  },
+  "restoration": {
+    "gatewayVersion": "06dab4dd-7ebe-4243-a1fd-94339cff067b",
+    "gatewayDeployment": "0979a3eb-113f-4828-b6bf-968dc0974e0c",
+    "moduleBytes": 5863802,
+    "moduleSha256": "0d6b1f1d8afabedbcaf07d76f97d1a71206fc733fbb293742767a4fc2beeb28d",
+    "moduleIdenticalToOriginal": true,
+    "settingsByteIdentical": true,
+    "bindingsPreserved": 107,
+    "temporaryRpcInRestoredModule": false,
+    "operatorDeleteApiStatus": 200,
+    "operatorIndependentReadStatus": 404
+  },
+  "validation": {
+    "focusedTestsPassed": 12,
+    "focusedTestsFailed": 0,
+    "gitDiffCheck": "passed",
+    "fullProductCi": "not rerun locally; PR CI tracked separately",
+    "authenticatedOwnerOrCrossIdentityAcceptance": "not performed; maintenance data operations only",
+    "paidModelTurnToolRunExecutionInitiated": false,
+    "globalZeroBackgroundExecutionOrCostClaim": false
+  },
+  "limitations": [
+    "Shared published model and three global objects remain due to the new outside reference and pending user decision.",
+    "Eight original hosted Session references remain without current deletion/absence proof due to provider-region denial; no new provider/model requests were replayed.",
+    "Provider backup/time-travel retention and user-downloaded external copies were not erased or independently verified.",
+    "No permanent project/create-key/model tombstones or late-write/restart anti-revival acceptance, as explicitly waived.",
+    "Native per-actor receipts report containerRunning=false; no global physical-instance release audit or capacity return is claimed.",
+    "Source was recorded after temporary live execution; the uploaded append is removed, and source-only repeat-clear accounting preservation was verified offline.",
+    "Delivery Project fields could not be read/updated with the available GitHub token."
+  ],
+  "sourceHashes": {
+    "scripts/model/direct-project-clear.mjs": "ca5756d6dae83111e2b453a2ae43738f609a3aefb4400b43ba27411b77433d8d",
+    "scripts/model/direct-project-clear-d1.mjs": "3fe11cac177be3a23aa998fa551d01b64a33286b2033ae75c628b4f31da0b48e",
+    "tests/m1/direct-project-clear-d1.test.mjs": "c27c27c7ca0984ececc1192b223a6a68f8a8be476e857d03f9342d09698dcb71",
+    "tests/m2/direct-project-clear-workerd.test.mjs": "52f72b08f7f3518ea86aac905010677e7dd3fd473539f6fe9349a9dda33d4cfd"
+  },
+  "privateCaptureSha256": {
+    "d1-projects-only-batch.json": "d015adc4f8797f34c1083952c4a920c5a8d64338f514bc3e8cc92acdb619d236",
+    "d1-projects-clear-receipt.json": "44d6616113a753866c46121404617717dfd9a258ebdf3b26b7a13cd7f9ce047f",
+    "d1-after.json": "e37f027b2bb82c0dde6f6cb26700ff09fa1866f088b748895bc284861c9d4c3c",
+    "r2-scoped-delete-keys.json": "05c9756b9fd9e946df618b2962d2e74ce2750e8e6b5b3d87fd859db12e2329a6",
+    "objects-WORKSPACE_CHECKPOINTS-all.json": "a55ca0063973fa4cdecb727baec01ebac50142c075e128e932026afeb3df3838",
+    "objects-after-WORKSPACE_CHECKPOINTS-all.json": "a64133d4c7bfac2487b42baba1ee21ec8049c2cb4c1d5c9e2902f367a481d831",
+    "objects-MODEL_CONTENT-all.json": "d1753b622fd2647499c31298ab333ff07ce9f293d2c9148020502ac9dd9ebfdb",
+    "objects-after-MODEL_CONTENT-all.json": "d1753b622fd2647499c31298ab333ff07ce9f293d2c9148020502ac9dd9ebfdb",
+    "final-controls.json": "8ea77c141d1c2e7a1d08c34c8cffca4fbdfefbc1501554decb0d0c4d098d6186",
+    "clear-summary.json": "f4c78194a0ffe8c50f255504c2d4bb1d862548801fe9b59d476a096e2e5472ce",
+    "index-clear.js": "463bf0b6d38aeb2dca7bb61865fe9ff4356da221442a715ef003c1932c524b6f"
+  },
+  "actorReceiptSetSha256": "cd690ceb365a7cc7edb8612a3c8b9745ce8edb665cd04dbf9527435054ce2856"
+}
