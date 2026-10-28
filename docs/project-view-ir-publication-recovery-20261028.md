@@ -1,6 +1,6 @@
 # IR publication recovery — 2026-10-28
 
-The two October 19 Worker PUT failures returned HTTP 400 / Cloudflare 10021. The retained evidence records a 321-byte body hash, but the original full response body and error chain are unavailable. The historical cause remains unproven; 10021 alone does not identify it.
+The two October 19 Worker PUT failures returned HTTP 400 / Cloudflare 10021. The retained evidence records a 321-byte body hash, but the original full response body and error chain are unavailable. On October 28 the integrated caller reproduced the response and retained all 321 bytes. Its SHA256 exactly matches both historical records: `aff5f6922ad14176a471fa96dca63264c46b53cc5c996f52905abf6f096c5bd3`. The error says `serve_directly and run_worker_first must not be simultaneously specified`. This identifies the rejected parameter combination; the old bodies themselves have not been reconstructed or relabeled.
 
 The integrated caller now uses one owner entry, one credential channel and the actual publication core. It captures complete available Worker response bytes before interpreting status or JSON, retains private files with restrictive permissions, and exposes only safe receipt metadata. Truncated bodies, transport failures and late responses cannot produce success acknowledgements.
 
@@ -18,6 +18,10 @@ Application version verification follows the user's accepted platform behavior: 
 
 ## Validation and remaining boundary
 
-`node --test tests/ir-publication/*.test.mjs`: 42 passed, zero failed. Coverage includes actual owner/core integration, native response capture, 400/10021, unknown writes, stale/active receipts, source and baseline drift, current multi-module source, rolling application versions, cancellation and default-disabled execution. Local Wrangler startup profiling passed. These are offline checks, not authenticated product acceptance.
+`node --test tests/ir-publication/*.test.mjs`: 46 passed, zero failed. Coverage includes actual owner/core integration, native response capture, 400/10021, unknown writes, stale/active receipts, source and baseline drift, current multi-module source, rolling application versions, cancellation and default-disabled execution. Local Wrangler startup profiling passed. These are offline checks, not authenticated product acceptance.
 
 Deployment and current online readback are recorded separately when completed. Report, cold recovery and the third Turn remain outside this deployment-only validation; no successful user acceptance is claimed by this patch.
+
+## Observed 10021 repair
+
+The runtime readback includes both legacy `serve_directly` and `raw_run_worker_first`. The previous adapter copied the legacy field and translated the current field, producing an invalid upload combination. The corrected adapter sends only `run_worker_first`, retaining base path and HTML/not-found behavior. Post-PUT readback still compares the complete runtime configuration. The integration fixture now rejects the exact mutually exclusive field combination, so the previously passing test path reproduces this known API failure. See the [official upload schema](https://developers.cloudflare.com/api/resources/workers/subresources/scripts/methods/update/) for the current field and deprecated legacy field.

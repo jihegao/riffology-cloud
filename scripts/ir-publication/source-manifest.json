@@ -30,8 +30,8 @@
     },
     {
       "file": "core/assets-config.mjs",
-      "bytes": 1770,
-      "sha256": "29371647c6fec9d48e6ee62689a21907f05f6021d5b787bb8b3511c41ef0a782"
+      "bytes": 1744,
+      "sha256": "2e94bd9662a51d72da26d9fa7770e1f2bb14aff1acf4a2a52d33022c95ae9749"
     },
     {
       "file": "core/collect-baseline.mjs",
