@@ -632,6 +632,38 @@ test('history truncation reads the full 2048-event retained window within the pa
   await page.reload(); await page.locator('#workspace:not([hidden])').waitFor(); await waitFor(() => reads === 24); await page.waitForFunction(() => document.querySelector('#turns').textContent.includes('边界回复')); assert.equal(mutations, 0);
 });
 
+test('active history catches up to its snapshot while newer events continue arriving', async t => {
+  const workspaceId = 'workspace-live-history', turnId = 'turn-live-history';
+  const streamCursors = []; let reads = 0, mutations = 0;
+  const page = await pageFixture(t, async (route, path) => {
+    if (route.request().method() !== 'GET') { mutations++; await route.fulfill({ status: 500, body: 'unexpected mutation' }); return true; }
+    if (path === '/api/tenants/tenant-a/projects') { await json(route, { projects: [{ id: 'project-live-history', workspace_id: workspaceId, title: '活跃历史', status: 'ready' }] }); return true; }
+    if (path === `/api/workspaces/${workspaceId}`) { await json(route, { schemaVersion: 1, nextSequence: 2050, activeTurnId: turnId, sessions: { session: { id: 'session', title: '主对话', createdAt: 1 } }, turns: { [turnId]: { id: turnId, sessionId: 'session', message: '继续建模', status: 'running', persistenceOutcome: null, createdAt: 2 } } }); return true; }
+    if (path === `/api/workspaces/${workspaceId}/events`) {
+      const after = Number(new URL(route.request().url()).searchParams.get('after_sequence') || 0);
+      if (route.request().headers().accept?.includes('text/event-stream')) {
+        streamCursors.push(after);
+        const event = { sequence: after + 1, eventId: 'live-answer', turnId, type: 'assistant.message', payload: { text: '继续接收实时回复', stopReason: 'stop' } };
+        await route.fulfill({ status: 200, contentType: 'text/event-stream', body: `id: ${after + 1}\nevent: assistant.message\ndata: ${JSON.stringify(event)}\n\n` });
+      } else {
+        reads++;
+        if (after === 0) await json(route, { events: [], nextSequence: 2050, hasMore: false, oldestSequence: 2, snapshotRequired: true });
+        else {
+          const events = Array.from({ length: 200 }, (_, index) => ({ sequence: after + index + 1, eventId: `live-${after + index + 1}`, turnId, type: 'assistant.delta', payload: { text: '.' } }));
+          await json(route, { events, nextSequence: events.at(-1).sequence, hasMore: true, oldestSequence: 2, snapshotRequired: false });
+        }
+      }
+      return true;
+    }
+  });
+  await page.goto('https://ui.test/#/workspace/project-live-history');
+  await page.locator('#workspace:not([hidden])').waitFor();
+  await page.waitForFunction(() => document.querySelector('#turns').textContent.includes('继续接收实时回复'), null, { timeout: 8000 });
+  assert.equal(reads, 12); assert.equal(streamCursors[0], 2201); assert.equal(mutations, 0);
+  assert.equal(await page.locator('#message-error').innerText(), '');
+  assert.match(await page.locator('#turns').innerText(), /这里只显示近期对话回复/);
+});
+
 test('history window advances by rereading a retained suffix and rejects no progress', async t => {
   const workspaceId = 'workspace-retained-progress', turnId = 'turn-retained-progress'; let reads = 0, noProgressReads = 0;
   const page = await pageFixture(t, async (route, path) => {
