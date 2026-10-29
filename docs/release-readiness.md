@@ -1,5 +1,17 @@
 # Current release readiness — 2026-10-14
 
+## 2026-10-30：#268 / #270 页面修复发布，港口验收仍未完成
+
+[#268](https://github.com/jihegao/riffology-cloud/pull/268) 与 [#270](https://github.com/jihegao/riffology-cloud/pull/270) 已分别合并，完整 CI 通过；本次以 main `bccd1b0a77f1ad5057874b1b9603b0f7b9ad18d0` 的静态资产发布 Gateway version `61327d99-3944-4aa1-abd3-add11fca962f`／deployment `7647d16f-b227-45da-a0f8-bca334a13778`。原网关模块 SHA-256 `0d6b1f1d8afabedbcaf07d76f97d1a71206fc733fbb293742767a4fc2beeb28d` 与原资源、配置保留；96 项资产和隔离帧共 97 项公开回读均为 200 且匹配预期字节。无容器 rollout、模型调用或自动重试。
+
+用户授权的原维护请求在 05:20:09 Asia/Shanghai 开启；原网关 PUT 200、配置和公开资产回读成功、最终作用域账本与容器状态检查通过后，05:27:38 原请求解除回读 `revision=10, hold=null`，原策略 enabled／未暂停。物理检查没有独立枚举全部 PID 或读取原生 lease ACK。该项目与 owner 的浏览器页面权限为 05:22:22–07:22:22 Asia/Shanghai，已接受页面导航可能外发授权页面数据。[脱敏回执与资产清单](evidence/issue270-20261030/release.safe.json) 保留发布时 `maintenanceEndPerformed:false` 快照，另列独立 end 回读。
+
+原 owner 的 Safari 验证中，IR 页面首次连接中断，核对没有待执行或运行中的 IR 记录后，再次切换页面连接成功并保持；港口页面可加载，但现有动画使用独立逻辑，不是 Python 模型轨迹。[#269](https://github.com/jihegao/riffology-cloud/issues/269) 的长实时事件流仍需实际复验；不能把已合并或静态回读记为完整验收。第五次、也是已授权的最后一次 Turn 保存 Revision `9c069d86fcea0e1cb3635c6a0fed9ddab813771106ad9f9ba8c5908ef20cdb9e`，Browser Preview 可本地运行，但独立检查发现船舶离港未使用共享航路；不能宣称模型正确或港口端到端验收完成。浏览器结果始终 local/unverified。
+
+临时目录中的模型与 WebGL 回放候选已通过真实本地 Python 浏览器运行器、隔离页面 broker 和资源／货物约束测试，但尚未写入项目；回放仅使用固定默认参数及 seed 7。现有手工保存策略保留另一作用域的恢复能力，[#272](https://github.com/jihegao/riffology-cloud/pull/272) 是保留该恢复能力的独立候选，尚未部署或开启新的写入权限。[#265](https://github.com/jihegao/riffology-cloud/issues/265) 继续 blocked／Acceptance；未增加第六次付费 Turn，也未重放未知请求。
+
+下方 2026-10-29 内容是当时的历史快照。
+
 ## 2026-10-29：#265 通用建模发布与未完成验收
 
 [#266](https://github.com/jihegao/riffology-cloud/pull/266) 已合并至 main `7508460`，完整 [CI 40801619211](https://github.com/jihegao/riffology-cloud/actions/runs/40801619211) 通过。Gateway version `577bbe97-9ac8-4301-b36e-c61a782e26bc`、deployment `11c9d8be-2183-40a9-9eff-93261916196e` 已回读；原 Gateway 模块 SHA-256 `0d6b1f1d…` 与既有资源配置保留，96 个静态资源及隔离帧回读通过。TrustedPi 已 rollout 至 v15，AMD64 镜像 manifest `3ca7776d…`；两个原应用在连续维护屏障内的账本与作用域内容器状态已核对，原维护解除回执及独立 GET 显示 hold=null、原策略开启且未暂停。上述物理检查没有独立枚举全部 PID 或读取底层 lease ACK。
