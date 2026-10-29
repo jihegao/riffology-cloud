@@ -8,6 +8,7 @@ import {createProjectIrEffects} from '../../services/project-tools/ir-routing.ts
 import {projectIrRegisterEffect,projectIrToolEffect} from '../../services/project-ir/effects.ts';
 import {IrCommitUnknown,PROJECT_IR_INPUT_MAX_BYTES} from '../../services/project-ir/authority.ts';
 import {createProductToolBridge} from '../../services/trusted-pi/product-tool-bridge.mjs';
+import * as irPlugin from '../../services/trusted-pi/ir-package.mjs';
 import {projectIrFixture} from './project-ir-fixture.ts';
 
 // Real SQL Ledger, Dispatcher, routing, registration core and ProductToolBridge.
@@ -46,7 +47,7 @@ async function fixture(t,{padded=false}={}){
  },async observe({reference}){counts.observe++;assert.ok(native.has(reference.effectId));return {...structuredClone(native.get(reference.effectId)),observedAt:++now};}};
  const ir=createProjectIrEffects(files,()=>({projectIrRegisterEffect:input=>projectIrRegisterEffect(context,input),projectIrToolEffect:input=>projectIrToolEffect(context,input)}));
  const dispatcher=new ToolDispatcher(ledger,{execute:input=>input.command.operation==='ir'?ir.execute(input):files.execute(input),observe:input=>input.command.operation==='ir'?ir.observe(input):files.observe(input)});
- const bridge=createProductToolBridge(identity,{clock:()=>now,executionDeadlineAt:60000,fetchImpl:async(_url,init)=>{const command=JSON.parse(init.body);commands.push(command);try{return Response.json(await dispatcher.runIntentUntilSettled(command));}catch(error){dispatchErrors.push(error);return Response.json({error:'tool_bridge_failed'},{status:500});}}});
+ const bridge=createProductToolBridge(identity,{clock:()=>now,executionDeadlineAt:60000,irPlugin,fetchImpl:async(_url,init)=>{const command=JSON.parse(init.body);commands.push(command);try{return Response.json(await dispatcher.runIntentUntilSettled(command));}catch(error){dispatchErrors.push(error);return Response.json({error:'tool_bridge_failed'},{status:500});}}});
  const compile=(toolCallId='compile-original')=>bridge.execute({scope:callScope,name:'project_ir_compile',toolCallId,args:{sealedRef:f.artifact.modelRef}});
  const original=()=>ledger.lookup(commands[0].commandId),coreKeys=()=>[...storage.values.keys()].filter(key=>key.startsWith('project-ir/v1/'));
  return {f,storage,bucket,native,commands,dispatchErrors,written,counts,context,ledger,bridge,compile,original,coreKeys,denyAfterCommit(){storage.afterSync=()=>{storage.afterSync=undefined;denyNext=true;};}};

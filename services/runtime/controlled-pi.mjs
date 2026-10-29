@@ -291,7 +291,9 @@ export async function createControlledPiSession({
   const loader = new ControlledResourceLoader({ systemPrompt, fixedSkills, projectResources, scope: binding });
   let sessionManager;
   if (snapshot) {
-    validateSnapshot(snapshot, binding, models, names);
+    const historical = bridge?.historicalToolNames ?? [];
+    if (!Array.isArray(historical) || historical.some(name => typeof name !== 'string' || !/^project_[a-z0-9_]+$/.test(name))) deny('Invalid historical tool names');
+    validateSnapshot(snapshot, binding, models, new Set([...names, ...historical]));
     if (Object.hasOwn(snapshot, 'resources')) loader.restoreResourceProvenance(snapshot.resources, binding);
     const header = {
       type: 'session', version: 3, id: binding.sessionId, cwd: trustedCwd,

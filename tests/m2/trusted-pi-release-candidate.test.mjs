@@ -1,19 +1,23 @@
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
+import { readFile, mkdtemp, copyFile, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { pathToFileURL } from 'node:url';
 import test from 'node:test';
 import { createControlledPiSession } from '../../services/runtime/controlled-pi.mjs';
-import { BROWSER_PREVIEW_SERVER_ADAPTER, BROWSER_PREVIEW_SERVER_ADAPTER_SHA256, PRODUCT_PI_MAX_INPUT_TOKENS, PRODUCT_PI_MAX_OUTPUT_TOKENS, PRODUCT_PI_MODEL, PRODUCT_PI_PROVIDER, PRODUCT_PI_REQUEST_TIMEOUT_MS, createProductTrustedPiRelease } from '../../services/trusted-pi/release-candidate.mjs';
+import { BROWSER_PREVIEW_SERVER_ADAPTER, BROWSER_PREVIEW_SERVER_ADAPTER_SHA256, PRODUCT_PI_MAX_INPUT_TOKENS, PRODUCT_PI_MAX_OUTPUT_TOKENS, PRODUCT_PI_MODEL, PRODUCT_PI_PROVIDER, PRODUCT_PI_REQUEST_TIMEOUT_MS, createProductTrustedPiRelease, modelingProfile } from '../../services/trusted-pi/release-candidate.mjs';
 
 const now=1_800_000_000_000,identity={scope:{tenantId:'tenant-a',projectId:'project-a',workspaceId:'workspace-a',workspaceGeneration:2},sessionId:'session-a',turnId:'turn-a',dispatchId:'dispatch-a',generation:2},actor={userId:'user-a',authVersion:3};
 function release(log){return createProductTrustedPiRelease({clock:()=>now,modelFetch:async(input,init)=>{log.push({kind:'model',request:new Request(input,init)});return new Response('data: [DONE]\n\n',{headers:{'content-type':'text/event-stream'}});},toolFetch:async(input,init)=>{const request=new Request(input,init);if(new URL(request.url).pathname==='/v1/research'){log.push({kind:'research',request});return Response.json({model:{spec:{}},experiments:[]});}const command=await request.clone().json();log.push({kind:'tool',request});return Response.json({schemaVersion:1,scope:command.scope,turnId:command.turnId,dispatchId:command.dispatchId,commandId:command.commandId,digest:'a'.repeat(64),deadlineAt:Math.min(now+115000,command.executionDeadlineAt),operation:command.operation,status:'completed',effectId:'effect-a',acceptedAt:now,updatedAt:now,dispatchedAt:now,unknownAt:null,finishedAt:now,lastObservedAt:now,outcome:'completed',errorCode:null,result:{text:'ok'},command:null});}});}
 
-test('candidate fixes one Responses model, simulation policy and the pinned IR tools',async t=>{
+test('the default release uses the general modeling agent and no IR tools',async t=>{
   assert.equal(PRODUCT_PI_REQUEST_TIMEOUT_MS,115_000);
-  const options=await release([]).resolveOptions({identity,actor,executionDeadlineAt:now+600000});assert.deepEqual(options.selectedModel,{provider:PRODUCT_PI_PROVIDER,id:PRODUCT_PI_MODEL});assert.deepEqual(options.allowedModels,[options.selectedModel]);assert.equal(options.providerDefinitions[0].config.api,'openai-responses');assert.equal(options.providerDefinitions[0].config.baseUrl,'https://model-proxy.riffology.internal/v1');assert.equal(options.providerDefinitions[0].config.models[0].contextWindow,PRODUCT_PI_MAX_INPUT_TOKENS);assert.equal(options.providerDefinitions[0].config.models[0].maxTokens,PRODUCT_PI_MAX_OUTPUT_TOKENS);assert.match(options.systemPrompt,/project_\*/);assert.match(options.systemPrompt,/call the appropriate project tool again/);assert.deepEqual(options.fixedSkills.map(value=>value.name),['riffoid-ir','simulation']);assert.deepEqual(options.bridge.definitions.map(value=>value.name),['project_read','project_read_page','project_write','project_edit','project_list','project_search','project_install_preview_adapter','project_set_experiment_parameters','project_bash','project_ir_check','project_ir_compile','project_ir_run','project_ir_result','project_ir_mode','project_ir_show','project_ir_install']);
+  const options=await release([]).resolveOptions({identity,actor,executionDeadlineAt:now+600000});assert.deepEqual(options.selectedModel,{provider:PRODUCT_PI_PROVIDER,id:PRODUCT_PI_MODEL});assert.deepEqual(options.allowedModels,[options.selectedModel]);assert.equal(options.providerDefinitions[0].config.api,'openai-responses');assert.equal(options.providerDefinitions[0].config.baseUrl,'https://model-proxy.riffology.internal/v1');assert.equal(options.providerDefinitions[0].config.models[0].contextWindow,PRODUCT_PI_MAX_INPUT_TOKENS);assert.equal(options.providerDefinitions[0].config.models[0].maxTokens,PRODUCT_PI_MAX_OUTPUT_TOKENS);assert.match(options.systemPrompt,/project_\*/);assert.match(options.systemPrompt,/call the appropriate project tool again/);assert.deepEqual(options.fixedSkills.map(value=>value.name),['general-modeling','simulation']);assert.deepEqual(options.bridge.definitions.map(value=>value.name),['project_read','project_read_page','project_write','project_edit','project_list','project_search','project_install_preview_adapter','project_set_experiment_parameters','project_bash','project_browser_preview_contract']);
   const host=await createControlledPiSession({...options,trustedCwd:'/var/lib/riffology/pi',scope:{tenantId:'tenant-a',projectId:'project-a',sessionId:'session-a'}});t.after(()=>host.dispose());assert.deepEqual(host.inspect().model,options.selectedModel);assert.deepEqual(host.inspect().tools,options.bridge.definitions.map(value=>value.name));assert.ok(host.inspect().systemPrompt.includes(options.fixedSkills[0].content));
+  assert.doesNotMatch(options.systemPrompt,/project_ir_result/);
 });
 test('candidate gives compiler v0.1 a source-preserving public CLI authoring contract',async()=>{
-  const options=await release([]).resolveOptions({identity,actor,executionDeadlineAt:now+600000}),skill=options.fixedSkills.find(value=>value.name==='simulation').content;
+  const options=await release([]).resolveOptions({identity,actor,message:'/sim ir',executionDeadlineAt:now+600000}),skill=options.fixedSkills.find(value=>value.name==='simulation').content;
   assert.match(skill,/public sim-engine 0\.1\.0 CLI only through bounded project_bash/);
   assert.match(skill,/sim-engine seal model\/business-ir\.draft\.json model\/business-ir\.json; sim-engine validate model\/business-ir\.json; sim-engine compile model\/business-ir\.json model\/model\.simpack/);
   assert.match(skill,/"kind":"compiler-v01","businessIr":"model\/business-ir\.json","bundle":"model\/model\.simpack"/);
@@ -49,5 +53,28 @@ test('trusted host execution deadline reaches both release transports',async()=>
 test('a fresh generic project does not inherit the simulation profile',async()=>{
  const release=createProductTrustedPiRelease({clock:()=>now,toolFetch:async()=>Response.json({model:{spec:null},experiments:[]})});
  const options=await release.resolveOptions({identity,actor,executionDeadlineAt:now+1000});
- assert.deepEqual(options.fixedSkills.map(value=>value.name),['riffoid-ir']);assert.match(options.fixedSkills[0].content,/user browser/);assert.doesNotMatch(options.systemPrompt,/600 by 420|five files|Do not generate HTML/);
+ assert.deepEqual(options.fixedSkills.map(value=>value.name),['general-modeling']);assert.match(options.fixedSkills[0].content,/isolated browser/);assert.doesNotMatch(options.systemPrompt,/600 by 420|five files|Do not generate HTML/);
+});
+
+test('explicit selection persists in the active conversation branch and can be cleared',()=>{
+ const entry=(id,parentId,role,text)=>({id,parentId,type:'message',message:{role,content:[{type:'text',text}]}});
+ const entries=[entry('a',null,'user','Build a harbor model'),entry('b','a','assistant','I selected IR'),entry('c','b','user','User command: /sim ir\nThe platform applied this command through the current scoped Tool Bridge.\n{}'),entry('d','c','user','continue'),entry('e','a','user','/sim code')];
+ assert.equal(modelingProfile('Build a harbor model',{entries,leafId:'b'}),'code');
+ assert.equal(modelingProfile('continue',{entries,leafId:'d'}),'ir');
+ assert.equal(modelingProfile('continue',{entries,leafId:'e'}),'code');
+ assert.equal(modelingProfile('/sim code',{entries,leafId:'d'}),'code');
+ assert.equal(modelingProfile('/sim ir build it',{entries,leafId:'b'}),'ir');
+ assert.equal(modelingProfile('/sim show',{entries,leafId:'d'}),'ir');
+ assert.throws(()=>modelingProfile('continue',{entries:[entry('x','x','user','hello')],leafId:'x'}),/invalid-modeling-profile-session/);
+});
+
+test('general modeling starts without an installed IR package',async t=>{
+ const dir=await mkdtemp(join(tmpdir(),'general-no-ir-'));t.after(()=>rm(dir,{recursive:true,force:true}));
+ for(const name of ['release-candidate.mjs','product-model-transport.mjs','product-tool-bridge.mjs','research-context.mjs'])await copyFile(new URL('../../services/trusted-pi/'+name,import.meta.url),join(dir,name));
+ const isolated=await import(pathToFileURL(join(dir,'release-candidate.mjs')).href);
+ const instance=isolated.createProductTrustedPiRelease({clock:()=>now,toolFetch:async()=>Response.json({model:{spec:null},experiments:[]})});
+ const general=await instance.resolveOptions({identity,actor,message:'Build a model',executionDeadlineAt:now+1000});
+ assert.deepEqual(general.fixedSkills.map(skill=>skill.name),['general-modeling']);
+ assert.equal(general.bridge.definitions.some(tool=>tool.name.startsWith('project_ir_')),false);
+ await assert.rejects(instance.resolveOptions({identity,actor,message:'/sim ir',executionDeadlineAt:now+1000}),/Cannot find module/);
 });

@@ -37,7 +37,7 @@ async function fixture(t, restored = false, toolResult = { content: [{ type: 'te
     async cancel() {}, async dispose() {},
   };
   const created = [];
-  const release = { async resolveOptions(input) { assert.deepEqual(input, { identity, actor }); return { selectedModel: { provider: 'release', id: 'fixed' }, allowedModels: [{ provider: 'release', id: 'fixed' }], resolveCredential: async () => 'injected', systemPrompt: 'fixed' }; } };
+  const release = { async resolveOptions(input) { assert.deepEqual({identity:input.identity,actor:input.actor,message:input.message}, { identity, actor, message:'Build model' }); assert.ok(input.snapshot===null||input.snapshot.format==='riffology-pi-session-v1'); return { selectedModel: { provider: 'release', id: 'fixed' }, allowedModels: [{ provider: 'release', id: 'fixed' }], resolveCredential: async () => 'injected', systemPrompt: 'fixed' }; } };
   const createSession = async (options) => { created.push(options); return host; };
   return { root, id, prefix, calls, created, release, createSession,host };
 }

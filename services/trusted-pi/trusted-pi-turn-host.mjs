@@ -186,7 +186,7 @@ export async function runTrustedPiTurnHost(token, release, options = {}) {
     if(executionDeadlineAt!==undefined)deadlineTimer=setTimeout(()=>{deadlineExceeded=true;void cancel();},Math.max(1,executionDeadlineAt-clock()));
     if(deadlinePassed())fail('trusted-pi-execution-expired');
     await persist();
-    const fixed = await release.resolveOptions({ identity: structuredClone(parsed.identity), actor: structuredClone(parsed.actor),...(executionDeadlineAt===undefined?{}:{executionDeadlineAt}) });
+    const fixed = await release.resolveOptions({ identity: structuredClone(parsed.identity), actor: structuredClone(parsed.actor), message: parsed.message, snapshot: snapshot ? structuredClone(snapshot) : null,...(executionDeadlineAt===undefined?{}:{executionDeadlineAt}) });
     if (!fixed || typeof fixed !== 'object' || Array.isArray(fixed)) fail('invalid-trusted-pi-release');
     if(deadlinePassed()||deadlineExceeded)fail('trusted-pi-execution-expired');
     const releaseResponse = fixed.onProviderResponse;

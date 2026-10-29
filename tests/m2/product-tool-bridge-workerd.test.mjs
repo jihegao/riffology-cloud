@@ -6,6 +6,7 @@ import test from 'node:test';
 import {build} from 'esbuild';
 import {Miniflare} from 'miniflare';
 import {createProductToolBridge,PRODUCT_TOOL_BRIDGE_URL} from '../../services/trusted-pi/product-tool-bridge.mjs';
+import * as irPlugin from '../../services/trusted-pi/ir-package.mjs';
 
 const identity={scope:{tenantId:'tenant-a',projectId:'project-a',workspaceId:'workspace-a',workspaceGeneration:1},sessionId:'session-a',turnId:'turn-a',dispatchId:'dispatch-a',generation:1};
 const toolScope={tenantId:identity.scope.tenantId,projectId:identity.scope.projectId,sessionId:identity.sessionId};
@@ -87,7 +88,7 @@ test('real Bridge HTTP and SQLite ledger observe one effect after its response i
 test('IR-specific large result survives the actual Workerd SQLite ledger and host bridge without truncation',{timeout:30_000},async()=>{
  const directory=await mkdtemp(join(tmpdir(),'ir-tool-bridge-workerd-')),workerModule=await bundledWorker();let mf=miniflare(workerModule,directory),sent;
  const executionDeadlineAt=Date.now()+60_000,runId='run-11111111-1111-4111-8111-111111111111',call={scope:toolScope,name:'project_ir_result',toolCallId:'provider-ir-result',args:{runId}};
- const bridge=()=>createProductToolBridge(identity,{executionDeadlineAt,fetchImpl:async(_,init)=>{sent=JSON.parse(init.body);return mf.dispatchFetch('http://tool-bridge.test/bridge',{method:'POST',body:init.body});}});
+ const bridge=()=>createProductToolBridge(identity,{executionDeadlineAt,irPlugin,fetchImpl:async(_,init)=>{sent=JSON.parse(init.body);return mf.dispatchFetch('http://tool-bridge.test/bridge',{method:'POST',body:init.body});}});
  try{
   const original=await bridge().execute(call),record=JSON.parse(original.content[0].text);assert.equal(record.runId,runId);assert.equal(record.events.length,1200);assert.ok(Buffer.byteLength(original.content[0].text)>16384);
   const before=await (await post(mf,'/snapshot',{identity,commandId:sent.commandId})).json();assert.equal(before.effects,1);assert.equal(before.record.operation,'ir');assert.equal(before.record.status,'completed');assert.deepEqual(before.record.result,record);
