@@ -1,0 +1,4 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {classifiedAssetsConfig} from '../../scripts/ir-publication/core/assets-config.mjs';
+for(const routing of [true,false,['/api/*','!/api/public/*']])test('upload uses only current routing field: '+JSON.stringify(routing),()=>{const runtime={html_handling:'none',not_found_handling:'none',serve_directly:false,raw_run_worker_first:routing,base_path:'/'};const before=structuredClone(runtime),wire=classifiedAssetsConfig(runtime);assert.equal(Object.hasOwn(wire,'serve_directly'),false);assert.deepEqual(wire,{html_handling:'none',not_found_handling:'none',base_path:'/',run_worker_first:routing});assert.deepEqual(runtime,before);});
+test('unclassified runtime asset setting stops before upload',()=>assert.throws(()=>classifiedAssetsConfig({html_handling:'none',not_found_handling:'none',serve_directly:false,raw_run_worker_first:true,base_path:'/',unknown:true}),/unclassified-assets-field/));
