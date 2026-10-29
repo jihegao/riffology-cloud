@@ -168,7 +168,7 @@ export function createProjectViewsPanel({root,api,pollMs=5000}){
     },
     irRequest:async(operation,input,{signal}={})=>{
      if(!current())fail('stale');
-     const result=await readApi('/api/workspaces/'+encodeURIComponent(ownContext.workspaceId)+'/project-ir',signal,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({packageIdentity:ownPackage.packageIdentity,operation,input})},25000);
+     const result=await readApi('/api/workspaces/'+encodeURIComponent(ownContext.workspaceId)+'/project-ir',signal,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({packageIdentity:ownPackage.packageIdentity,operation,input})},25000);
      if(!current())fail('stale');return result;
     },
     onNavigate:next=>void choose(next),
