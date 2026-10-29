@@ -1,5 +1,15 @@
 # Current release readiness — 2026-10-14
 
+## 2026-10-29：#265 通用建模发布与未完成验收
+
+[#266](https://github.com/jihegao/riffology-cloud/pull/266) 已合并至 main `7508460`，完整 [CI 40801619211](https://github.com/jihegao/riffology-cloud/actions/runs/40801619211) 通过。Gateway version `577bbe97-9ac8-4301-b36e-c61a782e26bc`、deployment `11c9d8be-2183-40a9-9eff-93261916196e` 已回读；原 Gateway 模块 SHA-256 `0d6b1f1d…` 与既有资源配置保留，96 个静态资源及隔离帧回读通过。TrustedPi 已 rollout 至 v15，AMD64 镜像 manifest `3ca7776d…`；两个原应用在连续维护屏障内的账本与作用域内容器状态已核对，原维护解除回执及独立 GET 显示 hold=null、原策略开启且未暂停。上述物理检查没有独立枚举全部 PID 或读取底层 lease ACK。
+
+浏览器页面授权仅限所选项目与其 owner，2026-10-29 09:56:56–11:56:56 Asia/Shanghai，现已过期。受邀 owner 的项目 UI 已显示默认通用建模提示；旧 IR 页面加载时实际出现 HTTP 415，不能宣称项目页面已修复或完成验收。原通用建模 Turn 已由该项目 owner 会话回读为 completed、saved，Revision 为 `a3ee14c4c79d8d51add0f43ff61fe68555c9f3f2150567f5acedcc8be732c772`；活动 Turn、逻辑释放等待均为空，owner 容量显示 available，费用和原容器/底层 lease 的独立释放仍待核对。保存版 `python-stdlib/v1` 预览包已 ready；Safari 一次本地运行完成，默认 3 艘船、每艘 80 TEU 却显示已送达 670 TEU、缓冲 98 TEU，需核实并修复货物守恒；随后页面出现 `runtime-canvas-session-timeout`，该后续状态亦需核查。Agent 报告独立 3D 页面资产写入失败，港口 3D 未验收。所有浏览器计算均为 local/unverified，见 [#265](https://github.com/jihegao/riffology-cloud/issues/265)。
+
+[#267](https://github.com/jihegao/riffology-cloud/issues/267) 是本次验收发现的最小页面修复：生产 API 包装器和 IR 调用方使用不同大小写的 Content-Type 时，浏览器将值合并，服务端严格 JSON 校验返回 415。[#268](https://github.com/jihegao/riffology-cloud/pull/268) 的候选统一请求头，修复前严格本地浏览器回归超时；修复后 Chromium 153 与 WebKit 26.6 各 2/2 通过，未代替实际 owner 页面验收。旧页面窗口重新开放须有有效授权；本段不表示新页面授权或修复部署已完成。
+
+下方 #265 本地候选与旧版本观察是部署前历史快照。
+
 ## 2026-10-29：#265 通用建模与项目页面本地候选
 
 [#265](https://github.com/jihegao/riffology-cloud/issues/265) 的候选将普通对话改为通用代码建模；`/sim ir` 明确启用现有固定插件，`/sim code` 返回通用模式，选择只沿当前对话分支保存。通用模式不自动加载 IR 固定 skill 或向模型提供 IR 专用工具；历史对话中的 IR 工具记录仍可读取且不会重放。旧项目、Revision、IR 文件及现有执行隔离不因切换而删除。新增按需 Python Browser Preview 合同，要求修复预览时提供完整源文件；Model 的三维项目页与 Preview 的 Python 运行分别陈述，均为 local/unverified。
