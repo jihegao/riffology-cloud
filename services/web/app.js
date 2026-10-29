@@ -625,7 +625,12 @@ async function refreshWorkspaceDiff(generation=viewGeneration){
 
 function selectArtifactPanel(panel){workspaceArtifactPanel=panel==='diff'?'diff':'files';const diff=workspaceArtifactPanel==='diff';$('#files-tab').setAttribute('aria-selected',String(!diff));$('#diff-tab').setAttribute('aria-selected',String(diff));$('#files-view').hidden=diff;$('#diff-view').hidden=!diff;if(diff&&!workspaceDiff&&!workspaceDiffError)void refreshWorkspaceDiff(viewGeneration);}
 
-async function readWorkspaceEvents(workspaceId) {
+async function readWorkspaceEvents(workspaceId, snapshotPromise) {
+  const snapshot = await snapshotPromise;
+  // A live Turn can append events faster than this paginated read completes.
+  // Catch up to the snapshot first, then let the event stream carry new events.
+  const live = Boolean(snapshot?.activeTurnId || snapshot?.resourceWait || snapshot?.releaseHold || snapshot?.recoveryHold);
+  const snapshotCursor = Number.isSafeInteger(snapshot?.nextSequence) && snapshot.nextSequence > 0 ? snapshot.nextSequence - 1 : null;
   const events = [];
   let cursor = 0;
   let historyTruncated = false;
@@ -645,7 +650,7 @@ async function readWorkspaceEvents(workspaceId) {
     if (page.hasMore && Number(page.nextSequence) <= cursor) throw uiError('error.eventsStalled');
     events.push(...page.events);
     cursor = page.nextSequence;
-    if (!page.hasMore) return { events, cursor, snapshotRequired: false, historyTruncated, oldestSequence };
+    if (!page.hasMore || live && snapshotCursor !== null && cursor >= snapshotCursor) return { events, cursor, snapshotRequired: false, historyTruncated, oldestSequence };
     if (cursor <= lastCursor) throw uiError('error.eventsStalled');
     lastCursor = cursor;
   }
@@ -725,7 +730,8 @@ async function refreshWorkspace(generation = viewGeneration) {
   const workspaceId = activeProject.workspace_id;
   const refreshSequence=++workspaceRefreshSequence;
   try {
-    const [snapshot, replay] = await Promise.all([api(`/api/workspaces/${encodeURIComponent(workspaceId)}`), readWorkspaceEvents(workspaceId)]);
+    const snapshotPromise = api(`/api/workspaces/${encodeURIComponent(workspaceId)}`);
+    const [snapshot, replay] = await Promise.all([snapshotPromise, readWorkspaceEvents(workspaceId, snapshotPromise)]);
     if (generation !== viewGeneration || refreshSequence!==workspaceRefreshSequence || activeProject?.workspace_id !== workspaceId) return;
     workspaceSnapshot = snapshot;
     workspaceEvents = replay.events;
