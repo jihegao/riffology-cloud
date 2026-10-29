@@ -1,5 +1,15 @@
 # Current release readiness — 2026-10-14
 
+## 2026-10-29：#265 通用建模与项目页面本地候选
+
+[#265](https://github.com/jihegao/riffology-cloud/issues/265) 的候选将普通对话改为通用代码建模；`/sim ir` 明确启用现有固定插件，`/sim code` 返回通用模式，选择只沿当前对话分支保存。通用模式不自动加载 IR 固定 skill 或向模型提供 IR 专用工具；历史对话中的 IR 工具记录仍可读取且不会重放。旧项目、Revision、IR 文件及现有执行隔离不因切换而删除。新增按需 Python Browser Preview 合同，要求修复预览时提供完整源文件；Model 的三维项目页与 Preview 的 Python 运行分别陈述，均为 local/unverified。
+
+2026-10-29 只读观察：所选港口项目和受邀 owner 仍有效；Gateway 当前 100% 版本为 `06dab4dd-7ebe-4243-a1fd-94339cff067b`，107 bindings，未配置 Browser policy，G5/M3/M4 开关为 false。该配置导致已保存项目页不可用；候选源码本身尚未开启页面授权。线上已运行的 TrustedPi 仍为 v14／`dcd4a5fc…`，本地新镜像尚未推送或部署。原政策记录中 reviewAt 存在 2026-10-20 与已发布延长到 2026-12-31 的不同表述，真实计费执行前须核对适用授权。
+
+本地检查：UI 国际化和 typecheck 通过；M0 358 通过、1 个需显式启用的 Python 协议测试跳过；项目页授权、生成合同和真实浏览器局部回归 46 通过。Chromium 153 与 WebKit 26.6 分别在本机隔离帧中绘制和交互真实 WebGL 几何，这是合成页面环境验证，不是 Agent 港口模型验收。AMD64 候选镜像在本机仿真、无网络、UID 10002 下通过通用/显式 IR 模式探针，镜像本地 ID `sha256:778e30c36b43e0e670381775b5bc3cb27c8e1802acb9c437b14d69313c44cca0`；不将仿真当成原生线上运行。96 个发布静态资源候选中，94 个保留上一发布字节，另两个是本次界面提示。
+
+尚未发布、打开所选页面 grant、生成新的港口 Revision 或进行已认证浏览器验收。完成这些步骤需在原身份下确认容量和释放、保持旧请求隔离，并记录实际模型、Revision、浏览器表现与 local/unverified 限制。候选镜像安装沿用原 lockfile；2026-10-29 `npm audit --omit=dev` 对该既有依赖报告 2 个 high 和 1 个 moderate，具体触发路径尚未判断，不把审计结果当作本次新引入的漏洞。
+
 ## 2026-10-28 23:07 上海：entry replay 修复已上线，原维护解除
 
 Gateway 已以 v241／`63d9ea2a-8965-4876-9693-0fece3bea507` 在 100% serving，deployment `17520c5e-b171-4bc5-ae22-459549b96814`。本轮修复 `entry_replay_unavailable` 的过短 RPC 等待：2 秒改为 10 秒，保留单次 claim、失败关闭与 30 秒签名有效期复核。旧请求 2002ms／503 对应原上限；更底层平台迟延原因仍未知。部署原字节仅替换该常量，96 项资产全部匹配，全部 107 bindings／11 secrets／26 exports／6 container associations、17 应用及历史版本保留。

@@ -5,6 +5,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { test } from 'node:test';
 import { ControlledResourceLoader, createControlledPiSession } from '../../../services/runtime/controlled-pi.mjs';
+import { modelingProfile } from '../../../services/trusted-pi/release-candidate.mjs';
 
 const scope = { tenantId: 'tenant-a', projectId: 'project-a', sessionId: '11111111-1111-4111-8111-111111111111' };
 const model = { provider: 'riffology-m0-test', id: 'local-protocol-fixture' };
@@ -165,6 +166,23 @@ test('remote-only tool call carries server scope and survives restore without ex
   t.after(() => restored.dispose());
   assert.equal(calls.length, 1, 'restoring history must not replay a tool');
   await assert.rejects(createControlledPiSession({ ...f.options, snapshot }), /Session tool/);
+});
+
+test('a disabled IR tool remains readable in old history but is not active or replayed', async (t) => {
+  const f=await fixture(t,'tool');let calls=0;
+  const original={...f.options,bridge:{definitions:[tool],execute:async()=>{calls++;return {content:[{type:'text',text:'old result'}],details:{}};}}};
+  const first=await createControlledPiSession(original);t.after(()=>first.dispose());
+  await first.prompt('Old turn');assert.equal(calls,1);
+  const snapshot=first.snapshot();
+  for(const entry of snapshot.entries){
+    if(entry.message?.role==='assistant')for(const part of entry.message.content??[])if(part.type==='toolCall'&&part.name==='project_list')part.name='project_ir_mode';
+    if(entry.message?.role==='toolResult'&&entry.message.toolName==='project_list')entry.message.toolName='project_ir_mode';
+  }
+  const bridge={definitions:[tool],historicalToolNames:['project_ir_mode'],execute:async()=>{throw Error('must-not-replay');}};
+  const restored=await createControlledPiSession({...f.options,bridge,snapshot});t.after(()=>restored.dispose());
+  assert.deepEqual(restored.inspect().tools,['project_list']);assert.equal(calls,1);
+  assert.equal((await restored.prompt('Continue as a general model')).outcome,'completed');assert.equal(calls,1);
+  await assert.rejects(createControlledPiSession({...f.options,bridge:{...bridge,historicalToolNames:[]},snapshot}),/Session tool/);
 });
 
 test('restore rejects revoked models, another project, and malformed entry graph', async (t) => {
@@ -407,6 +425,13 @@ test('trusted command preparation completes before the provider and is checkpoin
  const host=await createControlledPiSession({...f.options,bridge});t.after(()=>host.dispose());
  assert.equal((await host.prompt('/sim ir')).outcome,'completed');assert.deepEqual(prepared,['/sim ir']);assert.equal(f.requests.length,1);
  assert.match(JSON.stringify(f.requests[0].body),/Observed scoped mode: ir/);assert.match(JSON.stringify(host.snapshot()),/User command: \/sim ir/);assert.equal(host.inspect().extensions,0);
+});
+test('explicit profile selection survives real session checkpoints and can be cleared',async t=>{
+ const f=await fixture(t);
+ const bridge={definitions:[tool],execute:async()=>{throw Error('unused-tool');},preparePrompt:async text=>`User command: ${text}\nThe platform applied this command through the current scoped Tool Bridge.\n{}`};
+ const host=await createControlledPiSession({...f.options,bridge});t.after(()=>host.dispose());
+ await host.prompt('/sim ir');assert.equal(modelingProfile('continue',host.snapshot()),'ir');
+ await host.prompt('/sim code');assert.equal(modelingProfile('continue',host.snapshot()),'code');
 });
 test('an unknown command preparation failure never starts a provider call or retries its effect',async t=>{
  const f=await fixture(t);let attempts=0;

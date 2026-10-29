@@ -18,6 +18,7 @@
     "shell.skip",
     "site.acceptInvite",
     "site.activateWorkspace",
+    "site.agentModeHelp",
     "site.backToProjects",
     "site.blankProject",
     "site.browserPreview",

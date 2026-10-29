@@ -40,7 +40,7 @@ test('embedded JavaScript example is executable and matches the exact scene cont
 test('actual release resolveOptions injects generation policy and original adapter with legacy/evidence guards',async()=>{
  const calls=[];
  const release=createProductTrustedPiRelease({clock:()=>now,modelFetch:async()=>{throw Error('generation-test-must-not-call-model');},toolFetch:async input=>{calls.push(new URL(input).pathname);return Response.json({model:{spec:{}},experiments:[]});}});
- const options=await release.resolveOptions({identity,actor,executionDeadlineAt:now+600000});
+ const options=await release.resolveOptions({identity,actor,message:'/sim ir',executionDeadlineAt:now+600000});
  assert.deepEqual(calls,['/v1/research']);assert.deepEqual(options.fixedSkills.map(s=>s.name),['riffoid-ir','simulation']);
  const ir=options.fixedSkills.find(s=>s.name==='riffoid-ir').content;
  assert.match(ir,/local\/unverified/);assert.match(ir,/never as a verified Experiment or cloud Research Run/);
