@@ -1,0 +1,41 @@
+{
+  "schema": "jhg46-same-c263-wire-repair-independent-review-v1",
+  "reviewedAt": "2026-10-18T12:27:09.276506+00:00",
+  "verdict": "no-must-fix-for-proposal-only",
+  "operationsManifestSha256": "76dfb4606c75424c01a00220805f6efb5b32afbf474fd003fe540641bb97c309",
+  "candidateBinding": {
+    "bytes": 5838,
+    "sha256": "2e47be8e7478dd1cdf176792e4c76e836a2b2fad73e091f4b06b9d8c85f434f8",
+    "fileCount": 19
+  },
+  "unchangedCoreFilesByteVerified": [
+    "pub_common.py",
+    "scope.json",
+    "remote-recovery.py",
+    "oci_verify.py",
+    "independent-cleanup-readonly.py",
+    "test_independent_reader.py",
+    "renewal-source-contract.json"
+  ],
+  "findings": [
+    "Only local driver adds io/grant_wire and calls it after exact authorized raw SHA check, before STATE mkdir/OAuth/process/API.",
+    "Wire requires exactly one LF which is terminal, no CR, and producer bytes equal the frozen readline consumer first line; no reserialization or implicit missing-LF repair.",
+    "Existing pure grant validation is applied to exact consumer line and current manifest. Remote/common/scope/OCI/reader contracts remain byte exact.",
+    "Three original pure tests cover valid compact full grant and same raw SHA through real consumer, pretty full grant valid but incomplete first line rejected before auth, and missing/double LF/CRLF before auth/STATE/process/API. Original log byte/hash checked, not rerun.",
+    "New local repair-once operations copy uses a new HERE/publication-once; old local consumed STATE remains. Same c263 original remote identity is retained, and unknown/drift stops.",
+    "Original control token/SSH attempts were consumed; original root absence/route/process observations are dated scope evidence, not zero auth/cloud/fees or permission to retry.",
+    "No actual stderr traceback is inferred from unavailable raw stderr.",
+    "A new explicit recovery grant is still required before one additional token refresh/SSH route and original not-yet-started export/push."
+  ],
+  "mustFix": [],
+  "reviewActions": {
+    "readOnlyLocalSourceAndEvidence": true,
+    "testsRerun": false,
+    "remoteOrDockerOrOAuthOrApiCalls": false,
+    "authorFilesModified": false
+  },
+  "limitations": [
+    "Static source/wire boundary review only; no renewed authorization, target state or publication success claim.",
+    "Normal runtime guards and original identity/cleanup remain required after a future grant."
+  ]
+}

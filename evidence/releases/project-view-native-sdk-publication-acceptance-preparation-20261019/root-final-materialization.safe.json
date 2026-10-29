@@ -1,0 +1,58 @@
+{
+  "schema": "jhg46-native-sdk-public-materialization-final/v1",
+  "recordedAt": "2026-10-18T18:01:14.074714+00:00",
+  "preparationComplete": true,
+  "executionAuthorized": false,
+  "author": "root; materialization and own document edits, not independent review",
+  "copiedFinalInputs": [
+    {
+      "originalFile": ".local/jhg46-native-sdk-acceptance-preparation-20261019/final-freeze-v1/frozen-inputs.safe.json",
+      "publicFile": "evidence/releases/project-view-native-sdk-publication-acceptance-preparation-20261019/final-freeze-v1/frozen-inputs.safe.json",
+      "bytes": 10819,
+      "sha256": "93005f18368ef0fdbc08c874df97fc29d8eaeaf644dfcdcf8e3ad69f7c6796b3",
+      "byteEqual": true
+    },
+    {
+      "originalFile": ".local/jhg46-native-sdk-acceptance-preparation-20261019/final-freeze-v1/frozen-inputs.final.safe.json",
+      "publicFile": "evidence/releases/project-view-native-sdk-publication-acceptance-preparation-20261019/final-freeze-v1/frozen-inputs.final.safe.json",
+      "bytes": 11160,
+      "sha256": "c65b9f38a1086748617f1651fb8a448c19b80253619aba29c711b2d09238e657",
+      "byteEqual": true
+    }
+  ],
+  "publicPacket": {
+    "file": "docs/project-view-native-sdk-publication-acceptance-packet-20261019.md",
+    "bytes": 12685,
+    "sha256": "be1f835cfacf4e0e71def4ad437aa6d7e04cd7ae5abb3c4780bb85531c27b569"
+  },
+  "priorAuthorPublicPacket": {
+    "localHistory": "final-freeze-v1/author-public-document-before-root.md",
+    "bytes": 19117,
+    "sha256": "793fd9e1c167a44b1544e9be30419dc85a99cb0ed590b92dc783d441f60ce903"
+  },
+  "publicReadme": {
+    "file": "README.md",
+    "bytes": 3307,
+    "sha256": "5f65a6ec8df041daa8cad99b6e9a2605bc7a6158b10c6def4b693830122f5fa7"
+  },
+  "priorPublicReadme": {
+    "localHistory": "final-freeze-v1/author-public-readme-before-root.md",
+    "bytes": 3814,
+    "sha256": "37348a2fed901eaf205398496481998f68b94aa863b7a2a5fdd245f3e2650404"
+  },
+  "unchangedIncrementalProofs": [
+    "copy-provenance.partial.safe.json",
+    "copy-provenance.gateway-increment.safe.json",
+    "copy-provenance.gate-increment.safe.json",
+    "copy-provenance.gate-review-addendum.safe.json",
+    "pending-additions.safe.json"
+  ],
+  "privateOperationInputsNotPublished": [
+    "gateway-ops-candidate-v1/baseline-expectation.private.json",
+    "gateway-ops-candidate-v1/metadata-without-jwt.private.json"
+  ],
+  "normalPathLiteralExceptionAuthority": "copy-provenance.gateway-increment.safe.json",
+  "runtimeGrantMergeAndExecutionReceiptsStillAbsent": true,
+  "newAuthenticationNetworkOrCloudWritesByMaterialization": 0,
+  "inventoryConvention": "All evidence files except inventory itself and the subsequent dated independent-final-public-packet-review.safe.json; publicPacket identity also bound."
+}

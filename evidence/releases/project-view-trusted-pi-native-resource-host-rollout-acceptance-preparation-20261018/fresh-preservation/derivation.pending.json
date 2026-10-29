@@ -1,0 +1,58 @@
+{
+  "afterCall": {
+    "args": {
+      "ackSha256": null,
+      "ackTargetVersion": null,
+      "beforeWitnessSha256": null,
+      "choiceReceiptSha256": null,
+      "phase": "after-runtime-rollout",
+      "requestId": "d0b12dd5-c04e-41d9-9a05-c685431d6695"
+    },
+    "export": "makeRequest",
+    "notDerivableUntilOriginalAckAndExplicitChoices": true
+  },
+  "allowedDeltaFromOldAlgorithms": [
+    "new request/phases only",
+    "both phases exact9c8 module and lastknown5a840 closedWorker; any drift held, not adopted",
+    "target app12/f18 before; originalACK target/ec8 after, target+originalcurrent versionlist only after explicitchoice",
+    "other15 fullapp canonical hash + target full nonimage configuration hash for permitted image/version delta",
+    "new output schema/explicit after provenance hashes; no old beforeb62/047/11 pins"
+  ],
+  "beforeCall": {
+    "args": {
+      "phase": "before-runtime-rollout",
+      "requestId": "d0b12dd5-c04e-41d9-9a05-c685431d6695"
+    },
+    "export": "makeRequest"
+  },
+  "derivedInputResponseBinding": "Request source embeds actual ACK/beforeWitness/explicitChoice receipt SHA fields; safe response returns their canonical SHA256, without repeating long metadata. Source bytes/SHA pinned before call; receipt hashes alone are not authority.",
+  "fixedScopeFile": "scope.json",
+  "generatedSourceBytesAndShaMustBePinnedBeforeCall": true,
+  "generatorBytes": 15610,
+  "generatorFile": "make-preservation-request.mjs",
+  "generatorOnlyProducesInMemoryGetOnlyConnectorSource": true,
+  "generatorSha256": "7ed82e63941cf0c335b4231bc59b9634226a15186d938e0da659bea12caf6477",
+  "inputAuthority": "hash strings alone are not authority: root must bind actual immutable original ACK JSON (request/body/rolloutID/targetVersion), actual before witness source/response/time and fresh full app snapshot, and explicitly accepted new version-list/idleVM choice receipt before deriving after source",
+  "newGrantPresent": false,
+  "noCallsPerformed": true,
+  "oldRequestFilesNeverExecutableInNewBatch": true,
+  "postWitnessCompare": "other15 apps canonical and versions hashes unchanged; all Worker control/version/source resources unchanged; target nonimage hash unchanged; target versions only ACKtarget+fresh original current; separate full logical/scheduler/Dash physical checks still mandatory",
+  "readyForExecution": false,
+  "reviewedAlgorithmSource": {
+    "bytes": 14589,
+    "file": ".local/jhg46-next-stage-preparation-20261018/gateway-preservation-witness-v2/make-witness-requests.mjs",
+    "sha256": "58364fb1d328a795359bc48b425be6191de2faf1f5b05f819ce9d1295be56077"
+  },
+  "schema": "jhg46-runtime-fresh-preservation-derivation-contract/v1",
+  "scopeBytes": 2235,
+  "scopeSha256": "7e0bb5c5652fa1fcd74c54b8338a231064243df31f064d60963e4d930a27fae6",
+  "unchangedSafety": [
+    "all API operations remain GET/fixedaccount/fixedpaths",
+    "complete-list/strict malformed-cursor-wrapper/count guards",
+    "actual worker/app/versions credential-value guard before hashes/output",
+    "double controls/apps/module/instances bracket;16completeversions once each",
+    "compact and pretty bounded16000; held is incomplete, never success",
+    "source9c8 fixed; browsergateabsent/remotepolicyfalse; 106/11/25/6/50/16/16 counts and fixed16 IDs",
+    "trace actualtime/pagination only; no raw configuration returned"
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "schema": "jhg46-content-reference-local-precheck-history/v1",
+  "recordedAt": "2026-10-18T17:14:28.313570+00:00",
+  "stage": "before Node invocation",
+  "failure": "Local receipt orchestration assumed preparation-manifest.files was an array; actual format is a dictionary. AttributeError occurred before runtime metadata, fixture command or stdout files.",
+  "correction": "Read the actual files dictionary without changing any candidate, original input or fixture.",
+  "fixtureOrExternalExecutionAtThisFailure": false
+}

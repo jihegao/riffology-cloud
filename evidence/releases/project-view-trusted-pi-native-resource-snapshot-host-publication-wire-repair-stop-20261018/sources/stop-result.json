@@ -1,0 +1,13 @@
+{
+  "dockerOrRegistryCalls": 0,
+  "fileCount": 18,
+  "inventorySha256": "2aa92004cf27aed267d916a3ab0b9fdc1c99a024e796d8a02c33b0f9f3314967",
+  "mergeAllowed": false,
+  "observationSha256": "b42ac3e5cbd00ca8281fcf057debf42e17e6802db46a26dee6cfb49062453216",
+  "originalRecordBytes": 15457,
+  "publicationVerified": false,
+  "remoteWrites": 0,
+  "requestId": "c263a2f3-f445-430e-b562-2e48f1eeb637",
+  "schema": "jhg46-c263-stopped-publication-read-result/v1",
+  "status": "read-completed"
+}

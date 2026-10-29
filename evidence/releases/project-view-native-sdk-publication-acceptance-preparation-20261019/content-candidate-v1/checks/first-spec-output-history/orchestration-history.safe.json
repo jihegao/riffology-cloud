@@ -1,0 +1,25 @@
+{
+  "schema": "jhg46-content-helper-first-spec-output-history/v1",
+  "recordedAt": "2026-10-18T17:15:06.432734+00:00",
+  "fixtureStdoutCounts": {
+    "tests": 8,
+    "pass": 8,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0
+  },
+  "stdout": {
+    "file": "checks/first-spec-output-history/reference-check.stdout",
+    "bytes": 777,
+    "sha256": "2670d8cbf294cdf3d61f3f5fead7b1f2132a6c7d2d4251c1f02535adf3ced795"
+  },
+  "stderr": {
+    "file": "checks/first-spec-output-history/reference-check.stderr",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "problem": "After the eight-test run, receipt parser expected TAP # lines but Node26 emitted spec-format info lines. StopIteration happened after subprocess completion, before its return code/times were persisted.",
+  "childExitCodeDirectlyPersisted": false,
+  "candidateOrFixtureCodeChanged": false,
+  "nextAction": "One bounded rerun of the same eight-test file with explicit TAP output and a durable terminal saved before parsing. Both histories remain; this is8 unique test cases, not16."
+}

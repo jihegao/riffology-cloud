@@ -1,0 +1,14 @@
+{
+  "archiveBytes": 12364,
+  "archiveSha256": "91b42a14a3c1c8caafb0b98230f156408bc39be065d408091055e91f7c724b81",
+  "cloudWrite": false,
+  "credentialReadOrTransferred": false,
+  "dockerOrContainerCommandExecuted": false,
+  "fileCount": 5,
+  "humanGrantSha256": "62c6202a1290703326591dcc2519964b782510f75483062b4113f770d58d4196",
+  "operationsManifestSha256": "fe1ab539e48c1a19d1b48e355b63c93a7c8c1c82bdcee319a385c7aac1ef78c5",
+  "requestId": "695e8875-459a-41b3-a148-2e228f2c3727",
+  "schema": "trusted-pi-native-resource-snapshot-host-transfer-result/v1",
+  "status": "transferred-verified",
+  "unprefixedTarNames": true
+}

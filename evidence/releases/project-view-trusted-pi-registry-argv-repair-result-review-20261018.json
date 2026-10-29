@@ -1,0 +1,535 @@
+{
+  "byteIdenticalSafeOriginalMappingsVerified": 24,
+  "checks": {
+    "allInventoryEntryBytesAndHashesMatch": true,
+    "allTwentyFourRelativeLinksResolve": true,
+    "allTwentyFourSafeOriginalCopiesByteIdentical": true,
+    "credentialValueAuthorizationUrlOrPersonalAbsolutePathFindings": [],
+    "dockerPushCliInvocations": 1,
+    "evidenceWorktreePreCopyHead": "abd265e503c77a5fb2a9256dd8365f5849d2df05",
+    "fiftyOneRawReadbackDescriptorsMatchTwoManifestsConfigAndFortyEightLayerSlots": true,
+    "frozenFb99CandidateBindingsUnchanged": 26,
+    "frozenFb99OperationFilesUnchanged": 8,
+    "frozenFb99OperationsSha256": "89f2f285f5f732a6f3c9b8705a47fde4b5f073970e585e779371fb20ac2680fa",
+    "independentReaderTwentySevenRecordsAndFiveOriginalCliLifecyclesConsistent": true,
+    "inventoryExactlyCoversThirtyNonSelfEvidenceFiles": true,
+    "jsonFilesParsed": 30,
+    "layerSlotsIncludeRepeatedDigestsWithoutUniqueLayerOverclaim": true,
+    "localPidsAndCleanupEvidenceConsistent": true,
+    "new201NotUsedToExplainOld403": true,
+    "newExportAttempts": 0,
+    "noDeploymentOrOrdinaryAcceptanceOrGoalCompletionClaim": true,
+    "noGlobalActivityOrZeroFeesClaim": true,
+    "original9ecOperationFilesUnchanged": 8,
+    "original9ecOperationsSha256": "3779af353a82fa334fc805a54ff02fe91a2f905d2cc9daf4733b1fd92189589c",
+    "persistentOauthAndUnprovedCredentialServerRevocationExplicit": true,
+    "priorAbdCiNotAppliedToNewEvidenceHead": true,
+    "privacyScanFiles": 33,
+    "privateGrantHumanReplyOauthConfigOrRawAuthOutputReadForThisReview": false,
+    "readinessFragmentResolvedAsDocsReleaseReadiness": true,
+    "registryF18PlatformManifestSeparatedFromLocalA946Index": true,
+    "requiredManifestDigestHeadersMatch": true,
+    "sourceArchiveReadVerifications": 1,
+    "trackedEvidenceWorktreePreCopyClean": true
+  },
+  "files": [
+    {
+      "bytes": 3321,
+      "path": "docs/project-view-trusted-pi-registry-argv-repair-result-20261018.md",
+      "sha256": "508168a3e0eda523c5e15dfe1561849be70844a29f1b655d9e31d584ae104864"
+    },
+    {
+      "bytes": 7287,
+      "path": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/README.md",
+      "sha256": "8dd7c5810670c0002b75d201c473d4adbb4719c3966623f3058a976b095dde68"
+    },
+    {
+      "bytes": 5483,
+      "path": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/inventory.json",
+      "sha256": "71f994e4f1e5759544d3ff744560aac8c646ab867dc2ee19a085ec93a78c2f96"
+    },
+    {
+      "bytes": 17413,
+      "path": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/result.json",
+      "sha256": "40b967ae9be8ac868dd15df4fed808e431d339c329b870c76504064105ca171f"
+    },
+    {
+      "bytes": 842,
+      "path": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/sources/authorization/grant-binding-safe.json",
+      "sha256": "c26b37d5cd3fb348504e61cba34d245ce36a71501c12d74302314422f390b7db"
+    },
+    {
+      "bytes": 5913,
+      "path": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/sources/ci/prior-abd-original-run-terminal.json",
+      "sha256": "49d360e238eeb7852643d4b3be322ac458798f1909bd4feb033d059e70fb9688"
+    },
+    {
+      "bytes": 3855,
+      "path": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/sources/independent/independent-local-stop-review.json",
+      "sha256": "34915838f6d02ff28f49d485cd9c2093ee7b6d6ef6a0ffd59e40448421302c18"
+    },
+    {
+      "bytes": 5274,
+      "path": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/sources/independent/independent-remote-cleanup.json",
+      "sha256": "d3f0af3ea58cd8d9049a25fbd1fcd7cfdbe8b5a7e4ce4e82cd45c6c89b9d3632"
+    },
+    {
+      "bytes": 1211,
+      "path": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/sources/independent/readonly-invocation.safe.json",
+      "sha256": "e4ba44fad38779c3fdd40748884edaa69e46db0d550e5c03f9f67938cbc18b22"
+    },
+    {
+      "bytes": 1221,
+      "path": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/sources/independent/root-terminal-and-input-review.json",
+      "sha256": "33e3580a2ed65f26f4765c9d9c6687c7b9afd93ba823eac776ee60efcc386b47"
+    },
+    {
+      "bytes": 315,
+      "path": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/sources/local/credential-http-response.json",
+      "sha256": "d96b9d306766f1748882f182dc1886e81d58290410a955e3b89e21e2621a6314"
+    },
+    {
+      "bytes": 218,
+      "path": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/sources/local/credential-post-once-intent.json",
+      "sha256": "01b7f03ddc59a0ba0bfcbbc9badc6cf3e7588289cee049c95a6f39b72cdb1aee"
+    },
+    {
+      "bytes": 290,
+      "path": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/sources/local/intent.json",
+      "sha256": "20fe0e89809dc016ff088566fd61722e934fa099d2b3f847ca8ee50ad867d6ae"
+    },
+    {
+      "bytes": 420,
+      "path": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/sources/local/normal-login-identity-safe.json",
+      "sha256": "4f2e9cad4cf4df735b4f79d96ed95c504ecfcc409e885f67e15bb75e62951401"
+    },
+    {
+      "bytes": 1061,
+      "path": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/sources/local/oauth-consent-once-intent.safe.json",
+      "sha256": "a3223a764f1953bfec22ba49784d03843d15e40651fc4c6015b7861869e278be"
+    },
+    {
+      "bytes": 70,
+      "path": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/sources/local/oauth-consent-once-original-cli.json",
+      "sha256": "b589846bf4686a9d2e88693427b95dca28d75a60306f6fd08015a9804d721aca"
+    },
+    {
+      "bytes": 159,
+      "path": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/sources/local/oauth-consent-once-terminal.json",
+      "sha256": "b17fbd35ab6edc629e9ebbf8c3595c4e07413d1f687371353302d370155d576d"
+    },
+    {
+      "bytes": 72,
+      "path": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/sources/local/oauth-consent-success-safe.json",
+      "sha256": "e396dbf6fe6347d7a87804a5f265e36280fdaa8e2ee1e70a20694e08ff62bb5f"
+    },
+    {
+      "bytes": 883,
+      "path": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/sources/local/oauth-token-once-intent.safe.json",
+      "sha256": "e4961ec5443e22a9ca2037e13ed51f232416608436fe6a95c0f83f4103d4a63c"
+    },
+    {
+      "bytes": 70,
+      "path": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/sources/local/oauth-token-once-original-cli.json",
+      "sha256": "08bddd71b49747a5c557dde16ef64cfeb5f6e18dd5452940145c31ed950b3756"
+    },
+    {
+      "bytes": 159,
+      "path": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/sources/local/oauth-token-once-terminal.json",
+      "sha256": "e83f89eac33350ef111f172783e6e3a8c1cb41318e6ab6694075a4c97b02da62"
+    },
+    {
+      "bytes": 148,
+      "path": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/sources/local/original-ssh.json",
+      "sha256": "0b257070345d970a5765a22d4708dfdc125a0566b0584019d1c92c377031b394"
+    },
+    {
+      "bytes": 307,
+      "path": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/sources/local/route-once-intent.json",
+      "sha256": "8995cdaa0d42a9a1dde6ab48474b3d5215f1988ff278b3e2aa33764603aae8a9"
+    },
+    {
+      "bytes": 13982,
+      "path": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/sources/local/terminal.json",
+      "sha256": "22b360150dfbcd30e7d49c6933d8637367fc509dda3b784ccfc58656bb3c80f8"
+    },
+    {
+      "bytes": 10913,
+      "path": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/sources/local/verified-ready-before-credential.json",
+      "sha256": "c5a4530ed5da80d7ef88cc979df17270fbecae90d3b1fc449ad93a1a3692b1f2"
+    },
+    {
+      "bytes": 606,
+      "path": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/sources/remote/intent.json",
+      "sha256": "b9b09c110efaeb0fd778de312dded6d65f6012eff6aef16f24b8287d00b3b4ef"
+    },
+    {
+      "bytes": 349,
+      "path": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/sources/remote/push-once-intent.json",
+      "sha256": "6710240b6e1ba5d1c399f86792a922cedd4a3e2cf594deb141be86280a43a6fb"
+    },
+    {
+      "bytes": 10209,
+      "path": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/sources/remote/raw-verification.json",
+      "sha256": "21d3b5cf87f74e3168bef605109dd214ea70f8c9747c2a999152db612bac1ce1"
+    },
+    {
+      "bytes": 17356,
+      "path": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/sources/remote/registry-readback.json",
+      "sha256": "a7b3cae2cb48b89da0856d440815c5fe58bbcfc4ee81a45b9a8dbd4d89dba3f5"
+    },
+    {
+      "bytes": 38,
+      "path": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/sources/remote/remote-tag-absence.json",
+      "sha256": "cfd16ef32a5240fb64cbe615d85b1225fdfe9ad6f52f183ae005bdec6740492e"
+    },
+    {
+      "bytes": 2691,
+      "path": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/sources/remote/safe-record-retrieval.safe.json",
+      "sha256": "a5cf83eb6835355ec68da8530f9c05638ac82fcdfe84c1cf6fdaabfc6b70256f"
+    },
+    {
+      "bytes": 1075,
+      "path": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/sources/remote/terminal.json",
+      "sha256": "c8d30762451a3f3ab5b8365473efff52cd7e1b7159ca10671c61c419aed10261"
+    },
+    {
+      "bytes": 2119,
+      "path": "release-readiness-topsection.md",
+      "sha256": "103b22116fb97e9ef2259f01901ab88e4fd26b123f68a230d58edb0afacba48c"
+    }
+  ],
+  "historyBoundary": "Staging introduces new actual-result evidence. Existing c3e/9ec preparation/results and fb99 frozen preparation are not edited by staging; local original 9ec and fb99 source manifests were rechecked. Remote archive bytes were not re-read during this public-document review.",
+  "inventoryEntriesVerified": 30,
+  "mustFix": [],
+  "noRepositoryGitMetadataOrRemoteMutationByThisReview": true,
+  "nonBlockingSuggestions": [
+    {
+      "file": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/README.md",
+      "text": "The grouped phrase about prior 57a/a21/b093/c3e/9ec failure/unknown history could be clearer by naming b093 as the successful offline probe. Existing source evidence and the present result remain correct."
+    }
+  ],
+  "projectionContracts": [
+    {
+      "allowedChanges": "Only argv[0] local executable and argv[2] repository prefix replaced by placeholders; all other original intent fields, bytes/SHA binding preserved.",
+      "files": [
+        "sources/local/oauth-consent-once-intent.safe.json",
+        "sources/local/oauth-token-once-intent.safe.json"
+      ]
+    },
+    {
+      "allowedChanges": "Only transport argv removed from receipt; all other fields and original bytes/SHA binding preserved.",
+      "files": [
+        "sources/independent/readonly-invocation.safe.json",
+        "sources/remote/safe-record-retrieval.safe.json"
+      ]
+    }
+  ],
+  "readinessApplicationContract": {
+    "destination": "docs/release-readiness.md",
+    "mode": "prepend only; preserve original lower readiness history",
+    "postCopyGitDiffReviewedHere": false,
+    "source": "release-readiness-topsection.md"
+  },
+  "relativeLinks": [
+    {
+      "file": "docs/project-view-trusted-pi-registry-argv-repair-result-20261018.md",
+      "resolvedRepositoryPath": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/README.md",
+      "target": "../evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/README.md"
+    },
+    {
+      "file": "docs/project-view-trusted-pi-registry-argv-repair-result-20261018.md",
+      "resolvedRepositoryPath": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/result.json",
+      "target": "../evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/result.json"
+    },
+    {
+      "file": "docs/project-view-trusted-pi-registry-argv-repair-result-20261018.md",
+      "resolvedRepositoryPath": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/inventory.json",
+      "target": "../evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/inventory.json"
+    },
+    {
+      "file": "docs/project-view-trusted-pi-registry-argv-repair-result-20261018.md",
+      "resolvedRepositoryPath": "docs/project-view-trusted-pi-registry-argv-repair-packet-20261018.md",
+      "target": "project-view-trusted-pi-registry-argv-repair-packet-20261018.md"
+    },
+    {
+      "file": "docs/project-view-trusted-pi-registry-argv-repair-result-20261018.md",
+      "resolvedRepositoryPath": "docs/project-view-trusted-pi-registry-recovery-result-20261018.md",
+      "target": "project-view-trusted-pi-registry-recovery-result-20261018.md"
+    },
+    {
+      "file": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/README.md",
+      "resolvedRepositoryPath": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/result.json",
+      "target": "result.json"
+    },
+    {
+      "file": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/README.md",
+      "resolvedRepositoryPath": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/inventory.json",
+      "target": "inventory.json"
+    },
+    {
+      "file": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/README.md",
+      "resolvedRepositoryPath": "docs/project-view-trusted-pi-registry-argv-repair-result-20261018.md",
+      "target": "../../../docs/project-view-trusted-pi-registry-argv-repair-result-20261018.md"
+    },
+    {
+      "file": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/README.md",
+      "resolvedRepositoryPath": "docs/project-view-trusted-pi-registry-argv-repair-packet-20261018.md",
+      "target": "../../../docs/project-view-trusted-pi-registry-argv-repair-packet-20261018.md"
+    },
+    {
+      "file": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/README.md",
+      "resolvedRepositoryPath": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/sources/remote/raw-verification.json",
+      "target": "sources/remote/raw-verification.json"
+    },
+    {
+      "file": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/README.md",
+      "resolvedRepositoryPath": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/sources/remote/registry-readback.json",
+      "target": "sources/remote/registry-readback.json"
+    },
+    {
+      "file": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/README.md",
+      "resolvedRepositoryPath": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/sources/remote/remote-tag-absence.json",
+      "target": "sources/remote/remote-tag-absence.json"
+    },
+    {
+      "file": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/README.md",
+      "resolvedRepositoryPath": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/sources/remote/terminal.json",
+      "target": "sources/remote/terminal.json"
+    },
+    {
+      "file": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/README.md",
+      "resolvedRepositoryPath": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/sources/local/terminal.json",
+      "target": "sources/local/terminal.json"
+    },
+    {
+      "file": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/README.md",
+      "resolvedRepositoryPath": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/sources/independent/independent-remote-cleanup.json",
+      "target": "sources/independent/independent-remote-cleanup.json"
+    },
+    {
+      "file": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/README.md",
+      "resolvedRepositoryPath": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/sources/independent/readonly-invocation.safe.json",
+      "target": "sources/independent/readonly-invocation.safe.json"
+    },
+    {
+      "file": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/README.md",
+      "resolvedRepositoryPath": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/sources/independent/independent-local-stop-review.json",
+      "target": "sources/independent/independent-local-stop-review.json"
+    },
+    {
+      "file": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/README.md",
+      "resolvedRepositoryPath": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/sources/independent/root-terminal-and-input-review.json",
+      "target": "sources/independent/root-terminal-and-input-review.json"
+    },
+    {
+      "file": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/README.md",
+      "resolvedRepositoryPath": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/sources/local/normal-login-identity-safe.json",
+      "target": "sources/local/normal-login-identity-safe.json"
+    },
+    {
+      "file": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/README.md",
+      "resolvedRepositoryPath": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/sources/local/credential-http-response.json",
+      "target": "sources/local/credential-http-response.json"
+    },
+    {
+      "file": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/README.md",
+      "resolvedRepositoryPath": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/sources/authorization/grant-binding-safe.json",
+      "target": "sources/authorization/grant-binding-safe.json"
+    },
+    {
+      "file": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/README.md",
+      "resolvedRepositoryPath": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/sources/ci/prior-abd-original-run-terminal.json",
+      "target": "sources/ci/prior-abd-original-run-terminal.json"
+    },
+    {
+      "file": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/README.md",
+      "resolvedRepositoryPath": "evidence/releases/project-view-trusted-pi-registry-argv-repair-execution-20261018/sources/remote/safe-record-retrieval.safe.json",
+      "target": "sources/remote/safe-record-retrieval.safe.json"
+    },
+    {
+      "file": "release-readiness-topsection.md",
+      "resolvedRepositoryPath": "docs/project-view-trusted-pi-registry-argv-repair-result-20261018.md",
+      "target": "project-view-trusted-pi-registry-argv-repair-result-20261018.md"
+    }
+  ],
+  "requestId": "fb99c7e4-21a7-4215-8261-c17dd7c148aa",
+  "reviewedAt": "2026-10-18T02:15:19.756022+00:00",
+  "reviewer": "independent fb99 cleanup and public-result reviewer",
+  "safeProjectionsVerified": 4,
+  "safeSourceMappings": [
+    {
+      "bytes": 315,
+      "copy": "byte-identical",
+      "file": "sources/local/credential-http-response.json",
+      "originalName": "credential-http-response.json",
+      "sha256": "d96b9d306766f1748882f182dc1886e81d58290410a955e3b89e21e2621a6314"
+    },
+    {
+      "bytes": 218,
+      "copy": "byte-identical",
+      "file": "sources/local/credential-post-once-intent.json",
+      "originalName": "credential-post-once-intent.json",
+      "sha256": "01b7f03ddc59a0ba0bfcbbc9badc6cf3e7588289cee049c95a6f39b72cdb1aee"
+    },
+    {
+      "bytes": 290,
+      "copy": "byte-identical",
+      "file": "sources/local/intent.json",
+      "originalName": "intent.json",
+      "sha256": "20fe0e89809dc016ff088566fd61722e934fa099d2b3f847ca8ee50ad867d6ae"
+    },
+    {
+      "bytes": 420,
+      "copy": "byte-identical",
+      "file": "sources/local/normal-login-identity-safe.json",
+      "originalName": "normal-login-identity-safe.json",
+      "sha256": "4f2e9cad4cf4df735b4f79d96ed95c504ecfcc409e885f67e15bb75e62951401"
+    },
+    {
+      "bytes": 70,
+      "copy": "byte-identical",
+      "file": "sources/local/oauth-consent-once-original-cli.json",
+      "originalName": "oauth-consent-once-original-cli.json",
+      "sha256": "b589846bf4686a9d2e88693427b95dca28d75a60306f6fd08015a9804d721aca"
+    },
+    {
+      "bytes": 159,
+      "copy": "byte-identical",
+      "file": "sources/local/oauth-consent-once-terminal.json",
+      "originalName": "oauth-consent-once-terminal.json",
+      "sha256": "b17fbd35ab6edc629e9ebbf8c3595c4e07413d1f687371353302d370155d576d"
+    },
+    {
+      "bytes": 72,
+      "copy": "byte-identical",
+      "file": "sources/local/oauth-consent-success-safe.json",
+      "originalName": "oauth-consent-success-safe.json",
+      "sha256": "e396dbf6fe6347d7a87804a5f265e36280fdaa8e2ee1e70a20694e08ff62bb5f"
+    },
+    {
+      "bytes": 70,
+      "copy": "byte-identical",
+      "file": "sources/local/oauth-token-once-original-cli.json",
+      "originalName": "oauth-token-once-original-cli.json",
+      "sha256": "08bddd71b49747a5c557dde16ef64cfeb5f6e18dd5452940145c31ed950b3756"
+    },
+    {
+      "bytes": 159,
+      "copy": "byte-identical",
+      "file": "sources/local/oauth-token-once-terminal.json",
+      "originalName": "oauth-token-once-terminal.json",
+      "sha256": "e83f89eac33350ef111f172783e6e3a8c1cb41318e6ab6694075a4c97b02da62"
+    },
+    {
+      "bytes": 148,
+      "copy": "byte-identical",
+      "file": "sources/local/original-ssh.json",
+      "originalName": "original-ssh.json",
+      "sha256": "0b257070345d970a5765a22d4708dfdc125a0566b0584019d1c92c377031b394"
+    },
+    {
+      "bytes": 307,
+      "copy": "byte-identical",
+      "file": "sources/local/route-once-intent.json",
+      "originalName": "route-once-intent.json",
+      "sha256": "8995cdaa0d42a9a1dde6ab48474b3d5215f1988ff278b3e2aa33764603aae8a9"
+    },
+    {
+      "bytes": 13982,
+      "copy": "byte-identical",
+      "file": "sources/local/terminal.json",
+      "originalName": "terminal.json",
+      "sha256": "22b360150dfbcd30e7d49c6933d8637367fc509dda3b784ccfc58656bb3c80f8"
+    },
+    {
+      "bytes": 10913,
+      "copy": "byte-identical",
+      "file": "sources/local/verified-ready-before-credential.json",
+      "originalName": "verified-ready-before-credential.json",
+      "sha256": "c5a4530ed5da80d7ef88cc979df17270fbecae90d3b1fc449ad93a1a3692b1f2"
+    },
+    {
+      "bytes": 842,
+      "copy": "byte-identical",
+      "file": "sources/authorization/grant-binding-safe.json",
+      "originalName": "grant-binding-safe.json",
+      "sha256": "c26b37d5cd3fb348504e61cba34d245ce36a71501c12d74302314422f390b7db"
+    },
+    {
+      "bytes": 5274,
+      "copy": "byte-identical",
+      "file": "sources/independent/independent-remote-cleanup.json",
+      "originalName": "independent-remote-cleanup.json",
+      "sha256": "d3f0af3ea58cd8d9049a25fbd1fcd7cfdbe8b5a7e4ce4e82cd45c6c89b9d3632"
+    },
+    {
+      "bytes": 3855,
+      "copy": "byte-identical",
+      "file": "sources/independent/independent-local-stop-review.json",
+      "originalName": "independent-local-stop-review.json",
+      "sha256": "34915838f6d02ff28f49d485cd9c2093ee7b6d6ef6a0ffd59e40448421302c18"
+    },
+    {
+      "bytes": 1221,
+      "copy": "byte-identical",
+      "file": "sources/independent/root-terminal-and-input-review.json",
+      "originalName": "root-terminal-and-input-review.json",
+      "sha256": "33e3580a2ed65f26f4765c9d9c6687c7b9afd93ba823eac776ee60efcc386b47"
+    },
+    {
+      "bytes": 606,
+      "copy": "byte-identical",
+      "file": "sources/remote/intent.json",
+      "originalName": "intent.json",
+      "sha256": "b9b09c110efaeb0fd778de312dded6d65f6012eff6aef16f24b8287d00b3b4ef"
+    },
+    {
+      "bytes": 1075,
+      "copy": "byte-identical",
+      "file": "sources/remote/terminal.json",
+      "originalName": "terminal.json",
+      "sha256": "c8d30762451a3f3ab5b8365473efff52cd7e1b7159ca10671c61c419aed10261"
+    },
+    {
+      "bytes": 10209,
+      "copy": "byte-identical",
+      "file": "sources/remote/raw-verification.json",
+      "originalName": "raw-verification.json",
+      "sha256": "21d3b5cf87f74e3168bef605109dd214ea70f8c9747c2a999152db612bac1ce1"
+    },
+    {
+      "bytes": 17356,
+      "copy": "byte-identical",
+      "file": "sources/remote/registry-readback.json",
+      "originalName": "registry-readback.json",
+      "sha256": "a7b3cae2cb48b89da0856d440815c5fe58bbcfc4ee81a45b9a8dbd4d89dba3f5"
+    },
+    {
+      "bytes": 38,
+      "copy": "byte-identical",
+      "file": "sources/remote/remote-tag-absence.json",
+      "originalName": "remote-tag-absence.json",
+      "sha256": "cfd16ef32a5240fb64cbe615d85b1225fdfe9ad6f52f183ae005bdec6740492e"
+    },
+    {
+      "bytes": 349,
+      "copy": "byte-identical",
+      "file": "sources/remote/push-once-intent.json",
+      "originalName": "push-once-intent.json",
+      "sha256": "6710240b6e1ba5d1c399f86792a922cedd4a3e2cf594deb141be86280a43a6fb"
+    },
+    {
+      "bytes": 5913,
+      "copy": "byte-identical",
+      "file": "sources/ci/prior-abd-original-run-terminal.json",
+      "originalName": "final-terminal.json",
+      "sha256": "49d360e238eeb7852643d4b3be322ac458798f1909bd4feb033d059e70fb9688"
+    }
+  ],
+  "schema": "jhg46-fb99-independent-public-result-review/v1",
+  "scope": "Read-only review of public-staging after actual fb99 terminal and cleanup; no publication, remote reader, CI, OAuth, credential or API actions repeated.",
+  "sourceFilesBound": 28,
+  "stagingFilesBound": 33,
+  "status": "passed-no-must-fix"
+}

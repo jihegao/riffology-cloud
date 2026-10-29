@@ -1,0 +1,35 @@
+{
+  "endedAt": "2026-10-17T13:56:09.110666+00:00",
+  "exitCode": 0,
+  "noRealSshDockerAuthApi": true,
+  "preparationFailureHistory": [
+    {
+      "errors": 1,
+      "failures": 2,
+      "initialTests": 12,
+      "kind": "fixture-path-normalization",
+      "reason": "macOS /var symlink not resolved for fake private parents; fixture Path.resolve fixed, runner guard retained"
+    },
+    {
+      "errors": 0,
+      "failures": 1,
+      "kind": "fixture-manifest-location",
+      "preserved": "fixture-v2-offline-checks.json",
+      "reason": "fake runner ROOT was not pointed at local public fixture; fixture patch only, original strict runner retained",
+      "secondTests": 12
+    }
+  ],
+  "schema": "trusted-pi-probe-readable-offline-checks/v1",
+  "startedAt": "2026-10-17T13:56:09.048818+00:00",
+  "streams": {
+    "stderr": {
+      "bytes": 111,
+      "sha256": "7552bd12ae276340729a65d44a110f392bc7234a9105e01401a941279fa79dfd"
+    },
+    "stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "testsExpected": 12
+}

@@ -1,0 +1,57 @@
+{
+  "schema": "jhg46-rollout-observed-state-decision/v2",
+  "preparedAt": "2026-10-18T09:37:41.865485+00:00",
+  "reviewOnly": true,
+  "authorized": false,
+  "proposedOnly": true,
+  "originalBatchEndsAt": "2026-10-18T12:42:46Z",
+  "originalHoldRequestId": "6c6d9d94-be91-45e3-8044-bf1768308d7a",
+  "originalRolloutId": "f1a653cc-44c2-49b9-87f3-33bb8940a540",
+  "actualTargetVersion": 12,
+  "acceptedDifferenceProposed": {
+    "versionList": {
+      "before": [
+        "11",
+        "10"
+      ],
+      "after": [
+        "12",
+        "11"
+      ],
+      "meaning": "Accept that old version10 is no longer listed, retention cause unknown; original snapshots/configuration/image references/history retained; do not claim old version object remains available. No guarantee that version10 is currently usable or can be rolled back to."
+    },
+    "idlePlacement": {
+      "deploymentId": "d030d0a3-5a0c-4aa3-a4f2-f2bc156ca905",
+      "placementId": "758d8e05-8835-dacf-6b77-0b8cfda700ca",
+      "appVersion": 12,
+      "vmHealth": "running",
+      "containerStatus": "stopped",
+      "meaning": "Explicitly accept this exact deployment/VM observed after the rollout and matching its target version12/f18, as original default/basic/max1 idle capacity. Correlation is based on its creation time, target identity and single-writer window; no rollout_id foreign key is supplied by the deployment API. This replaces the pre-end zero-placement condition only for this exact identity. VM remains running even though container is stopped and may continue to accrue usage."
+    }
+  },
+  "requiredFreshBeforeAnyEnd": [
+    "Same operator/authVersion1, same hold/control19/policy and current maintenance revision1",
+    "Exact original completed rollout and app12/f18; full nonimage configuration unchanged; other15/apps/versions/Gateway/resources preserved",
+    "Combine full unfiltered original application deployments and raw Dash populations: exact account/app/deployment/placement/v12/f18/basic/terminate=false, only this one specified idle VM and container stopped, with complete logical history retained. Dash emptiness cannot hide the deployment VM. No extra or unattributed live/unknown placement.",
+    "Original Beta/native joint quiescence and no active/quarantined/unresolved work",
+    "Still within original four-hour window; enough time for remaining work and gate closure"
+  ],
+  "endBodyIfAllMatch": {
+    "action": "end",
+    "requestId": "6c6d9d94-be91-45e3-8044-bf1768308d7a",
+    "expectedRevision": 1,
+    "expectedPolicySha256": "695cdd9ece91081e201a3dd03ba2ad7451931a0b588addc6454a1f6db9638031"
+  },
+  "remainingScope": "Only original approved ordinary identity, one fresh blank project, two Sessions, exactly three frozen OpenAI/gpt-5.6-luna Turns and one bounded gate PUT/DELETE; original per-Turn terminal/runtime/tool/container/capacity release remains required. Idle baseline cannot hide an unknown Turn execution or bypass max1/concurrency. No retry/fallback or fourth Turn.",
+  "excluded": [
+    "No new rollout",
+    "No application PATCH or delete",
+    "No stop/destroy/recreate VM",
+    "No Registry credentials/push",
+    "No resource/capacity expansion",
+    "No payment/subscription changes",
+    "No deadline extension"
+  ],
+  "unknownRule": "Retain original hold and identities; only read-only reconciliation. No end unless separately approved and every fresh guard matches.",
+  "priorProposalSha256": "16c972a3ae084c8d361fd3896ed264592262807409d393c6f9031a3610902db0"
+}

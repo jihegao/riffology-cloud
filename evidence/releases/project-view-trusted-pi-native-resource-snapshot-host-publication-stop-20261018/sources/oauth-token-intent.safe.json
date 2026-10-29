@@ -1,0 +1,23 @@
+{
+  "argv": [
+    "<pinned-node>",
+    "--no-warnings",
+    "<pinned-wrangler-cli>",
+    "auth",
+    "token",
+    "--json",
+    "--profile",
+    "default",
+    "--env-file",
+    "/dev/null"
+  ],
+  "at": "2026-10-18T12:20:01.767954+00:00",
+  "diskLogs": false,
+  "stdoutAndStderr": "memory-only",
+  "timeoutSeconds": 30,
+  "originalRecord": {
+    "bytes": 387,
+    "sha256": "77904f9a7ecacd6fafe56e51814889daf1e9d783fc1eb2253d6e342e14993255"
+  },
+  "projection": "Only installed executable paths replaced; command/arguments unchanged."
+}

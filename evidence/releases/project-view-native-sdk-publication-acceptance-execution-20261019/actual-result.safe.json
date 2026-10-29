@@ -1,0 +1,191 @@
+{
+  "schema": "jhg46-fb07-actual-sdk-acceptance-stop-safe/v1",
+  "batchRequestId": "fb07e239-2cb4-4379-9581-5711d86a0f30",
+  "executionWindow": {
+    "startsAt": "2026-10-18T21:59:00Z",
+    "endsAt": "2026-10-19T01:59:00Z",
+    "extended": false
+  },
+  "idleAmendment": {
+    "publicProposalCommit": "9c43df119219fd0fdf6251ddbe0184609c4047f4",
+    "acceptedByUser": true,
+    "scope": "same original application current complete exposed scope, at most one known same d03b/v13/ec8/basic-max1 running VM with stopped container; perTurn joint release remains required"
+  },
+  "actualPublication": {
+    "mergeCommit": "004e5cd5940c6e283b1b58501c3f409a569f6e20",
+    "bundleSha256": "304373a50d7a9ca8a99cdfbda0dcae261aa34d53727b757dfeb099c88efb5e0b",
+    "publishedVersion": "d2660428-5ccb-4fb9-b1bd-d6b8ba26959f",
+    "publicAssets": {
+      "matched": 96,
+      "bytes": 53784755
+    },
+    "frameBytes": 7876,
+    "frameSha256": "63ebcd050b0ccf5019265070890bee69d99902120f2252c376678aff299d374b",
+    "frameReadOnlyAfterOriginalGateOpen": true
+  },
+  "paidProduct": {
+    "sessions": 1,
+    "turns": 2,
+    "bothCompletedSavedAndJointlyReleased": true,
+    "T1Revision": "768fc2ff2c44a5005cbaeae9b433f47f19c71bb0fb88cdaf70a1c11992d259fb",
+    "T2Revision": "0f8b8226017fa1100a73762a1f85fb50d6d7ac49eba40fff9eab9b3551eaa6ac",
+    "exactBashArgumentsIndependentlyRead": false,
+    "resourceLoadEvidenceBoundary": "Original slash/R1 unique frozen skill/source loader path/success event support actual-load inference; native load_resource did not independently return text/hash/receipt."
+  },
+  "functional": {
+    "dashboardFactor2And5": true,
+    "pauseResumeInputUpdates": true,
+    "artifactTwoChunks17567ShaAndContentPrefixPassed": true,
+    "artifact": {
+      "receipt": {
+        "schemaVersion": 1,
+        "artifactId": "artifact-9b81b5b01b1e416f75b718dc8890d00213d01cd9203820d744c5604bcee1",
+        "operation": "read",
+        "mediaType": "application/json",
+        "bytes": 17567,
+        "sha256": "1f1934a77952256ed99aa9cedcd923bea033cfb6239d81aa141d677faa4ab35a",
+        "createdAt": 1792369087439
+      },
+      "chunks": [
+        {
+          "offset": 0,
+          "bytes": 16384,
+          "nextOffset": 16384,
+          "responseSha256": "691a6a7aa48081cfde0bd70d7e03a96504e3c2bb1ae9438def0d2347948b5aab"
+        },
+        {
+          "offset": 16384,
+          "bytes": 1183,
+          "nextOffset": null,
+          "responseSha256": "115c57cefdd8c62e34e21076cdfe9ad06f746026c4e3422752b3caa4d97231c5"
+        }
+      ],
+      "joinedBytes": 17567,
+      "joinedSha256": "1f1934a77952256ed99aa9cedcd923bea033cfb6239d81aa141d677faa4ab35a",
+      "hashVerifiedBeforeStrictUtf8JsonParsing": true,
+      "envelopeKind": "read",
+      "envelopePath": "docs/native-artifact-probe.txt",
+      "sourceContentBytes": 17408,
+      "sourceContentSha256": "e53ccf19262ebd3aac472bbb50f409ac020ee189dd60de6910b3a038e73496c9",
+      "sourceShaMatchesEnvelopeField": true,
+      "contentPrefixVerified": true,
+      "expectedPrefix": "native-artifact-probe-v1\\n",
+      "jsonBodyHashDistinctFromSourceContent": true
+    },
+    "firstHostReportResult": "savedUnavailable; frame0",
+    "reportAccepted": false,
+    "firstFailureStoppedWithoutPageRetry": true,
+    "session2OrT3OrV2": false,
+    "refreshReentryOrColdRestorePassed": false
+  },
+  "finalGate": {
+    "independentReviewSha256": "a45f3ace69f3c9bf51ad9e9759d74eb6520ad3f408c375388146751dd071d40f",
+    "closedVersion": "cb577ad1-4439-434b-aee2-326d647dc0d0",
+    "versionNumber": 236,
+    "gateAbsent": true,
+    "sourceSha256": "304373a50d7a9ca8a99cdfbda0dcae261aa34d53727b757dfeb099c88efb5e0b",
+    "resourcePreservationScope": "Dated complete53GET closure as bound in the original gate-close review; no new Gate API request by this reviewer."
+  },
+  "finalProduct": {
+    "readFrom": "2026-10-19T00:45:15.586Z",
+    "readThrough": "2026-10-19T00:45:26.390Z",
+    "sameOriginalOrdinaryActor": true,
+    "sessions": 1,
+    "turns": 2,
+    "bothCompletedSaved": true,
+    "revisionId": "0f8b8226017fa1100a73762a1f85fb50d6d7ac49eba40fff9eab9b3551eaa6ac",
+    "canonicalHeadAndReceiptUnchangedFromPostGuard": true,
+    "fourHoldsClear": true,
+    "capacity": "available",
+    "currentDocumentUiPostCount": 1,
+    "previousDocumentUiPostCount": 3,
+    "scopeLimitedObservedUiPostTotal": 4,
+    "paidExecutionUnknownInferredFromPageAbort": false
+  },
+  "observer": {
+    "retainedRequests": 171,
+    "onlyGet": true,
+    "statuses": {
+      "503": 56,
+      "200": 114,
+      "unobserved": 1
+    },
+    "observerErrors": {
+      "AbortError: Fetch is aborted": 1
+    },
+    "pendingAtFinalCapture": 0,
+    "overflow": false,
+    "cachedUniqueBodyHashes": 6,
+    "previewSelectionCountBefore": 170,
+    "previewSelectionCountAfter": 171,
+    "previewSelectionAloneProvesPollStopped": false,
+    "unobservedGetAndAbortRetained": true,
+    "notProofOfCompleteBrowserNetworkPacketCapture": true
+  },
+  "finalPhysical": {
+    "readFrom": "2026-10-19T00:45:27.292Z",
+    "readThrough": "2026-10-19T00:45:29.734Z",
+    "inactiveLogicalObjects": 11,
+    "dashDurableObjects": 11,
+    "dashVmInstances": 0,
+    "unfilteredCurrentDeployments": 1,
+    "deploymentId": "d03b8c4d-8cc2-475e-ba96-6e46d062983c",
+    "placementId": "2d986b84-9cbb-45e0-afc6-f05e7746ed3b",
+    "applicationVersion": 13,
+    "sameEc8Image": true,
+    "basicCpu": 0.25,
+    "memoryMiB": 1024,
+    "vm": "running",
+    "container": "stopped",
+    "terminate": false,
+    "sameAcceptedNarrowCurrentExposedScope": true,
+    "mayIncurFees": true,
+    "noHistoricalPlacementDisposalOrGlobalZeroVmClaim": true
+  },
+  "uiExit": {
+    "fullDocumentExitAt": "2026-10-19T00:47:15.713Z",
+    "nativeAxObservedAt": "2026-10-19T00:48:42.091116+00:00",
+    "projectList": true,
+    "remainingIframes": 0,
+    "oldDocumentGlobalsAbsent": true,
+    "webInspectorClosedNativeAx": true,
+    "pagehideSourceCleanupBound": [
+      {
+        "file": ".local/jhg46-native-sdk-acceptance-preparation-20261019/build-candidate-v2/source/services/web/project-views.js",
+        "bytes": 17054,
+        "sha256": "e420e10e0196a9b9ce5f8c6959f8c8551ee0eeae3a2f0a317d9eac8f986ea47c",
+        "lines": [
+          [
+            23,
+            27
+          ],
+          [
+            126,
+            132
+          ],
+          [
+            188,
+            190
+          ]
+        ]
+      },
+      {
+        "file": ".local/jhg46-native-sdk-acceptance-preparation-20261019/build-candidate-v2/source/services/web/project-view-local.js",
+        "bytes": 4396,
+        "sha256": "9edc6ef02b7d8bb50c51ef27e5a7d18d700f3a9013239ffb55c89baf07b6b987",
+        "lines": []
+      }
+    ],
+    "rawPortOrListenerCountsExposed": false,
+    "claim": "Full document context exit and frozen pagehide disposal path; not a direct public rawport/listener count or proof every historical browser process/network request stopped."
+  },
+  "diagnosis": {
+    "strongSourceRaceCandidate": true,
+    "uniqueOnlineRootCauseProven": false,
+    "minimalOfflineFixIssue": 258,
+    "implementationMergedOrDeployed": false
+  },
+  "wholeAcceptancePassed": false,
+  "globalZeroExecutionOrHistoricalVmReleaseOrZeroFeesClaimed": false,
+  "rawPrivateBodiesCopied": false
+}

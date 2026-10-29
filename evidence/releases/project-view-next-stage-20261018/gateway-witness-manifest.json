@@ -1,0 +1,133 @@
+{
+  "schema": "jhg46-gateway-fixed-hash-only-witness-preparation/v2",
+  "preparedAt": "2026-10-18T04:02:44.049329+00:00",
+  "requestId": "f953bc1e-3ea1-4786-821c-26ecf68916a0",
+  "accountId": "8b0d70250211aa10d89e20605a1c7e5e",
+  "worker": "riffology-m1-gateway-staging",
+  "reviewOnly": true,
+  "actualConnectorExecution": false,
+  "executionAuthorizedByThisPreparation": false,
+  "baselineExportSupported": false,
+  "phases": [
+    "before-worker-put",
+    "after-worker-put"
+  ],
+  "expectedGetsPerPhase": 39,
+  "maximumResponseBytesCompactAndPrettyJson": 16000,
+  "overLimitResult": "fixed-held-no-trace-no-hash-no-body",
+  "rawConfigReturned": false,
+  "actualCredentialValueGuardBeforeHash": true,
+  "controlsAppsModuleBracketReads": 2,
+  "appVersionsReadsPerApp": 1,
+  "completeFixedApplicationVersionLists": 16,
+  "sourceParent": {
+    "file": "../gateway-preservation-witness-v1/make-witness-requests.mjs",
+    "bytes": 12892,
+    "sha256": "0a0281f3ace177534a3f6352184672d9e00394d0207299b88321e9a9f44963f9"
+  },
+  "parentManifest": {
+    "file": "../gateway-preservation-witness-v1/operations-manifest.json",
+    "bytes": 3256,
+    "sha256": "b9de1281ab0e19ea23b551332637437e464e0b2f210e1ab3ca4c4fb0586eaaa0"
+  },
+  "parentPreFixIndependentReview": {
+    "file": "../gateway-preservation-witness-v1-independent-review/pre-fix-review.json",
+    "bytes": 3349,
+    "sha256": "4090b23b000eaacda0abf8e3010dea849703000da91c1e366972506418822ac7"
+  },
+  "parentOutputMeasurement": {
+    "file": "../gateway-preservation-witness-v1-independent-review/measurement-receipt.json",
+    "bytes": 1157,
+    "sha256": "396eae8b3a4a14f1514c37efe09581ac7f1f1bfac4e838ba034832e0c562dc54"
+  },
+  "frozenOpsManifestUnchanged": {
+    "file": "../gateway-ops-v3/operations-manifest.json",
+    "bytes": 5896,
+    "sha256": "77899ca757e87fe737c7db91e054158202a045204d5db235e129484ba5981ed0"
+  },
+  "fixes": [
+    "Compact timestamp/query/pagination trace with an explicit16000 byte UTF8 bound for compact and pretty JSON, otherwise fixed held/no-body.",
+    "Schedules complete-list count and pagination validated; accepted list wrappers validate nested known cursor/count/page/result_info fields."
+  ],
+  "files": [
+    {
+      "file": "scope.json",
+      "bytes": 1926,
+      "sha256": "45b54bbe9fd2d7efe6c4136c7a2ceeb14ec6fe83a8f4bc4b45be2f7aef0b0d57"
+    },
+    {
+      "file": "make-witness-requests.mjs",
+      "bytes": 14589,
+      "sha256": "58364fb1d328a795359bc48b425be6191de2faf1f5b05f819ce9d1295be56077"
+    },
+    {
+      "file": "before-worker-put.request.txt",
+      "bytes": 14537,
+      "sha256": "18dee04d513bfb1b3671d765d467b6c5e099d750f0bf15117d8e62b66a8a00b1"
+    },
+    {
+      "file": "after-worker-put.request.txt",
+      "bytes": 14536,
+      "sha256": "a126e12bedf636b85ba1af13c0362645e30a04943dfc23ccae7efd29f4318fef"
+    },
+    {
+      "file": "witness-fixtures.test.mjs",
+      "bytes": 10749,
+      "sha256": "6a46e4272a3b96da06814223bd83329a044c55a334af7f2490acde7325e25c14"
+    },
+    {
+      "file": "run-offline-checks-once.py",
+      "bytes": 2498,
+      "sha256": "3ba3acb21c9821c1f3cf7ca4b2bd0190610b4e1f895977fdbf6b98b8d3e49724"
+    },
+    {
+      "file": "offline-checks/receipt.json",
+      "bytes": 3332,
+      "sha256": "a6c6aaf6c0e4b1d5fa8a8de46fda0298c4b131e46a71954465153a5d58ad619f"
+    },
+    {
+      "file": "README.md",
+      "bytes": 7507,
+      "sha256": "be2fe102ff5169696401173a07ed118311ada5318884f04929362ac8beb0276f"
+    },
+    {
+      "file": "source-delta.patch",
+      "bytes": 21714,
+      "sha256": "9641fb3c5f094561b5d20151ba7147bcfd82b45f815721ea49e7a05f6f0e1a9b"
+    }
+  ],
+  "actualChecks": {
+    "fixtureTests": 5,
+    "syntaxChecks": 2,
+    "allExitZero": true,
+    "startedAt": "2026-10-18T04:02:31.236012+00:00",
+    "endedAt": "2026-10-18T04:02:31.670390+00:00",
+    "oldV1SuitesRerun": false,
+    "actualCloudCalls": 0,
+    "authReads": 0,
+    "networkRequests": 0,
+    "builds": 0,
+    "sourceBundleChanged": false
+  },
+  "pending": [
+    "independent v2 source and output-safety review",
+    "final same-request source binding and immutable execution seal",
+    "explicit future approved account GET collection with actual safe response identities"
+  ],
+  "fixedSchedulesCountFromActualBaseline": 1,
+  "intermediateCounterCorrectionHistory": {
+    "manifest": {
+      "file": "../gateway-preservation-witness-v2-history-e617/operations-manifest.json",
+      "bytes": 4214,
+      "sha256": "e617ec524385af3900bd1fb486859ef7e4469558645ee8e669925e9408302eab"
+    },
+    "checks": {
+      "file": "../gateway-preservation-witness-v2-history-e617/offline-checks/receipt.json",
+      "bytes": 3332,
+      "sha256": "bc7fae9c5a922bbc783e1f84eaf7551f7c325d90c534f672cca5514e92e64ade"
+    },
+    "sourceAndTestAndRequestBytesPreserved": true,
+    "cause": "initial synthetic scope incorrectly used0; actual frozen baseline count1 now fixed",
+    "actualAccountCallsInIntermediate": 0
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "endedAt": "2026-10-17T15:29:12.474389+00:00",
+  "exitCode": 0,
+  "reaped": true,
+  "secretStdoutOrStderrStored": false,
+  "stderrBytes": 136,
+  "stderrSha256": "6205e22497347c74bf6517d7c67792b17cc2051d7b12f33098353c4b1b9bed4a",
+  "stdoutBytes": 130
+}

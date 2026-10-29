@@ -1,0 +1,150 @@
+{
+  "schema": "jhg46-registry-recovery-local-consent-stop-result/v1",
+  "draft": false,
+  "preparedAt": "2026-10-18T01:40:01.278637+00:00",
+  "requestId": "9ec39434-0856-4ee7-af30-adf3dd5b5df4",
+  "authorization": {
+    "humanAuthorizedFrozenBatch": true,
+    "contractCommit": "14d2a2a5e03166ddba5167523127aeae0edd8832",
+    "operationsManifestSha256": "3779af353a82fa334fc805a54ff02fe91a2f905d2cc9daf4733b1fd92189589c",
+    "grantSha256": "2910dca428285c9f3dd95a83171fcf0700f6994ee50a64d7da822c5b370418f8",
+    "receipt": "sources/human-authorization.safe.json",
+    "scopeNotExpandedByThisResult": true
+  },
+  "status": "authorized-attempt-stopped-after-local-cli-exit1",
+  "publicationSucceeded": false,
+  "mergeAllowed": false,
+  "jhg46Completed": false,
+  "observedAttempt": {
+    "startedAt": "2026-10-18T01:34:19.307606+00:00",
+    "consentCliStartedAt": "2026-10-18T01:34:19.314710+00:00",
+    "driverEndedAt": "2026-10-18T01:34:19.666328+00:00",
+    "localConsentCliLaunchCount": 1,
+    "pid": 27665,
+    "exitCode": 1,
+    "recordedReaped": true,
+    "stopErrors": [],
+    "driverErrorCode": "normal-oauth-cli-unconfirmed-no-fallback",
+    "cliHelperErrorCode": "normal-oauth-cli-failed-no-retry",
+    "rawCliOutput": {
+      "persisted": false,
+      "stdoutBytes": 4345,
+      "stderrBytes": 354,
+      "contentOrHashAvailable": false
+    },
+    "automaticRetryPerformed": false
+  },
+  "independentLocalObservation": {
+    "observedAt": "2026-10-18T01:36:43.981480+00:00",
+    "originalPidAbsent": true,
+    "method": "kill(pid,0) returned ProcessLookupError; no process argv queried",
+    "retainedRecordCount": 5,
+    "laterRecordsAbsentCount": 11,
+    "laterRecordsAbsent": [
+      "oauth-consent-success-safe.json",
+      "oauth-token-once-intent.json",
+      "oauth-token-once-original-cli.json",
+      "oauth-token-once-terminal.json",
+      "normal-login-identity-safe.json",
+      "identity-http-response.json",
+      "route-once-intent.json",
+      "original-ssh.json",
+      "verified-ready-before-credential.json",
+      "credential-post-once-intent.json",
+      "credential-http-response.json"
+    ],
+    "source": "sources/independent-local-stop.safe.json",
+    "noRemoteOrOauthStateInspection": true
+  },
+  "driverStagesNotReached": {
+    "authTokenCli": true,
+    "driverOauthMetadataRead": true,
+    "userAccountIdentityApi": true,
+    "sshConfigOrLaunch": true,
+    "amdBootstrapOrRoute": true,
+    "registryCredentialPost": true,
+    "credentialStdin": true,
+    "imageOrRegistryPublication": true,
+    "rolloutOrUserExecution": true
+  },
+  "terminalInterpretation": {
+    "credentialPostAttempted": false,
+    "credentialStdinSent": false,
+    "safeRemoteEvents": [],
+    "finalPublicationAckVerified": false,
+    "originalSshReaped": false,
+    "sshExitCode": null,
+    "sshFieldsExplanation": "No SSH child was created by this driver. originalSshReaped=false is not an unreaped-child observation.",
+    "emptyDriverStreamHashesMeaning": "These fields cover the unstarted SSH transport, not the memory-only local CLI output.",
+    "originalGenericCleanupFlag": true,
+    "genericCleanupFlagExplanation": "Preserved original field; no remote stage was reached in this attempt and no remote cleanup is asserted by this local review."
+  },
+  "diagnosis": {
+    "actualCliFailureReason": "unknown; memory-only raw output was not retained",
+    "parserDiagnosisIncluded": false,
+    "oauthScopeChangeConfirmed": false,
+    "oauthRevocationOrDowngradeConfirmed": false,
+    "cliBrowserNetworkOrLocalAuthSideEffectsExcluded": false,
+    "arrearsOrPermissionFailureProved": false
+  },
+  "history": {
+    "previousC3eRequestId": "c3e04c41-72da-409b-a2b1-f924e6cc67fa",
+    "previousCredentialPostHttpStatus": 403,
+    "previous403Cause": "unknown and unchanged",
+    "priorResultEvidenceCommit": "94b4adb6d68bfa124e10af3e628cc8336a97a96b",
+    "previous57aA21B093EvidencePreserved": true,
+    "thisAttemptDidNotRevalidateOriginalArchiveOrRemoteImage": true
+  },
+  "scopeLimits": [
+    "Observed only this frozen local driver attempt and its retained record chain.",
+    "Not-reached stages and absent records do not prove global zero Cloudflare activity or exclude side effects inside the invoked CLI.",
+    "No authoritative account, Registry, AMD or billing counters were queried for this result.",
+    "No new image/export/build/push, PR merge, deployment, admission change, container or real model/Turn/Run success is claimed.",
+    "CLI failure does not establish OAuth permission failure, arrears, or the cause of the earlier c3e HTTP403.",
+    "No repair implementation, repair execution, new authorization, retry or remote cleanup is asserted."
+  ],
+  "sources": {
+    "byteIdenticalCopies": [
+      {
+        "path": "sources/attempt-intent.json",
+        "sourceRecord": "intent.json",
+        "copyKind": "byte-identical",
+        "bytes": 290,
+        "sha256": "04f0e2ff603e6115a89bdc32c822ebb8a8fcba2ae6391e567c6c10296bfe8393"
+      },
+      {
+        "path": "sources/consent-cli-original.json",
+        "sourceRecord": "oauth-consent-once-original-cli.json",
+        "copyKind": "byte-identical",
+        "bytes": 70,
+        "sha256": "8178c766c322b59cc06dfdfaf7b984dc42f75af541b95bb9b0e221ed224f0314"
+      },
+      {
+        "path": "sources/consent-cli-terminal.json",
+        "sourceRecord": "oauth-consent-once-terminal.json",
+        "copyKind": "byte-identical",
+        "bytes": 190,
+        "sha256": "4d1b7850eb7343487085eb8dfa613e72a85a05005e7bd94ab15c0bff2286f28d"
+      },
+      {
+        "path": "sources/driver-terminal.json",
+        "sourceRecord": "terminal.json",
+        "copyKind": "byte-identical",
+        "bytes": 836,
+        "sha256": "1e3b5f3bc9bd08b4669b5a620a156bf0361e8f26f97275f40cd6d788f8d2e6c6"
+      }
+    ],
+    "safeDerivedCopies": [
+      "sources/consent-cli-intent.safe.json",
+      "sources/human-authorization.safe.json",
+      "sources/independent-local-stop.safe.json"
+    ]
+  },
+  "privacy": {
+    "rawGrantIncluded": false,
+    "rawHumanReplyIncluded": false,
+    "credentialsOrOauthStorageReadForThisProjection": false,
+    "rawCliOutputIncluded": false,
+    "personalAbsolutePathsIncluded": false
+  }
+}

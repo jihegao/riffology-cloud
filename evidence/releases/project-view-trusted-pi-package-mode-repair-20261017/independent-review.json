@@ -1,0 +1,31 @@
+{
+  "schema": "trusted-pi-package-mode-repair-independent-review/v1",
+  "recordedAt": "2026-10-17T12:48:31.647481+00:00",
+  "reviewer": "source_audit",
+  "reviewMode": "independent read-only static byte/diff/inventory review",
+  "verdict": "no-must-fix",
+  "archive": {
+    "path": "jhg46-pi-package-mode-repair-v1-20261017.tar.gz",
+    "bytes": 61519,
+    "sha256": "4ae32cf711d7500d4b0cd893757ee5a625d9b275518b86e3680146c0b7f7dcd2"
+  },
+  "inventoryMapping": {
+    "localMembersField": "offline-review.json members[].path",
+    "localPathPrefix": "payload/",
+    "tarMemberName": "Remove exactly the leading payload/ from each local members[].path. Tar members have no payload/ prefix. Reject all other/unlisted names. Do not reuse an old c92 prefix or digest gate."
+  },
+  "checked": {
+    "12RegularMembersAnd238989ContentBytes": true,
+    "tarPayloadAndInventoryHashesEqual": true,
+    "originalFiveSourcesF27AndBdedByteIdentical": true,
+    "twoPackagesEqualFrozenRepositoryBytes": true,
+    "fixedBase9b76AndRootSupervisorRetained": true,
+    "runtime6PlusPermission2Equals8Destinations": true,
+    "noNpmOrDependenciesChange": true,
+    "strictProbeUnchanged": true,
+    "newGrantRequiredAndDirectEntryLimitationsClear": true
+  },
+  "reviewerDidNotRunTestsOrAnyRemoteAction": true,
+  "localStaticChecks": "static-checks.json",
+  "noNewBuildMockTransferOrCredentialOperationPerformed": true
+}

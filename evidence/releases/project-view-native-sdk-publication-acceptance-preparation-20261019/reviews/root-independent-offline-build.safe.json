@@ -1,0 +1,86 @@
+{
+  "schema": "jhg46-native-sdk-offline-build-independent-review/v1",
+  "reviewedAt": "2026-10-18T17:38:38.450930+00:00",
+  "reviewer": "root",
+  "author": "source_audit",
+  "mode": "local read-only source/provenance/body review; new review artifacts only",
+  "mustFix": [],
+  "sourceCommit": "fca66cb0e1024b4e86bbbeb9a6d955b137599efa",
+  "boundInputs": {
+    "binding": {
+      "file": "build-candidate-v2/source-content-binding.json",
+      "bytes": 13060,
+      "sha256": "4f5bcd14f20e06b810405a730c3d57d8cbfe0905bbffa95f9696535243f6ce06"
+    },
+    "inventory": {
+      "file": "build-candidate-v2/source-input-inventory.json",
+      "bytes": 159809,
+      "sha256": "d3c793dc1e2fd29bc91b8b93a39825827a3c9f8a737c5d805642c1a45988624a"
+    },
+    "buildManifest": {
+      "file": "build-candidate-v2/output/build-manifest.json",
+      "bytes": 5651,
+      "sha256": "c4289bb276ed6ede021acd6c8d2c439aeb007ea8ca5b15b582bf4b1aa7564e20"
+    },
+    "builder": {
+      "file": "build-candidate-v2/freeze-gateway-once.mjs",
+      "bytes": 16391,
+      "sha256": "b544763c60c101df32b89d42132c204a054c95b109235aac0348f0537f7a274b"
+    },
+    "launcher": {
+      "file": "build-candidate-v2/launch-build-once.py",
+      "bytes": 3292,
+      "sha256": "eece1400b2f5eae18ee59b04e062b4eed42984d62a3856bdf906678442ef7dcc"
+    },
+    "successfulOriginalTerminal": {
+      "file": "build-candidate-v2/offline-build-launch-terminal.json",
+      "bytes": 729,
+      "sha256": "59a9afb718e2046486afa299fe02e69ad231228aec1d6915f3fddaffb920ea8c"
+    }
+  },
+  "actualIndependentVerification": {
+    "gitTreeObjectAndMaterializedFiles": 477,
+    "sourceGraphModuleBodies": 1124,
+    "gitModules": 303,
+    "dependencyModules": 821,
+    "sourceBindingReferences": 43,
+    "toolFileBodies": 208,
+    "metadataPresenceLookups": 186,
+    "presentPackageMetadataBodies": 28,
+    "assetFullBodiesAndBlake3Addresses": 96,
+    "unchangedAssets": 94,
+    "changedAssets": [
+      "/project-view-local.js",
+      "/project-views.js"
+    ],
+    "retainedImmutableAssetBodies": 68,
+    "metafileToGraphInputLinks": 1124,
+    "moduleExports": 30,
+    "configuredCloudflareExportsSeparate": 25,
+    "emptyEnvAndNoAuthCapableCliLauncherReviewed": true,
+    "originalSuccessExitCode": 0,
+    "originalSuccessPidReaped": 47321,
+    "v1PostbuildSchemaFailureRetained": true,
+    "v1PartialBundleEqualsV2": true
+  },
+  "rootBodyVerification": {
+    "file": "reviews/root-build-body-verification.safe.json",
+    "bytes": 668,
+    "sha256": "3a722fab7f0a8ed7e16826a7b706b10b37025d4a63629f2c8c2878aa9b139da7"
+  },
+  "rootIntegrityCheckerSource": {
+    "file": "reviews/root-build-integrity-check.mjs",
+    "bytes": 3104,
+    "sha256": "654085ccfc5ac19e9b60ff02ed8f656ef9ce62d32c33be3dbcc404550ea7c423"
+  },
+  "bundle": {
+    "bytes": 5774988,
+    "sha256": "304373a50d7a9ca8a99cdfbda0dcae261aa34d53727b757dfeb099c88efb5e0b"
+  },
+  "scopeLimits": [
+    "No rebuild, source test rerun, Wrangler CLI, OAuth, API, SSH, Docker, Registry, asset upload or deployment in this review.",
+    "No packet capture: source/launcher and actual local process receipts support the stated offline build scope.",
+    "Metafile is a module input graph, not an inventory of all filesystem lookups.",
+    "Actual main merge/source equality, current configuration metadata and publication/user acceptance are separate pending steps."
+  ]
+}

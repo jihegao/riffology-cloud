@@ -1,0 +1,33 @@
+{
+  "endedAt": "2026-10-17T13:28:04.057953+00:00",
+  "helperBytes": 17504,
+  "helperSha256": "7a65b9d9fec91b0ce89d6eff7f05822460cbb494c65b132c5e0869632c9a98ef",
+  "imageId": "sha256:a946b164d10d074fcc9859f6c54c3b65d1901b41696c5ee8d8e31e275ddd1593",
+  "newBuildCreateStartPullOrSave": false,
+  "originalContainerId": "65714c5c5e5377ca8f761c8a1a85d6baa5bd18bc994f95c0ae07db24c4d7ec19",
+  "originalSshPid": 98412,
+  "originalSshReaped": true,
+  "rawLogsGrantConfigEnvReturned": false,
+  "remoteWrites": false,
+  "requestId": "a21af2c8-44ff-4f67-a07f-c364bcd6d295",
+  "safeRemoteProjection": {
+    "errorCode": "private-bounded-record-required",
+    "newBuildCreateStartPullOrSave": false,
+    "remoteWrites": 0,
+    "requestId": "a21af2c8-44ff-4f67-a07f-c364bcd6d295",
+    "status": "readback-unknown"
+  },
+  "schema": "trusted-pi-package-permissions-independent-build-readback-transport/v1",
+  "sshExitCode": 1,
+  "startedAt": "2026-10-17T13:27:58.873780+00:00",
+  "status": "readback-unknown",
+  "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "stdout": {
+    "bytes": 191,
+    "sha256": "b19382cf070f452a734be71ebbf0a2348e0badf9ccf7447f3c14273a1992020c"
+  },
+  "timedOut": false
+}

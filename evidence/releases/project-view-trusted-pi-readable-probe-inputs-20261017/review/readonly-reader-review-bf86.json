@@ -1,0 +1,40 @@
+{
+  "authorChecks": {
+    "bytes": 857,
+    "exitCode": 0,
+    "reviewerReranTests": false,
+    "sha256": "bc173d685f27dddcaaf1c68afa18fcaa1310d16a3aba4017ae09cef38f7bf28c",
+    "staticTestMethodCount": 4,
+    "streamByteHashesVerified": true,
+    "testsExpected": 4
+  },
+  "authorFilesOrTrackedFilesModified": false,
+  "frozenOperationsManifestUnchanged": "ae0614dafe7067367703ad41a9e0ff19f25de3ab7c788b85f01c1ff5c6b4fffd",
+  "limitations": [
+    "Review was local/static only. Saved four-fixture author receipt verified, tests not rerun.",
+    "Reader has not run on AMD128 and does not constitute authorization or actual probe/cleanup evidence.",
+    "A missing/unknown record returns pending; it does not authorize replay, diagnosis expansion or a new container."
+  ],
+  "mustFix": [],
+  "reader": {
+    "bytes": 17363,
+    "sha256": "bf86993670c344e264e2b3dff915051fee2ef2f0db5a54404aafcff8bc482a91"
+  },
+  "recordedAt": "2026-10-17T14:13:16.500898+00:00",
+  "requestId": "b0933502-20df-480a-9a91-d833f5c4358c",
+  "reviewedBoundaries": [
+    "Fixed b093/a21/a946/ae0614/archive identities bind private intent/result/cleanup/cached identity and original CID records before Docker reads.",
+    "Only two fixed Docker GET variants: exact original CID inspect and correct operation label list. No file writes or original-process/container mutation; stop signals apply only to the readers own child CLI.",
+    "Owned regular single-link bounded private600 records; probe.cid accepts600/644/664 inside owned private700 directory.",
+    "Missing, orphaned, linked, hash-mismatched, discarded, unreaped or active original CLI records stop before Docker reads.",
+    "Strict report projection preserves original twelve targets/fifteen checks and synthetic-only counts. No report means no SDK pass claim.",
+    "Safe output excludes raw grant/OAuth/provider/Registry bodies, Env, full inspect and arbitrary stderr. Cleanup true requires exact CID NotFound and correct empty label, independent of CLI reaping."
+  ],
+  "reviewer": "result_review",
+  "schema": "trusted-pi-probe-readable-independent-reader-review/v1",
+  "status": "passed-no-mustfix",
+  "testSource": {
+    "bytes": 6823,
+    "sha256": "01daffa4d940e9e1899ea4da123dedd3c5fa6576f91491f4423059176ad97db5"
+  }
+}

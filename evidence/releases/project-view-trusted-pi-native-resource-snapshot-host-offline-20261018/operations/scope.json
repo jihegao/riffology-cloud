@@ -1,0 +1,94 @@
+{
+  "archive": {
+    "bytes": 12364,
+    "path": "jhg46-pi-native-resource-snapshot-host-v1-20261018.tar.gz",
+    "sha256": "91b42a14a3c1c8caafb0b98230f156408bc39be065d408091055e91f7c724b81",
+    "uncompressedBytes": 51200,
+    "uncompressedSha256": "a4f3e479c70f168d485cf5f66e2a223b518d665e1f361c8ed0c57f9aa4b84901"
+  },
+  "baseEngineId": "sha256:a946b164d10d074fcc9859f6c54c3b65d1901b41696c5ee8d8e31e275ddd1593",
+  "baseImage": "riffology-jhg46-pi-package-permissions:a21af2c8-44ff-4f67-a07f-c364bcd6d295",
+  "baseRawRecords": {
+    "config": {
+      "bytes": 18775,
+      "path": "/tmp/riffoid-jhg46-image-20261017.AU613w/pi-registry-arg-order-repair-v1/records/raw-config.json",
+      "sha256": "07c199e17490cc4fdf3e8027770f8a7413090d4e7c3a1f44aa9064e115641059"
+    },
+    "index": {
+      "bytes": 856,
+      "path": "/tmp/riffoid-jhg46-image-20261017.AU613w/pi-registry-arg-order-repair-v1/records/raw-index.json",
+      "sha256": "a946b164d10d074fcc9859f6c54c3b65d1901b41696c5ee8d8e31e275ddd1593"
+    },
+    "manifest": {
+      "bytes": 9396,
+      "path": "/tmp/riffoid-jhg46-image-20261017.AU613w/pi-registry-arg-order-repair-v1/records/raw-manifest.json",
+      "sha256": "f18a826d40b2fd60e2cf8c49d7f7b8f595fa609fe2be4c28593479ae846960ea"
+    }
+  },
+  "canonicalImplementationCommit": "0a10da572264470aaac111e6f5da2bd20b2f2c45",
+  "canonicalPullRequest": "https://github.com/jihegao/riffology-cloud/pull/253",
+  "excluded": [
+    "pull",
+    "tag-repair",
+    "push",
+    "export",
+    "OAuth-Registry-provider-credential-read-or-mint",
+    "ssh-forward",
+    "Cloudflare-write",
+    "provider",
+    "project",
+    "Turn",
+    "Run"
+  ],
+  "inputManifestSha256": "7106ff37f714ec60135962a9f71e661d911ba5e0e4870178175a8b1bf5260d22",
+  "operations": [
+    "ssh-fixed-host-input-and-operations-transfer-once",
+    "cached-local-tag-offline-build-once",
+    "host-provenance-mock-original-cid-once-and-cleanup",
+    "independent-original-records-and-two-readonly-docker-gets"
+  ],
+  "parentRequestId": "fb99c7e4-21a7-4215-8261-c17dd7c148aa",
+  "payload": {
+    "EXECUTION-CONTRACT.md": {
+      "bytes": 3592,
+      "sha256": "3bd28295017b0eb94802040247a7baa1c47511d64f5fdcdb6e6e721a947b6ed3"
+    },
+    "context/Dockerfile": {
+      "bytes": 187,
+      "sha256": "ba7c1304146693aca473bdba987240bcb8b4a650598e27f3eb950fabaab154ad"
+    },
+    "context/trusted-pi-turn-host.mjs": {
+      "bytes": 16239,
+      "sha256": "942333ecc87eb6c7545e0494fed501d9ffa5418468039845484e223b6dfa81d6"
+    },
+    "input-manifest.json": {
+      "bytes": 5559,
+      "sha256": "7106ff37f714ec60135962a9f71e661d911ba5e0e4870178175a8b1bf5260d22"
+    },
+    "probe/host-resource-snapshot-probe.mjs": {
+      "bytes": 13094,
+      "sha256": "a17f987f6f97be8593c48d6709758521f2020fb636de2297806db2d1cbb7f1fd"
+    }
+  },
+  "probeChecks": [
+    "allTargetBytesAndPermissions",
+    "activeReleaseAlias",
+    "actualNativeHostAndControlledFacade",
+    "validResourceTerminalAndDigest",
+    "coldRestoreMetadataAndNoReplay",
+    "legacyFiveFieldInputAndOutput",
+    "unknownRootRejectedBeforeSession",
+    "invalidProvenanceRejectedBeforeSession",
+    "foreignScopeRejectedBeforeSession",
+    "allSessionsDisposed",
+    "temporaryDirectoriesRemoved",
+    "environmentOnlyPath",
+    "zeroAmbientFetch",
+    "zeroProjectToolExecutions"
+  ],
+  "recipient": "AMD128",
+  "remoteDirectory": "/tmp/riffoid-jhg46-image-20261017.AU613w/pi-native-resource-snapshot-host-v1",
+  "requestId": "695e8875-459a-41b3-a148-2e228f2c3727",
+  "reviewOnly": true,
+  "schema": "trusted-pi-native-resource-snapshot-host-operations-scope/v1"
+}

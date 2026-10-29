@@ -1,0 +1,180 @@
+{
+  "schema": "jhg46-page-switch-gateway-offline-closure/v1",
+  "preparedAt": "2026-10-19T01:05:05.600Z",
+  "reviewOnly": true,
+  "deployable": false,
+  "sourceCommit": "bdee1975d1f8df20be5e9f83fd7b50d6885b27ad",
+  "actualMainMergeVerifiedByBuild": false,
+  "sourceInputInventory": {
+    "file": "source-input-inventory.json",
+    "bytes": 159656,
+    "sha256": "d1814ce30585a761b4a84a5cc1e81c7fefc0591276a421ab94c76b2a187b9061"
+  },
+  "materializer": {
+    "file": "materialize-source-once.py",
+    "bytes": 3436,
+    "sha256": "2d0b4c52ea31fe00a42fd50b5b2b24d9995943e7ee108488d865d84d90a9d972"
+  },
+  "explicitEmptyEnv": {
+    "file": "empty.env",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "build": {
+    "esbuildVersion": "0.28.1",
+    "nodeVersion": "v26.10.0",
+    "nodeExecPath": "/opt/homebrew/Cellar/node/26.10.0_1/bin/node",
+    "options": {
+      "bundle": true,
+      "write": false,
+      "metafile": true,
+      "format": "esm",
+      "platform": "neutral",
+      "target": "es2024",
+      "mainFields": [
+        "module",
+        "main"
+      ],
+      "conditions": [
+        "workerd",
+        "worker",
+        "browser"
+      ],
+      "tsconfig": "/Users/jihegao/apps/riffology-cloud/.local/jhg46-page-switch-build-closure-20261019/build-v1/source/tsconfig.json",
+      "external": [
+        "cloudflare:workers",
+        "node:*"
+      ],
+      "logLevel": "silent"
+    },
+    "buildAttempts": 1,
+    "sourceBytesStableDuringAndAfterBuild": true,
+    "inputCount": 1124,
+    "gitInputs": 303,
+    "dependencyInputs": 821,
+    "changedInputsFromSdk3043": [],
+    "addedInputsFromSdk3043": [],
+    "removedInputsFromSdk3043": [],
+    "auxiliaryBeforeFile": {
+      "file": "auxiliary-inputs-before.json",
+      "bytes": 88244,
+      "sha256": "837ea8f54ddae8f2e6a898a2d6e1b588782ade94b8ff32e8d1364215cfd0259b"
+    },
+    "auxiliaryAfterFile": {
+      "file": "auxiliary-inputs-after.json",
+      "bytes": 88244,
+      "sha256": "837ea8f54ddae8f2e6a898a2d6e1b588782ade94b8ff32e8d1364215cfd0259b"
+    },
+    "dependencyModulesBeforeFile": {
+      "file": "dependency-modules-before.json",
+      "bytes": 145603,
+      "sha256": "f8eff61083ccf83108be3b27908ceea9e787ba199376f0aff2dc4f3e0122273f"
+    },
+    "dependencyModulesAfterFile": {
+      "file": "dependency-modules-after.json",
+      "bytes": 145603,
+      "sha256": "f8eff61083ccf83108be3b27908ceea9e787ba199376f0aff2dc4f3e0122273f"
+    },
+    "assetInputsBeforeFile": {
+      "file": "asset-inputs-before.json",
+      "bytes": 20499,
+      "sha256": "c5390bcc77bf48a1c0f51698fab6cf9bafcd80b31e9131ab7de5d1181888312d"
+    },
+    "assetInputsAfterFile": {
+      "file": "asset-inputs-after.json",
+      "bytes": 20499,
+      "sha256": "c5390bcc77bf48a1c0f51698fab6cf9bafcd80b31e9131ab7de5d1181888312d"
+    },
+    "explicitTsconfig": true,
+    "metafileIsModuleGraphNotAllFilesystemReads": true,
+    "playwrightInputs": 0,
+    "exports": [
+      "ContainerProxy",
+      "EntryReplayGuard",
+      "G5ControlledWindow",
+      "G5TenantModelBudget",
+      "InvitedRunCapacity",
+      "ManagedProductRuntime",
+      "ModelProxyService",
+      "ObserverExecutor",
+      "PiDeveloperBudget",
+      "PrivateBetaCapacity",
+      "ProductTurnRuntime",
+      "ProductionModelBudget",
+      "ProjectRuntime",
+      "ProjectToolSandbox",
+      "ProjectViewCapacity",
+      "ProjectViewRuntime",
+      "RevisionStore",
+      "ServiceRun",
+      "ServiceRuntime",
+      "ServiceSandbox",
+      "SimulationSandbox",
+      "TenantModelBudget",
+      "TenantQuota",
+      "ToolArtifactStore",
+      "ToolBridgeAgent",
+      "ToolBridgeService",
+      "TrustedPiCapacity",
+      "TrustedPiSandbox",
+      "WorkspaceAgent",
+      "default"
+    ]
+  },
+  "assets": {
+    "paths": 96,
+    "web": 28,
+    "immutable": 68,
+    "changedPaths": [
+      "/project-views.js"
+    ],
+    "unchangedPaths": 95,
+    "allImmutableByteIdenticalToSdk3043": true,
+    "totalBytes": 53785385,
+    "noAssetSessionOrUpload": true
+  },
+  "frame": {
+    "path": "/project-views/63ebcd050b0ccf5019265070890bee69d99902120f2252c376678aff299d374b/frame.html",
+    "sha256": "63ebcd050b0ccf5019265070890bee69d99902120f2252c376678aff299d374b"
+  },
+  "artifacts": {
+    "bundle": {
+      "file": "gateway.mjs",
+      "bytes": 5774988,
+      "sha256": "304373a50d7a9ca8a99cdfbda0dcae261aa34d53727b757dfeb099c88efb5e0b"
+    },
+    "sourceGraph": {
+      "file": "source-graph.json",
+      "bytes": 879161,
+      "sha256": "ee731e078e47ab8a6e67e316e3b66ee53828022267937214197a98c6a98d6fab"
+    },
+    "metafile": {
+      "file": "esbuild-metafile.json",
+      "bytes": 1017462,
+      "sha256": "38dc2974ef07935f38e01e76516478afdcd50af88939530f3dcba88fb8181443"
+    },
+    "assetsInventory": {
+      "file": "assets-sha256.json",
+      "bytes": 20499,
+      "sha256": "c5390bcc77bf48a1c0f51698fab6cf9bafcd80b31e9131ab7de5d1181888312d"
+    },
+    "assetsManifest": {
+      "file": "assets-manifest.json",
+      "bytes": 15987,
+      "sha256": "e97e2ec563718ac6d1bd759af25a23e32fb65e8fccff3cdb665ee880ffbe7cde"
+    }
+  },
+  "productionSourceTreeMustMatchActualMergedSourceLater": true,
+  "wranglerCliInvocations": 0,
+  "installedWranglerVersion": "4.129.0",
+  "repoConfigCopiedAsSourceOnlyNotActualDeploymentMetadata": true,
+  "newPublisherOrMetadataPrepared": false,
+  "freshActualBaselineStillRequired": true,
+  "cloudWrites": 0,
+  "nodeFetchAttempts": 0,
+  "credentialsLoaded": false,
+  "imageBuilds": 0,
+  "registryCalls": 0,
+  "containerStarts": 0,
+  "testsRun": 0
+}

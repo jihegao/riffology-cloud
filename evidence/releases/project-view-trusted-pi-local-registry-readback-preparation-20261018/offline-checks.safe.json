@@ -1,0 +1,186 @@
+{
+  "actualAuthSshRegistryDockerCalls": 0,
+  "finalExpiryFollowup": {
+    "command": [
+      "python3",
+      "-m",
+      "unittest",
+      "test_recovery.LocalOnlyTests.test_get_budget_is_fractional_grant_remainder_capped_at720",
+      "test_recovery.LocalOnlyTests.test_expiry_after_last_proof_prevents_complete_and_ack",
+      "test_recovery.LocalOnlyTests.test_complete52_dispatch_and_ack_link_three_actual_records",
+      "test_recovery.LocalOnlyTests.test_partial4attempt3proof_and_missing_ack_stay_pending",
+      "test_recovery.LocalOnlyTests.test_source_failure_stops_before_auth_or_registry",
+      "-v"
+    ],
+    "endedAt": "2026-10-18T13:43:59.877558+00:00",
+    "exitCode": 0,
+    "old13SuiteRerun": false,
+    "onlySyntheticFixtures": true,
+    "realAuthSshNetworkDocker": false,
+    "recordedAt": "2026-10-18T13:43:59.882338+00:00",
+    "schema": "trusted-pi-local-registry-readback-expiry-followup-checks/v1",
+    "selectedTestCount": 5,
+    "selectedTests": [
+      "test_get_budget_is_fractional_grant_remainder_capped_at720",
+      "test_expiry_after_last_proof_prevents_complete_and_ack",
+      "test_complete52_dispatch_and_ack_link_three_actual_records",
+      "test_partial4attempt3proof_and_missing_ack_stay_pending",
+      "test_source_failure_stops_before_auth_or_registry"
+    ],
+    "sourceFiles": {
+      "AUTHORIZATION.md": {
+        "bytes": 3158,
+        "sha256": "2f91d9e5df5b709efe8d6ff367c28de7c57a3ddcad6f4c836b6341a9b5c12a9e"
+      },
+      "EXECUTION.md": {
+        "bytes": 7810,
+        "sha256": "fd973a7a6573ac510707c6b3a9bb70193d14feeb282bc21deeb19d7ac19c85b7"
+      },
+      "local-recovery.py": {
+        "bytes": 27878,
+        "sha256": "a2689933297ccb314e75b6c5a667b9000da2b5c285967d352fef72d8984a0080"
+      },
+      "pub_common.py": {
+        "bytes": 5339,
+        "sha256": "eea82cc2e0480485564537903260f311ff1b432d4d3ba9053341072ae3efa3a6"
+      },
+      "scope.json": {
+        "bytes": 9635,
+        "sha256": "9b98ec42ae698ec18738626937ab019779a11ca145988f42b9e0dfb71118f8f4"
+      },
+      "source-verify.py": {
+        "bytes": 8361,
+        "sha256": "88be50689ace6dfc69d20d5fd8d2b39273200489788f6d5bb18dec90d7383d99"
+      },
+      "test_recovery.py": {
+        "bytes": 16241,
+        "sha256": "7da21f3b3153627c8faf062d704757e14f624c32ee36c43ef8f9bae737426a1c"
+      }
+    },
+    "startedAt": "2026-10-18T13:43:59.799944+00:00",
+    "stdoutBytes": 567,
+    "stdoutSha256": "0ccbbf92dc88199f1eb0959ca522d11e57207da1b8bfcecc81decfed20f83508"
+  },
+  "finalSourceFiles": {
+    "AUTHORIZATION.md": {
+      "bytes": 3158,
+      "sha256": "2f91d9e5df5b709efe8d6ff367c28de7c57a3ddcad6f4c836b6341a9b5c12a9e"
+    },
+    "EXECUTION.md": {
+      "bytes": 7810,
+      "sha256": "fd973a7a6573ac510707c6b3a9bb70193d14feeb282bc21deeb19d7ac19c85b7"
+    },
+    "local-recovery.py": {
+      "bytes": 27878,
+      "sha256": "a2689933297ccb314e75b6c5a667b9000da2b5c285967d352fef72d8984a0080"
+    },
+    "oci_verify.py": {
+      "bytes": 5748,
+      "sha256": "0a23618e34b9a2acf608acc86d281ebd68f60a62ba2b102ecda92502c294acea"
+    },
+    "pub_common.py": {
+      "bytes": 5339,
+      "sha256": "eea82cc2e0480485564537903260f311ff1b432d4d3ba9053341072ae3efa3a6"
+    },
+    "renewal-source-contract.json": {
+      "bytes": 2497,
+      "sha256": "0593104af3bcc19871b2b55074d85aae105e2a04fef8f9041ab3e31887775f60"
+    },
+    "scope.json": {
+      "bytes": 9635,
+      "sha256": "9b98ec42ae698ec18738626937ab019779a11ca145988f42b9e0dfb71118f8f4"
+    },
+    "source-verify.py": {
+      "bytes": 8361,
+      "sha256": "88be50689ace6dfc69d20d5fd8d2b39273200489788f6d5bb18dec90d7383d99"
+    },
+    "test_recovery.py": {
+      "bytes": 16241,
+      "sha256": "7da21f3b3153627c8faf062d704757e14f624c32ee36c43ef8f9bae737426a1c"
+    },
+    "verification-source.json": {
+      "bytes": 10398,
+      "sha256": "76a53be45c5cd33a5b322bd5dd3dabc6b49f64aa53b739b38a6331cbe998beca"
+    }
+  },
+  "interpretation": "13 synthetic tests passed on the prior driver; after grant-expiry timer/last-proof guard delta, 5 selected tests passed (2 newly added + 3 relevant protocol cases). Not a fresh full15-suite run and not a real Registry run. Prior failure retained.",
+  "oldExecutedSuitesRerun": false,
+  "prior13TestRun": {
+    "astFiles": [
+      "local-recovery.py",
+      "source-verify.py",
+      "pub_common.py",
+      "test_recovery.py",
+      "oci_verify.py"
+    ],
+    "command": [
+      "python3",
+      "-m",
+      "unittest",
+      "test_recovery.py",
+      "-v"
+    ],
+    "endedAt": "2026-10-18T13:42:06.668164+00:00",
+    "exitCode": 0,
+    "oldExecutedSuitesRerun": false,
+    "onlySyntheticFixtures": true,
+    "previous12PassedRetained": true,
+    "priorFailurePreserved": {
+      "exitCode": 1,
+      "log": "first-suite-before-fix.stdout",
+      "reason": "NameError in real read_slot S reference",
+      "sha256": "54ddd07150e9d952cfc55a367553fea95f3fa1f5b7073ef1567bdaceddacf5dd"
+    },
+    "realAuthSshNetworkDocker": false,
+    "recordedAt": "2026-10-18T13:42:06.674603+00:00",
+    "schema": "trusted-pi-local-registry-readback-author-checks/v1",
+    "sourceFiles": {
+      "AUTHORIZATION.md": {
+        "bytes": 3158,
+        "sha256": "2f91d9e5df5b709efe8d6ff367c28de7c57a3ddcad6f4c836b6341a9b5c12a9e"
+      },
+      "EXECUTION.md": {
+        "bytes": 7625,
+        "sha256": "0c335009d90a5c403cf937705ee363801a70a774048b4979879d65c8b3d8a79a"
+      },
+      "local-recovery.py": {
+        "bytes": 27344,
+        "sha256": "6ac5dd8b64341db532541df1c6d8868521f6147992dddbd14aa59e316e7a95e7"
+      },
+      "oci_verify.py": {
+        "bytes": 5748,
+        "sha256": "0a23618e34b9a2acf608acc86d281ebd68f60a62ba2b102ecda92502c294acea"
+      },
+      "pub_common.py": {
+        "bytes": 5339,
+        "sha256": "eea82cc2e0480485564537903260f311ff1b432d4d3ba9053341072ae3efa3a6"
+      },
+      "renewal-source-contract.json": {
+        "bytes": 2497,
+        "sha256": "0593104af3bcc19871b2b55074d85aae105e2a04fef8f9041ab3e31887775f60"
+      },
+      "scope.json": {
+        "bytes": 9635,
+        "sha256": "9b98ec42ae698ec18738626937ab019779a11ca145988f42b9e0dfb71118f8f4"
+      },
+      "source-verify.py": {
+        "bytes": 8361,
+        "sha256": "88be50689ace6dfc69d20d5fd8d2b39273200489788f6d5bb18dec90d7383d99"
+      },
+      "test_recovery.py": {
+        "bytes": 15077,
+        "sha256": "868f9aafdefea4061d4a0f8e3ec90c5c999a072b450ea2ff789f4f0c29075c21"
+      },
+      "verification-source.json": {
+        "bytes": 10398,
+        "sha256": "76a53be45c5cd33a5b322bd5dd3dabc6b49f64aa53b739b38a6331cbe998beca"
+      }
+    },
+    "startedAt": "2026-10-18T13:42:06.598670+00:00",
+    "stdoutBytes": 1405,
+    "stdoutSha256": "e7e6c6b3f848ddbb35c634d876e751a0f6762313ade0fd701dad53595de0067a",
+    "testCount": 13
+  },
+  "recordedAt": "2026-10-18T13:44:17.967285+00:00",
+  "schema": "trusted-pi-local-registry-readback-author-checks/v1"
+}

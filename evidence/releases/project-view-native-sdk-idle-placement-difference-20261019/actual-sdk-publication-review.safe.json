@@ -1,0 +1,81 @@
+{
+  "schema": "jhg46-actual-sdk-publication-independent-file-review/v1",
+  "recordedAt": "2026-10-18T22:08:59.695878+00:00",
+  "checks": {
+    "mergeExactParents": true,
+    "publisherOriginalExitReaped": true,
+    "multipartExactIntent": true,
+    "receiptOriginalBindings": true,
+    "ackActualVersion": true,
+    "source3043": true,
+    "controlsRetained": true,
+    "gateClosedResources": true,
+    "before-worker-put39GetComplete": true,
+    "after-worker-put39GetComplete": true,
+    "full16AppsVersionsRegistryRetained": true,
+    "public96BytesExact": true,
+    "framePendingTransparent": true
+  },
+  "mustFix": [],
+  "actualVersion": "d2660428-5ccb-4fb9-b1bd-d6b8ba26959f",
+  "actualDeployment": "f32cef50-1c49-42ac-9514-b26837c68d24",
+  "acknowledgedAt": "2026-10-18T22:04:19.812Z",
+  "sourceSha256": "304373a50d7a9ca8a99cdfbda0dcae261aa34d53727b757dfeb099c88efb5e0b",
+  "frameAdmissionByteReadback": "pending after R2 and original finite gate PUT, before V1; not part of closed static96 pass",
+  "userAcceptancePassed": false,
+  "scope": "Original single publisher multipart/ACK and original39GET complete pre/post resource preservation, public96 noCookie fullbody hashes. Finalize local no credentials/cloud writes per original receipt.",
+  "sources": [
+    {
+      "file": "frozen-publication-attempt/safe-receipt.json",
+      "bytes": 6009,
+      "sha256": "9ff958941bc40df82f849940703db0902792cd5a9164af2294cb87af7b3b778b"
+    },
+    {
+      "file": "frozen-publication-attempt/worker-put-intent.json",
+      "bytes": 539,
+      "sha256": "d26a57c43fb6c86a21d64377802a91a2ccb955e774adeed6747214ef04ec63a5"
+    },
+    {
+      "file": "frozen-publication-attempt/worker-multipart-review.json",
+      "bytes": 415,
+      "sha256": "53676296421fd912a64f7305c95968200199a6b63d99685e892cb165e979a75d"
+    },
+    {
+      "file": "frozen-publication-attempt/worker-put-ack.private.json",
+      "bytes": 6644,
+      "sha256": "8c2a8f05c7c947e6d1556ea8f943fa91ad5dc4148ff6431712dbc2e9ef59efdd"
+    },
+    {
+      "file": "frozen-publication-attempt/before.private.json",
+      "bytes": 82985,
+      "sha256": "2499568d799bf9afa4938e40e21399922580001229c75ceb1396e7354e17002d"
+    },
+    {
+      "file": "frozen-publication-attempt/after.private.json",
+      "bytes": 83505,
+      "sha256": "1f30ee013a9107babbb1aec62d80b1dd730a9a57ed67c34af05e64023159b19b"
+    },
+    {
+      "file": "publication/public-assets.result.safe.json",
+      "bytes": 52150,
+      "sha256": "c726731c1fe9ee5a58adb4b498b88f735d5eca6cc7ab067c64cf0d2a75447849"
+    },
+    {
+      "file": "publication/publisher-cli.result.safe.json",
+      "bytes": 403,
+      "sha256": "197ce649ef7a6ee98632f411e820922109fe80d2c62b8e993d5065674b215074"
+    },
+    {
+      "file": "preflight/frame-observation-order-correction.safe.json",
+      "bytes": 2499,
+      "sha256": "cc64d98be6cfe175527314a20df7477b37cfb07e4556f5fc6ace52bc458ea8c6"
+    }
+  ],
+  "privateBodiesCopied": false,
+  "reviewerActions": {
+    "network": 0,
+    "tests": 0,
+    "auth": 0,
+    "cloudWrites": 0
+  }
+}

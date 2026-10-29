@@ -1,0 +1,75 @@
+{
+  "schema": "jhg46-sdk-publication-gate-local-adaptation-checks/v1",
+  "recordedAt": "2026-10-18T17:45:21.657217+00:00",
+  "authorCheckNotIndependentReview": true,
+  "test": {
+    "command": [
+      "node",
+      "--test",
+      ".local/jhg46-native-sdk-acceptance-preparation-20261019/gateway-ops-candidate-v1/adaptation.test.mjs"
+    ],
+    "exitCode": 0,
+    "tests": 13,
+    "pass": 13,
+    "fail": 0,
+    "testFile": {
+      "file": "gateway-ops-candidate-v1/adaptation.test.mjs",
+      "bytes": 11539,
+      "sha256": "1700aa85cdc3882938800ae369d130354e3d87cb552596911232cd48269278c5"
+    },
+    "stdoutCapturedAsFile": false,
+    "utcStartEndNotCaptured": true,
+    "factsObservedFromActualToolExitAndTap": true
+  },
+  "preparationCalls": {
+    "datedFamilyDerivationOnce": true,
+    "prepareInputsOnly": true,
+    "reviewPlanOnly": true,
+    "reviewPlan": {
+      "file": "gateway-ops-candidate-v1/publication-attempts/1feadf24-3eb8-58be-abd7-872c68ab45e6/plan.json",
+      "bytes": 2158,
+      "sha256": "1b40da5395962b478d1312bcf29ccbb9468fdf39d3ff5aa30102dca31c2aa906"
+    }
+  },
+  "mechanicalPreservation": {
+    "fivePurePrimitivesFileByteIdentical": true,
+    "singleWriteProtocolBodyByteIdentical": true,
+    "realTransportBodyByteIdentical": true,
+    "parentSenderSha256": "4f53f3ad9830685eff339a4554e5e11d31067b2c13d7019992a627998f1ade1a"
+  },
+  "performed": {
+    "realCredentialReads": 0,
+    "networkCalls": 0,
+    "cloudWrites": 0,
+    "oldRequestOrLockEdits": 0,
+    "unchangedOnceTestsRerun": 0
+  },
+  "limits": [
+    "The proof is an author local check, not an independent review or actual merge/publication/gate/acceptance.",
+    "Synthetic fixtures cannot prove CF current API or runtime success.",
+    "The actual13case stdout was observed from tool output, not captured in an independent file; no fabricated stdout/hash or UTC duration is supplied."
+  ],
+  "initial13Attribution": "Initial thirteen-case run predates the getter traceJson change and subsequent finite-gate bridge work. Sender/preparer/dated baseline unchanged after that run; final getter has its separate actual two-case run. Do not call this a final combined gate suite.",
+  "getterFocusedRun": {
+    "command": [
+      "node",
+      "--test",
+      ".local/jhg46-native-sdk-acceptance-preparation-20261019/gateway-ops-candidate-v1/getter-fixtures.test.mjs"
+    ],
+    "exitCode": 0,
+    "tests": 2,
+    "pass": 2,
+    "fail": 0,
+    "testFile": {
+      "file": "gateway-ops-candidate-v1/getter-fixtures.test.mjs",
+      "bytes": 4707,
+      "sha256": "881132d8c4f9b33eed2934b92672e18e620e66406f044240d953ba098dc06ce5"
+    },
+    "observations": {
+      "file": "gateway-ops-candidate-v1/getter-fixture-observations.safe.json",
+      "bytes": 1004,
+      "sha256": "7b5bfc0a2ede4bdb3f0794cf5c02189de4c59922d7fe16fcb8af9c6ae4aefd47"
+    },
+    "bounds": "Both actual-style complete39GET dummy runs compact+pretty<=16000; actual9c8 and3043 module bodies and dated raw families; no network."
+  }
+}

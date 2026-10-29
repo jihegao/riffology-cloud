@@ -1,0 +1,188 @@
+{
+  "checks": {
+    "allTwentySixSourceBindingReferencesExact": true,
+    "commonOnlyNewScopeHashChanged": true,
+    "driverOnlyBehaviorDeltaIsGlobalEnvFilePairAtCompleteArgsTail": true,
+    "eightManifestFilesExact": true,
+    "elevenReportedExtractedFragmentsMatchActualPinnedCliBytes": true,
+    "fixtureEvaluatesPureHelpersParserOptionsWithoutFullCliHandlersOrInitializers": true,
+    "noNewCandidateGrantOrPublicationLockPresent": true,
+    "oldEightFrozenSourcesAndFiveActualRecordsUnchanged": true,
+    "oldGreedyAndEqualsControlAndNewExclusiveDevNullArgumentsMatched": true,
+    "readerOnlyFixedRootAndRequestChanged": true,
+    "remoteExecutorAndOciVerifierByteIdentical": true,
+    "sameC3eArchiveImagePlatformConfigUserAccountRepositoryTagAndAuthorityContract": true,
+    "scopeOnlyRequestParentRemoteSiblingChanged": true,
+    "sixExistingPureParserCasesAndFixtureStreamsBound": true,
+    "sixteenRecoveryAndSevenReaderExistingChecksSuccessStreamsBound": true,
+    "testOnlyExpectedArgvOrderChanged": true,
+    "vmNoHostCapabilitiesAndDynamicCodeDisabledBounded": true
+  },
+  "limits": [
+    "Pure-parser evidence establishes this grammar defect and repaired fixed argv parsing; it does not recover discarded original CLI output or establish the exact original exit1 error text.",
+    "No full Wrangler CLI, help, OAuth login/token, provider, network, SSH, Docker or target reader was executed by this review; no existing checks were rerun.",
+    "The old invoked CLI browser/network/OAuth side effects remain unknown; old c3e403 cause remains unknown.",
+    "The candidate is preparation only and requires a new explicit human authorization before real execution; old request locks and histories cannot be replayed.",
+    "Persistent Containers OAuth capability and account Registry credentials are not repository-scoped and their scope is not temporary with the15minute Registry TTL.",
+    "No239merge, rollout, app/Gateway/gate, real project/model/Turn/Run or Goal completion is allowed or demonstrated."
+  ],
+  "operationsManifest": {
+    "bytes": 1313,
+    "file": "operations-manifest.json",
+    "sha256": "89f2f285f5f732a6f3c9b8705a47fde4b5f073970e585e779371fb20ac2680fa"
+  },
+  "outcome": "no-must-fix",
+  "parentRequestId": "9ec39434-0856-4ee7-af30-adf3dd5b5df4",
+  "pinnedPublicCli": {
+    "bytes": 14390953,
+    "sha256": "0a7bc2107ca92b2cc6db58b6a36d38d44b549eebd7db7ec34c36db9da7a91264"
+  },
+  "requestId": "fb99c7e4-21a7-4215-8261-c17dd7c148aa",
+  "reviewActions": {
+    "authorFilesChanged": 0,
+    "credentialReads": 0,
+    "fullCliHelpOrAuthCalls": 0,
+    "networkSshDockerOrCloudCalls": 0,
+    "testsRerun": 0
+  },
+  "reviewedAt": "2026-10-18T01:46:16.720067+00:00",
+  "reviewedFiles": [
+    {
+      "bytes": 4784,
+      "file": "AUTHORIZATION.md",
+      "sha256": "927dbf5fa58f22785f0fa93f6dff04480bc07fd6d95ee12d88133bb8123aa4f6"
+    },
+    {
+      "bytes": 5380,
+      "file": "EXECUTION.md",
+      "sha256": "32c4bd44b98a2649c6b7a29426d62ced7ff0ffdba953dd1bf7aaa7bdc81ed3d9"
+    },
+    {
+      "bytes": 19225,
+      "file": "local-recovery.py",
+      "sha256": "c6923da17446f0b3b2473c554c149963636f632b950b26fa5b1ff553b891a600"
+    },
+    {
+      "bytes": 5748,
+      "file": "oci_verify.py",
+      "sha256": "0a23618e34b9a2acf608acc86d281ebd68f60a62ba2b102ecda92502c294acea"
+    },
+    {
+      "bytes": 3291,
+      "file": "pub_common.py",
+      "sha256": "43e5e41b0953da9deac52fe8533d9190172f0309fd163f44fec6c5ed6250eadc"
+    },
+    {
+      "bytes": 13818,
+      "file": "remote-recovery.py",
+      "sha256": "339aa74fd246024886ca243526bd097d39be16150719a3b117474a7fcad6a178"
+    },
+    {
+      "bytes": 5086,
+      "file": "scope.json",
+      "sha256": "33cc5a4e5124f36eef9656073404e9b8e779233c859867ae8d985edf46cc9e51"
+    },
+    {
+      "bytes": 16307,
+      "file": "test_recovery.py",
+      "sha256": "08832bab64eb8048588a5c124ad64713da0c3c17ee58e0f1b256fabaf162a1b0"
+    },
+    {
+      "bytes": 1313,
+      "file": "operations-manifest.json",
+      "sha256": "89f2f285f5f732a6f3c9b8705a47fde4b5f073970e585e779371fb20ac2680fa"
+    },
+    {
+      "bytes": 9065,
+      "file": "independent-cleanup-readonly.py",
+      "sha256": "2207c49844d8bfa4777510d6c60d4333f509dd1d7ab42fabf71e6188c77d6266"
+    },
+    {
+      "bytes": 6568,
+      "file": "test_independent_reader.py",
+      "sha256": "1ccd6830166f0f2cc8447ad34b066659364c18a5d78e282b414777dfb4914eb4"
+    },
+    {
+      "bytes": 5944,
+      "file": "parse-fixed-wrangler-argv.mjs",
+      "sha256": "164062cd1f7e14f8ae89fc41290107e37c3cadc8e8f4ae4b4d93a6a61722b80c"
+    },
+    {
+      "bytes": 694,
+      "file": "parser-check-first.receipt.json",
+      "sha256": "676ddaf5b10335c69bc1df78d4ecd91b08bb2152d246b7ace507065a762ecab9"
+    },
+    {
+      "bytes": 4547,
+      "file": "parser-check-first.stdout",
+      "sha256": "536d84bf40786023fd03e1f289f6190b22a9d9c8c4239fb163763d7c1b843c06"
+    },
+    {
+      "bytes": 0,
+      "file": "parser-check-first.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 569,
+      "file": "recovery-fake-checks.json",
+      "sha256": "75b9e80c1755ea8fe9dd0cae6e30553de03d2989051cf88494bc12adbca47499"
+    },
+    {
+      "bytes": 0,
+      "file": "recovery-fake-checks.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 225,
+      "file": "recovery-fake-checks.stderr",
+      "sha256": "0eaa3e5019cd0249f8c95ea01071159d17460da14bd884b3a4f06b1d2b4936e0"
+    },
+    {
+      "bytes": 651,
+      "file": "independent-reader-checks.json",
+      "sha256": "f0f498ed22ca86071b1f46fa67bb0eeec23c5e09d035350416ead5a1375ce799"
+    },
+    {
+      "bytes": 0,
+      "file": "independent-reader-checks.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 215,
+      "file": "independent-reader-checks.stderr",
+      "sha256": "d39789180b50e37364f6279ace2b0884825cb392af2977acedd445cc5b689036"
+    },
+    {
+      "bytes": 1850,
+      "file": "source-copy-receipt.json",
+      "sha256": "af8ccc5321164333f9d5da9413f8f65e0170e10ebdfcc30359a71f8bb98cbb25"
+    },
+    {
+      "bytes": 15095,
+      "file": "source-delta.patch",
+      "sha256": "a777107a3b8e7b201020707602d527cc4b11192d1350433019b84b5a9a8e37ba"
+    },
+    {
+      "bytes": 5741,
+      "file": "argv-order-diagnosis.json",
+      "sha256": "d9c60e3d6cdeb4d22a609c3b075122780b7b24c3f4f4bc1adf9981bb0a5483b2"
+    },
+    {
+      "bytes": 1793,
+      "file": "offline-checks.json",
+      "sha256": "e6723e9b0029e2d92fefcfac5cfcc8cbdca9d18d6dae9eaf4320c2b7ee906020"
+    },
+    {
+      "bytes": 4350,
+      "file": "public-preparation-review.json",
+      "sha256": "08a94fe157d73f4ce8dc9241850a4fd2273857489dee243ce249d3e904434f18"
+    }
+  ],
+  "reviewer": "probe_readability",
+  "schema": "jhg46-independent-argv-order-repair-review/v1",
+  "sourceBinding": {
+    "bytes": 4338,
+    "file": "candidate-source-binding.json",
+    "sha256": "aa79181f8c699706bd04c8cb09536ab885db3b66fbf857b6e5ce5be2c188e507"
+  }
+}

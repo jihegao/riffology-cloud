@@ -1,0 +1,27 @@
+{
+  "schema": "jhg46-independent-local-reader-invocation-receipt/v1",
+  "startedAt": "2026-10-18T14:32:59.318387+00:00",
+  "endedAt": "2026-10-18T14:32:59.366241+00:00",
+  "readerSha256": "d73b1624476eb3c7fa929bff3fd6d3d99fc4a062fa9a7229c8d09aac15be6be5",
+  "readerBytesUnchangedAfter": true,
+  "exitCode": 0,
+  "reaped": true,
+  "stdout": {
+    "file": "observation.stdout",
+    "bytes": 39373,
+    "sha256": "e08f69de3f9022f5c1e319dc4c563a25d0509bac908940de81b6d573eede829a"
+  },
+  "stderr": {
+    "file": "observation.stderr",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "errorCode": null,
+  "networkAuthRegistryDockerCallsByWrapper": 0,
+  "readerInvokedOnce": true,
+  "parsedObservation": {
+    "file": "observation.json",
+    "bytes": 48405,
+    "sha256": "5b5df7b3e2c0f694c20db0b795f052df8ec09bd09870fc2ec525c974d38ade66"
+  }
+}

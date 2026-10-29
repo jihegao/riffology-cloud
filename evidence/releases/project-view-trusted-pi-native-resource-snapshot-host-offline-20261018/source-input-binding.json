@@ -1,0 +1,126 @@
+{
+  "schema": "trusted-pi-native-host-source-input-binding/v1",
+  "recordedAt": "2026-10-18T10:45:00.045563+00:00",
+  "requestId": "695e8875-459a-41b3-a148-2e228f2c3727",
+  "implementationCommit": "0a10da572264470aaac111e6f5da2bd20b2f2c45",
+  "sourceBindings": [
+    {
+      "imagePath": "browser-preview/runtime/sha256.mjs",
+      "sourcePath": "services/browser-preview/runtime/sha256.mjs",
+      "sourceCommit": "65df9b771a5d0497304a5955e33974e8ea9aa9ac",
+      "bytes": 2241,
+      "sha256": "85da435e9edaf4dca3411cf5f86fa45a95fe15c78060849d11f7eb0344b5bd24",
+      "overlay": false,
+      "role": "retained-image-input"
+    },
+    {
+      "imagePath": "project-resources/text.mjs",
+      "sourcePath": "services/project-resources/text.mjs",
+      "sourceCommit": "65df9b771a5d0497304a5955e33974e8ea9aa9ac",
+      "bytes": 6700,
+      "sha256": "9f7f3266549f04a0a8214e6e725ea9d85030532364f136487833e9cc45af303e",
+      "overlay": false,
+      "role": "retained-image-input"
+    },
+    {
+      "imagePath": "runtime/controlled-pi.mjs",
+      "sourcePath": "services/runtime/controlled-pi.mjs",
+      "sourceCommit": "65df9b771a5d0497304a5955e33974e8ea9aa9ac",
+      "bytes": 23072,
+      "sha256": "cf4143bff6cf049d2ab8247ef86ceb5f5391da67a86acb56ea901a119b2d6871",
+      "overlay": false,
+      "role": "retained-image-input"
+    },
+    {
+      "imagePath": "trusted-pi/release-candidate.mjs",
+      "sourcePath": "services/trusted-pi/release-candidate.mjs",
+      "sourceCommit": "65df9b771a5d0497304a5955e33974e8ea9aa9ac",
+      "bytes": 27185,
+      "sha256": "034cdc9df6c09e9cd7a32320e6bbfc2f9bbf5761151fe1d585d7fd64cdcd8d07",
+      "overlay": false,
+      "role": "retained-image-input"
+    },
+    {
+      "imagePath": "trusted-pi/research-context.mjs",
+      "sourcePath": "services/trusted-pi/research-context.mjs",
+      "sourceCommit": "65df9b771a5d0497304a5955e33974e8ea9aa9ac",
+      "bytes": 1557,
+      "sha256": "938e89155a5d5e0c405f51db5d973a4db264e63d96e308aff8da93caaaa05076",
+      "overlay": false,
+      "role": "retained-image-input"
+    },
+    {
+      "imagePath": "trusted-pi/trusted-pi-release.mjs",
+      "sourcePath": "services/trusted-pi/release-candidate.mjs",
+      "sourceCommit": "65df9b771a5d0497304a5955e33974e8ea9aa9ac",
+      "bytes": 27185,
+      "sha256": "034cdc9df6c09e9cd7a32320e6bbfc2f9bbf5761151fe1d585d7fd64cdcd8d07",
+      "overlay": false,
+      "role": "retained-image-input"
+    },
+    {
+      "imagePath": "trusted-pi/trusted-pi-turn-host.mjs",
+      "sourcePath": "services/trusted-pi/trusted-pi-turn-host.mjs",
+      "sourceCommit": "0a10da572264470aaac111e6f5da2bd20b2f2c45",
+      "bytes": 16239,
+      "sha256": "942333ecc87eb6c7545e0494fed501d9ffa5418468039845484e223b6dfa81d6",
+      "overlay": true,
+      "role": "overlay-native-host"
+    },
+    {
+      "imagePath": "trusted-pi/product-model-transport.mjs",
+      "sourcePath": "services/trusted-pi/product-model-transport.mjs",
+      "sourceCommit": "65df9b771a5d0497304a5955e33974e8ea9aa9ac",
+      "bytes": 7703,
+      "sha256": "c2bece021f34f0b929e796238d132a819281d172b5d8fd3a6f431ed9d46801c6",
+      "overlay": false,
+      "role": "retained-image-input"
+    },
+    {
+      "imagePath": "trusted-pi/product-tool-bridge.mjs",
+      "sourcePath": "services/trusted-pi/product-tool-bridge.mjs",
+      "sourceCommit": "65df9b771a5d0497304a5955e33974e8ea9aa9ac",
+      "bytes": 11657,
+      "sha256": "e536e9231a7fa41be956e3066535a62b7de460b37a4e5a40937c67d9f5981e74",
+      "overlay": false,
+      "role": "retained-image-input"
+    },
+    {
+      "imagePath": "runtime_supervisor.py",
+      "sourcePath": "services/trusted-pi/runtime_supervisor.py",
+      "sourceCommit": "65df9b771a5d0497304a5955e33974e8ea9aa9ac",
+      "bytes": 16912,
+      "sha256": "79e2bdedaedba063364513d853eb8325f229ba55b1e51df46cbcee359807e29c",
+      "overlay": false,
+      "role": "retained-image-input"
+    },
+    {
+      "imagePath": "package.json",
+      "sourcePath": "services/trusted-pi/package.json",
+      "sourceCommit": "65df9b771a5d0497304a5955e33974e8ea9aa9ac",
+      "bytes": 244,
+      "sha256": "0dde532fe23b810bd09b978f990d48342f7378429f2b2c48f30e055993fa6ebe",
+      "overlay": false,
+      "role": "retained-image-input"
+    },
+    {
+      "imagePath": "package-lock.json",
+      "sourcePath": "services/trusted-pi/package-lock.json",
+      "sourceCommit": "65df9b771a5d0497304a5955e33974e8ea9aa9ac",
+      "bytes": 150262,
+      "sha256": "ad20b5c766c411c5ba42a4fc997890fe3494ab8adb96cf5d75031366b3d144fc",
+      "overlay": false,
+      "role": "retained-image-input"
+    }
+  ],
+  "overlaySourceEqualsGitBlob": true,
+  "retainedSourceByteComparisonOnlyNotNewImageRun": true,
+  "archiveMemberSafetyAndHashVerified": true,
+  "members": 5,
+  "dockerfileOnlyFromAndOneHostCopy": true,
+  "copiedContainerPath": "/opt/riffology/trusted-pi/trusted-pi-turn-host.mjs",
+  "copiedUidGid": "0:0",
+  "copiedMode": "0555",
+  "reviewOnly": true,
+  "executedOnAmd": false
+}

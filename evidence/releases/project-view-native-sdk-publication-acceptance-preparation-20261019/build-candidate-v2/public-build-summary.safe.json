@@ -1,0 +1,134 @@
+{
+  "schema": "jhg46-native-sdk-gateway-build-public-safe-summary/v1",
+  "recordedAt": "2026-10-18T17:39:56.029280+00:00",
+  "authorPreparedNotIndependentReview": true,
+  "reviewOnly": true,
+  "deployable": false,
+  "sourceCommit": "fca66cb0e1024b4e86bbbeb9a6d955b137599efa",
+  "sourceContentBinding": {
+    "file": "source-content-binding.json",
+    "bytes": 13060,
+    "sha256": "4f5bcd14f20e06b810405a730c3d57d8cbfe0905bbffa95f9696535243f6ce06"
+  },
+  "sourceInputInventory": {
+    "file": "source-input-inventory.json",
+    "bytes": 159809,
+    "sha256": "d3c793dc1e2fd29bc91b8b93a39825827a3c9f8a737c5d805642c1a45988624a"
+  },
+  "selectedTrackedInputs": 477,
+  "moduleGraph": {
+    "inputs": 1124,
+    "git": 303,
+    "dependencies": 821,
+    "playwright": 0,
+    "notEveryFilesystemLookup": true
+  },
+  "build": {
+    "method": "Installed esbuild API once in v2; Wrangler CLI was not invoked",
+    "esbuildVersion": "0.28.1",
+    "wranglerMetadataVersion": "4.129.0",
+    "nodeVersion": "v26.10.0",
+    "nodePlatform": "darwin",
+    "nodeArchitecture": "arm64",
+    "explicitGitPinnedTsconfigSha256": "03809951d75370134b3aaae38177c3db561f2ecb6004f6dbc67f6f6a3c2d07f0",
+    "explicitEmptyEnvBytes": 0,
+    "environmentSanitized": true,
+    "startedAt": "2026-10-18T17:33:35.895026+00:00",
+    "endedAt": "2026-10-18T17:33:36.654863+00:00",
+    "pid": 47321,
+    "exitCode": 0,
+    "reaped": true,
+    "thisCandidateAttempts": 1,
+    "earlierV1BuildAttemptFailedAndRetained": true
+  },
+  "artifacts": {
+    "bundle": {
+      "file": "output/gateway.mjs",
+      "bytes": 5774988,
+      "sha256": "304373a50d7a9ca8a99cdfbda0dcae261aa34d53727b757dfeb099c88efb5e0b"
+    },
+    "sourceGraph": {
+      "file": "output/source-graph.json",
+      "bytes": 879161,
+      "sha256": "ee731e078e47ab8a6e67e316e3b66ee53828022267937214197a98c6a98d6fab"
+    },
+    "metafile": {
+      "file": "output/esbuild-metafile.json",
+      "bytes": 1017462,
+      "sha256": "38dc2974ef07935f38e01e76516478afdcd50af88939530f3dcba88fb8181443"
+    },
+    "assetsInventory": {
+      "file": "output/assets-sha256.json",
+      "bytes": 20499,
+      "sha256": "43fb4a80fe591acaae7dcf7a8ae144f50ce83a123ffd832e6f91da49baa4aa47"
+    },
+    "assetsManifest": {
+      "file": "output/assets-manifest.json",
+      "bytes": 15987,
+      "sha256": "62611357af29d0b5480e36128bb25a59454cab97e1f174db49f347771ca77df9"
+    }
+  },
+  "frame": {
+    "path": "/project-views/63ebcd050b0ccf5019265070890bee69d99902120f2252c376678aff299d374b/frame.html",
+    "sha256": "63ebcd050b0ccf5019265070890bee69d99902120f2252c376678aff299d374b"
+  },
+  "exportsCount": 30,
+  "assets": {
+    "paths": 96,
+    "web": 28,
+    "immutable": 68,
+    "changedPaths": [
+      "/project-view-local.js",
+      "/project-views.js"
+    ],
+    "unchangedPaths": 94,
+    "allImmutableByteIdenticalToDeployed9c8": true,
+    "totalBytes": 53784755,
+    "noAssetSessionOrUpload": true
+  },
+  "inputStability": {
+    "trackedSourcesAllMatchedBeforeAndAfter": true,
+    "dependencyModules821BeforeAfterByteExact": true,
+    "explicitTools208TsconfigAndPackageMetadata186BeforeAfterByteExact": true,
+    "assets96BeforeAfterAndCopiedBodiesByteExact": true,
+    "allOldFrozenInputsUnmodified": true
+  },
+  "comparison": {
+    "actualPrior": "gateway-build-v2, module9c8e4b6b",
+    "moduleInputChanged": [
+      "services/project-views/frame-html.mjs"
+    ],
+    "assetBodiesChanged": [
+      "/project-view-local.js",
+      "/project-views.js"
+    ],
+    "other94AssetBodiesIncluding68ImmutableUnchanged": true,
+    "newAssetPaths": 0,
+    "bundleGeneratedCommentAndWrapperLabelsMayDifferByBuildLocation": true,
+    "rawManifestLegacyKeyNamesExplainedInSourceBinding": true
+  },
+  "history": {
+    "v1Pid46452Reaped": true,
+    "v1PostBuildFailure": "Expected old field build.outputExports instead of actual prior schema build.exports. Original failed manifest and partial bundle retained.",
+    "v2OnlyBuilderCorrection": "build.outputExports -> build.exports",
+    "v1PartialBundleByteExactToV2Success": true,
+    "initialToolPathPrecheckHeldBeforeAnyBuildPreserved": true
+  },
+  "boundaries": {
+    "normalMergedSourceProofMetadataAndFreshBaselineStillRequired": true,
+    "newPublicationGrantPrepared": false,
+    "assetSessionOrUpload": false,
+    "apiAuthSshDockerRegistryOrProviderInvocations": 0,
+    "gateOrApplicationChanges": false,
+    "testsRerunByBuild": false,
+    "notProductionOrOrdinaryUserAcceptance": true,
+    "noTokenCredentialActorUserConfigOrRealProviderResponseCopied": true
+  },
+  "independentReview": {
+    "file": "../reviews/root-independent-offline-build.safe.json",
+    "bytes": 3374,
+    "sha256": "ea269a716ebdb8a14416ace61834c42a516b7dc718a741b846a5833652cd6a5e",
+    "mustFix": [],
+    "scope": "Pure file/body provenance verification; no rebuild, product test or API invocation."
+  }
+}

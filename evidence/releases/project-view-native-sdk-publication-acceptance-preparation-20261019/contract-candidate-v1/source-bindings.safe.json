@@ -1,0 +1,242 @@
+{
+  "schema": "jhg46-new-sdk-contract-original-input-provenance/v1",
+  "preparedAt": "2026-10-18T17:33:00.835039+00:00",
+  "basePreparation": {
+    "file": ".local/jhg46-native-resource-host-rollout-acceptance-preparation-20261018/preparation-manifest.json",
+    "bytes": 4792,
+    "sha256": "2937a30ee4f81458c48b40e31f77644435c323a86c33fa3695287be337c2b5b4"
+  },
+  "old26ByteExactAtPreparation": true,
+  "baseContracts": [
+    {
+      "file": ".local/jhg46-native-resource-host-rollout-acceptance-preparation-20261018/operations.json",
+      "bytes": 8895,
+      "sha256": "2e6416cd2bd1f2ce55b551f674b638735412c9c230a550453eacab89fe3065ea"
+    },
+    {
+      "file": ".local/jhg46-native-resource-host-rollout-acceptance-preparation-20261018/ordinary-input.json",
+      "bytes": 4283,
+      "sha256": "199559eac9295536c42124c2b01aec7a35f1eca9a84a9b22cc35a7b12c0affcb"
+    },
+    {
+      "file": ".local/jhg46-native-resource-host-rollout-acceptance-preparation-20261018/authentication-contract.json",
+      "bytes": 3332,
+      "sha256": "d0c8a4545955fdfd0534eb469b5a266fc59882c866c526f3e0542ddec520ad77"
+    },
+    {
+      "file": ".local/jhg46-native-resource-host-rollout-acceptance-preparation-20261018/fresh-read-contract.json",
+      "bytes": 7684,
+      "sha256": "7b9078b58b062f97d09b1b0a9f1e406fe56e7a88e12959f33a0699f7c8b272a7"
+    },
+    {
+      "file": ".local/jhg46-native-resource-host-rollout-acceptance-preparation-20261018/source-bindings.json",
+      "bytes": 9633,
+      "sha256": "c800fef2ea7a2c6429f88d800d3a179bd9bd08e799b731ec81d04088e6f15ab4"
+    },
+    {
+      "file": ".local/jhg46-native-resource-host-rollout-acceptance-preparation-20261018/publication-packet.draft.md",
+      "bytes": 7336,
+      "sha256": "78d417b43fa4e26ea4e538c6c654235e266a582aeeb62d3fd39d7b37d128af95"
+    }
+  ],
+  "closedFailureActualEvidence": [
+    {
+      "file": ".local/jhg46-native-resource-host-rollout-acceptance-execution-20261018/reviews/owned-gate-close-failed-acceptance-closure.safe.json",
+      "bytes": 4107,
+      "sha256": "4874f41b5b71f47753f2e2c68af70ff5f98461c91ce1fbeef050fe9bc36bed2a"
+    },
+    {
+      "file": ".local/jhg46-native-resource-host-rollout-acceptance-execution-20261018/reviews/browser-gate-exact-annotation-bridge-review.safe.json",
+      "bytes": 5530,
+      "sha256": "c36b1d952f03b80f567c818a6fdf5a9e582f469c32116405f515b2225624fbe8"
+    },
+    {
+      "file": ".local/jhg46-native-resource-host-rollout-acceptance-execution-20261018/ordinary/browser-v1/actual-package-validation.safe.json",
+      "bytes": 8619,
+      "sha256": "96d434772ed473e2720965602e63bb4dd52a1e69b7c1e1d9a1b880866114ba78"
+    },
+    {
+      "file": ".local/jhg46-native-resource-host-rollout-acceptance-execution-20261018/reviews/v1-page-sdk-timeout-source-diagnosis.safe.json",
+      "bytes": 8811,
+      "sha256": "c8141d6d0656c20f3877164905a7cfb0f140e07166b6d342102d86b6f7a7737f"
+    },
+    {
+      "file": ".local/jhg46-native-resource-host-rollout-acceptance-execution-20261018/ordinary/browser-v1/after-owned-delete-original.raw.private.json",
+      "bytes": 37794,
+      "sha256": "dd53a23b19eaf5b856ead9ed4727a7f8b0ee0a02970e43e48aa964e463f766d8"
+    },
+    {
+      "file": ".local/jhg46-native-resource-host-rollout-acceptance-execution-20261018/ordinary/browser-v1/final-physical-readback-original.tool-result.private.json",
+      "bytes": 15770,
+      "sha256": "cffa90941de33dade70a460326b95bd43e84b21ebce8d4dce797bc6b867adf4d"
+    },
+    {
+      "file": ".local/jhg46-native-resource-host-rollout-acceptance-execution-20261018/ordinary/browser-v1/ui-exit-observation.safe.json",
+      "bytes": 951,
+      "sha256": "4b6ef9140c50a33d46960bd87e79bde24cb9140faf4c750165700b87e802ae1b"
+    }
+  ],
+  "content": {
+    "root": "../content-candidate-v1",
+    "manifest": {
+      "file": ".local/jhg46-native-sdk-acceptance-preparation-20261019/content-candidate-v1/manifest.json",
+      "bytes": 4735,
+      "sha256": "0eebd2f2bd57d0ad54ba47ffec164521ea680d07fef1ea0c7a6a2127658e4ad8"
+    },
+    "independentReview": {
+      "file": ".local/jhg46-native-sdk-acceptance-preparation-20261019/content-candidate-v1/reviews/independent-content-review.safe.json",
+      "bytes": 1787,
+      "sha256": "817c2aaec5423be4f1036bb317c209bc68a5ea2fa142b08a3cd6961231475968"
+    },
+    "all18SourcesExact": true,
+    "checksUniqueCases": 8,
+    "notOnlineAcceptance": true
+  },
+  "fixedSdkCode": {
+    "pullRequest": 257,
+    "url": "https://github.com/jihegao/riffology-cloud/pull/257",
+    "head": "fca66cb0e1024b4e86bbbeb9a6d955b137599efa",
+    "remoteStatusAuthority": "Root reported public push and In review; this author performed no GitHub request.",
+    "localCommitObjectFiles": [
+      {
+        "file": "evidence/releases/project-view-native-sdk-deadlines-20261019.json",
+        "bytes": 6917,
+        "sha256": "51f37ba748a7cf4abb2cf8ebd8a26fffd26bd0f58751f8c547c19a7ab18607be"
+      },
+      {
+        "file": "services/project-views/frame-html.mjs",
+        "bytes": 8088,
+        "sha256": "b22069f4c5899ae658ea38fd67c3e10e8c0ff51814a27bc90db79dfa18beb19b"
+      },
+      {
+        "file": "services/project-views/frame-source.mjs",
+        "bytes": 7872,
+        "sha256": "087d88ac18426084bd236b17c0b09ea74b027a454847454bba6c00e5f7b2dbfa"
+      },
+      {
+        "file": "services/web/project-view-local.js",
+        "bytes": 4396,
+        "sha256": "9edc6ef02b7d8bb50c51ef27e5a7d18d700f3a9013239ffb55c89baf07b6b987"
+      },
+      {
+        "file": "services/web/project-views.js",
+        "bytes": 17054,
+        "sha256": "e420e10e0196a9b9ce5f8c6959f8c8551ee0eeae3a2f0a317d9eac8f986ea47c"
+      },
+      {
+        "file": "tests/m3/project-view-broker-deadlines.test.mjs",
+        "bytes": 6060,
+        "sha256": "09b760b426995b09635c1c22a784544b64fda57ac2e5e82b126a993a38b4110b"
+      },
+      {
+        "file": "tests/m3/project-view-sdk-deadlines-browser.test.mjs",
+        "bytes": 5715,
+        "sha256": "17aaf5ff744ea792fe36b423a73cc94dd8a8b382166340e917120c545d817c71"
+      }
+    ],
+    "actualNormalMergeProof": null,
+    "sdkBundleAssetsBuildAndDeployment": {
+      "localBuild": {
+        "bundle": {
+          "file": ".local/jhg46-native-sdk-acceptance-preparation-20261019/build-candidate-v2/output/gateway.mjs",
+          "bytes": 5774988,
+          "sha256": "304373a50d7a9ca8a99cdfbda0dcae261aa34d53727b757dfeb099c88efb5e0b"
+        },
+        "assetsManifest": {
+          "file": ".local/jhg46-native-sdk-acceptance-preparation-20261019/build-candidate-v2/output/assets-manifest.json",
+          "bytes": 15987,
+          "sha256": "62611357af29d0b5480e36128bb25a59454cab97e1f174db49f347771ca77df9"
+        },
+        "sourceGraph": {
+          "file": ".local/jhg46-native-sdk-acceptance-preparation-20261019/build-candidate-v2/output/source-graph.json",
+          "bytes": 879161,
+          "sha256": "ee731e078e47ab8a6e67e316e3b66ee53828022267937214197a98c6a98d6fab"
+        },
+        "buildManifest": {
+          "file": ".local/jhg46-native-sdk-acceptance-preparation-20261019/build-candidate-v2/output/build-manifest.json",
+          "bytes": 5651,
+          "sha256": "c4289bb276ed6ede021acd6c8d2c439aeb007ea8ca5b15b582bf4b1aa7564e20"
+        },
+        "sourceBinding": null,
+        "independentReview": null
+      },
+      "actualDeployment": null
+    },
+    "publicSourceReadback": {
+      "file": ".local/jhg46-native-sdk-deadlines-20261019/publication-staging/public-source-readback.safe.json",
+      "bytes": 807,
+      "sha256": "11085c0a85ae337a398518af987cb9bffbbe1c5c6bca302c34c3f4e7e41db4b7"
+    },
+    "fixedHeadEvidenceObject": {
+      "gitObject": "fca66cb0e1024b4e86bbbeb9a6d955b137599efa:evidence/releases/project-view-native-sdk-deadlines-20261019.json",
+      "bytes": 6917,
+      "sha256": "51f37ba748a7cf4abb2cf8ebd8a26fffd26bd0f58751f8c547c19a7ab18607be"
+    },
+    "sourceFrame": {
+      "sha256": "63ebcd050b0ccf5019265070890bee69d99902120f2252c376678aff299d374b",
+      "path": "/project-views/63ebcd050b0ccf5019265070890bee69d99902120f2252c376678aff299d374b/frame.html"
+    },
+    "sourceDeadlineMilliseconds": {
+      "individualHttp": 10000,
+      "wholeBrokerRpc": 30000,
+      "frameSdkRequest": 35000,
+      "moduleInstall": 40000,
+      "hostStartup": 45000
+    },
+    "sourceBudgetsAreNotActualDeploymentOrBrowserAcceptance": true,
+    "ciStatusRootReported": "IN_PROGRESS; no success claimed"
+  },
+  "existingPublicationAndGateAlgorithms": [
+    {
+      "file": ".local/jhg46-next-stage-preparation-20261018/gateway-ops-v3/operations-manifest.json",
+      "bytes": 5896,
+      "sha256": "77899ca757e87fe737c7db91e054158202a045204d5db235e129484ba5981ed0"
+    },
+    {
+      "file": ".local/jhg46-next-stage-preparation-20261018/browser-gate-ops-v1/requests.mjs",
+      "bytes": 4798,
+      "sha256": "8920716d09899d924f5226afd4d50c4fbbb66e8d8d3fbfd98a175132940ba752"
+    }
+  ],
+  "algorithmReferencesNotNewExecutableSeal": true,
+  "oldInputsOriginalPrivateBodiesOrPromptsNotCopiedHere": true,
+  "authorActions": {
+    "localFileReadAndGitObjectReadOnly": true,
+    "networkAuthBrowserCloudflareOrModelCalls": 0,
+    "testsOrFixturesRun": false,
+    "frozenSourceOrActualProjectChanges": false
+  },
+  "requiredFutureBinding": "Final build sourcebinding/independent review, guarded publisher/helper source hashes, fresh baseline, normal merge proof, new grant/window/body and original ACKs before execution; actual bundle/assets/graph are locally bound, not deployed.",
+  "oldA25fClassification": "T1/T2 execution terminal and original product release are trusted; V1 UI acceptance failed and its owned gate was closed. This new project is separately authorized future acceptance, not a bypass of old execution unknown.",
+  "currentDeliveryMetadataAuthority": {
+    "source": "Root supplied fresh API observations; this author made no GitHub request.",
+    "issue252": "Done; Issue OPEN",
+    "issue255": "In review/P0; SDK source not deployed",
+    "issue214": "Acceptance/P1/blocked"
+  },
+  "fixedBuildV2": {
+    "bundle": {
+      "file": ".local/jhg46-native-sdk-acceptance-preparation-20261019/build-candidate-v2/output/gateway.mjs",
+      "bytes": 5774988,
+      "sha256": "304373a50d7a9ca8a99cdfbda0dcae261aa34d53727b757dfeb099c88efb5e0b"
+    },
+    "assetCount": 96,
+    "assetUnchanged": 94,
+    "changedWebPaths": [
+      "/project-view-local.js",
+      "/project-views.js"
+    ],
+    "immutable68ByteUnchanged": true,
+    "totalAssetBytes": 53784755,
+    "moduleInputs": 1124,
+    "gitInputs": 303,
+    "dependencyInputs": 821,
+    "sourceFiles": 477,
+    "finalSourceBindingAndIndependentReviewStillPending": true,
+    "source": {
+      "file": ".local/jhg46-native-sdk-acceptance-preparation-20261019/build-candidate-v2/output/build-manifest.json",
+      "bytes": 5651,
+      "sha256": "c4289bb276ed6ede021acd6c8d2c439aeb007ea8ca5b15b582bf4b1aa7564e20"
+    }
+  }
+}

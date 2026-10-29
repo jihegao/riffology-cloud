@@ -1,0 +1,73 @@
+{
+  "schema": "jhg46-safe-readback-collector-final-independent-static-review/v1",
+  "reviewedAt": "2026-10-18T13:21:16.461056Z",
+  "reviewOnly": true,
+  "requestId": "c263a2f3-f445-430e-b562-2e48f1eeb637",
+  "operationId": "registry-readback-recovery-v1",
+  "collector": {
+    "file": "collect-safe-readback-records-once.py",
+    "bytes": 23545,
+    "sha256": "3457296f064403d51ec85d732fd370d558a4964dcb397615e9dbe6a406e78985"
+  },
+  "remoteTemplate": {
+    "bytes": 10943,
+    "sha256": "28bd03aa177976e7ef130cc5a658cbd634129995de3900cee2758606d74eaee1"
+  },
+  "frozenPins": {
+    "readerSourceSHA256": "ad6f018ff89af088a0a04d5748ca71bf056f6a8deb1b3beb2063a190b82dc1f3",
+    "readerTransportSourceSHA256": "948db1094a692591e51d3d6df00ca8bd7eb1c3c306b7c7ce8fadf31449b809e8",
+    "newGrantSHA256": "eb6294d0b9dd1344e8717f5a8dd6ac879e7a41ed9455c0c2cb703f0ffbb2f97f",
+    "operationsManifestSHA256": "59fd2dd0f464e38b50b56e7c1d65229b6d81d86b12c935a822d5eeefead74342"
+  },
+  "mustFix": [],
+  "previousFinding": {
+    "id": "terminal-optional-descriptor-pair",
+    "resolved": true,
+    "originalCollectorSHA256": "9352fecf611b82c6d017adc2516f689f502d515659448b89bff3ded2371808f1",
+    "originalHistoryRetainedByteExact": true,
+    "initialReviewSHA256": "84b64303e339419f19608d60c07a28574227d32a7f169fa91ae78f733fad57fc",
+    "minimalDelta": "If any optional platformManifest/config/readbackProofSha256 is present, require all three and fixed descriptors/64hex. Partial config alone is held.",
+    "outerSourceAndAllOtherRemoteBytesUnchanged": true,
+    "newFixtureOrRemoteExecution": false
+  },
+  "checks": {
+    "fixedExecutionRootNewLocalOnceDirectory": true,
+    "localOriginalIntentAndReapedTerminalGate": true,
+    "actualFrozenReaderObservationSourceTransportAndSHAReferencesRequired": true,
+    "partialDiagnosticObservationAllowedWithoutClaimingCompletion": true,
+    "onlyExactReaderFileRecordsNoDirectoryEnumeration": true,
+    "fixedSafeJSONNamesUniqueRefsMaximum160": true,
+    "fileExpectedBytesSHAFromReaderStableNoLinkPrivateReads": true,
+    "closedFieldValidationBeforeReturningAnyRecordEnvelope": true,
+    "configFieldOnlyFixedDescriptorNeverRawConfig": true,
+    "allSlotPathsDescriptorsAndProofMetadataFixedFromUnchangedReaderASTLiteral": true,
+    "noBodyHeadersErrorTextConfigEnvAuthOrArchiveReads": true,
+    "remoteReadOnlyNoAPIRegistryDockerOrCredentialCalls": true,
+    "noAgentNoForwardsNoConnectionReuse": true,
+    "nonblockingBoundedTransportOwnedProcessGroupReaped": true,
+    "onlyAfterEnvelopeAndByteHashChecksWritePrivate0600LocalOriginalCopies": true,
+    "publicationVerifiedAlwaysFalseLocalACKStillRequired": true,
+    "fullOrPartialCollectionCannotAuthorizeMerge": true
+  },
+  "bounds": {
+    "recordMaximumBytes": 131072,
+    "allOriginalRecordsMaximumBytes": 2097152,
+    "maximumReferenceCount": 160,
+    "transportStdoutMaximumBytes": 4194304,
+    "transportStderrMaximumBytes": 32768,
+    "transportIODeadlineSeconds": 75
+  },
+  "limitations": [
+    "Static source/hash/AST and exact delta review only; no collector or remote template execution and no new tests.",
+    "The main driver was separately still executing when this review was requested. No actual ACK,52-slot success or fresh cleanup is claimed here.",
+    "Collection may safely include partial diagnostics. Root must separately bind remote terminal and archive evidence to original local ACK events, verify all52 proof/file hashes, and confirm independent cleanup before conditional merge.",
+    "This does not permit replaying the original driver, new Registry GETs beyond the approved fixed52, new credentials/routes, deployment or runtime acceptance."
+  ],
+  "actualReviewerActions": {
+    "authCredentialFileRead": false,
+    "OAuthSSHAPIRegistryDockerProviderCalls": 0,
+    "testsRepeated": 0,
+    "frozenCandidateModified": false,
+    "readHashASTAndOwnReviewOutputOnly": true
+  }
+}

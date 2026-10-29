@@ -1,0 +1,64 @@
+{
+  "schema": "jhg46-existing-auth-for-future-sdk-publication-and-new-project/v1",
+  "reviewOnly": true,
+  "newGrantPresent": false,
+  "cloudflare": {
+    "accountId": "8b0d70250211aa10d89e20605a1c7e5e",
+    "expectedScopes": [
+      "user:read",
+      "offline_access",
+      "account:read",
+      "workers:write",
+      "workers_scripts:write",
+      "containers:write"
+    ],
+    "fixedExpectedUserIdSha256": "c8d5e2a134d99693a4585510f761b811d67b3e36c413eb3c9d34d060cccc986d",
+    "primarySupportedConnector": "existing Personal Cloudflare connection to this same account; no new app/connector/key permission",
+    "alternativeExistingLocalPath": "if the preselected supported execution path uses local OAuth, only necessary normal token retrieval/refresh of existing same-user exact six scopes; no new login/consent/scopes, no replay of an unknown authentication outcome",
+    "normalTokenArguments": [
+      "auth",
+      "token",
+      "--json",
+      "--profile",
+      "default",
+      "--env-file",
+      "/dev/null"
+    ],
+    "wranglerVersion": "4.129.0",
+    "wranglerCliSha256": "0a7bc2107ca92b2cc6db58b6a36d38d44b549eebd7db7ec34c36db9da7a91264",
+    "sourceContract": "reuse previous pinned normal-token/CI/no-login/no-extra-scope/no-disk-logs behavior; no new auth runner authored",
+    "unknownOrPermissionFailure": "stop original identity; no automatic connector/credential/login/provider fallback after unknown",
+    "noRawOauthOrTokenOutputInEvidence": true,
+    "existingPersistentAuthorizationNotRevokedAtRuntimeWindowEnd": true
+  },
+  "applicationSessions": {
+    "appOrigin": "https://app.riffoid.com",
+    "browser": "existing Safari user profile",
+    "cookieOrPasswordReadExport": false,
+    "identities": [
+      "same already approved ordinary invited-owner Google identity for the new project/two Sessions/three Turns",
+      "same already approved operator Google identity only if an original read-only admin observation is necessary; no maintenance write in this batch"
+    ],
+    "identityCount": 2,
+    "operatorFreshChecks": [
+      "original /api/me bracket and existing read-only admin authority as needed; no begin/end/pause/resume"
+    ],
+    "ordinaryFreshChecks": [
+      "/api/me bracket + reviewed singleSELECT activepersonalowner/acceptedinvitation/authVersion2/nonoperator role",
+      "same original approved ordinary identity, no other accounts or old project restore"
+    ],
+    "privateEmailsOrIdentityRowsCopiedIntoCandidate": false,
+    "switchMethod": "normal app sign-out/Google sign-in flow only as necessary, no cookie/session export or direct auth DB write"
+  },
+  "notPerformed": {
+    "apiCall": true,
+    "cookieReadOrExport": true,
+    "credentialMint": true,
+    "login": true,
+    "oauthReadOrRefresh": true
+  },
+  "scopeRule": "Reuse the already approved Personal account path or preselected same-user exact-six-scope local OAuth normal token/necessary refresh. No new login/consent/scopes/connector/credentials or automatic identity fallback on unknown/permission failure; no unconditional login.",
+  "noRegistryCredentialAmdSshDockerOrProxyRoute": true,
+  "noCookiePasswordSessionExportOrAuthDbWrite": true,
+  "persistentAuthIsNotRevokedByWindowEndOrTemporaryLocalCleanup": true
+}

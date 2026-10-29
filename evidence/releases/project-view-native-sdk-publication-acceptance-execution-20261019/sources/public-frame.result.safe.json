@@ -1,0 +1,16 @@
+{
+  "schema": "jhg46-fb07-public-frame-once-result/v1",
+  "requestedAt": "2026-10-19T00:33:42.318Z",
+  "path": "/project-views/63ebcd050b0ccf5019265070890bee69d99902120f2252c376678aff299d374b/frame.html",
+  "expectedSha256": "63ebcd050b0ccf5019265070890bee69d99902120f2252c376678aff299d374b",
+  "method": "GET",
+  "credentials": "omit",
+  "retries": 0,
+  "cloudWrites": 0,
+  "providerTurns": 0,
+  "status": 200,
+  "bytes": 7876,
+  "sha256": "63ebcd050b0ccf5019265070890bee69d99902120f2252c376678aff299d374b",
+  "matched": true,
+  "completedAt": "2026-10-19T00:33:44.381Z"
+}

@@ -1,0 +1,104 @@
+{
+  "schema": "jhg46-future-sdk-publish-fresh-project-contract-candidate/v1",
+  "preparedAt": "2026-10-18T17:35:29.491140+00:00",
+  "batchRequestId": "fb07e239-2cb4-4379-9581-5711d86a0f30",
+  "publicationRequestId": "1feadf24-3eb8-58be-abd7-872c68ab45e6",
+  "gateRequestId": "95b9b8c6-8d52-566d-8476-dfa3e02f6b79",
+  "reviewOnly": true,
+  "ready": false,
+  "executionAuthorized": false,
+  "executed": false,
+  "files": [
+    {
+      "file": "README.md",
+      "bytes": 4026,
+      "sha256": "666a490c77e05f302eed279edf6e5034bdf82bb65959269a16f83aee779e5e62"
+    },
+    {
+      "file": "authentication-contract.json",
+      "bytes": 3245,
+      "sha256": "36accd38ccd80479fab6c66ba44088d23872cfc3a578fdf2da0eb23b48800c93"
+    },
+    {
+      "file": "browser-gate/plan.pending.json",
+      "bytes": 1281,
+      "sha256": "f1f517647378d7b9b160aa11d21008374f0f3f4ae8028426cce8f0c22ea4cd70"
+    },
+    {
+      "file": "fresh-read-contract.json",
+      "bytes": 3994,
+      "sha256": "ee39d089e27e2419cdf8edd81da1e4455192a595b870843052681ad76a9f34da"
+    },
+    {
+      "file": "mechanical-checks.safe.json",
+      "bytes": 1091,
+      "sha256": "98d601e7912d16677492a7fe37ef78a24b4d40d1c2e8964a588535b666119bd7"
+    },
+    {
+      "file": "operations.json",
+      "bytes": 7396,
+      "sha256": "648a930aba6558ceec13a1c724dbb6eb28c2b1ac150b2b98c37f592bb237f654"
+    },
+    {
+      "file": "ordinary-input.json",
+      "bytes": 5586,
+      "sha256": "79bf11b2ed32f33640393a73bfb0f8c6768d964927fc639e10c3355b5300b20b"
+    },
+    {
+      "file": "publication/inputs.pending.json",
+      "bytes": 3696,
+      "sha256": "d6c9ac1a57146e5fbd5337ae02cf6b0373d3e34c8af0b75344e977713c09267a"
+    },
+    {
+      "file": "publication-packet.draft.md",
+      "bytes": 8674,
+      "sha256": "4cc6a4edd0032337fe094cf3d5c252245d7994da1f7ffb5f30f29e5864b01651"
+    },
+    {
+      "file": "source-bindings.safe.json",
+      "bytes": 10869,
+      "sha256": "448aa9d856beddc83dfa243d67306051737c22153af75726e4acfb522eca1f33"
+    },
+    {
+      "file": "window.pending.json",
+      "bytes": 741,
+      "sha256": "f5609809e340b0fc0869d27f7e40daf8d062e373d7074a4ead564b766ad6d1a4"
+    }
+  ],
+  "authorFileCount": 11,
+  "externalReviewedContentManifest": {
+    "file": ".local/jhg46-native-sdk-acceptance-preparation-20261019/content-candidate-v1/manifest.json",
+    "bytes": 4735,
+    "sha256": "0eebd2f2bd57d0ad54ba47ffec164521ea680d07fef1ea0c7a6a2127658e4ad8"
+  },
+  "externalContentIndependentReview": {
+    "file": ".local/jhg46-native-sdk-acceptance-preparation-20261019/content-candidate-v1/reviews/independent-content-review.safe.json",
+    "bytes": 1787,
+    "sha256": "817c2aaec5423be4f1036bb317c209bc68a5ea2fa142b08a3cd6961231475968"
+  },
+  "fixedPr257Head": "fca66cb0e1024b4e86bbbeb9a6d955b137599efa",
+  "noHoldRolloutRegistryAmdOrOldA25fT3Replay": true,
+  "newProjectRequestAndScopeMustComeFromFutureOriginalUiReceipt": true,
+  "independentFinalReviewPending": true,
+  "onlyLocalSourceAndGitObjectReadsPlusAuthorCandidateWrites": true,
+  "newFixtureBuildTestOrExternalExecution": false,
+  "fixedLocalBundle": {
+    "file": ".local/jhg46-native-sdk-acceptance-preparation-20261019/build-candidate-v2/output/gateway.mjs",
+    "bytes": 5774988,
+    "sha256": "304373a50d7a9ca8a99cdfbda0dcae261aa34d53727b757dfeb099c88efb5e0b"
+  },
+  "actualBundleAssetsGraphBoundAuthorBuildOnly": true,
+  "remainingPending": [
+    "final build sourcebinding and independent review",
+    "actual fixed257 normal merge proof/source identity",
+    "guarded publisher source/plan/body/seal",
+    "fresh original baseline",
+    "new explicit grant/window",
+    "original ACKs/deployment and paid/browser acceptance"
+  ],
+  "history": {
+    "priorManifestSha256": "e8970e2aecf2516bc252d7cbbd289ab1262f84c1111bf9cc9b589d4276d9f315",
+    "directory": "contract-candidate-v1-history-e8970e2a",
+    "originalBytesPreserved": true
+  }
+}

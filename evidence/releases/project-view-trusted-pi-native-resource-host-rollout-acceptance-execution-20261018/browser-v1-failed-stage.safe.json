@@ -1,0 +1,74 @@
+{
+  "schema": "jhg46-v1-first-page-failure-author-safe-stage/v1",
+  "result": "failed/stopped",
+  "reportedVisibleFailure": "Dashboard browser-local / unverified Load error: page request timeout",
+  "firstCapture": {
+    "source": "ordinary/browser-v1/first-page-failure-original.raw.private.json",
+    "bytes": 26069,
+    "sha256": "00c0179cee87672d84f7c0b58c49038b4ecdbc69c15818fa9e420c26fe71bf54",
+    "bodyCopied": false
+  },
+  "actualPackage": {
+    "responseBytes": 7597,
+    "responseSha256": "058b0d095d0722f1caa5f8ce7507a65656a795e9c1d1a4a63e6646c667ba9b98",
+    "scopeR2ManifestAndAllFiveAssetBytesShaPassed": true,
+    "revisionId": "f53f1165ed49240ac45896f27f33739f9e573efd7d9bef8c0e4f0424ee0b7bfa",
+    "filesSha256": "8f8e54bc82c48d0fe3065d96993e16bfece3a735f49feccec50e84f517660fc6",
+    "packageIdentity": "728ab245dbf1efd62b67904ff34c7314239cfc4702c45f8dd2cdd019eec86683",
+    "actualMainBytes": 2542,
+    "actualMainSha256": "f35830bb9af40ff488ca423e5a376636ac981add643fc8a97a585acaa94559a2",
+    "publicEvidence": "sources/actual-package-validation.safe.json",
+    "rawResponseScriptOrProjectBodiesCopied": false
+  },
+  "captureBoundary": {
+    "initialSdkRequestsPredateObserver": true,
+    "sevenLaterPackagePolls200DoNotProveInitialSdkNoRequestOrFunctionality": true,
+    "sourceShowsReadFileAndSubscribeShareOneCatch": true,
+    "performanceResourceBufferIncompleteAndNoOriginalIdentityBindingDoesNotEstablishUniqueOnlineCause": true
+  },
+  "sourceDiagnosis": "sources/v1-page-sdk-timeout-source-diagnosis.safe.json",
+  "separateStaticArtifactButtonIssue": {
+    "wholeArtifactJsonEnvelopePrefixTestInsteadOfParsedContent": true,
+    "noBodyShaInGeneratedButton": true,
+    "actuallyClickedOrTested": false,
+    "notEstablishedAsCurrentTimeoutCause": true
+  },
+  "acceptance": {
+    "t1T2SaveRelease": true,
+    "v1FirstPagePassed": false,
+    "reportPageAccepted": false,
+    "factor20and50Accepted": false,
+    "pauseResumeOrSubscriptionAccepted": false,
+    "artifactBodyChunksOrIndependentReassemblyShaAccepted": false,
+    "v1RefreshLeaveReentryAccepted": false,
+    "session2Created": false,
+    "t3Sent": false,
+    "v2R3Accepted": false,
+    "pageRetryOrTurnReplay": false
+  },
+  "ownedGateCleanup": "browser-gate-checkpoint.safe.json",
+  "lastProductPhysicalRead": "after-owned-delete-product-physical.safe.json",
+  "followup": {
+    "issue": 255,
+    "scope": "minimal SDK budget repair offline",
+    "deployed": false,
+    "host252OwnScopeAccepted": true,
+    "parent214StillPending": true,
+    "projectStateChangesOnlyByActualApiReadback": true,
+    "noProjectStatusMutationClaimedHere": true,
+    "sdkIssueProjectStatus": "In progress/P0",
+    "projectOwnerAndMilestone": "jihegao/M1 retained"
+  },
+  "overallDone": false,
+  "originalWindowEndsAt": "2026-10-18T19:07:16Z",
+  "oldUnknownFailedHistoryLocksAndFeesRetained": true,
+  "authorFactsNotIndependentSelfReview": true,
+  "uiExitObservation": {
+    "safeEvidence": "sources/ui-exit-observation.safe.json",
+    "observedAtUtc": "2026-10-18T17:07:10Z",
+    "authority": "Safari AX observation only; not HTTP, physical or billing proof",
+    "fullDocumentNavigationToProjectList": true,
+    "consoleContextInstrumentationGoneAndInspectorClosed": true,
+    "noOldProjectRestoreOrRetry": true
+  }
+}

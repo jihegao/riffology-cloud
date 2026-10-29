@@ -1,0 +1,131 @@
+{
+  "baselineComparisonContract": {
+    "after": "other15 app records/fullversions canonical unchanged; all Worker resources/source unchanged; target originalACK version/ec8/nonimagecanonical same; only target version-listrolling2 exception if explicitly chosen",
+    "before": "compare full immutable Worker/settings/bindings/config/exports/namespaces/associations/routes/domains/registries against last actual control baseline, actualnormal model/profile policy pins, fixed9c8/soleactive; before target must still actual12/f18/nonimagebasic/max1; all16 original IDs/full versions; any drift requires original readonly diagnosis, never silently adopt",
+    "beforeSnapshotToKeepPrivate": "root captures actual complete target configuration/app/version/scheduler/physical records and safe canonical hashes; typed hash witness alone is not rawconfiguration authority or generic arbitraryhash allowance",
+    "hashOnlyWitnessNotEnoughForPhysicalOrIdentity": true,
+    "sourceReferences": [
+      {
+        "bytes": 15371,
+        "file": ".local/jhg46-next-stage-preparation-20261018/runtime-acceptance-execution-v1/post-rollout-preservation-compact.json",
+        "privateOrRawContentNotCopied": true,
+        "role": "dated actual9c8/appv12 resource evidence; source/hash comparison reference, not current live authority",
+        "sha256": "a4698359ad99c04e862de9cab792caba4d452deb2c20027b8a3069c957bbc0b0"
+      },
+      {
+        "bytes": 885,
+        "file": ".local/jhg46-next-stage-preparation-20261018/runtime-acceptance-execution-v1/rollout-readback-comparison.json",
+        "privateOrRawContentNotCopied": true,
+        "role": "dated actual9c8/appv12 resource evidence; source/hash comparison reference, not current live authority",
+        "sha256": "371f16568aeed599033e7aa10b65f9b6c4051fe1c47fb35052335be7caebb5fd"
+      }
+    ]
+  },
+  "deriveFromFreshOriginalEvidenceOnly": {
+    "beforeBody": "expectedRevision from state, policySHA and actual operator from originalprincipal",
+    "gate": "actual newcreate/R2/me/SQL scope/actor/generation and currentWorker version/metadata/control after R2 released",
+    "resourceIdentities": "completeactual lists/exactGET, include orphan/unjoined placements",
+    "rollout": "frozen body only if fresh current configuration nonimage matches expected basic mapping; any drift stops",
+    "targetVersions": "actual original rollout ACK version, not guessed13"
+  },
+  "freshOriginalFailureUnknownOrReleaseUnknown": "stop; never create a new project as a bypass",
+  "hashWitnessReuse": "reuse previously reviewed hash-only preservation witness/compact transport semantics with fresh exact9c8/current versions and all current resource hashes; oldb62/047/v11 baselines are not reusable execution witnesses",
+  "holdFreshQuiescence": {
+    "activeQuarantinedUnresolvedColdPairedAllClear": true,
+    "actualContainerReleaseVerifiedRemainsFalse": true,
+    "http200Required": true,
+    "method": "GET",
+    "path": "/api/admin/private-beta/maintenance/quiescence?requestId=c1f9e955-96a6-56dc-acd2-4a0e84410442",
+    "physicalProofSeparate": true,
+    "sameHoldOwnerPolicyControlBeforeAfter": true
+  },
+  "lastKnownIsNotFresh": {
+    "appImage": "sha256:f18a826d40b2fd60e2cf8c49d7f7b8f595fa609fe2be4c28593479ae846960ea",
+    "appVersion": 12,
+    "counts": {
+      "apps": 16,
+      "assets": 96,
+      "associations": 6,
+      "bindings": 106,
+      "exports": 25,
+      "namespaces": 50,
+      "secrets": 11
+    },
+    "gatewaySource": "9c8e4b6b763e9887d1624f00ed3a8efb2a8a24d984d96bc68fdb289cb4d362c3",
+    "gatewayVersion": "5a840cbc-49c5-45cd-badc-b75553c78566"
+  },
+  "newPreservationSource": {
+    "afterActualAckInputsStillNull": true,
+    "afterPhase": "after-runtime-rollout",
+    "beforeIsClosed9c8And5a840Target12f18FreshGuardNotStaleAcceptance": true,
+    "beforePhase": "before-runtime-rollout",
+    "derivationContract": "fresh-preservation/derivation.pending.json",
+    "gateWitness": "Use existing browser-gate factory exact schema and fresh original ACK/version/private identity derivation; the new runtime before/after getter is closed-policy only and must not be invoked as an opened-gate witness. Before any gate mutation, actual supported GET witness must be projected/validated by that existing schema/source and source/receipt hashes pinned; no oldb62/047/readers.",
+    "generator": "fresh-preservation/make-preservation-request.mjs",
+    "generatorSha256": "7ed82e63941cf0c335b4231bc59b9634226a15186d938e0da659bea12caf6477",
+    "oldBeforeAfterRequestFilesForbidden": true,
+    "scopeFile": "fresh-preservation/scope.json",
+    "scopeSha256": "7e0bb5c5652fa1fcd74c54b8338a231064243df31f064d60963e4d930a27fae6"
+  },
+  "ownerPriorProjection": {
+    "allStatuses": 200,
+    "datedClearHoldsAndCapacityAvailable": true,
+    "doesNotProve": [
+      "current ordinaryauthVersion/invitation/platformroles",
+      "raw native stop or ticket",
+      "physical/all VM release",
+      "newhold jointquiescence",
+      "project_write fixed or R1 exists"
+    ],
+    "file": "prior-owner/fresh-owner-summary.safe.json",
+    "finalSuccessfulProjectionGets": 5,
+    "mustRetainEarlierReadonlyProjectionErrors": true
+  },
+  "paginationReuse": "reuse reviewed complete-list/pagination/credential-value guards and original source witness; reject malformed false/0/object/repeated/undischarged cursor, missing pages, duplicates/count conflicts; bounds =>held, never call bounded partial complete",
+  "physicalFixedApiTargets": [
+    {
+      "method": "GET",
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a03628c4-f032-461f-a65b-612ccac11a06"
+    },
+    {
+      "arrayMustBeComplete": true,
+      "method": "GET",
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a03628c4-f032-461f-a65b-612ccac11a06/versions",
+      "query": null
+    },
+    {
+      "fullUnfiltered": true,
+      "method": "GET",
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a03628c4-f032-461f-a65b-612ccac11a06/instances-v2"
+    },
+    {
+      "fullUnfiltered": true,
+      "method": "GET",
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a03628c4-f032-461f-a65b-612ccac11a06/deployments"
+    },
+    {
+      "actualIdOnly": true,
+      "method": "GET",
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a03628c4-f032-461f-a65b-612ccac11a06/deployments/{actualOriginalDeploymentId}"
+    },
+    {
+      "fullUnfiltered": true,
+      "method": "GET",
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/dash/applications/a03628c4-f032-461f-a65b-612ccac11a06/instances"
+    },
+    {
+      "actualIdOnly": true,
+      "method": "GET",
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a03628c4-f032-461f-a65b-612ccac11a06/rollouts/{actualAckRolloutId}"
+    }
+  ],
+  "preBeginReadTargets": [
+    "same original-owner /api/me bracket + original workspace/Session/originalkey receipt/capacity, no newmutation",
+    "operator /api/me + /api/admin/private-beta/maintenance, holdnull/state.revision/policy/control ownership",
+    "Gateway actualsoleactive/latest/source/settings/bindings/exports/associations/namespaces/assets and all16apps/fullversions snapshots, browser/remote defaultclosed",
+    "entire target app configuration/currentversion/max1/profile and logical/scheduler/Dash resources; no filters/orphan omissions"
+  ],
+  "reviewOnly": true,
+  "schema": "jhg46-next-runtime-fresh-read-derivation-contract/v1",
+  "secretValueGuard": "actual credential-like configuration values held before hashing/output; no private config in public packet"
+}

@@ -1,0 +1,160 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-10-18 03:32:04 UTC",
+  "source": "supported GitHub connector GET",
+  "repository": "jihegao/riffology-cloud",
+  "pullRequest": 250,
+  "run": {
+    "id": 39093215235,
+    "name": "Local validation",
+    "number": 315,
+    "event": "pull_request",
+    "headSha": "c669921f4796c5b35c6f2e049c92876f4faf7c5b",
+    "baseSha": "638a366d31a37f7bc1d7dcd124e0b5ba753d6401",
+    "attempt": 1,
+    "status": "completed",
+    "conclusion": "success",
+    "createdAt": "2026-10-18T03:19:33Z",
+    "startedAt": "2026-10-18T03:19:33Z",
+    "updatedAt": "2026-10-18T03:31:38Z",
+    "url": "https://github.com/jihegao/riffology-cloud/actions/runs/39093215235"
+  },
+  "jobs": [
+    {
+      "id": 117574153432,
+      "name": "check",
+      "runId": 39093215235,
+      "headSha": "c669921f4796c5b35c6f2e049c92876f4faf7c5b",
+      "attempt": 1,
+      "status": "completed",
+      "conclusion": "success",
+      "startedAt": "2026-10-18T03:19:35Z",
+      "completedAt": "2026-10-18T03:31:38Z",
+      "url": "https://github.com/jihegao/riffology-cloud/actions/runs/39093215235/job/117574153432",
+      "returnedStepCount": 14,
+      "steps": [
+        {
+          "number": 1,
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "startedAt": "2026-10-18T03:19:36Z",
+          "completedAt": "2026-10-18T03:19:37Z"
+        },
+        {
+          "number": 2,
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "startedAt": "2026-10-18T03:19:37Z",
+          "completedAt": "2026-10-18T03:19:39Z"
+        },
+        {
+          "number": 3,
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "startedAt": "2026-10-18T03:19:39Z",
+          "completedAt": "2026-10-18T03:19:47Z"
+        },
+        {
+          "number": 4,
+          "name": "Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "startedAt": "2026-10-18T03:19:47Z",
+          "completedAt": "2026-10-18T03:19:47Z"
+        },
+        {
+          "number": 5,
+          "name": "Install source-inventory dependency",
+          "status": "completed",
+          "conclusion": "success",
+          "startedAt": "2026-10-18T03:19:47Z",
+          "completedAt": "2026-10-18T03:19:55Z"
+        },
+        {
+          "number": 6,
+          "name": "Run npm ci --ignore-scripts",
+          "status": "completed",
+          "conclusion": "success",
+          "startedAt": "2026-10-18T03:19:55Z",
+          "completedAt": "2026-10-18T03:20:05Z"
+        },
+        {
+          "number": 7,
+          "name": "Run npx playwright install --with-deps chrome",
+          "status": "completed",
+          "conclusion": "success",
+          "startedAt": "2026-10-18T03:20:05Z",
+          "completedAt": "2026-10-18T03:20:25Z"
+        },
+        {
+          "number": 8,
+          "name": "Prepare and verify pinned public browser assets",
+          "status": "completed",
+          "conclusion": "success",
+          "startedAt": "2026-10-18T03:20:25Z",
+          "completedAt": "2026-10-18T03:20:27Z"
+        },
+        {
+          "number": 9,
+          "name": "Existing local checks, archived experiment and quality regression",
+          "status": "completed",
+          "conclusion": "success",
+          "startedAt": "2026-10-18T03:20:27Z",
+          "completedAt": "2026-10-18T03:31:33Z"
+        },
+        {
+          "number": 10,
+          "name": "Preserve validation output, including conditional skips",
+          "status": "completed",
+          "conclusion": "success",
+          "startedAt": "2026-10-18T03:31:33Z",
+          "completedAt": "2026-10-18T03:31:34Z"
+        },
+        {
+          "number": 18,
+          "name": "Post Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "startedAt": "2026-10-18T03:31:34Z",
+          "completedAt": "2026-10-18T03:31:34Z"
+        },
+        {
+          "number": 19,
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "startedAt": "2026-10-18T03:31:34Z",
+          "completedAt": "2026-10-18T03:31:35Z"
+        },
+        {
+          "number": 20,
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "startedAt": "2026-10-18T03:31:35Z",
+          "completedAt": "2026-10-18T03:31:35Z"
+        },
+        {
+          "number": 21,
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "startedAt": "2026-10-18T03:31:35Z",
+          "completedAt": "2026-10-18T03:31:35Z"
+        }
+      ]
+    }
+  ],
+  "terminal": true,
+  "fullLogsRead": false,
+  "manualRerun": false,
+  "billingConclusion": "Success of this original run is not evidence that billing is settled or global capacity/quotas are restored.",
+  "conditionalSkipBoundary": "All 14 returned top-level steps completed successfully; internal test counts and conditional test skips were not inspected. No full logs read.",
+  "annotationsRead": false,
+  "ciRerun": false,
+  "newWorkflowStarted": false,
+  "sourceOrMetadataChanged": false
+}

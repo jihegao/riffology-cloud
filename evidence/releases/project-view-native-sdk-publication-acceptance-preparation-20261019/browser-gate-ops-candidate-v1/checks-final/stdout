@@ -1,0 +1,17 @@
+✔ actual original-schema Unix millisecond scalars parse; NaN/fraction/string ambiguity denied (0.797125ms)
+✔ exact predicted secret-annotation bridge accepts original numeric ACK/read timestamps and enables owned close (6.337417ms)
+✔ extra annotation or any unrelated projection-field drift cannot use bridge (9.452625ms)
+✔ original nonce/body/foreign close ACK and early transition evidence reject (8.127125ms)
+✔ final closed source and exact bridge derive only original ownedDELETE new version, preserving published closed identity (12.413125ms)
+✔ finite grant itself cannot exceed4h while policy happens to be shorter (3.224334ms)
+✔ published closed53GET fixture permits only fixed new original gate open (38.6165ms)
+✔ open53GET rawsecret annotation fixture bridges exact projection for owned DELETE (30.941875ms)
+✔ owned finalclosed53GET absent fixture derives closeACK version and exact projection (30.364709ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 346.36925

@@ -1,0 +1,93 @@
+{
+  "schema": "jhg46-fb07-actual-public-evidence-inventory/v1",
+  "files": [
+    {
+      "file": "README.md",
+      "bytes": 1750,
+      "sha256": "e0eef23b10c69b58e8b9cc22df8870046bafc87cb8c6d14e7a0624801453af19"
+    },
+    {
+      "file": "actual-result.safe.json",
+      "bytes": 7235,
+      "sha256": "8efb07c9c63301b2c9e7ed4f8eb325ede69625b698b05c9a5077da460d4e8f3d"
+    },
+    {
+      "file": "sources/actual-batch-final-closeout-review.safe.json",
+      "bytes": 9431,
+      "sha256": "c0fa35942559fa5e5dd5ea5730335d571d1bd6456b2af41635ecfc2d629e7a42"
+    },
+    {
+      "file": "sources/actual-finite-gate-close-review.safe.json",
+      "bytes": 7782,
+      "sha256": "a45f3ace69f3c9bf51ad9e9759d74eb6520ad3f408c375388146751dd071d40f"
+    },
+    {
+      "file": "sources/actual-finite-gate-open-review.safe.json",
+      "bytes": 10624,
+      "sha256": "804daabff85fe739c4987c730578688dac40b6c54dcf1cb360c5da0613fc3329"
+    },
+    {
+      "file": "sources/actual-sdk-publication-review.safe.json",
+      "bytes": 3047,
+      "sha256": "342b8218231e91cbd7d74a19e28fa72de423a3c0cc0f279cec29b048a96f851c"
+    },
+    {
+      "file": "sources/final-full-document-ui-exit.original.safe.json",
+      "bytes": 487,
+      "sha256": "8bf887869d2d4692c5b6624fcbd8f95b5fedc1e4a2aeb64d9968016cfb895c9d"
+    },
+    {
+      "file": "sources/frame-observation-order-correction.safe.json",
+      "bytes": 2499,
+      "sha256": "cc64d98be6cfe175527314a20df7477b37cfb07e4556f5fc6ace52bc458ea8c6"
+    },
+    {
+      "file": "sources/native-safari-final-observation.safe.json",
+      "bytes": 528,
+      "sha256": "ff9f6d9b231374e68f701b3f431ccb345558d64b32466e9a200e71828cf5e0fd"
+    },
+    {
+      "file": "sources/public-frame.result.safe.json",
+      "bytes": 574,
+      "sha256": "2422a4c7f0e7477f61b0998a8f96e7b6458cec0068c096a8a1c2418fee6e4064"
+    },
+    {
+      "file": "sources/report-first-failure-source-diagnosis.safe.json",
+      "bytes": 13086,
+      "sha256": "c5a8cda03bea3946d643f826547012eeed85808af52a19b738b797bcbbbae9c9"
+    },
+    {
+      "file": "sources/t1-product-release-review.safe.json",
+      "bytes": 5827,
+      "sha256": "9e27798af6df5930dd7790d2c13c2a8e57634ef79c52bc92d448f9112044c95c"
+    },
+    {
+      "file": "sources/t1-saved-effects-review.safe.json",
+      "bytes": 10813,
+      "sha256": "df3cd1e18a978cd10855d4f834af116b7b406098d1ff0597f497adac0b0a8a0e"
+    },
+    {
+      "file": "sources/t2-joint-release-review.safe.json",
+      "bytes": 7734,
+      "sha256": "618759bd5cda0e08c23a7c338b0a275ea188613ca2ac2f1999aaf4fe02071e07"
+    },
+    {
+      "file": "sources/t2-saved-effects-review.safe.json",
+      "bytes": 13601,
+      "sha256": "61b11a359b4b5a28bb01e9dda518ed5996bea3c288451b57ec4d430b197a936a"
+    },
+    {
+      "file": "sources/v1-original-sdk-artifact-review.safe.json",
+      "bytes": 11787,
+      "sha256": "39017ab9a7f8d7353e748a81f1a2d7bd018a6c1a6ae9c0a3cfbb97f1a63cf6b6"
+    },
+    {
+      "file": "source-bindings.safe.json",
+      "bytes": 29289,
+      "sha256": "afba31013e08d36a9a04230c4cebb1015c3f912f3a2a7ae5062a3488a2ba48d2"
+    }
+  ],
+  "fileCount": 17,
+  "rawBodiesPublished": false,
+  "notOverallAcceptance": true
+}

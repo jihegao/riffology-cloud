@@ -1,0 +1,80 @@
+{
+  "schema": "jhg46-partial-original-registry-readback-actual-independent-review/v1",
+  "reviewedAt": "2026-10-18T13:33:34.024433Z",
+  "requestId": "c263a2f3-f445-430e-b562-2e48f1eeb637",
+  "operationId": "registry-readback-recovery-v1",
+  "decision": "partial-readback-stopped-cleanup-confirmed-publication-pending",
+  "mustFix": [],
+  "sourcePins": {
+    "operationsManifestSHA256": "59fd2dd0f464e38b50b56e7c1d65229b6d81d86b12c935a822d5eeefead74342",
+    "complete16BindingSHA256": "1dc5e1dbadd9c7496a2f6ac0ed609240df1f9fc48f486c2d4e43445eb76488ab",
+    "all16ActualInputBytesMatched": true
+  },
+  "originalEvidence": {
+    "remoteRecordCount": 14,
+    "remoteRecordBytes": 10670,
+    "collectorInventorySHA256": "a325a6e908c91b6d5e3d1c072083a67b7f0521c756d67a6a55b6fc2d46b26696",
+    "readerObservationSHA256": "d7cda8014d99233b815250a9da943cd0b05bb61c5c46b6f7299f1ff0cf776f8a",
+    "localTerminalSHA256": "8c7b393ac20c98e00fea8c08100872fe213e4dc772fbc8de30635ab6bfb18b63",
+    "compactDriverStdoutSHA256": "702966a203f1a01040c05f8c5030837e8aead47003d32ba167b2db432ab22620",
+    "compactAndPrettyTerminalJSONEqual": true,
+    "all14BytesAndHashesMatchReaderAndInventory": true,
+    "threeProofTerminalSHAChainsMatched": true,
+    "archiveAndRemoteTerminalFullJSONEqualOriginalLocalEvents": true,
+    "rootSemanticBindingReceiptSHA256": "848f4acd17d2ec4b45b66dc5eb08fe080bb7c4cfdd42ff6d76c99d233a2fc50b"
+  },
+  "actualResult": {
+    "registryGetAttempts": 4,
+    "registryGetProofCount": 3,
+    "firstThreeSlots": "tag manifest; same runnable digest manifest; config",
+    "failedSlot": 3,
+    "failedSlotHTTPStatus": 200,
+    "failedSlotExpectedBytes": 30649033,
+    "failedSlotCapturedBytes": 11337728,
+    "failedSlotCaptureComplete": false,
+    "failedSlotResponseClosed": true,
+    "failedSlotPhase": "read",
+    "failedSlotExceptionClass": "ScopeGuard",
+    "failedSlotErrorCode": "readback-original-identity-interrupted",
+    "failedSlotElapsedSeconds": 710.843621,
+    "firstGETToInterruptedEndSecondsSameRemoteClock": 720.000108,
+    "registryReadTotalAlarmSeconds": 720,
+    "reasonBoundary": "interrupted near total deadline; network/proxy/service cause unproved",
+    "remoteStatus": "unknown-stopped",
+    "remoteEndedAt": "2026-10-18T13:25:05.143455+00:00",
+    "localSSHExitCode": 1,
+    "localEndedAt": "2026-10-18T13:25:34.366666+00:00",
+    "complete52RecordPresent": false,
+    "uniqueFinalSuccessACKVerified": false,
+    "publicationVerified": false,
+    "mergeAllowed": false
+  },
+  "cleanup": {
+    "readerCleanupConfirmed": true,
+    "originalSupervisorAbsent": true,
+    "fixedCredentialOrDockerConfigPathsAbsent": true,
+    "route7897Absent": true,
+    "routeConnectErrno": 111,
+    "credentialMemoryClearedRecorded": true,
+    "originalLocalSSHReapedAndNoStopErrors": true,
+    "twoOriginalLocalPIDsAbsent": true,
+    "localProcessReadbackSHA256": "ffb7f5a598af1fb5fa61f050540761d7fa8d2794f78f1fbdc6b4bb1be1b8f019",
+    "credentialRevocationOrExpiryProved": false,
+    "persistentOAuthRevoked": false
+  },
+  "limits": [
+    "The reader records partial success and scoped cleanup, with publicationVerified=false/localOriginalAckStillRequired=true. Its exit0 is not a success ACK.",
+    "Raw original14 safeJSON contains approved fixed repository/digest identifiers and original process/hash bindings, without credential values, raw Config/Env or body/header payloads.",
+    "Archive revalidation is a new recorded main-process read; independent reader did not read/archive-rehash it again.",
+    "Different hosts record their own UTC clocks. No cross-host timestamp ordering or duration is inferred.",
+    "No new image export/push/Docker, PR merge, application deployment or runtime Turn was executed by this readback-only batch; fees unknown are not zero.",
+    "Original c263 stopped publication, prior recovery locks, all old failure/success histories and original runtime deadline remain distinct."
+  ],
+  "reviewerActions": {
+    "localReadHashJSONComparisonOnly": true,
+    "authSSHAPIRegistryDockerProviderCalls": 0,
+    "testsRepeated": 0,
+    "rawGrantHumanReplyCredentialConfigEnvRead": false,
+    "originalRecordsModified": false
+  }
+}

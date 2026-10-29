@@ -1,0 +1,126 @@
+{
+  "schema": "trusted-pi-package-permissions-execution-inventory/v1",
+  "draft": false,
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 4206,
+      "sha256": "c3609638fe3738b62c03f3a195653b36e21528a7c122390052a0f4bd3de07cb1"
+    },
+    {
+      "path": "result.json",
+      "bytes": 18484,
+      "sha256": "b2ff465736bc63958cfd884349c3dd6c92ac13e45113f048ff14dc5068215306"
+    },
+    {
+      "path": "sources/authorization-safe-receipt.json",
+      "bytes": 817,
+      "sha256": "5c9bdc8f4ebe12c7177fbec490ef57a05fb0ba7f7bd643c641fdb73e308587ba"
+    },
+    {
+      "path": "sources/build-launch-intent.json",
+      "bytes": 724,
+      "sha256": "396405e3b9b80a43e16c47df5d9b2e370e539d710a4c1a521ca7c96730e98799"
+    },
+    {
+      "path": "sources/build-launch-once.py",
+      "bytes": 6793,
+      "sha256": "6824287d91c57f3dc137f46044eb9d527e5f3e0d461ca4120a25ab76c7256d48"
+    },
+    {
+      "path": "sources/build-launch-original-ssh.json",
+      "bytes": 130,
+      "sha256": "8990be4809aaf79a255e93274625e27f5a35c95b89d6a05d844913eae5f3dae3"
+    },
+    {
+      "path": "sources/build-launch-safe-receipt.json",
+      "bytes": 1895,
+      "sha256": "215966c22eea8b72a70fd37e877d97403931051f754e3e01fcfb29358a03c72d"
+    },
+    {
+      "path": "sources/build-launch-targeted-checks.json",
+      "bytes": 568,
+      "sha256": "25bb83aae3c3d9faac5f814f10a8f6d6433a56d172ee9f93b09723cc0d9db666"
+    },
+    {
+      "path": "sources/build-mock-cleanup-read-v2.py",
+      "bytes": 20236,
+      "sha256": "e468d12f7ee4d622052767f5cb8b012d5d1c1d360c9d048a080f0e57a2d16004"
+    },
+    {
+      "path": "sources/build-mock-cleanup-read-v3.py",
+      "bytes": 20759,
+      "sha256": "99e37c55d82c2062641ccc0ed577a495453603ecac064bdb9f156622db5c4da4"
+    },
+    {
+      "path": "sources/build-mock-cleanup-read-v4.py",
+      "bytes": 20765,
+      "sha256": "e100d306eaa0ce45419c168c2b766921930b6dde0c156f989184c7e90aa17519"
+    },
+    {
+      "path": "sources/build-mock-cleanup-read.py",
+      "bytes": 17504,
+      "sha256": "7a65b9d9fec91b0ce89d6eff7f05822460cbb494c65b132c5e0869632c9a98ef"
+    },
+    {
+      "path": "sources/fixed-stderr-path-independent-readback.json",
+      "bytes": 3690,
+      "sha256": "413f0c0f56b3e1c8c03bc37bbb045c68970ba6f430f50ae81e3cdc272b027daa"
+    },
+    {
+      "path": "sources/fixed-stderr-path-read.py",
+      "bytes": 3267,
+      "sha256": "0c12dae4c6c66d45a8418cbee875911a98fee1d05450ba81e2f117388f850930"
+    },
+    {
+      "path": "sources/independent-build-cleanup-readback-v4.json",
+      "bytes": 35132,
+      "sha256": "9bd8afd7ab08b7eaf6d50a4b5699e840b018197e90e4897a00d29d466cd0495c"
+    },
+    {
+      "path": "sources/independent-build-readback-first-failed.json",
+      "bytes": 1249,
+      "sha256": "c76bc87a3f1636d15c8538e126a4fa496fcbefca7be8c48fb2015566c4135a51"
+    },
+    {
+      "path": "sources/independent-build-readback-second-failed.json",
+      "bytes": 1516,
+      "sha256": "9746bc5c757db8a6ffc9112a54ab5f82b257be75452c102279889bd1cc2b5d61"
+    },
+    {
+      "path": "sources/independent-build-readback-third-failed.json",
+      "bytes": 1971,
+      "sha256": "b4db71af97ffb54d4b55188bc12924e9cfda9c04b30576b5fbf6654b97d2d33d"
+    },
+    {
+      "path": "sources/transfer-installed-independent-readback.json",
+      "bytes": 8300,
+      "sha256": "fa3a261b4dfb51dfa604ad869f67ffec844186500dc30c2deb2552b91856d3d2"
+    },
+    {
+      "path": "sources/transfer-installed-read.py",
+      "bytes": 10364,
+      "sha256": "4a255c9ceb56b6644c73f034a613981b627f2da3c3603d826530b5df02148cba"
+    },
+    {
+      "path": "sources/transfer-intent.json",
+      "bytes": 627,
+      "sha256": "67d9be001ba3dfa3f1ce9986caf969491ac89d4de2221a9bd487ea3fc2185216"
+    },
+    {
+      "path": "sources/transfer-original-ssh.json",
+      "bytes": 97,
+      "sha256": "5e01502e28be877eb5eacfbfad2079469383bd80021274f581a061704b559bff"
+    },
+    {
+      "path": "sources/transfer-result.json",
+      "bytes": 756,
+      "sha256": "1230da779ce2b7ef319f66e6740827b67fc89f221db79b479718ccdbc73e305d"
+    },
+    {
+      "path": "sources/transfer-ssh-terminal.json",
+      "bytes": 561,
+      "sha256": "9101b5f95c1c3801fab67077c9683e1fba06184609fb0be27ec7f76bf3ae363f"
+    }
+  ]
+}

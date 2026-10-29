@@ -1,0 +1,27 @@
+{
+  "endedAt": "2026-10-17T14:10:57.194730+00:00",
+  "exitCode": 0,
+  "noRealSshDockerAuthApi": true,
+  "operationsManifestRemains": "ae0614dafe7067367703ad41a9e0ff19f25de3ab7c788b85f01c1ff5c6b4fffd",
+  "reader": {
+    "bytes": 17363,
+    "sha256": "bf86993670c344e264e2b3dff915051fee2ef2f0db5a54404aafcff8bc482a91"
+  },
+  "schema": "trusted-pi-probe-readable-independent-reader-local-checks/v1",
+  "startedAt": "2026-10-17T14:10:57.033815+00:00",
+  "streams": {
+    "stderr": {
+      "bytes": 102,
+      "sha256": "b94ec6e1e9b8d46efb48ae29acf86d315351619fbff05d977956b2006b54026c"
+    },
+    "stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "test": {
+    "bytes": 6823,
+    "sha256": "01daffa4d940e9e1899ea4da123dedd3c5fa6576f91491f4423059176ad97db5"
+  },
+  "testsExpected": 4
+}

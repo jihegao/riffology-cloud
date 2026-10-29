@@ -1,0 +1,20 @@
+{
+  "remoteReceipt": {
+    "archiveBytes": 6195,
+    "archiveSha256": "5817ecf49cf2e3128a9695c9fb6d75182d8cd6958b815e553f571a13167e89dc",
+    "cloudWrite": false,
+    "credentialReadOrTransferred": false,
+    "dockerOrContainerCommandExecuted": false,
+    "fileCount": 2,
+    "humanGrantSha256": "78c8c59e91a9313e0760ecb71466868fae28c44d2568703d6f8acc26850f947a",
+    "operationsManifestSha256": "ae0614dafe7067367703ad41a9e0ff19f25de3ab7c788b85f01c1ff5c6b4fffd",
+    "privateOperationsModes0600": true,
+    "publicInputModes0444": true,
+    "requestId": "b0933502-20df-480a-9a91-d833f5c4358c",
+    "schema": "trusted-pi-probe-readable-transfer-result/v1",
+    "status": "transferred-verified",
+    "unprefixedTarNames": true
+  },
+  "requestId": "b0933502-20df-480a-9a91-d833f5c4358c",
+  "status": "transferred-verified"
+}

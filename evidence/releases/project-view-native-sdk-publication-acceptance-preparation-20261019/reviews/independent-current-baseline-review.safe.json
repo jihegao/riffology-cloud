@@ -1,0 +1,53 @@
+{
+  "schema": "jhg46-current-dated-baseline-independent-review/v1",
+  "recordedAt": "2026-10-18T17:40:26.619048+00:00",
+  "checks": {
+    "settingsFullReassemblyExact": true,
+    "versionFullReassemblyExact": true,
+    "deploymentsFullReassemblyExact": true,
+    "original29Gets10Fragments": true,
+    "datedFamilyDerivationExact": true,
+    "stable64d4Recomputed": true,
+    "control47cffRecomputed": true,
+    "counts": true,
+    "secretValueFieldsAbsent": true,
+    "allAppEnvValuesAbsent": true,
+    "metadata95AndKeep11": true,
+    "allOriginalSettingsOnlyExplicitAnnotationsChanged": true,
+    "exportsAssociationsExact": true,
+    "datedNotFresh": true,
+    "baseline-expectation.private.jsonPin": true
+  },
+  "mustFix": [],
+  "recomputedStableMetadataSha256": "64d4d58d0822536915b6f8efab957059fcff0a4b315b4e7edc96e394b5277c19",
+  "recomputedControlPlaneSha256": "47cffd4f19c05708438ad9824d69d38801cf48001d7da8b64e32cd03d89a6c68",
+  "bindings": [
+    {
+      "file": "baseline-expectation.private.json",
+      "bytes": 128639,
+      "sha256": "24a04f3d44b01788dbb3157f07b83d2614f16dbee9622ed5ec5f7906d9a61f2a"
+    },
+    {
+      "file": "baseline-expectation.safe.json",
+      "bytes": 6291,
+      "sha256": "909173b4f60e93ea956700822c56f886077a6cd4f66303f6ae1e1f1f01cc8702"
+    },
+    {
+      "file": "metadata-without-jwt.private.json",
+      "bytes": 30437,
+      "sha256": "deaebd8cb6eefe25098b7cb3e48223e760df9b6456b287b6a4c1bd988d68f636"
+    }
+  ],
+  "limits": [
+    "Only fixed baseline/metadata inputs reviewed; no imports or review of in-progress publisher modules.",
+    "Three current families are dated29GET/10fragments, combined with dated original other resource families; not future full same-request witness.",
+    "Exact secret\u2192upload annotation/tag/message derivation only; no arbitrary annotation ignoring.",
+    "No raw configuration, secret values, actor/email or personal paths copied into this receipt."
+  ],
+  "reviewerActions": {
+    "network": 0,
+    "testsRepeated": 0,
+    "publisherImports": 0,
+    "inputEdits": 0
+  }
+}

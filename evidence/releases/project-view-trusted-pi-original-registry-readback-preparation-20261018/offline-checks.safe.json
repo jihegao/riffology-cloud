@@ -1,0 +1,73 @@
+{
+  "actualAuthCliOAuthSshRegistryDockerProviderCalls": 0,
+  "actualGrantOrReadbackExecuted": false,
+  "command": [
+    "python3",
+    "-m",
+    "unittest",
+    "-v",
+    "test_recovery.py"
+  ],
+  "endedAt": "2026-10-18T13:00:18.547640+00:00",
+  "exitCode": 0,
+  "firstRun": {
+    "errors": 2,
+    "exitCode": 1,
+    "explanation": "Synthetic temporary directory used macOS /tmp alias; owned-directory resolve guard rejected it. Fixture now resolves its temporary directory. No production guard was relaxed.",
+    "passed": 9,
+    "receiptSha256": "a955afcbcd2b5041f5158cfa27b4ada587371b94cf36abe14f7eaa7f7f0b6473"
+  },
+  "fixtureOnly": true,
+  "old17And11SuitesRepeated": false,
+  "passed": 11,
+  "priorPassingBeforeAckDestinationStrengthening": {
+    "exitCode": 0,
+    "passed": 11,
+    "receiptSha256": "fec9d4dbce155f8a425ee5d77de3bb49a984f14d9d0861c5ab7b1d7fd540935a"
+  },
+  "rawReceiptSha256": "a57c32426eb34da012ce13c04954f566d56185df6bd66272063e4b4b1900399f",
+  "recordedAt": "2026-10-18T13:00:54.330020+00:00",
+  "requestId": "c263a2f3-f445-430e-b562-2e48f1eeb637",
+  "schema": "jhg46-original-registry-readback-author-checks/v1",
+  "sourceFiles": {
+    "independent-readback-readonly.py": {
+      "bytes": 29295,
+      "sha256": "ad6f018ff89af088a0a04d5748ca71bf056f6a8deb1b3beb2063a190b82dc1f3"
+    },
+    "local-recovery.py": {
+      "bytes": 19254,
+      "sha256": "971c91d7ea182e8b6540cdf98b3303431e08b0ad0fc1103d48ff60247774b21b"
+    },
+    "oci_verify.py": {
+      "bytes": 5748,
+      "sha256": "0a23618e34b9a2acf608acc86d281ebd68f60a62ba2b102ecda92502c294acea"
+    },
+    "pub_common.py": {
+      "bytes": 5271,
+      "sha256": "17386129c3f25512f0d11f460232705de8076ed23858cf8cb76e57c78619cb07"
+    },
+    "remote-recovery.py": {
+      "bytes": 14306,
+      "sha256": "1c35225815e0654a9699479148412d2daf9b21bedffabe1ce57c14b25e4c0fa6"
+    },
+    "test_independent_readback.py": {
+      "bytes": 7652,
+      "sha256": "ca963023e4b7d1f263d3c4cf0baceb07d631dda741a899c0b550573a5bf4b7b5"
+    },
+    "test_recovery.py": {
+      "bytes": 11164,
+      "sha256": "c2f35fc4a1646d82bd32ad82ec2018e3ed8b2dca331015f32f1478ca37875d3f"
+    }
+  },
+  "startedAt": "2026-10-18T13:00:18.341221+00:00",
+  "streams": {
+    "stderr": {
+      "bytes": 1117,
+      "sha256": "674791d0364d996ae8ca73bd156126d72c036eeca1b884f15be46eb71f4033c1"
+    },
+    "stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

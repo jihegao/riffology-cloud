@@ -1,0 +1,124 @@
+{
+  "schema": "trusted-pi-c263-stopped-result-independent-review/v1",
+  "reviewedAt": "2026-10-18T12:24:44.066219+00:00",
+  "requestId": "c263a2f3-f445-430e-b562-2e48f1eeb637",
+  "method": "Read-only local source/hash/evidence review plus generic JSON parsing of the existing grant first line. No frozen driver/helper/fixture execution, auth, SSH, Docker or network operation.",
+  "inputs": {
+    "authorization": {
+      "file": "authorization-receipt.json",
+      "bytes": 1183,
+      "sha256": "bc35e2f86a38cb07ceaf3f154bf38da93d2482934e2f53caf9e39787ea4e556a"
+    },
+    "preflight": {
+      "file": "preflight-local-only.json",
+      "bytes": 471,
+      "sha256": "616bc1f8a2fae68089dc610265a9be10adc5eab8dad896b24944ab7c3a302ad8"
+    },
+    "operationsManifest": {
+      "file": "operations/operations-manifest.json",
+      "bytes": 1795,
+      "sha256": "6fd9aefcdb09cf0465b3062a0270e4ef3817f74d8829fa99cbfe1f3d031efd8c"
+    },
+    "localTerminal": {
+      "file": "operations/publication-once/terminal.json",
+      "bytes": 826,
+      "sha256": "76f6db8fd64b1434473fa665b47ebf2ab979ce79f0c573f6ddd6e0eea448926f"
+    },
+    "originalDriverStdout": {
+      "file": "original-driver-stdout.json",
+      "bytes": 746,
+      "sha256": "ee8a4bdeda41e50e7594ad1519774d4288c904a070ce88b6ab8008419491fbed"
+    },
+    "oauthTerminal": {
+      "file": "operations/publication-once/oauth-token-once-terminal.json",
+      "bytes": 159,
+      "sha256": "e83f89eac33350ef111f172783e6e3a8c1cb41318e6ab6694075a4c97b02da62"
+    },
+    "identitySafe": {
+      "file": "operations/publication-once/normal-login-identity-safe.json",
+      "bytes": 420,
+      "sha256": "0d1835cac735535e39451db2c05baefaf9260db3081c926dda10cc88eb9ed92f"
+    },
+    "readbackIntent": {
+      "file": "stopped-original-read-once/intent.json",
+      "bytes": 222,
+      "sha256": "f5c52fb01a7dccb97fe283d8fc89ebdf87940cd5edda012787affe253ee2141c"
+    },
+    "readbackObservation": {
+      "file": "stopped-original-read-once/observation.json",
+      "bytes": 774,
+      "sha256": "99bbf7e36fd112f2b2625896d7453f5ed6b38f7142f3be64d7688eb0f08c07e6"
+    },
+    "wireDiagnosis": {
+      "file": "wire-diagnosis-local-v1/diagnosis.safe.json",
+      "bytes": 4459,
+      "sha256": "32c3570ed810a650c95d92496cab18019b25e913c40ff94e6e0ef51964942748"
+    },
+    "readbackSource": {
+      "file": "read-stopped-original-once.py",
+      "bytes": 3273,
+      "sha256": "53810f85968807d71b28cfc0f006d791356d448812cbc368eabc998cfa7479c3"
+    }
+  },
+  "mustFix": [],
+  "findings": {
+    "all11FrozenSourcesMatch": true,
+    "grantAndIntentHashMatch": true,
+    "localOnceConsumed": true,
+    "normalTokenCliExitCode": 0,
+    "normalTokenCliReaped": true,
+    "sameSixScopeAndFixedUserAccountChecksCompleted": true,
+    "oauthOutputPersisted": false,
+    "sshExitCode": 1,
+    "localErrorCode": "original-publication-ssh-nonzero",
+    "readyEvents": 0,
+    "registryCredentialPostAttempted": false,
+    "registryCredentialStdinSent": false,
+    "finalPublicationAckVerified": false,
+    "remoteRootRecordsArchiveAndAuthDirectoryAbsent": true,
+    "route7897Listeners": 0,
+    "loopbackConnectErrno": 111,
+    "originalLocalPidCount": 2,
+    "allOriginalLocalPidsAbsent": true,
+    "publicationVerified": false,
+    "mergeConditionsSatisfied": false
+  },
+  "wireDiagnosisBoundary": {
+    "actualGrantBytes": 4632,
+    "actualGrantLfCount": 119,
+    "wholeGrantJsonParses": true,
+    "frozenSender": "g.rstrip(LF)+LF",
+    "frozenReceiver": "stdin.buffer.readline(32769)",
+    "firstLineBytes": 2,
+    "firstLineHex": "7b0a",
+    "pureFirstLineJsonError": {
+      "class": "JSONDecodeError",
+      "line": 2,
+      "column": 1,
+      "position": 2
+    },
+    "sourceFailurePrecedesRemoteRootMkdir": true,
+    "actualRemoteTracebackAvailable": false,
+    "actualRemoteStderrBytes": 771,
+    "actualRemoteStderrSha256": "a2e7627af8cdb22d69ec2e2f4f1be21e48060a566b564b1ff20923e36e05a522",
+    "meaning": "Deterministic local wire/parser/source-order diagnosis and matching actual stop/absence evidence; not a recovered actual remote traceback."
+  },
+  "timeBoundary": "Observation observedAt is the remote read time; the combined file adds subsequent local ps checks without separate timestamps. It is not a simultaneous global snapshot.",
+  "limits": [
+    "Normal same-six-scope OAuth CLI and explicit user/account identity GETs already occurred; this is not zero auth/cloud activity.",
+    "No publisher success terminal or full-export/Registry/independent-success-reader evidence exists. The separate root read-only observation is a stop reconciliation, not a passed success-only reader.",
+    "The local attempt lock remains consumed and old bytes/history stay fixed. No automatic retry or new actual continuation is asserted.",
+    "Registry credential POST was not attempted; same-scope OAuth normal state may have refreshed persistently and is not revoked or downgraded by stop cleanup.",
+    "No actual global Docker/Registry/provider or fee counters were read; usage/fees are unknown, not zero.",
+    "Conditional normal PR253 merge prerequisite was not met; no merge/rollout/gate/real Turn/project or old-window extension follows."
+  ],
+  "reviewerActions": {
+    "testReruns": 0,
+    "oauthFilesRead": 0,
+    "ssh": 0,
+    "docker": 0,
+    "registryApi": 0,
+    "provider": 0,
+    "gitHubMutations": 0
+  }
+}

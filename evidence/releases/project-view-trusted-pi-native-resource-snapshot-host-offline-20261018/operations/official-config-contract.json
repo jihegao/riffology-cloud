@@ -1,0 +1,49 @@
+{
+  "schema": "trusted-pi-image-config-closed-representation-contract/v1",
+  "observedHistoricalEngine": "29.8.1",
+  "observedHistoricalApi": "1.56",
+  "executionApiPinned": "1.56",
+  "sources": [
+    {
+      "url": "https://github.com/moby/moby/blob/3f38b15147b14ce0ce7b11558a1aa9e9f14db103/daemon/server/router/image/inspect_response.go",
+      "bytes": 1133,
+      "sha256": "4c1cfe176bbc21031cb245f0a2762165e97973e1559ddc6d4ed241664e8f6f83"
+    },
+    {
+      "url": "https://github.com/moby/moby/blob/3f38b15147b14ce0ce7b11558a1aa9e9f14db103/daemon/containerd/image_inspect.go",
+      "bytes": 5541,
+      "sha256": "d3e68cd67fd3ef9df2918c2bb9b95fc67692ba08aac8131573e2a24bab023d06"
+    },
+    {
+      "url": "https://github.com/moby/moby/blob/3f38b15147b14ce0ce7b11558a1aa9e9f14db103/api/types/image/image_inspect.go",
+      "bytes": 5207,
+      "sha256": "294b967dc7bcb894188a8e17d7b69c0ccbc4da16fc668a6449d52c6038c3be68"
+    },
+    {
+      "url": "https://github.com/moby/docker-image-spec/blob/1789f1ff5752290c18b57cfebcce12205a607dee/specs-go/v1/image.go",
+      "bytes": 2076,
+      "sha256": "20afd8399f2a7cd918e9031b721438be6ce41b82b3012fbe07eb66b028888bc8"
+    },
+    {
+      "url": "https://github.com/opencontainers/image-spec/blob/ca68a05fad732be329ef67e713c3af60fb7d5f76/specs-go/v1/config.go",
+      "bytes": 4565,
+      "sha256": "3a568325e61192224a7d9aea7d6155b2273460960dd6ef2712f05b10c18306fa"
+    }
+  ],
+  "contract": "OCI ImageConfig plus Docker Healthcheck/OnBuild/Shell only. Typed omit-empty values only have omission equivalence; nonempty values compare exactly including Env. Unknown keys/nondefault legacy fields fail. Legacy1.49 engine-only fields use explicit official defaults, never accepted at pinned1.56. Healthcheck closed nested fields/type bounds.",
+  "limitations": [
+    "Requested v29.8.1 source-tag lookup was unavailable; these immutable official sources establish the closed API/schema model, not a claim that this Docker binary exactly matches that commit.",
+    "Fresh target API1.56/cache Config/raw chain comparison remains unexecuted; unknown unsupported fields fail closed, not silently dropped.",
+    "Synthetic source-shaped fixtures do not claim actual cached a946 raw Config was inspected in this preparation."
+  ],
+  "historicalDaemonApiObservation": {
+    "path": ".local/jhg46-pi-publication-execution-20261017/daemon-preflight-readonly/result.json",
+    "bytes": 1009,
+    "sha256": "34ecdb8d4b80fab950174aebc7d705a254986d1f5a854211b05475502ce665a9",
+    "clientVersion": "29.8.1",
+    "serverVersion": "29.8.1",
+    "clientApiVersion": "1.56",
+    "serverApiVersion": "1.56",
+    "meaning": "Historical original AMD readonly observation only; not fresh support or successful new attempt. First command with pinned API1.56 must succeed or stop without build."
+  }
+}

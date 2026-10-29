@@ -1,0 +1,15 @@
+{
+  "accountId": "8b0d70250211aa10d89e20605a1c7e5e",
+  "expiresAt": "2026-10-18T13:20:05.170Z",
+  "oauthNotTransferred": true,
+  "requestId": "c263a2f3-f445-430e-b562-2e48f1eeb637",
+  "scopes": [
+    "user:read",
+    "offline_access",
+    "account:read",
+    "workers:write",
+    "workers_scripts:write",
+    "containers:write"
+  ],
+  "userIdSha256": "c8d5e2a134d99693a4585510f761b811d67b3e36c413eb3c9d34d060cccc986d"
+}

@@ -1,0 +1,142 @@
+{
+  "files": [
+    {
+      "bytes": 2374,
+      "path": "README.md",
+      "sha256": "15f02c0afadc3678118e1ecb59bbc1a537ed087bd2b0d980dc802bb1333efe46"
+    },
+    {
+      "bytes": 6321,
+      "path": "actual-result-independent-review.json",
+      "sha256": "7bf945d9adc752f3578a0fce4a50a97e531bc73ee8976e4f1c7ecd88b2b9dfdd"
+    },
+    {
+      "bytes": 2938,
+      "path": "authorization-independent-review.json",
+      "sha256": "04c794f7fd8d7a4d92df5e9782e30df4ec4a974b21b10b58f305b3382cb8a207"
+    },
+    {
+      "bytes": 729,
+      "path": "authorization-receipt.json",
+      "sha256": "a2faca382488d8c29ca71b61812aef86a10245f630ff35e74cb9f7957bc58526"
+    },
+    {
+      "bytes": 165,
+      "path": "credential-http-stop.json",
+      "sha256": "53f4e62999d75c7d975763707c026d645d07e93b9f02d7cdd4f4274a5ebeff4c"
+    },
+    {
+      "bytes": 1080,
+      "path": "credential-openapi-summary.json",
+      "sha256": "cabd6cc7c164b93d59a204a8028ebc16d8a509675554f11fa365a32bbfe64c15"
+    },
+    {
+      "bytes": 218,
+      "path": "credential-post-intent.json",
+      "sha256": "fafe17cd0c63243d917e0dc5f3bd364a4a32f882d6a482dee1a9ee9d6144e376"
+    },
+    {
+      "bytes": 1009,
+      "path": "daemon-readonly-preflight.json",
+      "sha256": "34ecdb8d4b80fab950174aebc7d705a254986d1f5a854211b05475502ce665a9"
+    },
+    {
+      "bytes": 3558,
+      "path": "failure-reader-independent-review.json",
+      "sha256": "4680d8fd8e5091e9329e17955f2cf3ce27dcee7ab517f0fb303e25efd27d0bc9"
+    },
+    {
+      "bytes": 7260,
+      "path": "failure-readonly.py",
+      "sha256": "fe4acbcdace1167d0815d23b8b0642567f3b3b01abc9fca29ef30dc12e380949"
+    },
+    {
+      "bytes": 12110,
+      "path": "github-existing-ci-diagnosis.json",
+      "sha256": "2fd95f3f6e5340be50fc5713bd394e47094f72aa1ef069648f6e312eb6d0f93b"
+    },
+    {
+      "bytes": 3203,
+      "path": "github-merge-preflight.json",
+      "sha256": "8370562afdc3ca61fbc57e80c146aacc5f97218293309abd80dc19dba5c24133"
+    },
+    {
+      "bytes": 16546,
+      "path": "independent-failure-readback.json",
+      "sha256": "04b23b22c9900746fcff7a1d298ef5016f823abf92b0181e15ecc1bf27f04a6a"
+    },
+    {
+      "bytes": 515,
+      "path": "independent-readback-intent.json",
+      "sha256": "9fc31fa521a0598cd51fa16a577522d015c455d69000959e46b9801d6e65676d"
+    },
+    {
+      "bytes": 434,
+      "path": "independent-readback-terminal.json",
+      "sha256": "6e1760e0b686dd5dfd02b6562c71ca4c92ba1b6fb06afc2c3125f585cde6c60c"
+    },
+    {
+      "bytes": 356,
+      "path": "launcher-terminal.json",
+      "sha256": "39d0429f635428e9427558957c2a3bdc506048903b5495b89fbf5af9f98ef72c"
+    },
+    {
+      "bytes": 290,
+      "path": "local-publication-intent.json",
+      "sha256": "e7b534bbe44e09ee50f0f986ea3e33efb71bdfa8523e225d4419c7870304c6f7"
+    },
+    {
+      "bytes": 835,
+      "path": "local-publication-terminal.json",
+      "sha256": "d3df3b72f5fd743df43e1b6713cb0bbec50158cee46b2c969346c546684dd6b4"
+    },
+    {
+      "bytes": 4941,
+      "path": "local-stop-independent-review.json",
+      "sha256": "1e01a3dcd867c544706e850a49ff9364f5601d099793855a0630d11547faf442"
+    },
+    {
+      "bytes": 396,
+      "path": "normal-login-identity-safe.json",
+      "sha256": "691a6aca3f28abb1f8b0762d0e16e3fc857906b0ac6a17fa0e2bfb9d1c2da1d4"
+    },
+    {
+      "bytes": 511,
+      "path": "oauth-before-renewal.json",
+      "sha256": "3ca4b23250ca93dd0c04c0223d5f09b4a2b6b9b58b9e98975b3e3e38a42ffa3f"
+    },
+    {
+      "bytes": 811,
+      "path": "oauth-normal-renewal.json",
+      "sha256": "30391802878d8ad1fad7bd9389c512b05e9550c32a5a4e06900b7278675a83b9"
+    },
+    {
+      "bytes": 256,
+      "path": "oauth-renewal-terminal.json",
+      "sha256": "8613e9bf054635b2f6f3e522ddcb7bc8e188ea3351300b6b76f8ff4426a4c00e"
+    },
+    {
+      "bytes": 390,
+      "path": "original-local-ssh-readback.json",
+      "sha256": "270fadd33196084873c2d02491fe1c11ab9e48eda0cc1018994aff47963d93ca"
+    },
+    {
+      "bytes": 7216,
+      "path": "permission-research.json",
+      "sha256": "147a81c30bff0a466deaec8e59d90ea5bca662d942d5c907080326d325124793"
+    },
+    {
+      "bytes": 15616,
+      "path": "result.json",
+      "sha256": "e0daf8e071363eb1adfa718662ed441d8c5d19d079913a4bdc47774d17ec585c"
+    },
+    {
+      "bytes": 5305,
+      "path": "run-failure-readback-once.py",
+      "sha256": "eeb940e463389d9f629f401d75dafcb006765c28f072bfab9b384bbac7d8ca06"
+    }
+  ],
+  "inventoryExcludesItself": true,
+  "requestId": "c3e04c41-72da-409b-a2b1-f924e6cc67fa",
+  "schema": "trusted-pi-image-publication-public-result-inventory/v1"
+}

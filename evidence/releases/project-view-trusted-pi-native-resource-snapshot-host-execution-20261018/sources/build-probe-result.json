@@ -1,0 +1,26 @@
+{
+  "actualImageConfigUser": "root",
+  "baseDerivedLaunchConfigPreserved": [
+    "User",
+    "Entrypoint",
+    "Cmd",
+    "WorkingDir",
+    "Env"
+  ],
+  "canonicalImplementationCommit": "0a10da572264470aaac111e6f5da2bd20b2f2c45",
+  "cleanup": {
+    "cleanupConfirmed": true,
+    "labelListEmpty": true,
+    "originalContainerId": "6bc8aab107db59fc1c67183145ac103355258ac0982866256e7993e2e8292572",
+    "originalIdAbsent": true
+  },
+  "endedAt": "2026-10-18T11:47:11.166794+00:00",
+  "imageId": "sha256:0bb9af7a5909c41187cf56402a21420100c72a8de0025b0a7152f8804e85d191",
+  "noCloudOrProviderAcceptanceClaim": true,
+  "parentRequestId": "fb99c7e4-21a7-4215-8261-c17dd7c148aa",
+  "repairArchiveSha256": "91b42a14a3c1c8caafb0b98230f156408bc39be065d408091055e91f7c724b81",
+  "requestId": "695e8875-459a-41b3-a148-2e228f2c3727",
+  "runtimeContract": "Root supervisor and original Sandbox entrypoint retained; native supervisor drops child to10002. Mock overrides user10002 and proves SDK only.",
+  "schema": "trusted-pi-build-probe-result/v1",
+  "status": "offline-image-compatibility-mock-passed"
+}

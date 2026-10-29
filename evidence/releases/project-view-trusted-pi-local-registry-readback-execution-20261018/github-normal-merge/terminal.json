@@ -1,0 +1,12 @@
+{
+  "at": "2026-10-18T14:35:01.955084+00:00",
+  "authoritativeMergedStateStillRequiresReadback": true,
+  "automaticRetry": false,
+  "exitCode": 0,
+  "mergeAttemptCount": 1,
+  "schema": "jhg46-fixed-pr253-normal-merge-transport-terminal/v1",
+  "stderrBytes": 0,
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stdoutBytes": 0,
+  "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

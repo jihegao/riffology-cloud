@@ -1,0 +1,248 @@
+{
+  "assetsAndFrame": {
+    "assetsInventoryAndManifestRawBytesIdenticalToOldV3": true,
+    "everyAssetCurrentAndOldV3BytesIdentical": true,
+    "frameMjsFrameHtmlAndFrameSourceBytesIdenticalToContentV1": true,
+    "frameSha256": "4bd78b2cf7c06051af24d97c2fd7665eea3b96ddbffe6b23daec485ee1e3eff2",
+    "immutable": 68,
+    "paths": 96,
+    "totalBytes": 53782277,
+    "web": 28
+  },
+  "builderStaticReview": {
+    "bundleInputsNotExecutedAsGatewayApplication": true,
+    "launchEnvAllowlistAndOneInvocationLock": true,
+    "noNewCredentialsOrAuthApiSshDockerCloudPathInBuilder": true,
+    "noWranglerCliInitializer": true,
+    "onlyLocalPureFrameConstantImport": true,
+    "sourceAndLaunchReviewed": true,
+    "sourceGlobalFetchGuardNotOsNetworkSandboxClaim": true,
+    "wranglerPackageJsonOnlyResolutionAnchorForBlake3": true
+  },
+  "deployable": false,
+  "explicitAuxiliaryInputs": {
+    "absentPackageJsonPathsVerified": 158,
+    "auxiliaryBytes": 87934,
+    "auxiliarySha256": "a4e48e3fe07c6fd047d15fb5a6ead3acac138bfa2d6d6b1b25053c30dbf95387",
+    "beforeAfterAuxiliaryRawBytesEqual": true,
+    "builderExplicitTsconfigPathMatchesPinnedContent": true,
+    "dependencyMetadataPathsVerified": 186,
+    "explicitTsconfigFromMain638": true,
+    "presentPackageJsonVerified": 28,
+    "scope": "Explicit config/Node/esbuild/BLAKE3 tool bytes and selected dependency ancestry only; no all-filesystem-reads claim.",
+    "toolFilesCurrentBytesAndRealPathsVerified": 207,
+    "tsconfigBytes": 396,
+    "tsconfigSha256": "03809951d75370134b3aaae38177c3db561f2ecb6004f6dbc67f6f6a3c2d07f0"
+  },
+  "moduleGraph": {
+    "addedInputs": [
+      "services/model-budget/private-beta-maintenance.ts"
+    ],
+    "allActualModuleBytesAndHashesMatch": true,
+    "allEightHundredTwentyOneOldV3DependencyPathsBytesAndHashesIdentical": true,
+    "changedOldModuleInputs": [
+      "services/capacity/core.ts",
+      "services/capacity/durable.ts",
+      "services/capacity/paired.ts",
+      "services/gateway/app.ts",
+      "services/gateway/index.ts",
+      "services/model-budget/private-beta-capacity.ts",
+      "services/project-views/package.ts"
+    ],
+    "dependencyInputs": 821,
+    "gitInputs": 303,
+    "graphIsNotAllFilesystemReads": true,
+    "playwrightModuleInputs": 0,
+    "removedInputs": [],
+    "totalInputs": 1124
+  },
+  "mustFix": [],
+  "oldPreparation": {
+    "bundle3ce10d83And5750293BytesUnchanged": true,
+    "oldV3FrozenGraphAndAssetsRetained": true,
+    "sourceBinding7225BytesAndA7bcShaUnchanged": true
+  },
+  "originalBuildLifecycle": {
+    "argumentsRead": false,
+    "esbuildStopCalledInFinally": true,
+    "independentPidCurrentlyAbsent": true,
+    "observationAt": "2026-10-18T03:27:44.340930+00:00",
+    "observationMethod": "ps exact PID, pid/lstart/comm only; exit1 and empty stdout/stderr",
+    "pid": 44071,
+    "recordedBuildAttempts": 1,
+    "recordedExitCode": 0,
+    "recordedReaped": true,
+    "recordedTimedOut": false
+  },
+  "outcome": "passed-no-must-fix",
+  "output": {
+    "bytes": 5771650,
+    "configuredRuntimeExportsAndModuleExportsAreDifferentCounters": true,
+    "currentCloudflareConfiguredRuntimeExportCountNotObservedByThisReview": true,
+    "esbuildMetafileSingleOutputBytesMatch": true,
+    "esmExportNameSetExactlyMatchesOldV3": true,
+    "esmModuleExportNamesCount": 30,
+    "file": "gateway-build-v2/gateway.mjs",
+    "generatedCommentsAndWrapperPathLabelsMayDiffer": true,
+    "historicalConfiguredWorkerRuntimeExportCount": 25,
+    "rawOutputDifferenceIsNotOnlyNewSourceCodeBytes": true,
+    "sha256": "9c8e4b6b763e9887d1624f00ed3a8efb2a8a24d984d96bc68fdb289cb4d362c3"
+  },
+  "pendingBeforePublication": [
+    "Actual source integration/normal gates and matching final production blobs.",
+    "GatewayOps v2 finalized source/bundle/graph pins, new exact metadata/sender/body, and its independent review.",
+    "Usable complete privately assembled actual baseline and independent source-part/adapter witnesses.",
+    "Concrete new human execution grant for new publication/maintenance/rollout/gate/product effects."
+  ],
+  "reviewActions": {
+    "apiAuthCuaOrNetworkCalls": 0,
+    "buildsOrTests": 0,
+    "cloudOrProviderActions": 0,
+    "credentialsOrPrivateBaselineBodyReads": 0,
+    "gitOrRepositoryMetadataMutations": 0,
+    "outputFilesWritten": 1
+  },
+  "reviewOnly": true,
+  "reviewedAt": "2026-10-18T03:27:44.340786+00:00",
+  "reviewer": "independent combined-source and build-input reviewer",
+  "safeFileReferences": [
+    {
+      "bytes": 160700,
+      "file": "combined-v2/source-input-inventory.json",
+      "sha256": "a00991d336d395b2923d1b98e6f8228d1562655b7670207dcf51ca2ea2777d7e"
+    },
+    {
+      "bytes": 40420,
+      "file": "combined-v2/source-delta.patch",
+      "sha256": "160331d42229e8095c626a9d7b70d1ecd8655a95703f024424e0c4deff00ce46"
+    },
+    {
+      "bytes": 862,
+      "file": "combined-v2/prepared-source-reconciliation.json",
+      "sha256": "e29ba20c9c05edfb84e3860e1adbaa1e5beaf2f4e8b676b8d04334c66acfd459"
+    },
+    {
+      "bytes": 4374,
+      "file": "combined-v2/compose-source-once.executed.py",
+      "sha256": "037660bdadd220c69986b1a3c69a5895d4b5c80797d15cc272ea8ef58a8a6b2f"
+    },
+    {
+      "bytes": 14036,
+      "file": "combined-v2/freeze-gateway-once.mjs",
+      "sha256": "d89d4adc0e4131d7792c16210b3f5ed391d0e7a27a1a9646023883d1171cea0f"
+    },
+    {
+      "bytes": 2725,
+      "file": "combined-v2/launch-build-once.py",
+      "sha256": "31d1da797885c3cad9ef934c5fa073a22b06600644caaf1effa12497f694d0da"
+    },
+    {
+      "bytes": 5771650,
+      "file": "gateway-build-v2/gateway.mjs",
+      "sha256": "9c8e4b6b763e9887d1624f00ed3a8efb2a8a24d984d96bc68fdb289cb4d362c3"
+    },
+    {
+      "bytes": 879161,
+      "file": "gateway-build-v2/source-graph.json",
+      "sha256": "f8a9c6bdc9a5a4adc1ea51fcbc9c1c24a8219d421b86ffe29a371a50ac4591bf"
+    },
+    {
+      "bytes": 1003936,
+      "file": "gateway-build-v2/esbuild-metafile.json",
+      "sha256": "3125677be8dc94513ed2249147a7e07cef729b9a30cf6edb2783d11862035f49"
+    },
+    {
+      "bytes": 20499,
+      "file": "gateway-build-v2/assets-sha256.json",
+      "sha256": "b1fd4e1fe0b538af20cfb090242fa996f75bf26f8076e259a774ee2d5338b39a"
+    },
+    {
+      "bytes": 15987,
+      "file": "gateway-build-v2/assets-manifest.json",
+      "sha256": "b24e87bf762801056e447c106600e1fcee9f23e43c01830436006b5dca8ce1ad"
+    },
+    {
+      "bytes": 5233,
+      "file": "gateway-build-v2/build-manifest.json",
+      "sha256": "ffda5ffa12e0a7a1c241eb63a5abc553c4eff521505c825a5b58c5978c52985d"
+    },
+    {
+      "bytes": 87934,
+      "file": "gateway-build-v2/auxiliary-inputs-before.json",
+      "sha256": "a4e48e3fe07c6fd047d15fb5a6ead3acac138bfa2d6d6b1b25053c30dbf95387"
+    },
+    {
+      "bytes": 87934,
+      "file": "gateway-build-v2/auxiliary-inputs-after.json",
+      "sha256": "a4e48e3fe07c6fd047d15fb5a6ead3acac138bfa2d6d6b1b25053c30dbf95387"
+    },
+    {
+      "bytes": 1005,
+      "file": "gateway-build-v2/intent.json",
+      "sha256": "72a4c9477622769271da82028bf1910904e2751e0e6486f4a2e8205af6d8d14e"
+    },
+    {
+      "bytes": 708,
+      "file": "gateway-build-v2/terminal.json",
+      "sha256": "91fe6dcb2dff81351ae5b3bb6d1069617ce73b47d0307e2bdaa930e377370705"
+    },
+    {
+      "bytes": 1252,
+      "file": "combined-v2/offline-build-launch-intent.json",
+      "sha256": "abca655ff08ff0dcf431f17ebe60d28ce070dc82fa743a6ff8bdeaead0dc41e9"
+    },
+    {
+      "bytes": 70,
+      "file": "combined-v2/offline-build-original-cli.json",
+      "sha256": "9785f3d1c57d8bbb494e25f97d45489876fdd7f1c7ddbf757c16127aeaf412a7"
+    },
+    {
+      "bytes": 866,
+      "file": "combined-v2/offline-build-launch-terminal.json",
+      "sha256": "95980656d9373d1a262ec219aa01e7cec3f721e9740756a0da4a52b6463d051b"
+    },
+    {
+      "bytes": 4078,
+      "file": "combined-v2/offline-build.stdout",
+      "sha256": "b8ccebfae248208de427e62926fa902f9a2900f9bf9fa83e383b2d1854419ffa"
+    },
+    {
+      "bytes": 0,
+      "file": "combined-v2/offline-build.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "schema": "jhg46-independent-combined-v2-build-input-review/v1",
+  "sourceBinding": {
+    "bytes": 10978,
+    "file": "combined-v2/source-content-binding.json",
+    "sha256": "786cdb428a40e1d996539b8d6157d8705bf73eade02ca6d8ba4bddc7a1fcfeaf"
+  },
+  "sourceComposition": {
+    "actualContentDirectoryExactlyMatchesInventory": true,
+    "actualMainIntegrationOrMergeByPreparation": false,
+    "actualMaintenancePrNumberReportedByRoot": 250,
+    "allDeclaredGitBlobBytesAndHashesMatched": true,
+    "baseMain": "638a366d31a37f7bc1d7dcd124e0b5ba753d6401",
+    "changedVsMainOnlyTenDeclaredOverlayPaths": [
+      "Dockerfile.trusted-pi.cloud",
+      "Dockerfile.trusted-pi.vertical",
+      "services/capacity/core.ts",
+      "services/capacity/durable.ts",
+      "services/capacity/paired.ts",
+      "services/gateway/app.ts",
+      "services/gateway/index.ts",
+      "services/model-budget/private-beta-capacity.ts",
+      "services/model-budget/private-beta-maintenance.ts",
+      "services/project-views/package.ts"
+    ],
+    "futureActualIntegratedProductionTreeMustMatch": true,
+    "issue248Source": "c669921f4796c5b35c6f2e049c92876f4faf7c5b",
+    "originalA946ImageB093ProbeNotRelabeledOrRebuiltForNewSourceHeads": true,
+    "pr239": "17d6545c308c6ae7647080bdde0ba55021384700",
+    "pr246": "05681cf3cf53d965784df486c25c622b74421ef0",
+    "sourceBytes": 9744361,
+    "sourceFiles": 477,
+    "sourcePrNumberNotInferredFromIssueNumber": true
+  }
+}

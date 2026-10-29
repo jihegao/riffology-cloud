@@ -1,0 +1,29 @@
+// Explicit dated expectation assembled from identified original result families.
+// This is never a fresh GET witness or an original complete capture.
+import {createHash} from 'node:crypto';
+const canonical=x=>Array.isArray(x)?x.map(canonical):x&&typeof x==='object'?Object.fromEntries(Object.keys(x).sort().map(k=>[k,canonical(x[k])])):x;
+export const hashJSON=x=>createHash('sha256').update(JSON.stringify(canonical(x))).digest('hex');
+const check=(v,c)=>{if(!v)throw Error(c);};
+export const CURRENT=Object.freeze({version:'4f887d24-7874-4fb3-b3ac-caf6d74ab461',source:'9c8e4b6b763e9887d1624f00ed3a8efb2a8a24d984d96bc68fdb289cb4d362c3',bytes:5771650,settings:'3926e958af229da1e20ca35a0532147b520e7aded2a4251c8d665200735ca5f3',deployments:'d035c91e06dd4cf3d95bf582099e9558b9fa59dc47bb4a4e5fbc6fd45d07b21d',stable:'64d4d58d0822536915b6f8efab957059fcff0a4b315b4e7edc96e394b5277c19',control:'47cffd4f19c05708438ad9824d69d38801cf48001d7da8b64e32cd03d89a6c68',targetId:'a03628c4-f032-461f-a65b-612ccac11a06',targetSha256:'8e6093748b7ed484f6e785c954331794741aad4d8277862ee52261f06d5c21f3',targetImage:'registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-issue165-trusted-pi@sha256:ec8dbe9efe229a1626ea3202b618653f82f8d29d9da8b19310c3b3838f2a2623'});
+export function stableProjection(settings,version,module,secretNames){const s=structuredClone(settings),v=structuredClone(version),gate='PROJECT_VIEW_BROWSER_POLICY_JSON';s.bindings=s.bindings.filter(b=>b.name!==gate);v.resources.bindings=v.resources.bindings.filter(b=>b.name!==gate);delete v.id;delete v.number;if(v.metadata)delete v.metadata.created_on;return {settings:s,version:v,module,secretNames:secretNames.filter(x=>x.name!==gate)};}
+export function controlProjection(b){return {namespaces:b.controls.namespaces,registries:b.controls.registries,domains:b.controls.domains,routes:b.controls.routes,schedules:b.controls.schedules,subdomain:b.controls.subdomain,apps:b.apps,appVersions:b.appVersions,exactTarget:b.apps.find(x=>x.id===CURRENT.targetId)};}
+export function validateDatedBaseline(b){
+ check(b?.schema==='jhg46-sdk-dated-family-baseline/private-v1'&&b.accountId==='8b0d70250211aa10d89e20605a1c7e5e'&&b.worker==='riffology-m1-gateway-staging','dated-baseline-target');
+ check(b.notOriginalCompleteSnapshot===true&&b.notExecutionWitness===true&&b.notFresh===true&&Array.isArray(b.familyProvenance)&&b.familyProvenance.length>=3,'dated-provenance-required');
+ for(const r of b.familyProvenance)check(typeof r.file==='string'&&Number.isSafeInteger(r.bytes)&&r.bytes>0&&/^[a-f0-9]{64}$/.test(r.sha256)&&typeof r.method==='string','family-provenance-shape');
+ const s=b.controls.settings,v=b.version,rt=v.resources?.script_runtime,bindings=s.bindings;
+ check(Array.isArray(bindings)&&bindings.length===106&&new Set(bindings.map(x=>x.name)).size===106&&bindings.filter(x=>['secret_text','secret_key'].includes(x.type)).length===11,'dated-bindings');
+ check(!bindings.some(x=>x.name==='PROJECT_VIEW_BROWSER_POLICY_JSON')&&bindings.find(x=>x.name==='PROJECT_VIEW_POLICY_JSON')?.text==='{"enabled":false}','dated-policies-closed');
+ check(hashJSON(bindings)===hashJSON(v.resources.bindings)&&Object.keys(rt.exports).length===25&&rt.containers.length===6,'dated-runtime');
+ check(v.id===CURRENT.version&&b.source.mainModule==='index.js'&&b.source.bytes===CURRENT.bytes&&b.source.sha256===CURRENT.source,'dated-version-source');
+ const d=b.controls.deployments?.deployments;check(d?.length===1&&d[0].versions?.length===1&&d[0].versions[0].version_id===CURRENT.version&&d[0].versions[0].percentage===100,'dated-deployment');
+ check(hashJSON(s)===CURRENT.settings&&hashJSON(b.controls.deployments)===CURRENT.deployments,'dated-current-family-hash');
+ check(b.controls.namespaces.length===50&&b.apps.length===16&&new Set(b.apps.map(x=>x.id)).size===16&&Object.keys(b.appVersions).length===16&&b.apps.every(x=>Array.isArray(b.appVersions[x.id])),'dated-resource-completeness');
+ const target=b.apps.find(x=>x.id===CURRENT.targetId);check(target?.version===13&&target.configuration.image===CURRENT.targetImage&&target.max_instances===1&&target.scheduling_policy==='default'&&!Object.hasOwn(target,'active_rollout_id')&&hashJSON(target)===CURRENT.targetSha256,'dated-ec8-v13');
+ check(b.appVersions[CURRENT.targetId].length===2&&b.appVersions[CURRENT.targetId].some(x=>x.version===13&&x.configuration.image===CURRENT.targetImage&&x.percentage===100),'dated-serving-versions');
+ for(const x of bindings)if(['secret_text','secret_key'].includes(x.type))check(!Object.keys(x).some(k=>['text','value','key_base64','key_jwk'].includes(k)),'dated-secret-value');
+ for(const a of [...b.apps,...Object.values(b.appVersions).flat()])for(const e of a.configuration?.environment_variables??[])check(!Object.hasOwn(e,'value')||e.value===''||e.value==null,'dated-env-value');
+ const secrets=bindings.filter(x=>['secret_text','secret_key'].includes(x.type)).map(x=>({name:x.name,type:x.type})).sort((a,b)=>a.name.localeCompare(b.name));
+ check(hashJSON(stableProjection(s,v,b.source,secrets))===CURRENT.stable&&hashJSON(controlProjection(b))===CURRENT.control,'dated-full-stable-control-proof');return b;
+}
+export function projectDatedBaseline(b){validateDatedBaseline(b);return {schema:'jhg46-sdk-dated-family-baseline-safe/v1',notFresh:true,notExecutionWitness:true,notOriginalCompleteSnapshot:true,accountId:b.accountId,worker:b.worker,counts:{bindings:106,exports:25,containerAssociations:6,namespaces:50,apps:16,appVersionLists:16},controlCanonicalSha256:Object.fromEntries(Object.entries(b.controls).map(([k,v])=>[k,hashJSON(v)])),appsCanonicalSha256:hashJSON(b.apps),appVersionsCanonicalSha256ById:Object.fromEntries(Object.entries(b.appVersions).map(([k,v])=>[k,hashJSON(v)])),workerVersionCanonicalSha256:hashJSON(b.version),workerVersionId:b.version.id,actualServingModule:b.source,rawStableMetadataSha256:CURRENT.stable,controlPlaneSha256:CURRENT.control,familyProvenance:b.familyProvenance};}

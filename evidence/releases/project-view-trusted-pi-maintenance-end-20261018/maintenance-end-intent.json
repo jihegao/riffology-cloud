@@ -1,0 +1,15 @@
+{
+  "at": "2026-10-18T09:54:25.744614+00:00",
+  "body": {
+    "action": "end",
+    "requestId": "6c6d9d94-be91-45e3-8044-bf1768308d7a",
+    "expectedRevision": 1,
+    "expectedPolicySha256": "695cdd9ece91081e201a3dd03ba2ad7451931a0b588addc6454a1f6db9638031"
+  },
+  "singleAttempt": true,
+  "humanGrant": "observed-state-human-grant.json",
+  "freshTargetAndFullResourceGuardsPassed": true,
+  "preEndQuiescenceSemanticSha256": "a60101b9c32c80c78fd060eccf9c8c45b82f4aaea7a9705056b12ed4ea07118a",
+  "acceptedIdleVmNotReleased": true,
+  "zeroPlacementRuleReplacedOnlyByExplicitHumanGrant": true
+}

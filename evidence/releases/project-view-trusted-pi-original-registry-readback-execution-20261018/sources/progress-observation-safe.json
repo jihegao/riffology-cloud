@@ -1,0 +1,27 @@
+{
+  "schema": "jhg46-public-safe-projection/v1",
+  "originalFile": "observation.json",
+  "originalBytes": 514,
+  "originalSHA256": "906a83c24893170ee0d28aead765412428d286612becb75e14bab40a6cedfc4f",
+  "projectionNote": "One auxiliary read-only progress observation. Omitted lastTerminal; progress is not completion/acceptance proof.",
+  "data": {
+    "credentialContentsRead": false,
+    "intentSlotsPresent": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "observedAt": "2026-10-18T13:18:15.661636+00:00",
+    "progressOnly": true,
+    "proofSlotsParsed": [
+      0,
+      1,
+      2
+    ],
+    "publicationVerified": false,
+    "publisherTerminalPresent": false,
+    "registryOrDockerCalls": 0,
+    "remoteWrites": 0
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "archiveSha256": "5817ecf49cf2e3128a9695c9fb6d75182d8cd6958b815e553f571a13167e89dc",
+  "canonicalImplementationCommit": "0d23a12d869abccb9515a8e7f8196b0266258226",
+  "files": {
+    "EXECUTION.md": {
+      "bytes": 4393,
+      "sha256": "4d5c9ee561c632bef3137e1fb2137e114e754ad2bae59c2d3253042f50e0a7b7"
+    },
+    "mock-probe-once.py": {
+      "bytes": 22044,
+      "sha256": "fc3cfa1eaad3e1ccfee4389f5128e6ede5ea7c3411647b9b32a2bcd92e00d83f"
+    },
+    "probe_common.py": {
+      "bytes": 3989,
+      "sha256": "1e1a7422a50955e730d181553e15bbd1751ba07128e7187fc84ad51846baf4ba"
+    },
+    "run-local.py": {
+      "bytes": 3749,
+      "sha256": "b5ccbd8fe3f1ce91143f14803b16ae24f22f92f5baa3cfde47637cb48ad4426b"
+    },
+    "scope.json": {
+      "bytes": 1806,
+      "sha256": "30a2f55749c79e9cecad29e8c45c3bc443a6da4865b60300ca36f37aa4644dc6"
+    },
+    "test_probe_operations.py": {
+      "bytes": 12162,
+      "sha256": "b7be5afeaf6445929f35dde54cb89fbed18d8bd5a6d3dc3b956ffa6185172e4b"
+    },
+    "transfer-local.py": {
+      "bytes": 6630,
+      "sha256": "d3e7d36b191efc5fde9b902f5419e2e711ac0a3768f351ebe161637b5171bdd0"
+    },
+    "transfer-receiver.py": {
+      "bytes": 6491,
+      "sha256": "94497baaf8106242a2f7e701e7b69b0cf23dce63936fa6cb3c36bb9d353340e6"
+    }
+  },
+  "requestId": "b0933502-20df-480a-9a91-d833f5c4358c",
+  "schema": "trusted-pi-probe-readable-operations-manifest/v1",
+  "sourceKernelSha256": "c0afbbba0277c82b27fd145c3db830c2faa9375222d77b5044b12d22116d8a81"
+}

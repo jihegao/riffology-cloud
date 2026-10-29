@@ -1,0 +1,20 @@
+test_bad_body_and_truncation_have_no_proof_or_retry (test_recovery.LocalOnlyTests) ... ok
+test_complete52_dispatch_and_ack_link_three_actual_records (test_recovery.LocalOnlyTests) ... ok
+test_deadline_during_error_body_preserves_exact_signal_code (test_recovery.LocalOnlyTests) ... ok
+test_expiry_after_last_proof_prevents_complete_and_ack (test_recovery.LocalOnlyTests) ... ok
+test_get_budget_is_fractional_grant_remainder_capped_at720 (test_recovery.LocalOnlyTests) ... ok
+test_local_get_proves_fixed_sha_identity_without_claiming_byte_object_compare (test_recovery.LocalOnlyTests) ... ok
+test_new_single_line_grant_identity_and_bad_wire_before_auth (test_recovery.LocalOnlyTests) ... ok
+test_original52_descriptors_and_no_scope_ttl_or_forwarding_expansion (test_recovery.LocalOnlyTests) ... ok
+test_partial4attempt3proof_and_missing_ack_stay_pending (test_recovery.LocalOnlyTests) ... ok
+test_real_get_first_layer_stream_and_descriptor_header (test_recovery.LocalOnlyTests) ... ok
+test_real_get_http403_and_timeout_record_safe_failure_once (test_recovery.LocalOnlyTests) ... ok
+test_signal_codes_distinguish_deadline_and_external_interruption (test_recovery.LocalOnlyTests) ... ok
+test_source_failure_stops_before_auth_or_registry (test_recovery.LocalOnlyTests) ... ok
+test_source_proof_requires_exact_archive_and_stopped_supervisor14records (test_recovery.LocalOnlyTests) ... ok
+test_source_stdin_selection_excludes_auth_code_and_no_remote_write_program (test_recovery.LocalOnlyTests) ... ok
+
+----------------------------------------------------------------------
+Ran 15 tests in 0.021s
+
+OK

@@ -1,0 +1,183 @@
+{
+  "readAt": "2026-10-18T14:35:47.991614+00:00",
+  "pr": {
+    "number": 253,
+    "state": "closed",
+    "merged": true,
+    "mergedAt": "2026-10-18T14:35:00Z",
+    "mergeCommit": "240378f65fee54d917b053f565087095a07244db",
+    "head": "0a10da572264470aaac111e6f5da2bd20b2f2c45",
+    "base": "65df9b771a5d0497304a5955e33974e8ea9aa9ac",
+    "mergeCommitParents": [
+      "65df9b771a5d0497304a5955e33974e8ea9aa9ac",
+      "0a10da572264470aaac111e6f5da2bd20b2f2c45"
+    ]
+  },
+  "issues": [
+    {
+      "number": 252,
+      "state": "open",
+      "labels": [
+        "blocked"
+      ],
+      "assignees": [
+        "jihegao"
+      ],
+      "milestone": 1,
+      "bodySha256": "4a211b9af45a09024cd9d1150388b5a678a7dd8783cbee9974fba73afc10b625",
+      "latestComment": {
+        "id": 6248862133,
+        "updatedAt": "2026-10-18T13:59:42Z"
+      }
+    },
+    {
+      "number": 214,
+      "state": "open",
+      "labels": [
+        "blocked"
+      ],
+      "assignees": [
+        "jihegao"
+      ],
+      "milestone": 1,
+      "bodySha256": "90dea9eba5c0a08c0505681e6023718217ad39c256c2953f284d0945527eddb1",
+      "latestComment": {
+        "id": 6248861759,
+        "updatedAt": "2026-10-18T13:59:46Z"
+      }
+    }
+  ],
+  "project": {
+    "title": "Riffology Cloud · Delivery",
+    "items": [
+      {
+        "content": {
+          "number": 104,
+          "repository": {
+            "nameWithOwner": "jihegao/riffology-cloud"
+          },
+          "state": "OPEN",
+          "assignees": {
+            "nodes": [
+              {
+                "login": "jihegao"
+              }
+            ]
+          },
+          "milestone": {
+            "number": 1,
+            "title": "Pi 线上恢复与核心流程验收"
+          }
+        },
+        "fieldValues": {
+          "nodes": [
+            {},
+            {},
+            {},
+            {},
+            {},
+            {
+              "name": "Acceptance",
+              "field": {
+                "name": "Status"
+              }
+            },
+            {
+              "name": "P0",
+              "field": {
+                "name": "Priority"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "content": {
+          "number": 214,
+          "repository": {
+            "nameWithOwner": "jihegao/riffology-cloud"
+          },
+          "state": "OPEN",
+          "assignees": {
+            "nodes": [
+              {
+                "login": "jihegao"
+              }
+            ]
+          },
+          "milestone": {
+            "number": 1,
+            "title": "Pi 线上恢复与核心流程验收"
+          }
+        },
+        "fieldValues": {
+          "nodes": [
+            {},
+            {},
+            {},
+            {},
+            {},
+            {
+              "name": "Acceptance",
+              "field": {
+                "name": "Status"
+              }
+            },
+            {
+              "name": "P1",
+              "field": {
+                "name": "Priority"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "content": {
+          "number": 252,
+          "repository": {
+            "nameWithOwner": "jihegao/riffology-cloud"
+          },
+          "state": "OPEN",
+          "assignees": {
+            "nodes": [
+              {
+                "login": "jihegao"
+              }
+            ]
+          },
+          "milestone": {
+            "number": 1,
+            "title": "Pi 线上恢复与核心流程验收"
+          }
+        },
+        "fieldValues": {
+          "nodes": [
+            {},
+            {},
+            {},
+            {},
+            {},
+            {
+              "name": "In review",
+              "field": {
+                "name": "Status"
+              }
+            },
+            {
+              "name": "P0",
+              "field": {
+                "name": "Priority"
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "pagination": {
+      "hasNextPage": false,
+      "endCursor": "Y3Vyc29yOnYyOpK5MDAwMDAwMDAuMDEwMzA5Mjc4MzUwNTE1NM4QZiBj"
+    }
+  },
+  "mutation": false
+}

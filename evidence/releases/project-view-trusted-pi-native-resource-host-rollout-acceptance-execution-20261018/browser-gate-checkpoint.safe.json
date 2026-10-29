@@ -1,0 +1,87 @@
+{
+  "schema": "jhg46-owned-finite-browser-gate-actual-close-author-projection/v2",
+  "originalClosedWitnessHeldHistory": {
+    "source": {
+      "source": "browser-gate/closed-witness-original.tool-result.private.json",
+      "bytes": 11058,
+      "sha256": "c8497476ecd57ef9cce0e68e792200a858fe38c5b74ca015272abfb20be19d38",
+      "bodyCopied": false
+    },
+    "startedAt": "2026-10-18T16:43:13.418Z",
+    "endedAt": "2026-10-18T16:43:16.818Z",
+    "complete": false,
+    "held": true,
+    "code": "LISTED_ORIGINAL_BASE_OBJECT",
+    "traceCount": 42,
+    "onlyGet": true,
+    "cloudWrites": 0,
+    "heldNotRewrittenAsSuccess": true
+  },
+  "earlierListedTargetReadOnlyReconciliation": {
+    "source": {
+      "source": "browser-gate/listed-target-current-reconciliation.tool-result.private.json",
+      "bytes": 9570,
+      "sha256": "14607e9f04ebe1073363ed9d4a7e4e6558a9a59965fe9da61657ee7f829b0e63",
+      "bodyCopied": false
+    },
+    "startedAt": "2026-10-18T16:44:31.192Z",
+    "endedAt": "2026-10-18T16:44:32.228Z",
+    "appsCount": 16,
+    "listedTargetCanonicalSha256": "8e6093748b7ed484f6e785c954331794741aad4d8277862ee52261f06d5c21f3",
+    "exactTargetCanonicalSha256": "8e6093748b7ed484f6e785c954331794741aad4d8277862ee52261f06d5c21f3",
+    "listedAndExactFullObjectsEqual": true,
+    "targetVersion": 13,
+    "imageDigest": "sha256:ec8dbe9efe229a1626ea3202b618653f82f8d29d9da8b19310c3b3838f2a2623",
+    "onlyGet": true,
+    "cloudWrites": 0
+  },
+  "originalGateRequestId": "db65c5b8-799b-5dc7-ab0a-6eb56b7927ae",
+  "open": {
+    "method": "PUT",
+    "status": 201,
+    "sentAt": "2026-10-18T16:51:27.113Z",
+    "receivedAt": "2026-10-18T16:51:28.060Z",
+    "transmittedBodyBytes": 519,
+    "transmittedBodySha256": "5209e608f008918c109b95c38e4f8f647a679dc638cf869e425aefe1c8c56885",
+    "versionId": "ba8d19c9-3a87-49f5-bccb-a97f2d5955ee",
+    "onePutInOriginalSource": true,
+    "secretBodyCopied": false
+  },
+  "ownedClose": {
+    "method": "DELETE",
+    "status": 200,
+    "sentAt": "2026-10-18T16:59:50.923Z",
+    "receivedAt": "2026-10-18T16:59:51.494Z",
+    "sameOriginalRequestAndOwnedOpenVersionAndBodySha": true,
+    "actualClosedVersionId": "4f887d24-7874-4fb3-b3ac-caf6d74ab461",
+    "oneDeleteInOriginalSource": true
+  },
+  "afterClose": {
+    "completeWitness": true,
+    "successfulGetCount": 54,
+    "latestSole100PercentVersion": "4f887d24-7874-4fb3-b3ac-caf6d74ab461",
+    "sourceSha256": "9c8e4b6b763e9887d1624f00ed3a8efb2a8a24d984d96bc68fdb289cb4d362c3",
+    "controlPlaneSha256": "47cffd4f19c05708438ad9824d69d38801cf48001d7da8b64e32cd03d89a6c68",
+    "gateBindingType": "absent",
+    "counts": {
+      "bindings": 106,
+      "secrets": 11,
+      "exports": 25,
+      "containerAssociations": 6,
+      "assets": 96,
+      "apps": 16,
+      "namespaces": 50
+    },
+    "assetCountIsPreservationMetadataNotFresh96BodyDownloads": true,
+    "rawStableMetadataSha256": "64d4d58d0822536915b6f8efab957059fcff0a4b315b4e7edc96e394b5277c19",
+    "originalClosedRawStableMetadataSha256": "2b8867424e00a39e61fe237fe9790462275f0598e5613f0852ca38709d4ebf44",
+    "rawHashesEqual": false,
+    "exactAnnotationBridge": "sources/browser-gate-exact-annotation-bridge-review.safe.json",
+    "exactOriginalHashReconstructionPassed": true,
+    "noSecretPlaintextReadbackClaimed": true
+  },
+  "cleanupIndependentReview": "sources/owned-gate-close-failed-acceptance-closure.safe.json",
+  "state": "closed after V1 failure; original one open/owned close consumed",
+  "newGateReplayOrRuntimeAttemptPermittedByThisProjection": false,
+  "authorFactsNotIndependentSelfReview": true
+}

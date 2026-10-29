@@ -1,0 +1,76 @@
+{
+  "schema": "jhg46-original-failed-t1-fresh-owner-safe-summary/v1",
+  "observationAt": "2026-10-18T14:44:58.500Z",
+  "successfulProjectionStartedAt": "2026-10-18T14:44:48.088Z",
+  "successfulProjectionEndedAt": "2026-10-18T14:44:58.500Z",
+  "successfulProjectionGetCount": 5,
+  "allFiveStatuses": 200,
+  "getSequence": [
+    "me-before",
+    "original-workspace",
+    "original-session-original-key-turn-receipt",
+    "original-workspace-private-beta-capacity",
+    "me-after"
+  ],
+  "sameOriginalOwner": true,
+  "ownerUserIdSha256": "9cb1781a0e6aa30d6093a4a26744ea189386c2f1d337ffb9ca8c9ea1f505558d",
+  "originalScopeSha256": "169ed065bf14dc53cb85d81fe06733c59881529dae9b28962535890b06d60095",
+  "originalSessionIdSha256": "372b3cec7133b91dae1db5547c5946c7373393fa02370e41940038313b273e98",
+  "originalTurnIdSha256": "ab438fcb41253ded66398bd2b1b8bed78bab07bfc82dc14f2e7a24d5b04083d3",
+  "originalIdempotencyKeySha256": "95bfa03ed8d9522d23a2c526c36c4b2c2ee829f9a13abc968405d76daa0ae386",
+  "sessionCount": 1,
+  "turnCount": 1,
+  "originalTurn": {
+    "status": "failed",
+    "executionOutcome": "failed",
+    "errorCode": "turn-native-exit-failed",
+    "persistenceOutcome": "failed",
+    "persistenceErrorCode": "turn-checkpoint-unknown",
+    "runtimeGeneration": 1,
+    "finishedAt": 1792318391429,
+    "checkpoint": null
+  },
+  "originalSessionHead": null,
+  "activeTurn": false,
+  "releaseHoldClear": true,
+  "recoveryHoldClear": true,
+  "resourceWaitClear": true,
+  "originalUserCapacityState": "available",
+  "receiptTurnEqualsWorkspaceOriginalTurn": true,
+  "runtimeWriteOrRetry": false,
+  "newLoginOrCookieExport": false,
+  "projectionSource": {
+    "bytes": 3089,
+    "sha256": "525efa95966dfb23dc1a57d9efd8e8402c441f8c9779dc68741641d15276762e"
+  },
+  "captureHistory": [
+    {
+      "stage": "earlier-console-entry",
+      "recordedFailure": "top-level-await ReferenceError",
+      "preservedInOriginalConsole": true,
+      "getCountNotEstablishedByThisProjection": true
+    },
+    {
+      "stage": "earlier-separate-projection",
+      "at": "2026-10-18T14:43:44.391Z",
+      "recordedFailure": "TypeError from treating sessions/turns dictionaries as arrays",
+      "completeGetCount": 5,
+      "successfulProjectionCaptured": false,
+      "mutation": false
+    },
+    {
+      "stage": "successful-projection",
+      "getCount": 5,
+      "allHttp200": true,
+      "originalBytesAndBrowserHashMatched": true
+    }
+  ],
+  "notProved": [
+    "CurrentauthVersion/acceptedinvitation/platformrole beyond sameoriginalowner hash bracket.",
+    "Raw native stop or originalcapacity ticket proof.",
+    "Physical VM/containerrelease or globalzeroactivity.",
+    "Currentjoint native/Beta quiescence under a new maintenancehold.",
+    "Originalproject_write cause/effects, successfulsave/R1 or fee settlement.",
+    "Newrollout/project/Turn/browsergate authorization."
+  ]
+}

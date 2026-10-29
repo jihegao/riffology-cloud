@@ -1,0 +1,173 @@
+{
+  "schema": "jhg46-t1-save-release-product-authority-closure/v1",
+  "recordedAt": "2026-10-18T16:29:28.702875Z",
+  "reviewMode": "Local originals and deterministic hashes only; prior reviewed source/config chain reused",
+  "bindings": [
+    {
+      "file": ".local/jhg46-native-resource-host-rollout-acceptance-execution-20261018/reviews/t1-intent-independent-review.safe.json",
+      "bytes": 14199,
+      "sha256": "4ad37bc4027f8a3d53d6b1baa6f05b7cf39962dc00cbef26ad02db7ad8552268",
+      "role": "Prior intent/scope/prompt/model approval chain"
+    },
+    {
+      "file": ".local/jhg46-native-resource-host-rollout-acceptance-execution-20261018/reviews/t1-product-authority-release-threshold-review.safe.json",
+      "bytes": 19516,
+      "sha256": "62f1638730384d6310a71f6400f99c1c65165f48d9172f426976e44b9778a70d",
+      "role": "Frozen productauthority interpretation and actual cold-mode source/config chain"
+    },
+    {
+      "file": ".local/jhg46-native-resource-host-rollout-acceptance-execution-20261018/ordinary/turn-1-once/intent.private.json",
+      "bytes": 2560,
+      "sha256": "da1549260200ea2d27cc9d6fed88a96e638a7f9028213dc01f5ddfe1c2470020",
+      "role": "Original T1 once intent"
+    },
+    {
+      "file": ".local/jhg46-native-resource-host-rollout-acceptance-execution-20261018/ordinary/turn-1-once/original-ui-session1-t1-ack.clone.raw.private.json",
+      "bytes": 5792,
+      "sha256": "c8a3a8535f71489aea1e46c2a01a9a8376c25d6ee9540f58d4071ecdf8337359",
+      "role": "Original Session1/T1 UI ACKs"
+    },
+    {
+      "file": ".local/jhg46-native-resource-host-rollout-acceptance-execution-20261018/ordinary/turn-1-once/original-receipt-first-read.raw.private.json",
+      "bytes": 13481,
+      "sha256": "56c5935fccb253a86e83f7a3e2e01008a7944dd2f2dc3e1a0777377b93e523b3",
+      "role": "Original assignment-guard pending state"
+    },
+    {
+      "file": ".local/jhg46-native-resource-host-rollout-acceptance-execution-20261018/ordinary/turn-1-once/original-receipt-post-assignment-guard-read.raw.private.json",
+      "bytes": 13364,
+      "sha256": "f1415f4b4ccdaab6bfb47dcf05662677eabb87dcfef349fc7bbc8a81c17a256a",
+      "role": "Fresh original-key same-owner post-guard five GETs"
+    },
+    {
+      "file": ".local/jhg46-native-resource-host-rollout-acceptance-execution-20261018/ordinary/turn-1-once/post-guard-1-response-original.raw.private.json",
+      "bytes": 6550,
+      "sha256": "f32f6d1e660a088990ddc3b03f9aaf269bac421015af94d40552be6bcb5e9db2",
+      "role": "Current original snapshot"
+    },
+    {
+      "file": ".local/jhg46-native-resource-host-rollout-acceptance-execution-20261018/ordinary/turn-1-once/post-guard-2-response-original.raw.private.json",
+      "bytes": 5068,
+      "sha256": "4e36a562592eb8ca233255772eaab06833d28b8a0a8dae2838bc600c1e55be82",
+      "role": "Original key saved Turn receipt"
+    },
+    {
+      "file": ".local/jhg46-native-resource-host-rollout-acceptance-execution-20261018/ordinary/turn-1-once/post-guard-3-response-original.raw.private.json",
+      "bytes": 21,
+      "sha256": "3c1f6a77c60ba4bb35b79fbd5886f12ad2b3faee35fcd185e4dae0cc37f42e60",
+      "role": "Scoped Beta available"
+    },
+    {
+      "file": ".local/jhg46-native-resource-host-rollout-acceptance-execution-20261018/ordinary/turn-1-once/events-and-files-original.raw.private.json",
+      "bytes": 7327,
+      "sha256": "d8d38d3c33020e615275330fa9ac043fe58dbbdc4629f590d1a176ae6e527e9a",
+      "role": "Original complete events/canonical files capture"
+    },
+    {
+      "file": ".local/jhg46-native-resource-host-rollout-acceptance-execution-20261018/ordinary/turn-1-once/tools-and-diff-original.raw.private.json",
+      "bytes": 3443,
+      "sha256": "20fcd9c9e1dc33e881270adea2da365711b8b62a97e4a709e8ba149eea62b585",
+      "role": "Original R1-authorized tools and canonical diff"
+    },
+    {
+      "file": ".local/jhg46-native-resource-host-rollout-acceptance-execution-20261018/ordinary/turn-1-once/physical-current-full-inventory-post-guard.tool-result.private.json",
+      "bytes": 14929,
+      "sha256": "a5d3c1941871c87e6ca0175cbb9f237fda45dcc13ad99aebf2b1f663229282d0",
+      "role": "Complete current physical scope"
+    },
+    {
+      "file": ".local/jhg46-native-resource-host-rollout-acceptance-execution-20261018/ordinary/turn-1-once/canonical-receipt-derived-sandbox-identity.private.json",
+      "bytes": 1575,
+      "sha256": "bc02188604b043ac3b3cdaca490d6aaf553bb52cf0c0c93801d0e6a6edd052dd",
+      "role": "Deterministic original canonical identity binding"
+    },
+    {
+      "file": ".local/jhg46-native-resource-host-rollout-acceptance-execution-20261018/ordinary/turn-1-once/physical-full-post-t1.tool-result.private.json",
+      "bytes": 1022,
+      "sha256": "fb119d029db6035cecc84304d9e236946c6690d520767403614ea71a71782efd",
+      "role": "Original held historical physical failure kept unpromoted"
+    }
+  ],
+  "checks": {
+    "normalSession201Turn202NoReplayAndApprovedWire": true,
+    "freshPostGuardFiveBodiesOriginalBytesAndHashes": true,
+    "sameOriginalT1RequestKeyTurnScopeAndR1": true,
+    "singleSessionTurnAndSessionHeadCheckpoint": true,
+    "postGuardAllHoldsClearAndBetaAvailable": true,
+    "canonicalFilesDiffMatchCheckpoint": true,
+    "twoOriginalR1ToolsTerminalCompleted": true,
+    "bashExit0AndExact2698F050Skill": true,
+    "originalEventToolBindingsAndOrderedCompletion": true,
+    "fullEventsNoGapAndThreeProvider200": true,
+    "completeCurrentPhysicalFourGetSuccess": true,
+    "logical8InactiveEqualsDash8": true,
+    "oneKnownEc8BasicIdleVmStoppedContainer": true,
+    "canonicalDerivedOriginalDispatchLogicalDashAssociation": true
+  },
+  "canonicalR1": {
+    "revisionId": "1d18f32bdad776c4cf173e54c9b27ca79c7656a7f766c07bdf13cee983ea97b6",
+    "filesSha256": "48b08d9fa93f5cb00c8e52f9bad0d076f54586040979a227e7e044b913b76dba",
+    "committedAt": 1792340124824,
+    "scopeSha256": "ea96c24423ff2a60b7edbc389efa45e6c51ae9dea6dda11bd538506949bb3916",
+    "sessionIdSha256": "129861fdeb6b269ef845414ec7f14412dfe51b263be1597e26aea28d46e39e0f",
+    "turnIdSha256": "e9a6f8403613bede4c3498e12999aa864e05a3e8576469009b8b4ccf17b5b656",
+    "runtimeGeneration": 1,
+    "snapshotAdditionalTimingMetadataNotMistakenForTurnIdentityDrift": true
+  },
+  "release": {
+    "authority": "combined source-validated original server product authority, not direct raw stop/lease inspection",
+    "postGuardReadWindow": [
+      "2026-10-18T16:21:43.435Z",
+      "2026-10-18T16:21:54.054Z"
+    ],
+    "activeReleaseRecoveryResourceWaitAllNull": true,
+    "betaCapacity": "available",
+    "preservedColdConfigExcludesHandoff": true,
+    "canonicalDispatchSha256": "422f12ae9fca50f67ba84ba049e3b2e96b25f6dd77aac2c5dcfbdd606835d2fc",
+    "logicalAndDashExactAssociationNotTimeGuess": true,
+    "privateRawStopCapacityTicketOrOperationIdNotExposedOrClaimedRead": true
+  },
+  "physical": {
+    "window": [
+      "2026-10-18T16:22:47.645Z",
+      "2026-10-18T16:22:50.331Z"
+    ],
+    "logicalInactive": 8,
+    "dashDo": 8,
+    "knownCurrentIdleVm": 1,
+    "deploymentId": "d03b8c4d-8cc2-475e-ba96-6e46d062983c",
+    "placementId": "09fbeb65-1e0b-42fc-9183-e96baa75db1f",
+    "version": 13,
+    "imageDigest": "sha256:ec8dbe9efe229a1626ea3202b618653f82f8d29d9da8b19310c3b3838f2a2623",
+    "vmHealth": "running",
+    "containerStatus": "stopped",
+    "historicalOldPlacementDisposalNotProven": true
+  },
+  "decision": {
+    "t1OriginalCanonicalSavePassed": true,
+    "frozenProductAuthorityReleaseConjunctionPassed": true,
+    "t2MayProceedOnlyInOriginalSession1WithFrozenT2PromptOwnOnceIntentAndApprovedWindow": true,
+    "noNewHumanApprovalNeededForAlreadyApprovedT2Scope": true,
+    "noExtraSessionProjectRepairTurnOrGateAuthorizedHere": true,
+    "t2NotExecutedByReviewer": true
+  },
+  "limits": [
+    "Public raw stop/lease fields are not a frozen requirement. Server identity/lease validation and cold release chain are reused at their product-authority level; no direct raw proof inspection is claimed.",
+    "Null holds/Beta available qualify only jointly with original key/R1/Session, successful original tool ledger, unchanged cold config and complete physical inventory.",
+    "Public Snapshot adds timing metadata to the original Turn; all core identity/outcome/checkpoint fields equal the original-key receipt. Private actor-authVersion/hold identity fields omitted by public DTOs are not invented.",
+    "Three separate provider200 responses occurred within this one Turn; tool usage and fees remain unknown.",
+    "Canonical diff only adds the three .pi directories and2698B/f050 skill; it establishes README unmodified, not an actual initial README-byte read. Bash result does not expose raw command argument bytes.",
+    "Original pending assignment guard and failed/partial historical physical reads stay retained. Current complete inventory is the authority used; no all-history zero-VM or old-placement release claim is made.",
+    "Existing T2 sameSession1/unchanged prompt/window and its own save/release requirement remain binding; this reviewer performs no live call or Turn."
+  ],
+  "reviewerActions": {
+    "networkBrowserAuthModelCalls": 0,
+    "cloudWrites": 0,
+    "newTestsOrFixtures": 0,
+    "localFileAndHashComparisonOnly": true
+  },
+  "privacy": {
+    "rawPrivateUserScopeSessionTurnKeyPromptProviderRequestStopLeaseOrCredentialCopied": false
+  },
+  "mustFix": []
+}

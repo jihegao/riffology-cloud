@@ -1,0 +1,114 @@
+{
+  "schema": "jhg46-t2-intent-independent-local-review/v1",
+  "recordedAt": "2026-10-18T16:31:01.673105Z",
+  "reviewMode": "Local intent/pre-submit and prior actual-closure bindings only",
+  "bindings": [
+    {
+      "file": ".local/jhg46-native-resource-host-rollout-acceptance-execution-20261018/grant.private.json",
+      "bytes": 5663,
+      "sha256": "ce6ef11632fc5c983cd0e35afbf8e38c90fa24f43db868c75556c4b12b840755",
+      "role": "Existing original grant/window"
+    },
+    {
+      "file": ".local/jhg46-native-resource-host-rollout-acceptance-execution-20261018/ordinary/turn-2-once/intent.private.json",
+      "bytes": 2784,
+      "sha256": "07211c447ccc29d02575803dcf4504963b8ab43d8e153876612b0ff240d55504",
+      "role": "Original durable T2 once intent"
+    },
+    {
+      "file": ".local/jhg46-native-resource-host-rollout-acceptance-execution-20261018/ordinary/turn-2-once/pre-submit-original.raw.private.json",
+      "bytes": 3356,
+      "sha256": "c3df43c75cfecc489fc36a5ca6504a8282afaca767287dbdcaf1afecfa7c09d9",
+      "role": "Fresh four-GET pre-submit original capture"
+    },
+    {
+      "file": ".local/jhg46-native-resource-host-rollout-acceptance-execution-20261018/ordinary/turn-2-once/planned-ui-body.wire.private.json",
+      "bytes": 2167,
+      "sha256": "e5b162b585e36856fffae57f03f20e6539079a9e82e18743b5d0b279cc64299f",
+      "role": "Normal trimmed message-only UI payload"
+    },
+    {
+      "file": ".local/jhg46-native-resource-host-rollout-acceptance-preparation-20261018/prompts/turn-2-build-v1.md",
+      "bytes": 2101,
+      "sha256": "1e59966637fec33c3d2d5728ed1c4b9c8c00c30dee990fdeb2866ddf99afe6df",
+      "role": "Frozen approved original T2 prompt"
+    },
+    {
+      "file": ".local/jhg46-native-resource-host-rollout-acceptance-execution-20261018/reviews/t1-save-release-closure.safe.json",
+      "bytes": 9384,
+      "sha256": "72dbe9049381c23e204529722be64541cc00cc286529068e6ef9bcb27223fe3b",
+      "role": "Bound actual T1 canonical save/product release decision"
+    },
+    {
+      "file": ".local/jhg46-native-resource-host-rollout-acceptance-execution-20261018/reviews/t1-product-authority-release-threshold-review.safe.json",
+      "bytes": 19516,
+      "sha256": "62f1638730384d6310a71f6400f99c1c65165f48d9172f426976e44b9778a70d",
+      "role": "Existing cold/source release threshold, not re-reviewed"
+    },
+    {
+      "file": ".local/jhg46-native-resource-host-rollout-acceptance-execution-20261018/ordinary/turn-1-once/post-guard-1-response-original.raw.private.json",
+      "bytes": 6550,
+      "sha256": "f32f6d1e660a088990ddc3b03f9aaf269bac421015af94d40552be6bcb5e9db2",
+      "role": "Exact saved original snapshot whose body hash is unchanged in fresh T2 GET"
+    }
+  ],
+  "checks": {
+    "priorT1ActualClosureBoundAndPassed": true,
+    "sameOriginalGrantAndExpiry": true,
+    "sameOriginalWorkspaceSession1ActorAuth2R1": true,
+    "frozen2101PromptOnlyTerminalLfTrimmed2100": true,
+    "normalMessageOnlyUiWire2167": true,
+    "fourFreshGet200SameOrdinaryMeBracket": true,
+    "freshSnapshotHashMatchesExactPreviouslySavedOriginalBody": true,
+    "freshSnapshotProjectionSameScopeOneSessionTurnR1AndClear": true,
+    "currentCapacityAvailableAndObserverThree": true,
+    "secondTurnNoNewSessionNoRetryNoGateBeforeR2Release": true,
+    "sameFrozenModelProfile": true,
+    "recordedPreSubmitAndIntentInsideOriginalWindow": true
+  },
+  "preSubmit": {
+    "getWindow": [
+      "2026-10-18T16:26:00.176Z",
+      "2026-10-18T16:26:09.338Z"
+    ],
+    "fourHttp200": true,
+    "snapshotBytes": 6550,
+    "snapshotSha256": "f32f6d1e660a088990ddc3b03f9aaf269bac421015af94d40552be6bcb5e9db2",
+    "freshSnapshotBodyNotDuplicatedButExactOriginalBodyHashAndProjectionMatched": true,
+    "oneSessionOneCompletedSavedTurnR1": true,
+    "allHoldsNullAndBetaAvailable": true,
+    "observerCount": 3
+  },
+  "prompt": {
+    "frozenBytes": 2101,
+    "frozenSha256": "1e59966637fec33c3d2d5728ed1c4b9c8c00c30dee990fdeb2866ddf99afe6df",
+    "actualUiTrimmedMessageBytes": 2100,
+    "actualUiTrimmedMessageSha256": "beafecf06f62453d769d0935b529276fd0e3b771351958f289c284e490c8a621",
+    "onlyRemovedByte": "terminal LF",
+    "plannedWireBytes": 2167,
+    "plannedWireSha256": "e5b162b585e36856fffae57f03f20e6539079a9e82e18743b5d0b279cc64299f"
+  },
+  "decision": {
+    "T2IntentAndPreSubmitMatchAlreadyApprovedScope": true,
+    "missingMandatoryAuthorizationOrIdentityGap": false,
+    "ownOriginalSession1Only": true,
+    "actualT2AckSaveOrReleaseProvenByThisReview": false,
+    "gateOrT3AllowedByThisReviewAlone": false
+  },
+  "limits": [
+    "This reviews original T2 intent/pre-submit only, not the later original POST ACK or terminal outcome. Root alone executes the already approved UI send.",
+    "The fresh snapshot is a hash+safe projection; its hash exactly matches the saved full post-T1 body. No fresh full-body capture is invented.",
+    "Original T1 product-authority/cold-mode source interpretation is reused without new rules or requirement to expose private raw stop/lease fields.",
+    "T2 must independently save R2 and meet its original release conjunction before the conditional browser gate or later Session2/T3. No retry, repair Turn, new scope or window is authorized here."
+  ],
+  "privacy": {
+    "privateUserEmailScopeSessionKeyPromptCredentialOrInternalStopLeaseCopied": false
+  },
+  "reviewerActions": {
+    "networkBrowserAuthModelCalls": 0,
+    "cloudWrites": 0,
+    "newTestsOrFixtures": 0,
+    "localFileHashComparisonOnly": true
+  },
+  "mustFix": []
+}

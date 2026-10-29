@@ -1,0 +1,111 @@
+{
+  "dockerCommands": 0,
+  "endedAt": "2026-10-17T12:42:43.354597+00:00",
+  "newSave": false,
+  "rawRecordOrEnvReturned": false,
+  "remoteMutation": false,
+  "safeRemoteProjection": {
+    "allOriginalClisReapedAndAbsent": true,
+    "dockerCommands": 0,
+    "endedAt": "2026-10-17T12:42:39.476172+00:00",
+    "entries": [
+      {
+        "currentLinuxStartTicks": null,
+        "currentProcessState": "absent",
+        "label": "pre-inspect",
+        "originalCliRecord": {
+          "bytes": 99,
+          "name": "layer-metadata-once.pre-inspect.original-cli.json",
+          "sha256": "ad3df4c6809e7fd25d839cee8db30075b2a28ef8856ab422385c97f46f70cd1a"
+        },
+        "originalLinuxStartTicks": "164730538",
+        "originalProcessAbsent": true,
+        "pid": 2038948,
+        "recordedExitCode": 0,
+        "recordedReaped": true,
+        "stderrBytesObserved": 0,
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdoutBytesObserved": 4743,
+        "terminalRecord": {
+          "bytes": 290,
+          "name": "layer-metadata-once.pre-inspect.terminal.json",
+          "sha256": "bdb38eece8673f5ebc55250bdf6c4af3d2cd6de3f85e5283577b1f4ee09d014f"
+        }
+      },
+      {
+        "currentLinuxStartTicks": null,
+        "currentProcessState": "absent",
+        "label": "save",
+        "originalCliRecord": {
+          "bytes": 99,
+          "name": "layer-metadata-once.save.original-cli.json",
+          "sha256": "b78eb35fe661b5e74cf7460d38e98fff296483d1151bb9b87ade3ea93c92c046"
+        },
+        "originalLinuxStartTicks": "164730547",
+        "originalProcessAbsent": true,
+        "pid": 2039026,
+        "recordedExitCode": 0,
+        "recordedReaped": true,
+        "stderrBytesObserved": 0,
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdoutBytesObserved": 407923200,
+        "terminalRecord": {
+          "bytes": 295,
+          "name": "layer-metadata-once.save.terminal.json",
+          "sha256": "49e4f31c0f615abbafc780c95a816fa7af88dd6280264c52b9b995fd5ec1a346"
+        }
+      },
+      {
+        "currentLinuxStartTicks": null,
+        "currentProcessState": "absent",
+        "label": "post-inspect",
+        "originalCliRecord": {
+          "bytes": 99,
+          "name": "layer-metadata-once.post-inspect.original-cli.json",
+          "sha256": "1b7eb5d392ccb12c982bd8be6be4098052367438bb97543d2e255ad7d64fdec6"
+        },
+        "originalLinuxStartTicks": "164731527",
+        "originalProcessAbsent": true,
+        "pid": 2040603,
+        "recordedExitCode": 0,
+        "recordedReaped": true,
+        "stderrBytesObserved": 0,
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdoutBytesObserved": 4743,
+        "terminalRecord": {
+          "bytes": 290,
+          "name": "layer-metadata-once.post-inspect.terminal.json",
+          "sha256": "c6f9596934f3e70778a79b7f29cdd65481ed6ced5e6632901d3aa2862f0e9ec8"
+        }
+      }
+    ],
+    "imageId": "sha256:b2c2f93eff23011fe7863545e2b62b3b3d0d6fd4da161371afae399c0ce59c27",
+    "intent": {
+      "bytes": 298,
+      "imageId": "sha256:b2c2f93eff23011fe7863545e2b62b3b3d0d6fd4da161371afae399c0ce59c27",
+      "name": "layer-metadata-once.intent.json",
+      "requestId": "57a70587-2b21-4a56-aed1-09c8a32d868a",
+      "sha256": "f04907186616b4d4f330512787bb9663471d61301d623516654a55c9df79b67c"
+    },
+    "onlyRead": true,
+    "requestId": "57a70587-2b21-4a56-aed1-09c8a32d868a",
+    "saveInvocations": 0,
+    "schema": "jhg46-original-layer-metadata-cli-cleanup-observation/v1",
+    "startedAt": "2026-10-17T12:42:39.475584+00:00",
+    "terminal": {
+      "bytes": 24068,
+      "imageId": "sha256:b2c2f93eff23011fe7863545e2b62b3b3d0d6fd4da161371afae399c0ce59c27",
+      "name": "layer-metadata-once.terminal.json",
+      "requestId": "57a70587-2b21-4a56-aed1-09c8a32d868a",
+      "sha256": "c0dda3dd2923c60757b5934dfcb81adddc985f26f1e84b29367001e90aba166d",
+      "status": "metadata-read-completed"
+    }
+  },
+  "schema": "jhg46-independent-layer-metadata-cli-cleanup-transport/v1",
+  "sshExitCode": 0,
+  "startedAt": "2026-10-17T12:42:39.426176+00:00",
+  "stderrBytes": 0,
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stdoutBytes": 3146,
+  "stdoutSha256": "dac7d3518d2f603cdae091e81ec3efd4075e1fec826cb907147603d2e5b9c88d"
+}

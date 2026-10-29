@@ -1,0 +1,39 @@
+{
+  "files": {
+    "EXECUTION.md": {
+      "bytes": 5862,
+      "sha256": "ad5d2b0697dc079ac18b3ca8583fc345f4fd30d998aa8aa3aeea71e83e39501e"
+    },
+    "local-publication.py": {
+      "bytes": 12085,
+      "sha256": "90e4da431abee2745a9eb46fb9a7b96b0035b62219d69fd9c81752441d8a1523"
+    },
+    "merge-guard.md": {
+      "bytes": 1905,
+      "sha256": "7cf80654e7d3d7293e3ac8522ae667f79425858c749578b24da0a28265dc656e"
+    },
+    "oci_verify.py": {
+      "bytes": 5748,
+      "sha256": "0a23618e34b9a2acf608acc86d281ebd68f60a62ba2b102ecda92502c294acea"
+    },
+    "pub_common.py": {
+      "bytes": 3104,
+      "sha256": "352c0a919f524be8e1dcc1acc78e905d164212b22bbde6ed5f98efae47673d82"
+    },
+    "remote-publication.py": {
+      "bytes": 13039,
+      "sha256": "87b27c3e8da1f41334d1a20c367a007f92e86e958117c654217f050384f58c02"
+    },
+    "scope.json": {
+      "bytes": 2748,
+      "sha256": "65a524a1e8028f4dd9af64386f86fc69cebaaf4df5acc62ac039884076d2f96a"
+    },
+    "test_publication.py": {
+      "bytes": 7204,
+      "sha256": "840c1f4a06663b0138fc0f5bf9b2a5f7863f48ca04ba7e8a5e37080ae78b895b"
+    }
+  },
+  "requestId": "c3e04c41-72da-409b-a2b1-f924e6cc67fa",
+  "schema": "trusted-pi-image-publication-operations/v1",
+  "sourceImageId": "sha256:a946b164d10d074fcc9859f6c54c3b65d1901b41696c5ee8d8e31e275ddd1593"
+}

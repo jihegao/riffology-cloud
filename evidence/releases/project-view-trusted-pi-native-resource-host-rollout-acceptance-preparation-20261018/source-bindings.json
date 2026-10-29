@@ -1,0 +1,210 @@
+{
+  "actualLocalMergeObjectReceipt": {
+    "bytes": 1017,
+    "file": ".local/jhg46-native-resource-snapshot-host-publication-execution-20261018/registry-local-readback-v1/source-main-merge-object-readback.safe.json",
+    "sha256": "e86c7912291419850f2d981345962e31eae57d4383acee20a8b813f5e2912f6b"
+  },
+  "actualMergedSourceFiles": [
+    {
+      "bytes": 62928,
+      "commit": "240378f65fee54d917b053f565087095a07244db",
+      "file": "services/gateway/app.ts",
+      "sha256": "8d1e4c75a69c5ec14ca951d500c3092076a2865226f53b68fb73dba3b36feedf"
+    },
+    {
+      "bytes": 55601,
+      "commit": "240378f65fee54d917b053f565087095a07244db",
+      "file": "services/turn/journal.ts",
+      "sha256": "2e8aed983da8fcc57b82a030c86b5ede56846d880a4abb5351d02ea6017e1c52"
+    },
+    {
+      "bytes": 71190,
+      "commit": "240378f65fee54d917b053f565087095a07244db",
+      "file": "services/turn-runtime/core.ts",
+      "sha256": "4791345a0cab39fe4dd3e7e8e35266dd54cc1ac10588d7702538f14eb04d198b"
+    },
+    {
+      "bytes": 6175,
+      "commit": "240378f65fee54d917b053f565087095a07244db",
+      "file": "services/model-budget/private-beta-maintenance.ts",
+      "sha256": "e4f6ba59521d0fad90fc619390b89f928e66c573a2500e286c2a8b055ab17c67"
+    },
+    {
+      "bytes": 38886,
+      "commit": "240378f65fee54d917b053f565087095a07244db",
+      "file": "services/model-budget/private-beta-capacity.ts",
+      "sha256": "fc36f4de0ce6e79804b080e47a9b696c41c0627464bf4d373249ea7997bec74d"
+    },
+    {
+      "bytes": 8027,
+      "commit": "240378f65fee54d917b053f565087095a07244db",
+      "file": "services/capacity/durable.ts",
+      "sha256": "8b7787edba584f3966ad67596273cc0ea8256dada17df7ff447a0e4cfe843df1"
+    },
+    {
+      "bytes": 2713,
+      "commit": "240378f65fee54d917b053f565087095a07244db",
+      "file": "services/project-views/browser-policy.ts",
+      "sha256": "d7e3d0543c2d0982eb7138b2c3dd6a00555429163541cae21e7660635e67f179"
+    },
+    {
+      "bytes": 16671,
+      "commit": "240378f65fee54d917b053f565087095a07244db",
+      "file": "services/turn/protocol.ts",
+      "sha256": "c7baf98da32177386b631fe387fab32a2c347560f1ad4af9154203d00182311d"
+    },
+    {
+      "bytes": 5473,
+      "commit": "240378f65fee54d917b053f565087095a07244db",
+      "file": "services/runtime/starter.ts",
+      "sha256": "963a7730fc09db3353f9c03572cec3775e95d2ce33d55741f4c06d8d62b56c9d"
+    },
+    {
+      "bytes": 16239,
+      "commit": "240378f65fee54d917b053f565087095a07244db",
+      "file": "services/trusted-pi/trusted-pi-turn-host.mjs",
+      "sha256": "942333ecc87eb6c7545e0494fed501d9ffa5418468039845484e223b6dfa81d6"
+    },
+    {
+      "bytes": 17521,
+      "commit": "240378f65fee54d917b053f565087095a07244db",
+      "file": "tests/m2/trusted-pi-turn-host.test.mjs",
+      "sha256": "adf0d5f45718f5d770ac22ceea9fb4377666cff55df8c31ab4472e3c7ec85a9a"
+    }
+  ],
+  "borrowedFactory": {
+    "file": ".local/jhg46-next-stage-preparation-20261018/browser-gate-ops-v1/requests.mjs",
+    "sha256": "8920716d09899d924f5226afd4d50c4fbbb66e8d8d3fbfd98a175132940ba752"
+  },
+  "completedRegistryAndMerge": {
+    "equalsApprovedHeadTree": true,
+    "mergeCommit": "240378f65fee54d917b053f565087095a07244db",
+    "mergeReadback": {
+      "file": ".local/jhg46-native-resource-snapshot-host-publication-execution-20261018/registry-local-readback-v1/github-merge-readback/authoritative-readback.json",
+      "sha256": "d0d689c4a66b3affb1bf444f61ead5ba16844cac7e3f8eb4163e26c82e873f61"
+    },
+    "parents": [
+      "65df9b771a5d0497304a5955e33974e8ea9aa9ac",
+      "0a10da572264470aaac111e6f5da2bd20b2f2c45"
+    ],
+    "publicCommit": "242f35b32085f4a9fd38005f2ce5bdf7ab9096fc",
+    "publicResultDocument": "https://github.com/jihegao/riffology-cloud/blob/242f35b32085f4a9fd38005f2ce5bdf7ab9096fc/docs/project-view-trusted-pi-local-registry-readback-result-20261018.md",
+    "rootActualResult": {
+      "file": ".local/jhg46-native-resource-snapshot-host-publication-execution-20261018/registry-local-readback-v1/public-local-readback-result-staging-v1/result.json",
+      "sha256": "56e9ad571b2c7562015372dc0befd52cbdc58cf5c3dcb71c8e886033e0c1be74"
+    },
+    "tree": "576793bfe8b17639fb03db04fbdb951fd41f2d73"
+  },
+  "currentMergeObjectLocallyRead": true,
+  "datedActualResourceBaselineSources": [
+    {
+      "bytes": 15371,
+      "file": ".local/jhg46-next-stage-preparation-20261018/runtime-acceptance-execution-v1/post-rollout-preservation-compact.json",
+      "privateOrRawContentNotCopied": true,
+      "role": "dated actual9c8/appv12 resource evidence; source/hash comparison reference, not current live authority",
+      "sha256": "a4698359ad99c04e862de9cab792caba4d452deb2c20027b8a3069c957bbc0b0"
+    },
+    {
+      "bytes": 885,
+      "file": ".local/jhg46-next-stage-preparation-20261018/runtime-acceptance-execution-v1/rollout-readback-comparison.json",
+      "privateOrRawContentNotCopied": true,
+      "role": "dated actual9c8/appv12 resource evidence; source/hash comparison reference, not current live authority",
+      "sha256": "371f16568aeed599033e7aa10b65f9b6c4051fe1c47fb35052335be7caebb5fd"
+    }
+  ],
+  "existingAuthenticationSource": {
+    "newContract": "authentication-contract.json",
+    "noCurrentOAuthRead": true,
+    "renewalSourceContract": {
+      "bytes": 2497,
+      "file": ".local/jhg46-native-resource-snapshot-host-publication-execution-20261018/registry-local-readback-v1/operations/renewal-source-contract.json",
+      "sha256": "0593104af3bcc19871b2b55074d85aae105e2a04fef8f9041ab3e31887775f60"
+    },
+    "scope": {
+      "bytes": 9635,
+      "file": ".local/jhg46-native-resource-snapshot-host-publication-execution-20261018/registry-local-readback-v1/operations/scope.json",
+      "sha256": "9b98ec42ae698ec18738626937ab019779a11ca145988f42b9e0dfb71118f8f4"
+    }
+  },
+  "freshOwnerSafeEvidence": [
+    {
+      "bytes": 2876,
+      "datedProductProjectionNotNewExecutionAuthority": true,
+      "file": "prior-owner/fresh-owner-summary.safe.json",
+      "sha256": "c8d6efa4b26badc85543806f8508368fc065fdd08b8616ffcd70cadbac3a7547"
+    },
+    {
+      "bytes": 2383,
+      "datedProductProjectionNotNewExecutionAuthority": true,
+      "file": "prior-owner/independent-fresh-owner-review.safe.json",
+      "sha256": "5056ff6fb3b9672704bed13c4876a5b7e70e34a861ee9a26fd8f0a93a7d73cd1"
+    }
+  ],
+  "freshReadCollectorDerivation": {
+    "afterSourceNotGeneratedWithoutActualAck": true,
+    "generatedBeforeSource": "fresh-preservation/before-runtime-rollout.request.txt",
+    "generatedBeforeSourceSha256": "c97d9193332fa9bebc28f46a2e9d7b90b5e94c925bf73bec4babc36ed55f6094",
+    "generator": "fresh-preservation/make-preservation-request.mjs",
+    "scope": "fresh-preservation/scope.json",
+    "scopeSha256": "7e0bb5c5652fa1fcd74c54b8338a231064243df31f064d60963e4d930a27fae6",
+    "sha256": "7ed82e63941cf0c335b4231bc59b9634226a15186d938e0da659bea12caf6477"
+  },
+  "newPreservationSource": {
+    "actualCalls": 0,
+    "algorithmOriginFile": ".local/jhg46-next-stage-preparation-20261018/gateway-preservation-witness-v2/make-witness-requests.mjs",
+    "algorithmOriginSha256": "58364fb1d328a795359bc48b425be6191de2faf1f5b05f819ce9d1295be56077",
+    "generatorBytes": 15610,
+    "generatorFile": "fresh-preservation/make-preservation-request.mjs",
+    "generatorSha256": "7ed82e63941cf0c335b4231bc59b9634226a15186d938e0da659bea12caf6477",
+    "scopeFile": "fresh-preservation/scope.json",
+    "scopeSha256": "7e0bb5c5652fa1fcd74c54b8338a231064243df31f064d60963e4d930a27fae6"
+  },
+  "noLiveCallsOrTests": true,
+  "oldSafeResearch": {
+    "bytes": 18920,
+    "file": ".local/jhg46-native-resource-snapshot-host-publication-execution-20261018/registry-local-readback-v1/next-runtime-preparation-readonly/source-bindings.json",
+    "old40EntriesNotFreshRuntimeAuthority": true,
+    "sha256": "e25105b8dc2cf8ce07f39bc7414f85d46858b847de5540ee13f1f79e49df9095"
+  },
+  "ordinarySkill": {
+    "bytes": 2698,
+    "sha256": "f05062374fccbffa83a7e6da5505a3229bd975ff8d5aaf30e832c8f0a3c3d294"
+  },
+  "preparedAt": "2026-10-18T14:49:01.627274+00:00",
+  "privateOriginalOwnerDataNotCopied": true,
+  "recipeByteCopies": [
+    {
+      "bytes": 3833,
+      "file": ".local/jhg46-next-stage-preparation-20261018/ordinary-acceptance-directory-repair-candidate-v1/prompts/turn-1-create-skill.md",
+      "sha256": "a179caed905f3f484a94fea0088de7ad92a72bb5b739e2fd2940bdfdd3c0dcf2"
+    },
+    {
+      "bytes": 2101,
+      "file": ".local/jhg46-next-stage-preparation-20261018/ordinary-acceptance-v2/prompts/turn-2-build-v1.md",
+      "sha256": "1e59966637fec33c3d2d5728ed1c4b9c8c00c30dee990fdeb2866ddf99afe6df"
+    },
+    {
+      "bytes": 962,
+      "file": ".local/jhg46-next-stage-preparation-20261018/ordinary-acceptance-v2/prompts/turn-3-cold-edit-v2.md",
+      "sha256": "c8c858c602fbc2c923c4b9c2e400696fc45527faaa25b54287eaf59434cea149"
+    }
+  ],
+  "reusedBrowserGateImportClosure": [
+    {
+      "bytes": 4798,
+      "file": ".local/jhg46-next-stage-preparation-20261018/browser-gate-ops-v1/requests.mjs",
+      "sha256": "8920716d09899d924f5226afd4d50c4fbbb66e8d8d3fbfd98a175132940ba752"
+    },
+    {
+      "bytes": 2713,
+      "file": ".local/jhg46-next-stage-preparation-20261018/content-v2/services/project-views/browser-policy.ts",
+      "sha256": "d7e3d0543c2d0982eb7138b2c3dd6a00555429163541cae21e7660635e67f179"
+    },
+    {
+      "bytes": 16671,
+      "file": ".local/jhg46-next-stage-preparation-20261018/content-v2/services/turn/protocol.ts",
+      "sha256": "c7baf98da32177386b631fe387fab32a2c347560f1ad4af9154203d00182311d"
+    }
+  ],
+  "schema": "jhg46-next-runtime-concrete-preparation-source-bindings/v1"
+}

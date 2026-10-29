@@ -1,0 +1,14 @@
+{
+  "bytes": 9585,
+  "digest": "sha256:ec8dbe9efe229a1626ea3202b618653f82f8d29d9da8b19310c3b3838f2a2623",
+  "headerMatches": true,
+  "operationId": "registry-local-readback-v1",
+  "originalRawSha256Matched": true,
+  "path": "manifests/jhg46-native-resource-host-20261018-0bb9af7a",
+  "requestId": "c263a2f3-f445-430e-b562-2e48f1eeb637",
+  "schema": "trusted-pi-local-registry-get-proof/v1",
+  "slot": 0,
+  "smallRawSha256EqualityPassed": true,
+  "status": 200,
+  "terminalSha256": "8c2b4c5c092407c3971b7c5a8c882a6186156f0b83c83c0d4c69a45559ec001e"
+}

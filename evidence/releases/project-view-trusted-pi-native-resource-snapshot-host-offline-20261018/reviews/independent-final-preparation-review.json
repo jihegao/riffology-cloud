@@ -1,0 +1,225 @@
+{
+  "schema": "trusted-pi-native-resource-snapshot-host-independent-preparation-review/v1",
+  "recordedAt": "2026-10-18T10:54:06.776612+00:00",
+  "requestId": "695e8875-459a-41b3-a148-2e228f2c3727",
+  "canonicalImplementationCommit": "0a10da572264470aaac111e6f5da2bd20b2f2c45",
+  "method": "Independent read-only review of fixed source, archive members, local source commits, original check receipts/log hashes and official source snapshots. No tests or authored operation scripts were executed by this reviewer; no remote service was contacted.",
+  "inputs": {
+    "operationsManifest": {
+      "file": "candidate-v1/operations/operations-manifest.json",
+      "bytes": 1728,
+      "sha256": "fe1ab539e48c1a19d1b48e355b63c93a7c8c1c82bdcee319a385c7aac1ef78c5"
+    },
+    "archive": {
+      "file": "jhg46-pi-native-resource-snapshot-host-v1-20261018.tar.gz",
+      "bytes": 12364,
+      "sha256": "91b42a14a3c1c8caafb0b98230f156408bc39be065d408091055e91f7c724b81"
+    },
+    "archiveReceipt": {
+      "file": "candidate-v1/archive-receipt.json",
+      "bytes": 1463,
+      "sha256": "41f647ee00b9e3de5d11137a28bd6b37c879f60a8ea6d578099fc836c6f78731"
+    },
+    "inputManifest": {
+      "file": "candidate-v1/input-manifest.json",
+      "bytes": 5559,
+      "sha256": "7106ff37f714ec60135962a9f71e661d911ba5e0e4870178175a8b1bf5260d22"
+    },
+    "sourceBinding": {
+      "file": "candidate-v1/source-input-binding.json",
+      "bytes": 4971,
+      "sha256": "176dc02e670f8e8f58ef4a056c63875a5d57af93dee17e6ccaed8d3cc6404410"
+    },
+    "probe": {
+      "file": "candidate-v1/probe/host-resource-snapshot-probe.mjs",
+      "bytes": 13094,
+      "sha256": "a17f987f6f97be8593c48d6709758521f2020fb636de2297806db2d1cbb7f1fd"
+    },
+    "contextDockerfile": {
+      "file": "candidate-v1/context/Dockerfile",
+      "bytes": 187,
+      "sha256": "ba7c1304146693aca473bdba987240bcb8b4a650598e27f3eb950fabaab154ad"
+    },
+    "hostOverlay": {
+      "file": "candidate-v1/context/trusted-pi-turn-host.mjs",
+      "bytes": 16239,
+      "sha256": "942333ecc87eb6c7545e0494fed501d9ffa5418468039845484e223b6dfa81d6"
+    },
+    "executionContract": {
+      "file": "candidate-v1/EXECUTION-CONTRACT.md",
+      "bytes": 3592,
+      "sha256": "3bd28295017b0eb94802040247a7baa1c47511d64f5fdcdb6e6e721a947b6ed3"
+    },
+    "sourceEquivalenceReceipt": {
+      "file": "candidate-v1/checks/source-mode-first.json",
+      "bytes": 1203,
+      "sha256": "f4db5272eb4a57552274562596551870af61b6e6de3013dab8a5e08a8a369157"
+    },
+    "sourceEquivalenceSafeProjection": {
+      "file": "candidate-v1/checks/offline-checks.safe.json",
+      "bytes": 2909,
+      "sha256": "bf184888012dfb200876a5f8b0735018225c73c7a024849e3f5db61fb942ef8d"
+    },
+    "finalAuthorChecks": {
+      "file": "candidate-v1/operations-checks-safe.json",
+      "bytes": 998,
+      "sha256": "286346898ee5c7649b717ba25d97d252d21dc11261da7dafe5121281a824b11c"
+    },
+    "finalAuthorCheckLog": {
+      "file": "operations-checks-healthcheck-repair.stdout",
+      "bytes": 1859,
+      "sha256": "be07a640830c78d345f0767f03a1a3368b35fb4bc3accd3c4ac5a1cdcd079345"
+    },
+    "initialReview": {
+      "file": "reviews/initial-operations-review-09ad.json",
+      "bytes": 4170,
+      "sha256": "76abeb416ee6df4144db9ffc8f2bca8ea7491ccfe1dbea92d5b0818519ef5367"
+    }
+  },
+  "operationsFiles": {
+    "EXECUTION.md": {
+      "bytes": 3092,
+      "sha256": "49a2ef6c256dd0e9fd23d1ed95fbc7cb3a15de4f0f766e5f3a8773530305753a"
+    },
+    "build-probe-repair.py": {
+      "bytes": 28758,
+      "sha256": "0840e3b416553eb6665943c80d1f75277a53a6c9a5fa7270e51a103d4f61f0f9"
+    },
+    "independent-reader.py": {
+      "bytes": 5739,
+      "sha256": "c4cee51142d8ee91418bee078e1e317c5a2be62fbe92cfce4c62ff8067a7c476"
+    },
+    "official-config-contract.json": {
+      "bytes": 2826,
+      "sha256": "0885bd5fa6fd62ad58d682956392703edd86a64c726eeff4781496c9a03c7f1d"
+    },
+    "repair_common.py": {
+      "bytes": 4001,
+      "sha256": "0393f27642588dff47bc8f1b0a50a6f9e4f9561bcae0afc8f29756ad009fd100"
+    },
+    "scope.json": {
+      "bytes": 3594,
+      "sha256": "9bce20fe905ec7ff7f00bab0b4ed6ef44501e217b8ce8b2477c0ed77642ca011"
+    },
+    "test_independent_reader.py": {
+      "bytes": 3498,
+      "sha256": "ffcceb2caf49cb52297f0ee04c8be4a5a134c91736b3ba8ceb4cde9201b8332e"
+    },
+    "test_repair_operations.py": {
+      "bytes": 6681,
+      "sha256": "56c429a49c97a32208b0a3a70a68535640317aa32bbe2110a61670006dec4ede"
+    },
+    "transfer-local.py": {
+      "bytes": 6593,
+      "sha256": "3452d8554a63c152b9d28e71f3396399737d21621eeee0ae51f5a3c27c0a73a1"
+    },
+    "transfer-receiver.py": {
+      "bytes": 6476,
+      "sha256": "d1230d6ba95d75d9fb911a8f2b0b7fd32c4b2975ca1e4f48fd27826bcefc350d"
+    }
+  },
+  "archiveAndSourceChecks": {
+    "archiveCompressedBytes": 12364,
+    "archiveUncompressedBytes": 51200,
+    "exactRegularCanonicalMembers": 5,
+    "allArchiveMemberBytesAndHashesMatch": true,
+    "allTwelveFixedSourceCommitBindingsMatch": true,
+    "onlyOverlayTarget": "trusted-pi/trusted-pi-turn-host.mjs",
+    "retainedImageTargets": 11,
+    "claim": "Archive/source identity and retained import closure are checked statically; actual base and derived image targets are not observed by preparation."
+  },
+  "closedFindings": [
+    {
+      "id": "probe-counter-field",
+      "resolution": "Validator uses the actual ambientFetch key and exact3/3/0/0/3/3 synthetic counters."
+    },
+    {
+      "id": "probe-request-binding",
+      "resolution": "Both runner and reused reader validation require the exact report requestId."
+    },
+    {
+      "id": "typed-config-representation",
+      "resolution": "Only the closed official OCI fields and Docker extensions are accepted. Typed omit-empty strings/lists/maps/boolean values normalize; nonempty values including ordered Env remain exact. Unknown fields, wrong types and nondefault legacy fields stop."
+    },
+    {
+      "id": "healthcheck-pointer-omission",
+      "resolution": "Only null Healthcheck is omission-equivalent. Non-null empty objects remain present after nested typed-zero normalization, and the new fixture rejects empty-object versus missing in both directions."
+    }
+  ],
+  "staticOperationChecks": {
+    "specificGrantBeforeSshAndDocker": true,
+    "grantPins": "Request, parent request, recipient, directory, exact archive, operations manifest, base tag, finite <=1hour window and excluded actions.",
+    "permanentOnceLocks": "New task directory, transfer-once, build-probe-once and independent-readback-once are exclusive and retained on unknown.",
+    "ssh": "Fixed AMD128; no agent, control master, local command or forwarding; bounded transport and original SSH terminal.",
+    "cachedBase": "Existing local a21 tag must match Engine/index a946 identity, all three original small raw files and their chain,48 RootFS diffIDs, linux/amd64 and closed Config representation. No RepoDigest equivalence is claimed.",
+    "build": "Existing default/docker builder only; one local-only new tag, --network=none --pull=false --platform=linux/amd64; fixed Dockerfile COPY only; no pull, tag repair, save/export or load.",
+    "container": "One create and one attached start on original CID; networknone, UID/GID10002, readonlyroot, capdropALL, no-new-privileges, pids128,768MiB,1CPU and64MiB tmpfs.",
+    "environment": "Actual entrypoint /usr/bin/env receives -i PATH=... before Node; the fixed image probe additionally requires the process environment to contain only PATH.",
+    "mounts": "Only probe and manifest are mounted readonly; exactly these two public inputs are installed0444. Private operation records remain private.",
+    "probeAuthority": "Actual baked host and ControlledPi facade, legacy snapshot, resource provenance/cold restore, three negative cases and exact14 flags are asserted. Model/research transports are explicit in-memory fixtures; no project tool executes.",
+    "terminal": "Complete bounded saved stream hashes, exit-zero wait and completed original-CID inspect precede success; unknown/truncated/error results stop.",
+    "cleanup": "Only established original CID may be removed; exact known NotFound plus same operation-label all-state empty listing are required.",
+    "independentReader": "Success-only fixed original records, report/stream equality,17 original Docker CLI PID/startTicks/reaped checks and then exactly two fresh read-only Docker queries. It has no build/create/start/remove/retry path."
+  },
+  "configSourceAuthority": {
+    "officialSourceSnapshotsMatchFiveRecordedByteHashes": true,
+    "apiExecutionPin": "1.56",
+    "historicalDaemonObservation": {
+      "file": ".local/jhg46-pi-publication-execution-20261017/daemon-preflight-readonly/result.json",
+      "bytes": 1009,
+      "sha256": "34ecdb8d4b80fab950174aebc7d705a254986d1f5a854211b05475502ce665a9",
+      "clientVersion": "29.8.1",
+      "serverVersion": "29.8.1",
+      "clientApiVersion": "1.56",
+      "serverApiVersion": "1.56"
+    },
+    "limitation": "The historical API witness and immutable official schema sources do not prove fresh AMD support or exact binary-source correspondence. The first fixed API command must succeed or the batch stops without building."
+  },
+  "checksEvidence": {
+    "sourceMode": {
+      "mode": "source-equivalence",
+      "nodeVersion": "26.10.0",
+      "uid": 501,
+      "gid": 20,
+      "authorExitCode": 0,
+      "stdoutBytes": 3081,
+      "stdoutSha256": "85a05ad22f007a8dbbdc243902ad02fd9247f35146f2c3d7359a5a2726d522e4",
+      "limitation": "Source mode skips image UID/mode assertions; its allTargetBytesAndPermissions flag is not an image permission proof."
+    },
+    "finalAuthorFixtures": {
+      "operationFakes": 17,
+      "readerFixtures": 6,
+      "passed": 23,
+      "failed": 0,
+      "pythonAstFiles": 7,
+      "receiptAnd1859ByteLogHashesMatch": true,
+      "reviewerReranTests": false
+    },
+    "history": {
+      "original09adManifestPreserved": true,
+      "original55174461ManifestPreserved": true,
+      "earlier18And22FixtureEvidenceRemainsHistorical": true,
+      "newArchiveAndProbeBytesUnchanged": true
+    }
+  },
+  "mustFix": [],
+  "readyForSpecificHumanReview": true,
+  "executionAuthorized": false,
+  "actualRemoteExecutionObserved": false,
+  "limitations": [
+    "No AMD transfer, Docker build/image/mock/cleanup or fresh base-cache result has occurred in this preparation.",
+    "A new specific human grant for these final bytes and request is required before SSH or Docker.",
+    "The reader is success-only; any failed or unknown execution needs original-identity read-only reconciliation and cannot be relabeled passed.",
+    "Synthetic transports do not prove the original project_write root cause, real provider use, native supervisor or capacity release, or the failed T1 acceptance path.",
+    "This packet does not merge PR253, publish an image, change Cloudflare app/Gateway/policies, replay T1, run a real Turn/Run, change fees/subscriptions, extend the old acceptance window, or complete JHG46.",
+    "Historical requests, projects, revisions, reservations, locks and fee evidence remain preserved; unknown usage is not zero."
+  ],
+  "reviewerServiceActions": {
+    "ssh": 0,
+    "docker": 0,
+    "cloudApi": 0,
+    "credentialReadOrMint": 0,
+    "providerRequests": 0,
+    "testReruns": 0
+  }
+}

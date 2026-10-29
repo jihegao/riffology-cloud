@@ -1,0 +1,165 @@
+{
+  "schema": "jhg46-c263-wire-repair-actual-stop-independent-review/v1",
+  "reviewedAt": "2026-10-18T12:55:06.467064+00:00",
+  "requestId": "c263a2f3-f445-430e-b562-2e48f1eeb637",
+  "method": "Independent local byte/hash and full JSON-semantic evidence review. No auth/SSH/Docker/Registry/provider or repeat fixture/observer call.",
+  "inputs": {
+    "authorization": {
+      "file": "authorization-receipt.json",
+      "bytes": 2159,
+      "sha256": "2d4271ebd5b7978abb150d4de71527e670b9b6e00b72ce7f07ec44a008061434"
+    },
+    "preflight": {
+      "file": "preflight-local-only.json",
+      "bytes": 820,
+      "sha256": "3698ebff0738de44b08bd8cdb5d393f21b702c1da38e6473957ffef8669f7b91"
+    },
+    "localIntent": {
+      "file": "operations/publication-once/intent.json",
+      "bytes": 290,
+      "sha256": "cd9b625b806d6ab4f2b3af6e8ad29e0f9323745082d3f2e2a191295c60f7efb8"
+    },
+    "localTerminal": {
+      "file": "operations/publication-once/terminal.json",
+      "bytes": 13814,
+      "sha256": "1ee80fd0b6ed6eb8700463e5d91eff06ba93914d00cfe1ecde935ab8528367b2"
+    },
+    "originalDriverStdout": {
+      "file": "original-driver-stdout.json",
+      "bytes": 10508,
+      "sha256": "04ac9f4fe2add54db4ec942785bbfa790e682a6c214f084579cbbb3d4e051430"
+    },
+    "credentialPostIntent": {
+      "file": "operations/publication-once/credential-post-once-intent.json",
+      "bytes": 218,
+      "sha256": "7d3acc7552f18876f863dcedfe82ee567fca379d61451b4d113caf0fca67d1c5"
+    },
+    "credentialHttpResponse": {
+      "file": "operations/publication-once/credential-http-response.json",
+      "bytes": 315,
+      "sha256": "54bc43e08a68cfbf33e5752ae45bf3bf0d4e9d973f96db31f5bcaa0f17a83578"
+    },
+    "ready": {
+      "file": "operations/publication-once/verified-ready-before-credential.json",
+      "bytes": 11112,
+      "sha256": "20eb6b3ff4e16b8766a13a1892c6784fab46a41ad8fddd46c4cf3259bee6dfd4"
+    },
+    "observerStaticReview": {
+      "file": "stopped-observer-independent-static-review.json",
+      "bytes": 1508,
+      "sha256": "dd3cad0f95e155c15f322b28c68917f8ea57e13f1967f6bc4074f6ef9e6c3870"
+    },
+    "observerSource": {
+      "file": "read-stopped-publication-once.py",
+      "bytes": 25412,
+      "sha256": "91445d56c0c6940b04adbcf0ea1c0cf8d7bc3214b2ad01948403caa6a8eb22a4"
+    },
+    "observerTransport": {
+      "file": "stopped-publication-read-once/ssh-terminal.json",
+      "bytes": 492,
+      "sha256": "b61b1bdb75ce74d656832b29a29dcddaf5c5a67e2f2325868f003d4c7302d163"
+    },
+    "observerInventory": {
+      "file": "stopped-publication-read-once/inventory.json",
+      "bytes": 2863,
+      "sha256": "2aa92004cf27aed267d916a3ab0b9fdc1c99a024e796d8a02c33b0f9f3314967"
+    },
+    "observerResult": {
+      "file": "stopped-publication-read-once/result.json",
+      "bytes": 488,
+      "sha256": "d239f1a34e9687e94ba9cac5ec74a40f0cd232c4f9c9f12c527983c3fd63e39b"
+    },
+    "observerObservation": {
+      "file": "stopped-publication-read-once/observation.json",
+      "bytes": 5167,
+      "sha256": "b42ac3e5cbd00ca8281fcf057debf42e17e6802db46a26dee6cfb49062453216"
+    },
+    "semanticBinding": {
+      "file": "independent-record-semantic-binding.json",
+      "bytes": 797,
+      "sha256": "3af45d29a46f4cc438ce91def50b2177456d2aaddb716027315e9506d3e127db"
+    },
+    "localPidReadback": {
+      "file": "local-original-processes-readback.json",
+      "bytes": 1009,
+      "sha256": "ac27abac254e18a8151666ab10e39ce568f3efeff6a487b8fe354ad223abe4e5"
+    }
+  },
+  "mustFix": [],
+  "acceptanceOfThisEvidence": "Actual stopped execution and original-resource cleanup evidence are internally consistent; this does not accept publication success or authorize merge.",
+  "verified": {
+    "originalSafeRecordCount": 18,
+    "originalSafeRecordBytes": 15457,
+    "allOriginalRecordHashesMatch": true,
+    "remoteTerminalExactlyEqualsOriginalObservedRemoteFinal": true,
+    "remoteVerificationExactlyEqualsOriginalObservedReadyVerification": true,
+    "additionalWholeJsonBindingRequirementPassedWithoutNewRemoteReads": true,
+    "archiveBytes": 407961600,
+    "archiveSha256": "deddc21059715d3d63fc9c652e84e510be7117cda315102c3b1fd0f0bcf2f6d8",
+    "sourceIndex": {
+      "digest": "sha256:0bb9af7a5909c41187cf56402a21420100c72a8de0025b0a7152f8804e85d191",
+      "mediaType": "application/vnd.oci.image.index.v1+json",
+      "size": 856
+    },
+    "runnableManifest": {
+      "digest": "sha256:ec8dbe9efe229a1626ea3202b618653f82f8d29d9da8b19310c3b3838f2a2623",
+      "mediaType": "application/vnd.oci.image.manifest.v1+json",
+      "size": 9585
+    },
+    "config": {
+      "digest": "sha256:cea60e390b6726ec0147153e1318b3655c8386460e98d02e35bb571768e49da5",
+      "mediaType": "application/vnd.oci.image.config.v1+json",
+      "size": 19067
+    },
+    "rawBlobCount": 53,
+    "runnableLayerSlots": 49,
+    "allRawBlobsAndDiffIdsVerifiedByOriginalPublisher": true,
+    "exportVerificationPushAttempts": {
+      "export": 1,
+      "verification": 1,
+      "push": 1
+    },
+    "credentialPostHttpStatus": 201,
+    "credentialStdinSent": true,
+    "pushCliExitCode": 0,
+    "pushCliReaped": true,
+    "pushCliEndedAt": "2026-10-18T12:36:38.892650+00:00",
+    "pushDigestLineUniqueAndMatches": true,
+    "remoteUnknownEndedAt": "2026-10-18T12:45:16.036354+00:00",
+    "localSshExitCode": 255,
+    "localEndedAt": "2026-10-18T12:48:39.599189+00:00",
+    "localOriginalSshReaped": true,
+    "finalPublicationAckVerified": false,
+    "completeRegistryReadbackRecordPresent": false,
+    "registryCurrentStateQueried": false,
+    "allSixOriginalRemoteCliAndSupervisorAbsent": true,
+    "temporaryAuthDirectoryAndConfigAbsent": true,
+    "route7897NoListenerAndErrno111": true,
+    "originalLocalOAuthAndSshPidsAbsent": true,
+    "originalArchiveIndependentlyRehashedByObserver": false
+  },
+  "closedStaticObservationPoint": {
+    "point": "The frozen observer91445 originally validated selected fields. Exact equality with the already hard-pinned local Ready and remote final was required as an additional result-acceptance condition.",
+    "closure": "Root and reviewer independently compared the18 original collected records locally; both complete JSON objects equal the corresponding original observed event. No observer byte change or extra remote read was needed."
+  },
+  "unknowns": [
+    "The remote publication-local-error class does not identify the specific failed request or response.",
+    "No complete52-slot registry-readback.json exists; individual partial reads, current tag/body/digest availability and publication completeness are unproved.",
+    "Push CLI exit0 plus the strict ec8d/9585 digest line is command-reported success, not current full Registry state proof.",
+    "The local SSH255 at12:48:39 is separate from remote unknown-stopped at12:45:16; neither is retroactively replaced by the later successful diagnostic transport.",
+    "Deleting local temporary credentials and closing the route does not establish server JWT revocation/expiry or undo persistent OAuth.",
+    "Global cloud/model/activity/fee counters were not read; usage/fees are unreconciled, not zero."
+  ],
+  "publicationVerified": false,
+  "mergeAllowed": false,
+  "deploymentOrRealAcceptancePassed": false,
+  "scope": "Same c263 source/directory/tag and single previously unattempted export/push were retained. First failed control lock and recovery lock/records remain preserved; no extra export, push, model/Turn, application/Gateway/gate or old runtime window extension follows.",
+  "reviewerActions": {
+    "repeatedAuthOrObserverOrTests": 0,
+    "ssh": 0,
+    "docker": 0,
+    "registry": 0,
+    "provider": 0,
+    "gitHubMutations": 0
+  }
+}
