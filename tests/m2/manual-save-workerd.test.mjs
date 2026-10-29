@@ -15,7 +15,7 @@ test('receipt adapter releases only RPC disposal and keeps unknown symbols forbi
  assert.throws(()=>observerRpcData({...receipt,[Symbol('unknown')]:true,[Symbol.dispose](){disposed++;}}),/observer-rpc-data-invalid/);assert.equal(disposed,2);
 });
 
-test('real Workspace RPC preserves completed GC, blocks unresolved GC, and recovers only original keys after admission stops',{timeout:60000},async()=>{
+for(const variant of ['v1','v2'])test(`real Workspace RPC (${variant}) preserves completed GC, blocks unresolved GC, and recovers only original keys after admission stops`,{timeout:60000},async()=>{
  const source=`
  import {WorkspaceAgent as BaseWorkspace} from './services/workspace/durable.ts';
  import {RevisionStore as BaseStore} from './services/turn-runtime/revision-store.ts';
@@ -39,7 +39,7 @@ test('real Workspace RPC preserves completed GC, blocks unresolved GC, and recov
  const fixtureStart=${Date.now()-60000};
  export class WorkspaceAgent extends BaseWorkspace {
   #stop;
-  constructor(ctx,env){let enabled=true;super(ctx,{...env,APP_ORIGIN:'https://app.example.test',get MANUAL_SAVE_POLICY_JSON(){return JSON.stringify({schema:'manual-save-policy/v1',enabled,startsAt:fixtureStart,endsAt:fixtureStart+3600000,scope:{tenantId:'tenant-alpha',projectId:'project',workspaceId:'workspace',workspaceGeneration:1},actor:{userId:'alpha',authVersion:1}});}});this.#stop=()=>{enabled=false;};}
+  constructor(ctx,env){let enabled=true;super(ctx,{...env,APP_ORIGIN:'https://app.example.test',get MANUAL_SAVE_POLICY_JSON(){const current={schema:'manual-save-policy/v1',enabled,startsAt:fixtureStart,endsAt:fixtureStart+3600000,scope:{tenantId:'tenant-alpha',projectId:'project',workspaceId:'workspace',workspaceGeneration:1},actor:{userId:'alpha',authVersion:1}};return JSON.stringify(${JSON.stringify(variant)}==='v1'?current:{schema:'manual-save-policy/v2',recovery:{...current,enabled:false,scope:{...current.scope,projectId:'prior-project',workspaceId:'prior-workspace'},actor:{...current.actor,userId:'prior-owner'}},current});}});this.#stop=()=>{enabled=false;};}
   stopNewForTest(){this.#stop();return true;}
 
   async seed(scope){const task={id:'initial-task',tenantId:scope.tenantId,projectId:scope.projectId,workspaceId:scope.workspaceId,generation:1,starterVersion:'blank-v1',authVersion:1,createdAt:1000,deadlineAt:2000};const identity={taskId:task.id,tenantId:task.tenantId,projectId:task.projectId,workspaceId:task.workspaceId,generation:1,runtimeId:'initial-runtime',leaseId:'initial-lease'},markerNonce='fixture-nonce';const checkpoint=await initialCheckpoint({task,identity,markerNonce});await this.env.WORKSPACE_CHECKPOINTS.put(checkpointKey(identity),checkpoint.text);const runtimeReceipt={receiptId:'initial-ready',initializedAt:1500,layoutVersion:'m1-empty-v1',markerSha256:await workspaceDigest(canonicalWorkspaceMarker(identity,markerNonce)),checkpointRevision:checkpoint.revision};await this.ctx.storage.put('m1:workspace:initialization',{task,identity,markerNonce,runtimeReceipt,projection:{outcome:'ready'},projectionConfirmed:true});await this.ctx.storage.sync();}
