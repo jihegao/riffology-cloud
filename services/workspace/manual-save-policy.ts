@@ -9,6 +9,13 @@ const smallText={maxRequestBytes:24*1024,maxFileBytes:8*1024,maxChanges:8,textOn
 const localLimits={maxRequestBytes:4*1024*1024,maxFileBytes:256*1024,maxChanges:64,textOnly:false};
 const denied={canRead:false,canWrite:false,canRecover:false,...smallText};
 function local(value:string|undefined){try{const u=new URL(value!);return ['localhost','127.0.0.1','[::1]'].includes(u.hostname)&&['http:','https:'].includes(u.protocol)&&u.href===u.origin+'/';}catch{return false;}}
+function manualSavePolicyGrant(raw:unknown){
+ const p=raw as Record<string,unknown>;
+ if(!p||typeof p!=='object'||Array.isArray(p)||Object.keys(p).sort().join(',')!=='actor,enabled,endsAt,schema,scope,startsAt'||p.schema!=='manual-save-policy/v1'||typeof p.enabled!=='boolean')throw Error('invalid-manual-save-policy');
+ const expected=parseScope(p.scope),owner=parseActor(p.actor);
+ if(!Number.isSafeInteger(p.startsAt)||!Number.isSafeInteger(p.endsAt)||(p.startsAt as number)<=0||(p.endsAt as number)<=(p.startsAt as number)||(p.endsAt as number)-(p.startsAt as number)>24*60*60*1000)throw Error('invalid-manual-save-policy');
+ return {scope:expected,actor:owner,enabled:p.enabled,startsAt:p.startsAt as number,endsAt:p.endsAt as number};
+}
 /** Server configuration is the sole authority. A stopped/expired scoped policy
  * retains receipt recovery, but cannot authorize a new operation. */
 export function manualSaveCapability(env:ManualSavePolicyEnv,scope:TurnScope,actor:TurnActor,now=Date.now()){
@@ -17,12 +24,13 @@ export function manualSaveCapability(env:ManualSavePolicyEnv,scope:TurnScope,act
   return {...denied};
  }
  try{
-  const p=JSON.parse(env.MANUAL_SAVE_POLICY_JSON);
-  if(!p||Object.keys(p).sort().join(',')!=='actor,enabled,endsAt,schema,scope,startsAt'||p.schema!=='manual-save-policy/v1'||typeof p.enabled!=='boolean')return {...denied};
-  const expected=parseScope(p.scope),owner=parseActor(p.actor);
-  if(!Number.isSafeInteger(p.startsAt)||!Number.isSafeInteger(p.endsAt)||p.startsAt<=0||p.endsAt<=p.startsAt||p.endsAt-p.startsAt>24*60*60*1000||!Number.isSafeInteger(now))return {...denied};
-  if(!sameScope(expected,scope)||owner.userId!==actor.userId||owner.authVersion!==actor.authVersion)return {...denied};
-  return {canRead:true,canRecover:true,canWrite:p.enabled&&now>=p.startsAt&&now<p.endsAt,...smallText};
+  const p=JSON.parse(env.MANUAL_SAVE_POLICY_JSON),v2=p?.schema==='manual-save-policy/v2';
+  if(v2&&(Object.keys(p).sort().join(',')!=='current,recovery,schema'||p.recovery?.enabled!==false))return {...denied};
+  const grants=(v2?[p.recovery,p.current]:[p]).map(manualSavePolicyGrant);
+  if(!Number.isSafeInteger(now)||grants.some((a:ReturnType<typeof manualSavePolicyGrant>,i:number)=>grants.slice(i+1).some((b:ReturnType<typeof manualSavePolicyGrant>)=>sameScope(a.scope,b.scope)&&a.actor.userId===b.actor.userId&&a.actor.authVersion===b.actor.authVersion)))return {...denied};
+  const match=grants.find((g:ReturnType<typeof manualSavePolicyGrant>)=>sameScope(g.scope,scope)&&g.actor.userId===actor.userId&&g.actor.authVersion===actor.authVersion);
+  if(!match)return {...denied};
+  return {canRead:true,canRecover:true,canWrite:match.enabled&&now>=match.startsAt&&now<match.endsAt,...smallText};
  }catch{return {...denied};}
 }
 export function assertManualSaveRead(env:ManualSavePolicyEnv,scope:TurnScope,actor:TurnActor){
