@@ -40,6 +40,7 @@ async function sharedFixture(t,initial){
   if(url.pathname.includes('/project-view-artifacts')){res.setHeader('content-type','application/json');res.end(JSON.stringify({items:[],nextCursor:null,version:'a'.repeat(64)}));return true;}
   if(!url.pathname.endsWith('/project-ir'))return false;
   assert.equal(req.method,'POST');assert.equal(req.headers.authorization,undefined);
+  if(req.headers['content-type']!=='application/json'){res.writeHead(415,{'content-type':'application/json'});res.end(JSON.stringify({error:'json_required'}));return true;}
   let raw='';for await(const chunk of req)raw+=chunk;const body=JSON.parse(raw);
   assert.deepEqual(Object.keys(body).sort(),['input','operation','packageIdentity']);assert.equal(body.packageIdentity,pkg.packageIdentity);operations.push(body.operation);
   let value;
@@ -77,7 +78,9 @@ async function sharedFixture(t,initial){
    const operation=options?.body?JSON.parse(options.body).operation:null;
    const kind=path.split('?')[0].endsWith('/project-views')?(path.includes('?identity=')?'publish':'package'):operation==='project_ir_result'?'ir-result':null;
    if(kind==='package')controls.packageReads++;
-   const response=await fetch(path,options);if(!response.ok)throw Error('fixture-request-denied');const value=await response.json();
+   // Match the production host API wrapper: a caller's differently cased
+   // content-type header must not be combined with its default JSON header.
+   const response=await fetch(path,{credentials:'same-origin',...options,headers:{'Content-Type':'application/json',...options?.headers}});if(!response.ok)throw Error('fixture-request-denied');const value=await response.json();
    if(kind!==null&&controls.armed===kind){controls.armed=null;try{return await new Promise((resolve,reject)=>{const pending=controls.pending={resolve,reject,value,kind,aborted:options.signal.aborted};options.signal.addEventListener('abort',()=>{pending.aborted=true;},{once:true});});}finally{controls.settled++;}}
    return value;
   };
