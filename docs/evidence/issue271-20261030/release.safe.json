@@ -1,0 +1,104 @@
+{
+  "schema": "issue271.release-and-author-evidence/v1",
+  "observedAt": "2026-10-30 Asia/Shanghai",
+  "sourceMain": "6707cbbead4437262f271c190ddaec4bd5d883a6",
+  "gateway": {
+    "version": "c6829295-6d2a-4085-82ca-56fade66c810",
+    "deploymentId": "071372ee-25ba-4735-b438-68df3b8fcd3d",
+    "source": {
+      "mainModule": "index.js",
+      "bytes": 5864566,
+      "sha256": "9398d61491197fc9c1ad1a07b80f02965d5149fc0943c58cc96c6c41461b48ff"
+    },
+    "expectedUpdatedBindings": [
+      "MANUAL_SAVE_POLICY_JSON"
+    ]
+  },
+  "publicReadback": {
+    "matchingAssets": 96,
+    "frame": {
+      "status": 503,
+      "bytes": 0,
+      "policyExpired": true,
+      "browserPolicyUnchanged": true
+    },
+    "originalChecker": "stopped: expected an open frame after the previously scoped page grant had expired",
+    "reconciliation": "original acknowledgement, deployed module, bindings, all asset bytes and closed frame were read back; no repeat PUT",
+    "originalPutReplayed": false
+  },
+  "maintenance": {
+    "requestId": "7eff7021-a8b7-440c-9c57-557c0f1a8372",
+    "beginRevision": 11,
+    "endRevision": 12,
+    "endAtUtcMs": 1793321795027,
+    "endHttp": 200,
+    "endReplayed": false,
+    "readbackRevision": 12,
+    "readbackHold": null,
+    "controlEnabled": true,
+    "controlPaused": false,
+    "ledger": {
+      "scope": "original-beta-ledger-only",
+      "activeSlots": 0,
+      "quarantinedSlots": 0,
+      "unresolvedCalls": 0,
+      "quiescent": true
+    },
+    "nativeLogical": {
+      "quiescent": true,
+      "coldUnresolved": 0,
+      "pairUnresolved": 0
+    },
+    "physicalNote": "Two original container applications reported stopped placements and zero dashboard instances; no independent complete PID inventory or raw lease ACK."
+  },
+  "manualPolicy": {
+    "kind": "manual-save-policy/v2",
+    "startsAtAsiaShanghai": "2026-10-30 08:51:15.303",
+    "endsAtAsiaShanghai": "2026-10-30 10:51:15.303",
+    "otherStoppedRecoveryRetained": true,
+    "onlyOriginalProjectAndOwner": true
+  },
+  "authorSaves": {
+    "model": {
+      "id": "4333d734-ff4d-46b8-b6d9-ad71054b5668",
+      "requestSha256": "8e2b2d9e3cd009d2aa971901ba123118226229de7acc5a551843aa75228cd349",
+      "status": "confirmed",
+      "base": {
+        "revisionId": "008c226e14337306a14d6487518a1d01b1729eb23138a082b2ec2366d0ce31d8",
+        "filesSha256": "75ddab4511b92272ad1038054c10ac621cdd07b57c5c92b0ca44612bda6f39b7",
+        "workspaceGeneration": 1
+      }
+    },
+    "page": {
+      "id": "d40a2e4d-8698-4558-878a-cf56e8dd53dc",
+      "requestSha256": "6a9bd99e3251ebe71c348c36b22815d27900ecb72395ec3e9e14aa531d729e64",
+      "status": "confirmed",
+      "base": {
+        "revisionId": "58c51807be37a753edb533efdabc0acba832fd04bd7425fe3e5395a36cc9a0a5",
+        "filesSha256": "333ae98520ace86d94b95abec4a41540b3e22f117d3dac0fb3d671992dfbbf3c",
+        "workspaceGeneration": 1
+      }
+    },
+    "filesReadBack": 25,
+    "allPathsSizesModesAndHashesMatchedExpectedMerge": true,
+    "originalOperationsReplayed": false
+  },
+  "actualPreview": {
+    "finalRevisionId": "58c51807be37a753edb533efdabc0acba832fd04bd7425fe3e5395a36cc9a0a5",
+    "httpStatus": 503,
+    "error": "browser-preview-unavailable",
+    "cause": "manual-source-browser-preview-unsupported; manual revision did not have browser preview discovery",
+    "onlineAcceptancePassed": false
+  },
+  "pageExecution": {
+    "priorGrantExpired": true,
+    "policyUnchanged": true,
+    "newGrantEnabled": false,
+    "fixedTraceOnly": "default parameters, seed 7; Preview parameter changes do not update WebGL replay"
+  },
+  "paidTurns": {
+    "authorized": 5,
+    "additionalInThisRelease": 0,
+    "priorAmbiguousCostAssumedZero": false
+  }
+}

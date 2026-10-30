@@ -1,5 +1,15 @@
 # Current release readiness — 2026-10-14
 
+## 2026-10-30：#272 已部署，作者保存成功，浏览器预览待修复
+
+[#272](https://github.com/jihegao/riffology-cloud/pull/272) 已从 main `6707cbbead4437262f271c190ddaec4bd5d883a6` 部署为 Gateway `c6829295-6d2a-4085-82ca-56fade66c810`，deployment `071372ee-25ba-4735-b438-68df3b8fcd3d`；原发布请求一次 PUT 返回 200，网关模块、限定策略、96 个静态资源回读一致，其他生产资源保留。原检查器错误地预期隔离页面帧开放，而原页面授权已到期，因此停在公开回读阶段；独立核对原回执和应关闭的 503 帧后，原维护于 08:56 解除并回读 `revision=12, hold=null`、原策略 enabled／未暂停。最终作用域内账本无活动或未知执行，两个原容器应用显示 stopped 和零活动实例；这不代表独立 PID 清单或底层 lease ACK。无重复 PUT、容器 rollout 或新付费调用。
+
+限该项目与原 owner 的手工保存窗口为 08:51:15–10:51:15 Asia/Shanghai；另一项目已停用的恢复授权保留。原作者按顺序各保存一次：模型／规格／轨迹 Revision `008c226e14337306a14d6487518a1d01b1729eb23138a082b2ec2366d0ce31d8`，再保存页面／声明 Revision `58c51807be37a753edb533efdabc0acba832fd04bd7425fe3e5395a36cc9a0a5`。两个原操作均确认 committed；最终 25 个文件的路径、大小、模式和哈希与预期合并一致，历史未删除。
+
+已认证 owner 读取最终版本的 Browser Preview 实际返回 `503 browser-preview-unavailable`：代码明确拒绝手工保存来源，该版本也没有预览发现记录。最小修复跟踪 [#274](https://github.com/jihegao/riffology-cloud/issues/274)；尚不能宣称港口模型线上运行成功。原页面 grant 已到期，页面执行仍关闭；候选 WebGL 仅回放默认参数、seed 7 的真实 Python 预计算轨迹，Preview 改参不会同步。页面与浏览器运行均为 local/unverified。无第六次建模 Turn。
+
+[脱敏发布与作者保存证据](evidence/issue271-20261030/release.safe.json) · [#271](https://github.com/jihegao/riffology-cloud/issues/271) · [#265](https://github.com/jihegao/riffology-cloud/issues/265)。下方 05:20 发布快照保留当时事实。
+
 ## 2026-10-30：#268 / #270 页面修复发布，港口验收仍未完成
 
 [#268](https://github.com/jihegao/riffology-cloud/pull/268) 与 [#270](https://github.com/jihegao/riffology-cloud/pull/270) 已分别合并，完整 CI 通过；本次以 main `bccd1b0a77f1ad5057874b1b9603b0f7b9ad18d0` 的静态资产发布 Gateway version `61327d99-3944-4aa1-abd3-add11fca962f`／deployment `7647d16f-b227-45da-a0f8-bca334a13778`。原网关模块 SHA-256 `0d6b1f1d8afabedbcaf07d76f97d1a71206fc733fbb293742767a4fc2beeb28d` 与原资源、配置保留；96 项资产和隔离帧共 97 项公开回读均为 200 且匹配预期字节。无容器 rollout、模型调用或自动重试。
