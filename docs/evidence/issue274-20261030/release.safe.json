@@ -1,0 +1,97 @@
+{
+  "schema": "issue274.release-and-owner-acceptance/v1",
+  "dateAsiaShanghai": "2026-10-30",
+  "sourceMain": "e18fb05efc6a96e6c986efff6eb3272fb6466ae8",
+  "pullRequest": 276,
+  "ci": "https://github.com/jihegao/riffology-cloud/actions/runs/40984546210",
+  "gateway": {
+    "version": "44b2a0ae-df33-4a0f-b860-ca6fc7514bf8",
+    "deploymentId": "cedba7b9-379a-445a-b167-33ac15dbea82",
+    "source": {
+      "mainModule": "index.js",
+      "bytes": 5867204,
+      "sha256": "9ea564c8cef0ddb0ef182546e500867391731755453dcd524e9051f86eaac97e"
+    },
+    "expectedUpdatedBindings": [
+      "PROJECT_VIEW_BROWSER_POLICY_JSON"
+    ]
+  },
+  "publicReadback": {
+    "matchingAssets": 96,
+    "matchingProjectViewFrame": 1,
+    "status": 200,
+    "inventorySha256": "8978cbcdc397f3df4b551a9c80e5bd121040427dd750460a6175502caa8fdd0f"
+  },
+  "maintenance": {
+    "requestId": "f26b0027-cdbc-4485-8189-82fa5687fdc2",
+    "beginAtAsiaShanghai": "2026-10-30 09:51:45.979",
+    "beginRevision": 13,
+    "beginHttp": 200,
+    "beginReplayed": false,
+    "beginReceiptSha256": "531876f6032ca29e9f9f1dec36e292a82f0e3c1787401ece2a9cdb3b21054af5",
+    "endAtAsiaShanghai": "2026-10-30 09:57:18.552",
+    "endRevision": 14,
+    "endHttp": 200,
+    "endReplayed": false,
+    "endReadbackHold": null,
+    "endReceiptSha256": "489ba837901175298a5d22f01c27a28064b8664a45f437ee80dddba5d76809b8",
+    "controlEnabled": true,
+    "controlPaused": false,
+    "ledgerQuiescent": true,
+    "nativeLogicalQuiescent": true,
+    "physicalNote": "Two original container applications reported stopped placements and zero dashboard instances; no independent complete PID inventory or raw lease ACK."
+  },
+  "projectPageGrant": {
+    "scope": "original project and owner only",
+    "startsAtAsiaShanghai": "2026-10-30 09:53:03.261",
+    "endsAtAsiaShanghai": "2026-10-30 11:53:03.261",
+    "navigationEgressAccepted": true
+  },
+  "ownerBrowserAcceptance": {
+    "browser": "Safari 27.0.1",
+    "identityScope": "original invited owner",
+    "finalRevisionId": "58c51807be37a753edb533efdabc0acba832fd04bd7425fe3e5395a36cc9a0a5",
+    "filesSha256": "333ae98520ace86d94b95abec4a41540b3e22f117d3dac0fb3d671992dfbbf3c",
+    "sourceKind": "manual-save",
+    "profileId": "python-stdlib/v1",
+    "packageIdentity": "34b08947c25952c07b646653179a49ff94a3eff40d3148f4e9dc34656c9bad38",
+    "packageStatus": "ready",
+    "previewHttp": 200,
+    "projectViewsHttp": 200,
+    "seed": 7,
+    "steps": 120,
+    "defaultFinal": {
+      "containersDeliveredTeu": 40,
+      "shipTeu": 95,
+      "bufferTeu": 100,
+      "inTransitTeu": 5,
+      "blockedCraneMinutes": 177,
+      "departedVessels": 1
+    },
+    "truckRate2Final": {
+      "containersDeliveredTeu": 25,
+      "shipTeu": 110,
+      "bufferTeu": 100,
+      "inTransitTeu": 5,
+      "blockedCraneMinutes": 181
+    },
+    "parametersRestoredAfterRefresh": true,
+    "threeD": {
+      "webglDisplayed": true,
+      "stepAndPlaybackObserved": true,
+      "finalFrameMatchesDefaultPreview": true,
+      "trace": "precomputed Python default parameters, seed 7; Preview edits do not update it"
+    },
+    "canvasSessionExpiry": "after successful run, absolute canvas session timeout cleared playback and displayed a misleading run failure; issue #277",
+    "localUnverified": true
+  },
+  "bounds": {
+    "additionalPaidTurnsInitiated": 0,
+    "unknownPriorCostsNotAssumedZero": true,
+    "cloudExecutionZeroClaimed": false,
+    "independentCrossIdentityIsolationAcceptancePerformed": false,
+    "historicalRevisionsPreserved": true,
+    "priorGenerationRequiredManualCorrections": true,
+    "note": "The fifth generated revision required the separately authorized two author saves; this is not a claim of a fully autonomous correct first generation."
+  }
+}
