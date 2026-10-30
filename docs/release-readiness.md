@@ -1,5 +1,17 @@
 # Current release readiness — 2026-10-14
 
+## 2026-10-30：#276 已发布，原 owner 的港口本地运行和页面已验收
+
+[#276](https://github.com/jihegao/riffology-cloud/pull/276) 合并至 main `e18fb05efc6a96e6c986efff6eb3272fb6466ae8`，精确 head 的 [Linux CI](https://github.com/jihegao/riffology-cloud/actions/runs/40984546210) 通过。基于前一线上模块的已核对目标补丁发布为 Gateway `44b2a0ae-df33-4a0f-b860-ca6fc7514bf8`／deployment `cedba7b9-379a-445a-b167-33ac15dbea82`，模块 SHA-256 `9ea564c8cef0ddb0ef182546e500867391731755453dcd524e9051f86eaac97e`；96 项静态资源与页面隔离帧公开读回匹配。除指定页面策略外，原绑定和手工保存策略保留。
+
+用户授权的原维护在 09:51:45 开启，发布和最终门禁通过后于 09:57:18 解除；原请求读回 `revision=14, hold=null`，原策略 enabled／未暂停。门禁时原作用域账本及原生逻辑账本无活动或未知执行，两个原容器应用显示 stopped、dashboard 活动数为零；未独立枚举全部 PID 或读取底层 lease ACK。此次没有发起第六次付费建模 Turn，也不把此前未知费用记为零。项目页面授权仅限原项目和 owner，2026-10-30 09:53:03–11:53:03 Asia/Shanghai；到期后不能据此声称页面仍开放。
+
+原受邀 owner 的 Safari 27.0.1 刷新项目后，最终手工 Revision `58c51807be37a753edb533efdabc0acba832fd04bd7425fe3e5395a36cc9a0a5` 自动构建为 `python-stdlib/v1` 包 `34b08947c25952c07b646653179a49ff94a3eff40d3148f4e9dc34656c9bad38`，来源为 `manual-save`。实际点击本地运行并播放：默认参数、seed 7、120 分钟末帧送达 40 TEU、船上 95、缓冲 100、在途 5、阻塞 177 岸桥分钟；改 `truck_rate` 为 2 后本地重跑，末帧送达 25、船上 110、缓冲 100、在途 5、阻塞 181。刷新后修改参数得到恢复。未捕获完整请求轨迹和相应权威计数，不宣称零云端执行已被独立证明。
+
+同一保存版本的 Container Port 3D 页面在有效授权内打开并显示 WebGL 场景，单步、播放及时间滑块可用；第 120 分钟显示的货物和阻塞指标与默认 Preview 末帧一致。它只回放默认参数、seed 7 的 Python 预计算轨迹，Preview 改参不会同步；两者均为 local/unverified，非服务端 Verified Evidence。第五次 Agent 回合生成后仍需用户明确批准的两次作者手工修正与保存，不能称为首次自主生成即完全正确。成功运行后的画布绝对会话到期会被界面误报为运行失败，单列 [#277](https://github.com/jihegao/riffology-cloud/issues/277)。
+
+此次完成原 owner 的生成、修正保存、浏览器运行和页面路径；未进行真实第二身份／跨项目隔离验收，也未补做 [#271](https://github.com/jihegao/riffology-cloud/issues/271) 的到期与另一身份恢复验收。原用户和项目范围之外的行为不从此次结果推断。[脱敏部署和原 owner 验收记录](evidence/issue274-20261030/release.safe.json) · [#274](https://github.com/jihegao/riffology-cloud/issues/274) · [#265](https://github.com/jihegao/riffology-cloud/issues/265)。下方条目保留发布前的历史快照。
+
 ## 2026-10-30：#272 已部署，作者保存成功，浏览器预览待修复
 
 [#272](https://github.com/jihegao/riffology-cloud/pull/272) 已从 main `6707cbbead4437262f271c190ddaec4bd5d883a6` 部署为 Gateway `c6829295-6d2a-4085-82ca-56fade66c810`，deployment `071372ee-25ba-4735-b438-68df3b8fcd3d`；原发布请求一次 PUT 返回 200，网关模块、限定策略、96 个静态资源回读一致，其他生产资源保留。原检查器错误地预期隔离页面帧开放，而原页面授权已到期，因此停在公开回读阶段；独立核对原回执和应关闭的 503 帧后，原维护于 08:56 解除并回读 `revision=12, hold=null`、原策略 enabled／未暂停。最终作用域内账本无活动或未知执行，两个原容器应用显示 stopped 和零活动实例；这不代表独立 PID 清单或底层 lease ACK。无重复 PUT、容器 rollout 或新付费调用。
