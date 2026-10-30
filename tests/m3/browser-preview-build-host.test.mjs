@@ -37,7 +37,7 @@ test('settled v1 ready row automatically rearms and rebuilds against the current
 test('new saved discovery preserves earlier build retry and uses local journal time',async()=>{
  const {projectPreviewDiscoveries}=await import('../../services/browser-preview/discovery.ts');
  const f=await fixture(),storage=f.storage;storage.values.set(BROWSER_BUILD_WAKE_KEY,500);
- const state={scope:f.scope,turns:{'turn-b':{id:'turn-b',sessionId:'session-a',dispatchId:'dispatch-b',runtimeGeneration:1,persistenceOutcome:'saved',finishedAt:2000,checkpoint:{...f.source.receipt,revisionId:'revision-b',committedAt:9000}}}};
+ const state={scope:f.scope,manualOperations:{},turns:{'turn-b':{id:'turn-b',sessionId:'session-a',dispatchId:'dispatch-b',runtimeGeneration:1,persistenceOutcome:'saved',finishedAt:2000,checkpoint:{...f.source.receipt,revisionId:'revision-b',committedAt:9000}}}};
  await storage.transaction(tx=>projectPreviewDiscoveries(tx,state,null));
  assert.equal(storage.values.get(discoveryKey('revision-b')).nextAttemptAt,2000);assert.equal(storage.alarm,500);assert.equal(storage.values.get(BROWSER_BUILD_WAKE_KEY),500);
 });

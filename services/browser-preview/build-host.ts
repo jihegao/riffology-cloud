@@ -11,7 +11,7 @@ import {validateSavedPreview,PREVIEW_VALIDATION_VERSION} from './validator.ts';
 import {packageCompatiblePreview} from './packager.ts';
 import {storePreviewPackage,type PreviewObjectBucket,type PreviewBuildIntent,type PreviewBuildReceipt,type PreviewReceiptPort} from './storage.ts';
 import {discoveryKey,PREVIEW_DISCOVERY_PREFIX,type PreviewDiscovery} from './discovery.ts';
-import {sourceScope,sourceRevision,sourceFilesSha,frozenSource,type BrowserBuildSource,type InitialBrowserSource} from './source.ts';
+import {sourceScope,sourceRevision,sourceFilesSha,frozenSource,type BrowserBuildSource,type InitialBrowserSource,type ManualBrowserSource} from './source.ts';
 import type { ResolvedInitialWorkspace } from '../turn-runtime/initial-workspace.ts';
 type FrozenSource=BrowserBuildSource;
 const ROW='browser-preview:build:',REFERENCE='browser-preview:reference:',RECEIPT='browser-preview:receipt:';
@@ -34,6 +34,21 @@ export class BrowserPreviewBuildHost{
  receipt(identity:string):PreviewBuildReceipt|null{const r=this.storage.kv.get<PreviewBuildReceipt>(RECEIPT+identity)??null;if(r&&!equal(r.scope,{tenantId:this.scope.tenantId,projectId:this.scope.projectId,workspaceId:this.scope.workspaceId}))throw Error('browser-preview-read-denied');return structuredClone(r);}
  source(revision:string):PreviewDiscovery|null{const source=this.storage.kv.get<PreviewDiscovery>(discoveryKey(revision))??null;if(source&&!sameScope(sourceScope(source),this.scope))throw Error('browser-preview-read-denied');return structuredClone(source);}
  initial():PreviewDiscovery|null{const revision=this.storage.kv.get<string>('browser-preview:initial-source');return revision?this.source(revision):null;}
+ /** Backfill only the authenticated, committed manual revision being viewed.
+  * New manual commits are indexed atomically with the journal. */
+ async admitManual(source:ManualBrowserSource):Promise<void>{
+  if(!sameScope(sourceScope(source),this.scope))throw Error('browser-preview-source-unavailable');
+  this.ports.checkSource?.(source);
+  const prior=this.source(source.receipt.revisionId);
+  if(prior){if(!equal(frozenSource(prior),frozenSource(source)))throw Error('preview-discovery-conflict');return;}
+  await this.#write(async tx=>{
+   this.ports.checkSource?.(source);
+   const key=discoveryKey(source.receipt.revisionId),existing=await tx.get<PreviewDiscovery>(key);
+   if(existing){if(!equal(frozenSource(existing),frozenSource(source)))throw Error('preview-discovery-conflict');return;}
+   await tx.put(key,{...frozenSource(source),schemaVersion:1,status:'pending',attempts:0,nextAttemptAt:source.receipt.committedAt,reasonCode:null} satisfies PreviewDiscovery);
+   this.ports.checkSource?.(source);
+  });
+ }
  /** Ready packages keep their frozen profile; only old unsupported decisions may be retried. */
  async rearmStaleReady(revision:string):Promise<boolean>{
   const source=this.source(revision);if(!source)return false;

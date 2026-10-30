@@ -10,7 +10,7 @@ export const scopes=Object.fromEntries(['alpha','beta'].map(user=>[user,{tenantI
 /** Synthetic identities and initialization only. Saves, packages and artifact
  * receipts come from the real Gateway/Workspace/RevisionStore and local D1/R2.
  * This worker is bundled only inside this test, never a deployment entrypoint. */
-export async function manualPageFixture(t,{browserLocal=false,projectIrTest=false}={}){
+export async function manualPageFixture(t,{browserLocal=false,projectIrTest=false,browserPreviewTest=false}={}){
  const browserPolicy=JSON.stringify({schema:'project-view-browser-policy/v1',enabled:true,startsAt:Date.now()-1000,endsAt:Date.now()+600000,dataEgress:'accepted',grants:Object.entries(scopes).map(([user,scope])=>({scope,actor:{userId:user,authVersion:1}}))});
  const source=`
  import {WorkspaceAgent as BaseWorkspace} from './services/workspace/durable.ts';
@@ -21,13 +21,15 @@ export async function manualPageFixture(t,{browserLocal=false,projectIrTest=fals
  import {catalogDatabase} from './services/catalog/database.ts';
  import {createGatewayManualSaveServices} from './services/gateway/manual-save-services.ts';
  import {createGatewayProjectViewServices} from './services/gateway/project-view-services.ts';
+ import {createGatewayBrowserPreviewServices} from './services/gateway/browser-preview-services.ts';
+ import {projectBrowserBuildAlarm} from './services/browser-preview/g4-build-hold.ts';
  import {serveProjectViewBrowserFrame} from './services/project-views/browser-delivery.ts';
  import {initialCheckpoint} from './services/runtime/starter.ts';
  import {checkpointKey} from './services/runtime/core.ts';
  import {canonicalWorkspaceMarker,workspaceDigest,workspaceAgentName} from './services/workspace/protocol.ts';
  const appOrigin=${JSON.stringify(appOrigin)},scopes=${JSON.stringify(scopes)};
  let browserPolicyEnabled=true;
- const localEnv=env=>({...env,APP_ORIGIN:appOrigin,BROWSER_PREVIEW_EXECUTION_ORIGIN:'http://localhost:8821',...(${JSON.stringify(browserLocal)}?{PROJECT_VIEW_BROWSER_POLICY_JSON:browserPolicyEnabled?${JSON.stringify(browserPolicy)}:'{"enabled":false}'}:{})});
+ const localEnv=env=>({...env,APP_ORIGIN:appOrigin,BROWSER_PREVIEW_EXECUTION_ORIGIN:'http://localhost:8821',...(${JSON.stringify(browserLocal)}?{PROJECT_VIEW_BROWSER_POLICY_JSON:browserPolicyEnabled?${JSON.stringify(browserPolicy)}:'{"enabled":false}'}:{}),...(${JSON.stringify(browserPreviewTest)}?{TENANT_QUOTA:{getByName:()=>new Proxy({},{get:()=>()=>{throw Error('unexpected simulation quota call');}})}}:{})});
  // A test-only barrier holds bytes already read by the real RevisionStore.
  // It permits concurrent canonical saves/revocation before the production
  // Workspace's post-await package/authorization check returns any display.
@@ -84,9 +86,15 @@ export async function manualPageFixture(t,{browserLocal=false,projectIrTest=fals
    const checkpoint=await initialCheckpoint({task,identity,markerNonce});
    await this.env.WORKSPACE_CHECKPOINTS.put(checkpointKey(identity),checkpoint.text);
    const runtimeReceipt={receiptId:'ready-'+scope.workspaceId,initializedAt:1500,layoutVersion:'m1-empty-v1',markerSha256:await workspaceDigest(canonicalWorkspaceMarker(identity,markerNonce)),checkpointRevision:checkpoint.revision};
-   await this.ctx.storage.put('m1:workspace:initialization',{task,identity,markerNonce,runtimeReceipt,projection:{outcome:'ready'},projectionConfirmed:true});await this.ctx.storage.sync();
+   await this.ctx.storage.put('m1:workspace:initialization',{task,identity,markerNonce,runtimeReceipt,projection:{outcome:'ready'},projectionConfirmed:true,...(${JSON.stringify(browserPreviewTest)}?{wakeAt:null}:{})});await this.ctx.storage.sync();
   }
   async diagnosticsForTest(){const s=await this.ctx.storage.get('m2:turn-journal');if(!s?.turns||!s?.sessions||!s?.manualOperations)throw Error('fixture journal missing');return {turns:Object.keys(s.turns).length,sessions:Object.keys(s.sessions).length,active:s.activeManualOperation,operations:Object.values(s.manualOperations).map(o=>({id:o.identity.operationId,status:o.status,revisionId:o.receipt?.revisionId??null}))};}
+  async previewForTest(revision,forget){
+   if(!${JSON.stringify(browserPreviewTest)})throw Error('fixture disabled');
+   if(forget)await this.ctx.storage.transaction(async tx=>{await tx.delete('browser-preview:discovery:'+revision);for(const profile of ['python-stdlib/v1','mesa-3.5.1/v1'])await tx.delete('browser-preview:build:'+revision+':'+profile);await projectBrowserBuildAlarm(tx,Date.now());});
+   return {discovery:await this.ctx.storage.get('browser-preview:discovery:'+revision)??null,build:await this.ctx.storage.get('browser-preview:build:'+revision+':python-stdlib/v1')??null,alarm:await this.ctx.storage.getAlarm()};
+  }
+  async previewViewForTest(scope,revision){try{return {result:await super.browserPreviewView({scope,actor:{userId:'alpha',authVersion:1},revisionId:revision})};}catch(error){return {error:error?.message??String(error),stack:error?.stack??null};}}
  }
  export default {async fetch(request,env){
   const url=new URL(request.url),bound=localEnv(env),stub=scope=>env.WORKSPACE_AGENT.getByName(workspaceAgentName(scope.tenantId,scope.workspaceId));
@@ -105,13 +113,15 @@ export async function manualPageFixture(t,{browserLocal=false,projectIrTest=fals
   if(${JSON.stringify(projectIrTest)}&&url.pathname==='/__fixture/project-ir-counts')return Response.json({alpha:await stub(scopes.alpha).projectIrCountersForTest(),beta:await stub(scopes.beta).projectIrCountersForTest(),executionBindings:'deny-and-count-local-fixture'});
   if(url.pathname==='/__fixture/seed'){for(const scope of Object.values(scopes))await stub(scope).seedForTest(scope);return Response.json({ok:true});}
   if(url.pathname==='/__fixture/diagnostics'){if(url.searchParams.get('user')==='alpha')return Response.json(await stub(scopes.alpha).diagnosticsForTest());const result={};for(const [name,scope]of Object.entries(scopes))result[name]=await stub(scope).diagnosticsForTest();return Response.json(result);}
+  if(${JSON.stringify(browserPreviewTest)}&&url.pathname==='/__fixture/preview'){const user=url.searchParams.get('user')??'alpha',revision=url.searchParams.get('revision');return Response.json(await stub(scopes[user]).previewForTest(revision,url.searchParams.get('forget')==='1'));}
+  if(${JSON.stringify(browserPreviewTest)}&&url.pathname==='/__fixture/preview-view')return Response.json(await stub(scopes.alpha).previewViewForTest(scopes.alpha,url.searchParams.get('revision')));
   if(url.pathname==='/__fixture/package-reads')return Response.json({reads:await stub(scopes.alpha).packageReadsForTest()});
   if(url.pathname==='/__fixture/drop-package-authority')return Response.json(await stub(scopes.alpha).dropPackageAuthorityForTest());
   if(url.pathname==='/__fixture/current'){try{return Response.json(await stub(scopes.alpha).projectViewCurrent({scope:scopes.alpha,actor:{userId:request.headers.get('x-synthetic-user')??'alpha',authVersion:1},identity:url.searchParams.get('identity')}));}catch{return Response.json({error:'denied'},{status:403});}}
   if(url.pathname==='/__fixture/stale-generation'){try{await stub(scopes.alpha).projectViews({scope:{...scopes.alpha,workspaceGeneration:2},actor:{userId:'alpha',authVersion:1}});return Response.json({denied:false});}catch{return Response.json({denied:true});}}
   return gateway(request,{origin:appOrigin,database:catalogDatabase(env.CATALOG),
    identity:async req=>{const user=req.headers.get('x-synthetic-user')??'alpha';return scopes[user]?{subject:user,email:user+'@example.test',emailVerified:true,platformVersion:1}:null;},
-   manualSaves:createGatewayManualSaveServices(bound),projectViews:createGatewayProjectViewServices(bound),turns:{files:scope=>stub(scope).listFiles({scope})}});
+   manualSaves:createGatewayManualSaveServices(bound),projectViews:createGatewayProjectViewServices(bound),browserPreviews:createGatewayBrowserPreviewServices(bound),turns:{files:scope=>stub(scope).listFiles({scope})}});
  }};`;
  const bundle=await build({stdin:{contents:source,resolveDir:process.cwd()},bundle:true,write:false,format:'esm',platform:'neutral',target:'es2024',conditions:['workerd','worker','browser'],external:['cloudflare:workers','node:*'],logLevel:'silent'});
  const worker='manual-page-broker';let outbound=0;
@@ -140,7 +150,7 @@ export async function manualPageFixture(t,{browserLocal=false,projectIrTest=fals
   const headers={'x-synthetic-user':user,Origin:appOrigin};if(body!==undefined)headers['content-type']='application/json';if(key)headers['Idempotency-Key']=key;
   if(method==='POST'&&/\/manual-saves$/.test(path))manualPosts++;
   const response=await mf.dispatchFetch(appOrigin+path,{method,headers,...(body===undefined?{}:{body:JSON.stringify(body)})});
-  return {status:response.status,body:await response.json()};
+  const text=await response.text();let result;try{result=JSON.parse(text);}catch{throw Error('fixture response is not JSON for '+path+': '+text.slice(0,300));}return {status:response.status,body:result};
  };
  const read=async(path,options)=>{const r=await request(path,options);if(r.status!==200)throw Error('fixture read denied '+r.status+': '+JSON.stringify(r.body));return r.body;};
  await read('/__fixture/seed');
