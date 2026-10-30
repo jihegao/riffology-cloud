@@ -97,3 +97,12 @@ test('entering an empty project clears the previous model and stays blank until 
  assert.equal(await p.locator('[data-parameter=customers]').inputValue(),'6');
  assert.equal(await p.evaluate(()=>runs.length),0);
 });
+
+test('manual saved source can run locally while server Verify stays closed',async t=>{
+ const p=await fixture(t);await p.evaluate(async()=>{sourceKind='manual-save';scopedVerify=false;pkg='b'.repeat(64);revision=head='manual-revision';await panel.refresh();});
+ assert.match(await p.locator('#preview').innerText(),/保存版本 manual-revision|Saved version manual-revision/);
+ assert.equal(await p.getByRole('button',{name:/本地运行|Run locally/,exact:true}).isDisabled(),false);
+ assert.equal(await p.locator('[data-browser-preview-action="verify"]').isDisabled(),true);
+ await p.getByRole('button',{name:/本地运行|Run locally/,exact:true}).click();await p.waitForFunction(()=>runs.length===1);
+ assert.ok((await p.evaluate(()=>calls)).every(c=>c.method==='GET'));
+});

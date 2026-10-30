@@ -42,7 +42,7 @@ import {g4DurableComputeCounts,readG4NativeSample} from '../model-budget/g4-comp
 import type {SimulationRecord} from '../simulation/host.ts';
 import type {ServiceIntentRecord} from './service-intents.ts';
 import {admitG4Task} from '../model-budget/g4-admission.ts';
-import { frozenSource,sourceScope,type BrowserBuildSource } from '../browser-preview/source.ts';
+import { frozenSource,sourceScope,sourcePreview,type BrowserBuildSource } from '../browser-preview/source.ts';
 import {BrowserPreviewBuildHost} from '../browser-preview/build-host.ts';
 import {BrowserPreviewOrchestrator} from '../browser-preview/orchestrator.ts';
 import {productionPreviewRegistry} from '../browser-preview/production-registry.ts';
@@ -298,22 +298,21 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
   #browserBuildHost:BrowserPreviewBuildHost|null=null;
   #browserBuild(scope:TurnScope){
     if(!this.env.WORKSPACE_CHECKPOINTS)throw Error('browser-preview-unavailable');
-    return this.#browserBuildHost??=new BrowserPreviewBuildHost(this.ctx.storage,scope,{registry:productionPreviewRegistry,bucket:this.env.WORKSPACE_CHECKPOINTS,holdUntil:source=>g4BuildHoldUntil(this.ctx.storage,source,s=>s.kind==='initial-workspace'?null:new DurableTurnStore(this.ctx.storage).read()?.turns[s.identity.turnId]?.finishedAt??null),checkSource:source=>this.#checkBrowserSource(scope,source),resolveInitial:async source=>{
+    return this.#browserBuildHost??=new BrowserPreviewBuildHost(this.ctx.storage,scope,{registry:productionPreviewRegistry,bucket:this.env.WORKSPACE_CHECKPOINTS,holdUntil:source=>g4BuildHoldUntil(this.ctx.storage,source,s=>s.kind==='initial-workspace'||s.kind==='manual-save'?null:new DurableTurnStore(this.ctx.storage).read()?.turns[s.identity.turnId]?.finishedAt??null),checkSource:source=>this.#checkBrowserSource(scope,source),resolveInitial:async source=>{
       this.#checkBrowserSource(scope,source);
       const resolved=await this.env.REVISION_STORE.getByName(revisionStoreActorName(scope)).resolveInitial(source.reference,scope);
       this.#checkBrowserSource(scope,source);return resolved;
     },files:async discovery=>{
       if(discovery.kind==='initial-workspace')throw Error('browser-preview-source-unavailable');
-      this.#maintenanceScope(scope);const saved=this.#turns.savedRevisionSnapshot(scope,discovery.receipt.revisionId);
-      if(!saved||canonicalPreviewJson(saved.identity)!==canonicalPreviewJson(discovery.identity)||canonicalPreviewJson(saved.receipt)!==canonicalPreviewJson(discovery.receipt))throw Error('browser-preview-source-unavailable');
-      const bytes=await this.env.REVISION_STORE.getByName(revisionStoreActorName(scope)).serviceFiles({kind:'saved-turn',identity:saved.identity,revision:saved.receipt},16*1024*1024);
-      this.#maintenanceScope(scope);const after=this.#turns.savedRevisionSnapshot(scope,discovery.receipt.revisionId);if(canonicalPreviewJson(after)!==canonicalPreviewJson(saved))throw Error('browser-preview-source-unavailable');return bytes;
+      this.#checkBrowserSource(scope,discovery);
+      const bytes=await this.env.REVISION_STORE.getByName(revisionStoreActorName(scope)).serviceFiles(sourcePreview(discovery),16*1024*1024);
+      this.#checkBrowserSource(scope,discovery);return bytes;
     }});
   }
   #checkBrowserSource(scope:TurnScope,source:BrowserBuildSource){
     this.#maintenanceScope(scope);if(!sameScope(sourceScope(source),scope))throw Error('browser-preview-source-unavailable');
     if(source.kind!=='initial-workspace'){
-      const saved=this.#turns.savedRevisionSnapshot(scope,source.receipt.revisionId);
+      const saved=source.kind==='manual-save'?this.#turns.manualRevisionSnapshot(scope,source.receipt.revisionId):this.#turns.savedRevisionSnapshot(scope,source.receipt.revisionId);
       if(canonicalPreviewJson(saved)!==canonicalPreviewJson(frozenSource(source)))throw Error('browser-preview-source-unavailable');return;
     }
     const state=this.#store.read();
@@ -328,7 +327,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     return new BrowserPreviewOrchestrator(this.ctx.storage,owned,{builds:this.#browserBuild(owned),bucket:this.env.WORKSPACE_CHECKPOINTS!,registry:productionPreviewRegistry,
       readOnly:()=>this.#archiveFence.get()!==null,checkScope:()=>{this.#maintenanceScope(owned);},authorize:async actor=>{const actual=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).maintenanceWorkspace(actor,owned.workspaceId);if(!sameScope(actual,owned))throw Error('browser-preview-access-denied');},
       authorizeVerify:async actor=>{this.#ready(owned);const actual=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).workspace(actor,owned.workspaceId);if(!sameScope(actual,owned))throw Error('browser-preview-access-denied');this.#ready(owned);},
-      head:()=>{const head=this.#turns.workspaceRevisionSnapshot(owned);if(head?.source==='manual-save')throw Error('manual-source-browser-preview-unsupported');return head??this.#browserBuild(owned).initial();},saved:revision=>this.#turns.savedRevisionSnapshot(owned,revision)??this.#browserBuild(owned).source(revision),checkSource:source=>this.#checkBrowserSource(owned,source),
+      head:()=>{const head=this.#turns.workspaceRevisionSnapshot(owned);return head?.source==='manual-save'?{kind:'manual-save',identity:head.identity,receipt:head.receipt}:head??this.#browserBuild(owned).initial();},saved:revision=>this.#turns.manualRevisionSnapshot(owned,revision)??this.#turns.savedRevisionSnapshot(owned,revision)??this.#browserBuild(owned).source(revision),checkSource:source=>this.#checkBrowserSource(owned,source),
       files:source=>this.env.REVISION_STORE.getByName(revisionStoreActorName(owned)).serviceFiles(source,16*1024*1024),simulations:this.#simulations(owned),canVerify:()=>this.#simulationCanRun(),image:this.env.M4_SIMULATION_IMAGE??'',
       delivery:hash=>platformPreviewDelivery(this.env.APP_ORIGIN,this.env.BROWSER_PREVIEW_EXECUTION_ORIGIN,hash)});
   }
@@ -337,7 +336,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
       checkScope:scope=>{this.#maintenanceScope(scope);},
       authorize:async(scope,actor,creating)=>{const catalog=new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()),actual=creating?await catalog.workspace(actor,scope.workspaceId):await catalog.maintenanceWorkspace(actor,scope.workspaceId);if(!sameScope(actual,scope))throw Error('g4-build-hold-scope-denied');},
       window:async()=>{const task=this.#store.read()?.task;if(!task||!this.env.TENANT_MODEL_BUDGET)throw Error('g4-build-hold-window-unavailable');const namespace=this.env.TENANT_MODEL_BUDGET as unknown as {getByName(name:string):{g4WindowSnapshot(tenantId:string):Promise<ReturnType<typeof readG4WindowSnapshot>>}};return namespace.getByName(modelBudgetTenantName(task.tenantId)).g4WindowSnapshot(task.tenantId);},
-      finishedAt:source=>source.kind==='initial-workspace'?null:new DurableTurnStore(this.ctx.storage).read()?.turns[source.identity.turnId]?.finishedAt??null,
+      finishedAt:source=>source.kind==='initial-workspace'||source.kind==='manual-save'?null:new DurableTurnStore(this.ctx.storage).read()?.turns[source.identity.turnId]?.finishedAt??null,
       baseline:()=>{const task=this.#store.read()!.task;return this.#turns.workspaceRevisionSnapshot(this.#maintenanceScope({tenantId:task.tenantId,projectId:task.projectId,workspaceId:task.workspaceId,workspaceGeneration:task.generation}))?.receipt.revisionId??null;},
       checkSource:source=>this.#checkBrowserSource(sourceScope(source),source),
     });

@@ -33,7 +33,7 @@ export class BrowserPreviewOrchestrator{
   if(profileId!==undefined&&(typeof profileId!=='string'||!['python-stdlib/v1','mesa-3.5.1/v1'].includes(profileId)))throw Error('browser-preview-input-invalid');
   const head=this.ports.head(),revision=revisionId??(head?sourceRevision(head):null)??null;
   if(!revision)return {canVerify:!this.ports.readOnly?.()&&this.ports.canVerify(),currentRevisionId:null,revisionId:null,build:null,stale:false,modelSpec:null,reasonCode:'preview-no-saved-revision',delivery:null};
-  const saved=this.#saved(revision);const status=this.ports.builds.read(revision,profileId)?.state.status;if(!this.ports.readOnly?.()&&(status==='ready'||status==='unsupported')){await this.ports.builds.rearmStaleReady(revision);await this.#authorize(actor);}const row=this.ports.builds.read(revision,profileId);let delivery=null,reasonCode:string|null=null;
+  const saved=this.#saved(revision);if(saved.kind==='manual-save'&&!this.ports.readOnly?.()){await this.ports.builds.admitManual(saved);await this.#authorize(actor);this.#stillSaved(saved);}const status=this.ports.builds.read(revision,profileId)?.state.status;if(!this.ports.readOnly?.()&&(status==='ready'||status==='unsupported')){await this.ports.builds.rearmStaleReady(revision);await this.#authorize(actor);}const row=this.ports.builds.read(revision,profileId);let delivery=null,reasonCode:string|null=null;
   if(row?.state.status==='ready'){
    if(!row.profile||row.profile.trust!=='verified-platform')reasonCode='preview-runtime-unavailable';
    else {let config:unknown=null;try{config=this.ports.delivery(row.profile.runtime.assetSha256);}catch{/* Historical immutable delivery may be unavailable. */}if(!config||typeof config!=='object')reasonCode='preview-runtime-unavailable';else delivery={...config,profile:{runtime:row.profile.runtime,packages:row.profile.packages,assetManifest:row.profile.assets,verified:true}};}
@@ -46,7 +46,7 @@ export class BrowserPreviewOrchestrator{
    try{const artifacts=readModelArtifacts(bytes);if(artifacts)views={filesSha256:sourceFilesSha(saved)!,items:artifacts.manifest.views.filter(v=>v.section==='preview')};}catch{/* Invalid design metadata leaves the frozen compute package available. */}
   }
   this.#stillSaved(saved);const current=this.#currentRevision()??null;
-  return {canVerify:!this.ports.readOnly?.()&&this.ports.canVerify(),currentRevisionId:current,revisionId:revision,sourceKind:saved.kind==='initial-workspace'?'initial-workspace':'saved-turn',referenceSha256:saved.kind==='initial-workspace'?saved.referenceSha256:null,build:reasonCode?null:row?.state??null,stale:current!==null&&revision!==current,modelSpec:row?.modelSpec??null,reasonCode:reasonCode??(!row?'preview-discovery-pending':null),delivery,views};
+  return {canVerify:saved.kind!=='manual-save'&&!this.ports.readOnly?.()&&this.ports.canVerify(),currentRevisionId:current,revisionId:revision,sourceKind:saved.kind==='initial-workspace'?'initial-workspace':saved.kind==='manual-save'?'manual-save':'saved-turn',referenceSha256:saved.kind==='initial-workspace'?saved.referenceSha256:null,build:reasonCode?null:row?.state??null,stale:current!==null&&revision!==current,modelSpec:row?.modelSpec??null,reasonCode:reasonCode??(!row?'preview-discovery-pending':null),delivery,views};
  }
  async bytes(actor:TurnActor,identity:string){
   if(!/^[a-f0-9]{64}$/.test(identity))throw Error('browser-preview-input-invalid');await this.#authorize(actor);
@@ -83,7 +83,7 @@ export class BrowserPreviewOrchestrator{
  async verify(actor:TurnActor,raw:unknown){
   const input=parsePreviewVerifyRequest(raw);await this.#authorizeVerify(actor);const key=await this.#key(actor,input.idempotencyKey),prior=this.storage.kv.get<Capture>(key);
   if(prior&&(!eq(prior.actor,actor)||!eq(prior.scope,this.scope)||!eq(prior.input,input)))throw Error('browser-preview-idempotency-conflict');
-  const saved=this.#saved(input.revisionId);if(prior&&(saved.kind==='initial-workspace'&&!prior.source||prior.request.filesSha256!==sourceFilesSha(saved)||prior.source&&!eq(prior.source,frozenSource(saved))))throw Error('browser-preview-source-unavailable');const pack=await this.bytes(actor,input.packageIdentity);
+  const saved=this.#saved(input.revisionId);if(saved.kind==='manual-save')throw Error('simulation-unavailable');if(prior&&(saved.kind==='initial-workspace'&&!prior.source||prior.request.filesSha256!==sourceFilesSha(saved)||prior.source&&!eq(prior.source,frozenSource(saved))))throw Error('browser-preview-source-unavailable');const pack=await this.bytes(actor,input.packageIdentity);
   if(pack.manifest.revisionId!==input.revisionId||pack.manifest.filesSha256!==sourceFilesSha(saved))throw Error('browser-preview-source-unavailable');
   const source:PreviewSource=sourcePreview(saved),bytes=await this.ports.files(source);await this.#authorizeVerify(actor);this.#stillSaved(saved);
   const plan=await simulationPlan(source,bytes),request=experimentRequest({...modelVersion(plan),parameters:input.parameters,seed:input.seed}),capture:Capture={schemaVersion:1,scope:this.scope,actor,input,request,serverKey:'browserverify-'+key.slice(key.lastIndexOf(':')+1),source:frozenSource(saved)};

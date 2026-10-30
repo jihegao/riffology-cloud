@@ -1,8 +1,9 @@
-import type { BrowserBuildSource, SavedBrowserSource } from './source.ts';
+import type { BrowserBuildSource, SavedBrowserSource, ManualBrowserSource } from './source.ts';
 import { frozenSource } from './source.ts';
 import type { WorkspaceState } from '../workspace/coordinator.ts';
 import { initialWorkspaceReferenceFromReady } from '../turn-runtime/initial-workspace.ts';
 import { turnDigest } from '../turn/protocol.ts';
+import { manualReceipt } from '../turn-runtime/manual-save.ts';
 import type { TurnJournalState } from '../turn/protocol.ts';
 import { BROWSER_BUILD_WAKE_KEY, WORKSPACE_STATE_KEY, TURN_WAKE_KEY, SERVICE_WAKE_KEY, OBSERVER_WAKE_KEY, SIMULATION_WAKE_KEY, applyWorkspaceAlarm } from '../workspace/shared-alarm.ts';
 
@@ -15,13 +16,20 @@ export function savedPreviewDiscoveries(state:TurnJournalState):(SavedBrowserSou
     return {schemaVersion:1,identity:{scope:structuredClone(state.scope),sessionId:turn.sessionId,turnId:turn.id,dispatchId:turn.dispatchId,generation:turn.runtimeGeneration},receipt:structuredClone(turn.checkpoint!),status:'pending',attempts:0,nextAttemptAt:turn.finishedAt!,reasonCode:null};
   });
 }
+export function manualPreviewDiscovery(operation:TurnJournalState['manualOperations'][string]):(ManualBrowserSource&DiscoveryState)|null{
+  if(operation.status!=='committed')return null;
+  if(!operation.receipt)throw Error('invalid-persisted-turn-journal');
+  const receipt=manualReceipt(operation.receipt);
+  return {schemaVersion:1,kind:'manual-save',identity:structuredClone(operation.identity),receipt,status:'pending',attempts:0,nextAttemptAt:receipt.committedAt,reasonCode:null};
+}
 export function discoveryKey(revisionId:string){return PREVIEW_DISCOVERY_PREFIX+revisionId;}
 /** Called within the journal transaction. No network, R2 or model execution. */
 export async function projectPreviewDiscoveries(tx:DurableObjectTransaction,state:TurnJournalState,previous:TurnJournalState|null):Promise<void>{
   let changed=false;
   const indexed=await tx.get('browser-preview:discovery-index-version');
   const candidates=indexed===1?savedPreviewDiscoveries(state).filter(row=>previous?.turns[row.identity.turnId]?.persistenceOutcome!=='saved'):savedPreviewDiscoveries(state);
-  for(const discovery of candidates){
+  const manual=Object.entries(state.manualOperations).filter(([key])=>previous?.manualOperations[key]?.status!=='committed').map(([,operation])=>manualPreviewDiscovery(operation)).filter((row):row is ManualBrowserSource&DiscoveryState=>row!==null);
+  for(const discovery of [...candidates,...manual]){
     const key=discoveryKey(discovery.receipt.revisionId),prior=await tx.get<PreviewDiscovery>(key);
     if(prior){if(JSON.stringify(frozenSource(prior))!==JSON.stringify(frozenSource(discovery)))throw Error('preview-discovery-conflict');continue;}
     await tx.put(key,discovery);changed=true;

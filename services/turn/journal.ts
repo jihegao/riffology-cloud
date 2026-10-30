@@ -352,6 +352,14 @@ export class TurnJournal{
     if(matches.length!==1||!row.dispatchId||row.runtimeGeneration!==s.workspaceGeneration)throw Error('invalid-persisted-turn-journal');
     return {identity:{scope:s,sessionId:row.sessionId,turnId:row.id,dispatchId:row.dispatchId,generation:row.runtimeGeneration},receipt:structuredClone(row.checkpoint!)};
   }
+  /** Resolve only a committed manual operation in this workspace. */
+  manualRevisionSnapshot(rawScope:TurnScope,revisionId:string):{kind:'manual-save';identity:ManualSaveIdentity;receipt:ManualRevisionReceipt}|null{
+    const s=scope(rawScope),state=requireState(this.#store.read(),s);turnId(revisionId);
+    const matches=Object.values(state.manualOperations).filter(op=>op.status==='committed'&&op.receipt?.revisionId===revisionId);
+    if(!matches.length)return null;
+    if(matches.length!==1||!matches[0]!.receipt)throw Error('invalid-persisted-turn-journal');
+    return {kind:'manual-save',identity:structuredClone(matches[0]!.identity),receipt:manualReceipt(matches[0]!.receipt)};
+  }
   publicationHasActiveTurn(rawScope:TurnScope):boolean{const state=requireState(this.#store.read(),scope(rawScope));return state.activeTurnId!==null||state.activeManualOperation!==null;}
   async workspaceRevision(rawScope:TurnScope){return this.workspaceRevisionSnapshot(rawScope);}
   async view(rawScope:TurnScope,rawActor?:TurnActor):Promise<TurnJournalView>{const state=await this.snapshot(rawScope),current=rawActor===undefined?null:actor(rawActor),turns:TurnJournalView['turns']={};
