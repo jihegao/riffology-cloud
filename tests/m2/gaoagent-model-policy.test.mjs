@@ -31,3 +31,30 @@ test("broker policy rejects non-object payloads, hosted tools and project write 
   ])
     assert.equal(modelPayload(value), null);
 });
+
+test("hosted search is restricted to the fixed search request", () => {
+  const search = {
+    ...valid,
+    input: [{ role: "user", content: "public news" }],
+    tools: [{ type: "web_search" }],
+    tool_choice: "required",
+    max_tool_calls: 1,
+    instructions:
+      "Search the web and provide a concise factual summary with citations.",
+  };
+  assert.ok(modelPayload(search));
+  assert.equal(modelPayload({ ...search, instructions: "different" }), null);
+  assert.equal(modelPayload({ ...search, max_tool_calls: 2 }), null);
+  assert.equal(modelPayload({ ...search, max_output_tokens: 8192 }), null);
+  assert.equal(
+    modelPayload({ ...search, input: [{ role: "user", content: "" }] }),
+    null,
+  );
+  assert.equal(modelPayload({ ...valid, max_tool_calls: 1 }), null);
+  assert.ok(modelPayload({ ...valid, max_output_tokens: 8192 }));
+  assert.equal(modelPayload({ ...valid, max_output_tokens: 8193 }), null);
+  assert.equal(
+    modelPayload({ ...search, tools: [{ type: "web_search", filters: {} }] }),
+    null,
+  );
+});

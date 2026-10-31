@@ -62,7 +62,7 @@ export class GaoAgentModel extends WorkerEntrypoint {
           "cf-aig-max-attempts": "1",
         },
         body: JSON.stringify(approved),
-        signal: AbortSignal.any([request.signal, AbortSignal.timeout(30000)]),
+        signal: AbortSignal.any([request.signal, AbortSignal.timeout(60000)]),
         redirect: "manual",
       },
     );
