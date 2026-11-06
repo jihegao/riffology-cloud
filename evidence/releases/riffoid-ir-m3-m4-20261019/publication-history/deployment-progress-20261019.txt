@@ -1,0 +1,39 @@
+选定进度（全部为历史观察；整理时间不代表新鲜回执）
+
+Registry 两份固定镜像已完整 GET 读回：TrustedPi 59 次（2 manifest + 57 config/layer），ProjectTools 36 次（2 + 34）。镜像材料未形成部署或线上验收。
+两次记录的 Gateway PUT 均返回 HTTP 400；第二次明确为 10021。新 Gateway 成功 ACK、两 app rollout intent/ACK 均为 0。第二批已停止，未结束维护 hold，也未自动重试。
+随后两次只读尝试未完成：第一次停在既有 OAuth 有效期门禁，第二次在 postbaseline 等待超时；不将部分 GET 当成完整回读。再后的完整 GET 共核对 68 份原始捕获；逻辑资源八组比较仍相同，Gateway 仍为原版本及源码，两 app 版本未变。07:30:11.129Z 的回读为 hold5/quiet。
+07:30:16.731Z 的物理观察按纠错 v2：双端各有 1 个 placement，health=running、container=stopped、deploymentState=placed，terminate=false、fullyReleased=false。dash.instances=0 不证明 VM 消失；不能认定物理释放或费用为零。原错误解释保留为私有历史。
+三次本机启动诊断分别 exit71、exit1、exit0；最后一次 exact a558 源码在本机 workerd 通过。均无认证或云请求，未证明生产环境一致或 Cloudflare 10021 的原因。
+既有本地 PiWeb/riff-pi 为 6 次真实运行，插件测试 25/25；PR #2、#256 已合，main 2f588455… 与固定 package 0.3.1 / 45 files / 86b7a28a… 保持。Riffoid 线上 ACC-01～05 全部 pending、已完成 0；M3/M4 未完成。
+
+后来又直接批准了一个新单次窗口，并完成原范围的 OAuth routine；父命令获准时已过 09:30Z 最晚启动时刻，以 latest-approved-start-expired 在 arm 前停止。未创建运行或输出目录，collector/publisher 均未启动，操作端报告新浏览器 GET 为 0。此批没有新 PUT，总数仍为 2；未结束维护 hold，没有新增 quiescence 或物理状态回读。冻结记录时刻为 09:59:25.200837Z，不能把整理时间当成新鲜证据。线上 ACC 仍为 0，M3/M4 未完成。
+
+之后获批延后启动期限的新批次于 10:31:37.488Z 真正 arm，截止 11:01:37.488Z，仅启动一个 collector。首个 collect-precredential 维护 GET 于 10:33:03.762Z 返回 HTTP 401 / authentication_required；collector exit1、原进程组已回收，父进程于 10:33:05.866Z 停止。没有 bootstrap、Cloudflare 凭据阶段、baseline 或 publisher，也没有第三次 PUT；source gates 已关闭，未结束维护 hold，未自动重试。认证失败原因尚未确定，新的身份及原 hold 验证仍 pending。主投影仍采用 07:30 的历史完整 GET 和纠错物理观察，没有新增完整 baseline 或物理状态回执；PUT 总数仍为 2，线上 ACC 仍为 0，M3/M4 未完成。
+
+随后独立只读恢复验证成功：10:50:29.764Z 的唯一一次实际 GET 返回 200，hold5/control19 与原要求严格匹配，逻辑 quiet；验证进程 exit0、已回收且原进程组消失。身份匹配仅由受保护服务约束推论，未独立读取身份或认证 API。actualContainerReleaseVerified 仍为 false；此结果不是完整 baseline 或物理释放证明，没有延长 publication arm，也没有新增 publisher 许可、PUT 或线上验收。原 401 与 07:30 完整资源核验仍为各自历史记录；PUT 总数仍为 2，线上 ACC 为 0，M3/M4 未完成。
+
+再后的获批补采集批次于 11:06:55.994Z arm，截止 11:36:55.994Z。唯一维护 GET 于 11:07:26.735Z 返回 200 且 valid=true；随后唯一 collector 在 GET-only baseline 阶段超时：11:07:33.825Z 至 11:08:27.591Z，仅捕获 47 个响应、375355 字节，complete=false，cloudWrites=0，未重试。collector exit1，已回收且原进程组消失；父进程于 11:08:27.632Z 停止。没有完整新基线、publisher 或第三次 PUT，也没有新的完整资源比较或物理释放证明。旧 07:30 资源核验仍为最后完整历史投影；累计 PUT 仍为 2，线上 ACC 为 0，M3/M4 未完成。
+
+后续有界重试窗口为 12:14:23.358Z 至 12:44:23.358Z，现已耗用并过期，不能复用或自动延长。R10 额外 collector 一次、exit1，浏览器 GET/函数执行/Return 均为 0，未进入 Cloudflare 凭据或 baseline/publisher 阶段；inner Node 具体错误未留存，原因保持 unknown。只有失败 native gate 已关闭，不能称全部 builder/core 源码 disabled。R11 在原窗口到期后被入口 guard 拒绝，未启动 caller、collect2、GET 或 PUT；原 CLI stdout 没有另存，实际拒绝仅由明确标注的 root checkpoint 派生记录及原 standby 证明支持。Standing bounded collector retry 授权已直接核对人类消息，适用于未来获批窗口，不改写历史未重试事实。历史两次 PUT/10021 的具体原因仍 unknown；累计 PUT 仍为 2，线上 ACC 为 0，M3/M4 未完成。
+
+后续同一窗口内，R12 两次采集均在凭据前等待维护回执超时，浏览器 GET 为 0，未生成 bootstrap 或进入原生连接。R13 的一次维护 GET 返回 200 且 valid=true；随后只读基线在 51 个响应、393059 字节处超时，没有发布入口或云写入。
+
+R14 三次维护 GET 均返回 200 且 valid=true；第二次采集完成 53 份基线与 15 份原生状态响应，68 份原始字节全部核对。14:11:12.596Z 的完整基线仍为原 Gateway 版本 236，比较组与旧基线相同。14:11:27.965Z 双端各有一个 placement，health=running、container=stopped、deploymentState=placed、terminate=false；不能据 dashboard.instances=0 推断 VM 消失、完全释放或费用为零。随后 execute 入口确实启动并 exit1，在本地凭据有效期门禁停止，未进入 runPublication、未发出 execute-phase 维护 GET、没有新 PUT 或 rollout；不能把它写成入口从未调用，也不能仅据该门禁断言远端权限错误或当前已过期。
+
+R15 在原身份及六项既有 scope 下完成一次 routine 续期（1 次 POST、2 次身份 GET、无重试、新 profile 或 consent）。选定完成回执没有结束时刻，未补造。随后 14:20:06.118Z 的首个维护 GET 返回 503 / entry_replay_unavailable；collector exit1 并回收进程，未生成 bootstrap、进入凭据助手或发布入口。该响应未确认 hold/quiet，具体底层原因未知，不能写作 401 或认证失败。
+
+R16 受保护命令最终在原窗口 14:27:27.742Z 到期后，以 r9-original-window-expired-prepared-only-no-rearm 在入口前 exit1 停止；没有新 arm、caller proof、运行或尝试目录、collector、浏览器 GET 或 execute 入口。CLI stdout 仅见于原工具返回，未另存独立原始日志；本项由明确标注的 root 派生检查点和 14:27:56.045Z 的浏览器停止元数据支持，浏览器元数据自身不证明 CLI exit。原窗口已经结束，未结束维护 hold。
+
+本追加只覆盖这些已终态历史证据；最新完整部署资源回读仍截止 R14 的 14:11:12.596Z 基线和 14:11:27.965Z 原生状态捕获，没有之后的新完整部署回读。累计已记录 Gateway PUT 仍为 2，新成功 ACK 与 app rollout 为 0；源码 PR 合并的既有记录保持，Riffoid 线上 ACC 尚未开始、完成 0；既有 PiWeb/riff-pi 实测记录保留，双端合同验收仍未完成，M3/M4 未完成。所有时刻均为各自历史观察；本次整理时间不构成新鲜回执。
+
+
+V9 追加记录（均为历史证据；准备时间不代表新的线上观测）：
+
+R17 沿用原范围完成 OAuth 续期，随后三次维护 GET 均为 200。初始与发布前分别完成一组 53＋15 条完整原始 GET，各 6,216,425 字节；这不声称两组 payload 全部不同。runPublication 已真实进入，但在首次 asset-session POST 前被保全检查停止：两个固定历史 inactive 实例记录缺失，其余六组保全数据、保留的完整行及相对顺序一致。缺失原因未知，不能推断 VM 已释放或成本为零。新增 139 文件、13,783,929 字节已实际私有保全并读回校验，另有 241 条复用既有原字节引用。
+
+R18 adapter 与 caller 各三组纯本机测试通过，准备仍禁用，未启动线上入口。当前优先定位早前 503：保存的 serving 源码与 replay namespace 接线一致，只能确定异常发生在 body、认证及业务处理之前的 replay claim 可用性边界；仅凭原错误正文，无法区分 RPC 抛错、约两秒超时、abort、shard full 或异常返回值。R17 后来的 200 不解释 R15 的 503。
+
+同一日志 keys 查询两次均因工具 policy=never 被拒绝，第二次虽已获用户批准，工具请求仍未执行；此项来自根工具观察的派生记录。现有业务授权充足，不以重复登录、采集或关闭防重放代替异常定位。完整 CF 10021 正文尚未取得；下一次获准发布如发生同次失败，须私有保存不超过 64KiB 的完整原始 JSON 字节（0600），再独立读回核对 SHA，不能只凭 captureStatus=saved 宣称读回通过，也不新增 PUT。
+
+累计仍为旧两次 PUT，无新 app rollout、维护结束或 Riffoid 线上 ACC 完成。M3/M4 仍未完成；既有 PiWeb/riff-pi 实测证据保留。

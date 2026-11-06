@@ -72,6 +72,8 @@ Gateway 已以 v241／`63d9ea2a-8965-4876-9693-0fece3bea507` 在 100% serving，
 
 ## 2026-10-19 固定 IR 插件 M3/M4 独立实现准备
 
+2026-11-06 归档补充：[2026-10-19 宿主发布历史与来源清单](../evidence/releases/riffoid-ir-m3-m4-20261019/publication-history/README.md)从插件 PR #3 的固定提交逐字节迁入，保留各次历史观察。后续发布与维护解除见[2026-10-28 发布恢复报告](project-view-ir-publication-recovery-20261028.md#entry-replay-repair-and-service-restoration)，当前阶段仍以 #254 最新证据为准。
+
 [#254](https://github.com/jihegao/riffology-cloud/issues/254) 在独立 worktree 基于 `240378f65fee54d917b053f565087095a07244db` 接入同版 `riffoid-ir-plugin@0.3.1`，包括受控 fixed skill/工具、原 Project Tools effect 路径和浏览器原生页面。两个固定包副本及逐文件 SHA 一致。SQLite/R2 运行投影保留原 effect、scope/generation、actor/authVersion 和冻结历史；普通保存后的模型展示也按 canonical 文件重建。
 
 [接入说明](riffoid-ir-plugin-integration.md) · [本轮实际离线证据与边界](../evidence/releases/riffoid-ir-m3-m4-preparation-20261019.json)。本快照仍为实现准备：实际 Project Tools Linux/amd64 镜像已验证 Node 22.23.2、UID/GID 10001、seccomp/网络拒绝、真实 B1 check/compile 和进程清空；不宣称生产部署或双端 ACC 完成。前一公开源码的完整检查为 3,424 项 Node、8 项 Python 通过，13 项按原条件跳过；其后修复的真实 Docker 上下文过滤 7/7、注册失败恢复 71/71 与截图路径修复浏览器检查 5/5 通过，确认基线整合后再跑最终完整检查；同冻结 IR runtime/worker 的本地 WebKit 26.6 兼容补测 2/2 通过，含 opaque 与 PiWeb Worker 及清理，[选定证据](../evidence/releases/riffoid-ir-m3-m4-20261019/webkit-compatibility/manifest.json)明确不替代线上 ACC；线上阶段等待当前工作确认后的合并基线，随后单独串行集成和部署验收；不覆盖 #104/#214 正在进行的发布，不开放 G5/M3/M4 云执行。
