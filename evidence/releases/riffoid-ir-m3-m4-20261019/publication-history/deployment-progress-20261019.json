@@ -1,0 +1,1576 @@
+{
+  "artifactIdentity": {
+    "mergedMainCommit": "2f588455a13fea89b00c0a341540aa1e36e07f61",
+    "mergedMainTree": "13bceb3a2b43d55632ee15d4f0f1db885dc7c548",
+    "observation": {
+      "freshnessClaimed": false,
+      "historical": true,
+      "observationKind": "original-main-GET-and-existing-package-evidence",
+      "observedAtUtc": "2026-10-19T03:53:00Z"
+    },
+    "packageFiles": 45,
+    "packageSha256": "86b7a28a1b92652fb01b15ea6671414ecdd5e38c639878455e7abffb60d46ad6",
+    "packageVersion": "0.3.1",
+    "sourceRefs": [
+      "mergedMainRead",
+      "mergedMainCommit",
+      "existingAcceptance",
+      "existingPluginPreparation"
+    ]
+  },
+  "earlierProtocolGet": {
+    "crossProcessPublisherExecutionProven": false,
+    "httpStatus": 200,
+    "logicalHoldRevision": 5,
+    "logicalQuiescent": true,
+    "observation": {
+      "freshnessClaimed": false,
+      "historical": true,
+      "observationKind": "original-observation",
+      "observedAtUtc": "2026-10-19T05:35:39.797Z"
+    },
+    "onlineAccProven": false,
+    "physicalReleaseProven": false,
+    "publicationProven": false,
+    "scope": "same-process-fresh-read-and-recheck-only",
+    "sourceRefs": [
+      "earlierProtocolGet"
+    ]
+  },
+  "existingLocalEvidence": {
+    "newRiffoidOnlineAcceptance": false,
+    "piWebAcc01To05": "passed-existing-local-evidence",
+    "piWebAndRiffPiRealUniqueRuns": 6,
+    "pluginTestObservation": {
+      "freshnessClaimed": false,
+      "historical": true,
+      "observationKind": "original-observation",
+      "observedAtUtc": "2026-10-18T16:22:04.617400+00:00"
+    },
+    "pluginTests": {
+      "failed": 0,
+      "passed": 25,
+      "tests": 25
+    },
+    "riffPi": "passed-existing-local-evidence",
+    "runObservation": {
+      "freshnessClaimed": false,
+      "historical": true,
+      "observationKind": "original-observation",
+      "observedAtUtc": "2026-10-18T17:02:58.653Z"
+    },
+    "sourceRefs": [
+      "existingPiManifest",
+      "existingPiValidation",
+      "existingPluginPreparation",
+      "existingPluginChecks",
+      "existingAcceptance"
+    ]
+  },
+  "gatewayAttempts": {
+    "appRolloutAckCount": 0,
+    "appRolloutIntentCount": 0,
+    "attempts": [
+      {
+        "attempt": 1,
+        "httpStatus": 400,
+        "observation": {
+          "freshnessClaimed": false,
+          "historical": true,
+          "observationKind": "original-observation",
+          "observedAtUtc": "2026-10-19T05:01:41.422Z"
+        },
+        "rawResponseBodyIncluded": false,
+        "responseBodyBytes": 321,
+        "responseBodySha256": "aff5f6922ad14176a471fa96dca63264c46b53cc5c996f52905abf6f096c5bd3",
+        "sourceRefs": [
+          "gatewayFirstIntent",
+          "gatewayFirstResponse",
+          "gatewayFirstStopped"
+        ],
+        "specificErrorCode": null
+      },
+      {
+        "additionalDiagnosticRequests": 0,
+        "attempt": 2,
+        "httpStatus": 400,
+        "observation": {
+          "freshnessClaimed": false,
+          "historical": true,
+          "observationKind": "original-observation",
+          "observedAtUtc": "2026-10-19T06:59:49.324Z"
+        },
+        "rawResponseBodyIncluded": false,
+        "responseBodyBytes": 321,
+        "responseBodySha256": "aff5f6922ad14176a471fa96dca63264c46b53cc5c996f52905abf6f096c5bd3",
+        "sourceRefs": [
+          "gatewaySecondResponse",
+          "gatewaySecondBoundedDiagnostic",
+          "gatewaySecondSourceFreeze"
+        ],
+        "specificErrorCode": 10021
+      }
+    ],
+    "automaticRetry": false,
+    "putCount": 2,
+    "scope": "the-two-recorded-publication-attempts",
+    "successfulNewGatewayAckCount": 0
+  },
+  "laterApprovedBatchExpiredBeforeArm": {
+    "absoluteWindowCapUtc": "2026-10-19T10:00:00Z",
+    "approvalEvidence": {
+      "bytes": 950,
+      "sha256": "9a5ac8f488dbbce3d69b82acb8e97aa0014d9c88072002fe0c6daf52ce5c6a97"
+    },
+    "armCreated": false,
+    "authenticationRoutineObservation": {
+      "freshnessClaimed": false,
+      "historical": true,
+      "observationKind": "original-complete-safe-receipt-has-no-observation-timestamp",
+      "observedAtUtc": null
+    },
+    "automaticRetry": false,
+    "collectorStarted": false,
+    "humanApprovalReceived": true,
+    "humanApprovalRecordedAtUtc": "2026-10-19T08:59:30.378491+00:00",
+    "latestAllowedStartUtc": "2026-10-19T09:30:00Z",
+    "maintenanceEndPerformed": false,
+    "newBrowserGetsReportedByAssignedOperator": 0,
+    "newGatewayPutAttempts": 0,
+    "newQuiescenceOrPhysicalReadClaimed": false,
+    "observation": {
+      "freshnessClaimed": false,
+      "historical": true,
+      "observationKind": "actual-expired-before-arm-freeze-and-tool-exit",
+      "observedAtUtc": "2026-10-19T09:59:25.200837+00:00"
+    },
+    "originalAuthenticationRoutineCompleted": true,
+    "outputDirectoryCreated": false,
+    "parentExitCode": 1,
+    "parentStopCode": "latest-approved-start-expired",
+    "publisherStarted": false,
+    "recordedGatewayPutAttemptsStill": 2,
+    "riffoidOnlineAccCompleted": 0,
+    "runtimeDirectoryCreated": false,
+    "sourceGateEnabled": false,
+    "sourceRefs": [
+      "expiredBeforeArmFreeze",
+      "completedPriorAuthenticationRoutineSafe"
+    ],
+    "status": "approved-but-expired-before-arm"
+  },
+  "laterApprovedBatchStoppedOnIncompleteBaseline": {
+    "automaticRetry": false,
+    "collectorExitCode": 1,
+    "collectorsStarted": 1,
+    "completeNewBaselineAvailable": false,
+    "humanApprovalRecorded": true,
+    "incompleteBaseline": {
+      "automaticRetry": false,
+      "capturedBodyBytes": 375355,
+      "capturedResponses": 47,
+      "cloudWrites": 0,
+      "complete": false,
+      "endedAtUtc": "2026-10-19T11:08:27.591Z",
+      "onlyGet": true,
+      "rawBodiesIncludedPublicly": false,
+      "startedAtUtc": "2026-10-19T11:07:33.825Z",
+      "stopCode": "hard-request-timeout"
+    },
+    "maintenanceEndPerformed": false,
+    "maintenanceGet": {
+      "actualBrowserGetCount": 1,
+      "additionalBrowserGetCount": 0,
+      "consoleValid": true,
+      "httpStatus": 200,
+      "observation": {
+        "freshnessClaimed": false,
+        "historical": true,
+        "observationKind": "original-observation",
+        "observedAtUtc": "2026-10-19T11:07:26.735Z"
+      },
+      "originalLogicalFactsComparedToDemand": true
+    },
+    "newGatewayPutAttempts": 0,
+    "newResourceComparisonOrPhysicalReleaseProven": false,
+    "observation": {
+      "freshnessClaimed": false,
+      "historical": true,
+      "observationKind": "original-single-collector-terminal-with-incomplete-GET-only-baseline",
+      "observedAtUtc": "2026-10-19T11:08:27.632Z"
+    },
+    "originalCollectorProcessGroupGone": true,
+    "originalCollectorReaped": true,
+    "parentStopCode": "native-child-stopped-retain-identity",
+    "parentStoppedAtUtc": "2026-10-19T11:08:27.632Z",
+    "publisherStarted": false,
+    "recordedGatewayPutAttemptsStill": 2,
+    "riffoidOnlineAccCompleted": 0,
+    "sourceRefs": [
+      "supplementTimeoutBatchArm",
+      "supplementTimeoutParentTerminal",
+      "supplementTimeoutCollectorTerminal",
+      "supplementIncompleteBaselineSafe",
+      "supplementTimeoutWiringStopSafe",
+      "supplementTimeoutBrowserSafeObservation"
+    ],
+    "status": "maintenance-get-200-then-incomplete-baseline-timeout",
+    "stopPhase": "fixed-get-only-bootstrap",
+    "windowEndsAtUtc": "2026-10-19T11:36:55.994Z",
+    "windowStartedAtUtc": "2026-10-19T11:06:55.994Z"
+  },
+  "laterCompleteGetReconciliation": {
+    "allComparedResourceProjectionsIdentical": true,
+    "bothOriginalAppConfigurationsAndVersionsUnchanged": true,
+    "cloudWritesByThisReconciliation": 0,
+    "correctedEvidence": {
+      "bytes": 4608,
+      "sha256": "e9f50ae87aee483932d257c8817f90102f318dd399eed60779f4fb11194d076d"
+    },
+    "logicalHold": {
+      "maintenanceEndPerformed": false,
+      "observation": {
+        "freshnessClaimed": false,
+        "historical": true,
+        "observationKind": "original-observation",
+        "observedAtUtc": "2026-10-19T07:30:11.129Z"
+      },
+      "quiescent": true,
+      "revision": 5
+    },
+    "nativeCaptureEndedAtUtc": "2026-10-19T07:30:16.731Z",
+    "observation": {
+      "freshnessClaimed": false,
+      "historical": true,
+      "observationKind": "original-native-GET-with-corrected-offline-projection",
+      "observedAtUtc": "2026-10-19T07:30:16.731Z"
+    },
+    "operatorReceiptActualContainerReleaseVerified": false,
+    "physicalObservationUsesCorrectedV2Only": true,
+    "physicalObservations": [
+      {
+        "applicationVersion": 3,
+        "containerStatus": "stopped",
+        "currentPlacementHealth": "running",
+        "dashInstancesCount": 0,
+        "dashInstancesCountProvesVmAbsent": false,
+        "deploymentListAndDetailAgree": true,
+        "deploymentState": "placed",
+        "fullyReleased": false,
+        "legacyInactiveRowCount": 10,
+        "placementCountObserved": 1,
+        "role": "project-tools",
+        "terminate": false,
+        "v2InactiveRowCount": 10
+      },
+      {
+        "applicationVersion": 13,
+        "containerStatus": "stopped",
+        "currentPlacementHealth": "running",
+        "dashInstancesCount": 0,
+        "dashInstancesCountProvesVmAbsent": false,
+        "deploymentListAndDetailAgree": true,
+        "deploymentState": "placed",
+        "fullyReleased": false,
+        "legacyInactiveRowCount": 10,
+        "placementCountObserved": 1,
+        "role": "trusted-pi",
+        "terminate": false,
+        "v2InactiveRowCount": 10
+      }
+    ],
+    "physicalReleaseProven": false,
+    "priorIncompletePhysicalInterpretationPreservedPrivately": true,
+    "rawGetCaptureBytesVerified": 6216425,
+    "rawGetCapturesVerified": 68,
+    "resourceProjectionExactComparisons": {
+      "activeServingAnchorExceptObservationTime": true,
+      "appVersions": true,
+      "apps": true,
+      "controls": true,
+      "source": true,
+      "version": true,
+      "workerVersionDetails": true,
+      "workerVersions": true
+    },
+    "scope": "historical-complete-get-only-and-offline-comparison",
+    "servingGatewaySource": {
+      "bytes": 5774988,
+      "mainModule": "index.js",
+      "sha256": "304373a50d7a9ca8a99cdfbda0dcae261aa34d53727b757dfeb099c88efb5e0b"
+    },
+    "servingGatewayVersionNumber": 236,
+    "snapshotEndedAtUtc": "2026-10-19T07:29:51.052Z",
+    "snapshotStartedAtUtc": "2026-10-19T07:29:10.439Z",
+    "sourceRefs": [
+      "completedGetBootstrapSafe"
+    ],
+    "zeroCostProven": false
+  },
+  "laterStandaloneReadOnlyVerification": {
+    "accepted": true,
+    "actualBrowserGetCount": 1,
+    "actualContainerReleaseVerified": false,
+    "automaticRetry": false,
+    "cloudWrites": 0,
+    "controlRevision": 19,
+    "expectedIdentityMatchInferredFromServiceConstraints": true,
+    "holdRevision": 5,
+    "httpStatus": 200,
+    "identityEvidenceScope": "inference-from-protected-service-constraints",
+    "independentIdentityOrAuthenticationApiReadPerformed": false,
+    "logicalQuiescent": true,
+    "newBaselineCaptured": false,
+    "newGatewayPutAttempts": 0,
+    "newPublisherAuthorized": false,
+    "observation": {
+      "freshnessClaimed": false,
+      "historical": true,
+      "observationKind": "original-single-standalone-readonly-GET-and-accepted-verifier-result",
+      "observedAtUtc": "2026-10-19T10:50:29.764Z"
+    },
+    "originalHoldAndControlMatch": true,
+    "originalProcessGroupGone": true,
+    "physicalReleaseProven": false,
+    "processExitCode": 0,
+    "processReaped": true,
+    "publicationArmExtended": false,
+    "recordedGatewayPutAttemptsStill": 2,
+    "riffoidOnlineAccCompleted": 0,
+    "sourceRefs": [
+      "standaloneReadonly200Result",
+      "standaloneReadonly200Supervision",
+      "standaloneReadonly200BrowserReview"
+    ],
+    "status": "passed-independent-readonly-logical-verification"
+  },
+  "laterZeroGetCollectorAndExpiredSameWindowEntry": {
+    "approvedWindow": {
+      "endedAtUtc": "2026-10-19T12:44:23.358Z",
+      "grantStatus": "consumed-and-expired",
+      "mayBeReusedOrAutomaticallyExtended": false,
+      "startedAtUtc": "2026-10-19T12:14:23.358Z"
+    },
+    "firstCollector": {
+      "actualAdditionalCollectors": 1,
+      "allBuilderAndCoreFlagsClaimedDisabled": false,
+      "browserFunctionInvocations": 0,
+      "browserGetCount": 0,
+      "browserZeroGetEvidence": {
+        "bytes": 1160,
+        "sha256": "853d0ea445f923e410278c2e041d2e334a04b8e51e577db65629df66d2ebbafb"
+      },
+      "classificationRetryable": false,
+      "cloudflareCredentialOrBaselineStageReached": false,
+      "collectorExitCode": 1,
+      "consoleReturnPresses": 0,
+      "innerNodeErrorCause": "not-retained",
+      "innerNodeErrorCode": null,
+      "nativeFailedAttemptGateClosed": true,
+      "originalCollectorReaped": true,
+      "originalProcessGroupGone": true,
+      "publisherStarted": false,
+      "runtimeStopCode": "r9-nonretryable-or-exhausted-collector-stop"
+    },
+    "historicalGateway10021ExactCause": "unknown",
+    "historicalGatewayPutAttempts": 2,
+    "newCompleteBaselineOrPhysicalReleaseProven": false,
+    "newGatewayPutAttempts": 0,
+    "observation": {
+      "freshnessClaimed": false,
+      "historical": true,
+      "observationKind": "root-recorded-derived-checkpoint-after-expiry",
+      "observedAtUtc": "2026-10-19T13:08:09Z"
+    },
+    "recordedGatewayPutAttemptsStill": 2,
+    "riffoidOnlineAccCompleted": 0,
+    "sameWindowFollowupEntry": {
+      "actualCallerStarted": false,
+      "actualExitEvidenceBasis": "explicit-root-derived-tool-summary-and-original-standby-proof",
+      "browserGetCount": 0,
+      "entryRefusedBecauseOriginalWindowExpired": true,
+      "newArmCreated": false,
+      "newGatewayPutAttempts": 0,
+      "originalCliStdoutSeparatelyFiled": false,
+      "publisherStarted": false,
+      "secondCollectorStarted": false,
+      "standbyObservation": {
+        "freshnessClaimed": false,
+        "historical": true,
+        "observationKind": "original-ended-standby-safe-record",
+        "observedAtUtc": "2026-10-19T12:44:35.251Z"
+      },
+      "stopCode": "r9-original-window-expired-prepared-only-no-rearm"
+    },
+    "sourceRefs": [
+      "r10ConsumedWindowArm",
+      "r10BoundedRuntimeTerminal",
+      "r10CollectorTerminal",
+      "r10BoundedClassification",
+      "r10NativeAttemptGateClosed",
+      "r11OriginalExpiredStandbyProof",
+      "rootDerivedR10R11Checkpoint"
+    ],
+    "standingBoundedCollectorRetryAuthorization": {
+      "appliesProspectivelyWithinAnApprovedWindow": true,
+      "directHumanVerified": true,
+      "historicalNoRetryFactsUnchanged": true
+    },
+    "status": "collector-stopped-before-browser-get-followup-refused-after-window-expiry"
+  },
+  "latestApprovedBatchStoppedAtInitial401": {
+    "approvalEvidence": {
+      "bytes": 967,
+      "sha256": "0438e5016296aa0eb8c87bde8dd96f98827b721e559fb0314b6d2ec202f87528"
+    },
+    "authenticationRoutineObservation": {
+      "freshnessClaimed": false,
+      "historical": true,
+      "observationKind": "original-complete-safe-receipt-has-no-observation-timestamp",
+      "observedAtUtc": null
+    },
+    "automaticRetry": false,
+    "baselineCaptured": false,
+    "bootstrapCreated": false,
+    "cloudflareCredentialStageReached": false,
+    "collectorExitCode": 1,
+    "collectorsStarted": 1,
+    "freshIdentityAndOriginalHoldVerificationStatus": "pending",
+    "humanApprovalReceived": true,
+    "humanApprovalRecordedAtUtc": "2026-10-19T10:19:44.965736+00:00",
+    "initialMaintenanceGet": {
+      "authenticationFailureCause": "not-established",
+      "automaticRetry": false,
+      "followupGetCount": 0,
+      "getCount": 1,
+      "holdOrControlModified": false,
+      "httpStatus": 401,
+      "observation": {
+        "freshnessClaimed": false,
+        "historical": true,
+        "observationKind": "original-observation",
+        "observedAtUtc": "2026-10-19T10:33:03.762Z"
+      },
+      "phase": "collect-precredential",
+      "safeErrorCode": "authentication_required",
+      "successfulIdentityVerification": false,
+      "successfulOriginalHoldVerification": false
+    },
+    "maintenanceEndPerformed": false,
+    "newGatewayPutAttempts": 0,
+    "newPhysicalOrCompleteBaselineObservationClaimed": false,
+    "observation": {
+      "freshnessClaimed": false,
+      "historical": true,
+      "observationKind": "actual-armed-collector-stop-and-original-source-freeze",
+      "observedAtUtc": "2026-10-19T10:38:59.933106+00:00"
+    },
+    "originalAuthenticationRoutineCompleted": true,
+    "originalCollectorProcessGroupConfirmedGone": true,
+    "originalCollectorReaped": true,
+    "parentAndNativeSourceGatesClosed": true,
+    "parentStopCode": "native-child-stopped-retain-identity",
+    "parentStoppedAtUtc": "2026-10-19T10:33:05.866Z",
+    "precredentialStageBasis": "safe-records-and-fixed-source-order",
+    "publisherStarted": false,
+    "recordedGatewayPutAttemptsStill": 2,
+    "riffoidOnlineAccCompleted": 0,
+    "sourceRefs": [
+      "operator401BatchFreeze",
+      "operator401BatchArm",
+      "operator401ParentTerminal",
+      "operator401CollectorTerminal",
+      "operator401SafeObservation",
+      "nextOriginalAuthenticationRoutineSafeComplete"
+    ],
+    "status": "armed-single-collector-stopped-on-initial-maintenance-401",
+    "windowEndsAtUtc": "2026-10-19T11:01:37.488Z",
+    "windowStartedAtUtc": "2026-10-19T10:31:37.488Z"
+  },
+  "latestRecordedPublicationBatch": {
+    "automaticRetry": false,
+    "collectorExitCode": 0,
+    "maintenanceEndPerformed": false,
+    "observation": {
+      "freshnessClaimed": false,
+      "historical": true,
+      "observationKind": "original-observation",
+      "observedAtUtc": "2026-10-19T06:59:49.407Z"
+    },
+    "originalCollectorAndPublisherProcessGroupsConfirmedGone": true,
+    "parentStopCode": "native-child-stopped-retain-identity",
+    "publisherExitCode": 1,
+    "sourceGatesClosed": true,
+    "sourceRefs": [
+      "secondBatchWindow",
+      "secondBatchCollectorTerminal",
+      "secondBatchPublisherTerminal",
+      "secondBatchParentTerminal",
+      "gatewaySecondSourceFreeze"
+    ],
+    "status": "collector-completed-publisher-put-rejected",
+    "windowApproval": "received-for-this-recorded-window",
+    "windowEndsAtUtc": "2026-10-19T07:23:25.345Z",
+    "windowStartedAtUtc": "2026-10-19T06:53:25.345Z"
+  },
+  "localStartupDiagnostics": {
+    "attempts": [
+      {
+        "attempt": 1,
+        "authenticationLoaded": false,
+        "cloudRequests": 0,
+        "exitCode": 71,
+        "observation": {
+          "freshnessClaimed": false,
+          "historical": true,
+          "observationKind": "original-local-terminal-has-no-timestamp",
+          "observedAtUtc": null
+        },
+        "onlineAcceptanceProven": false,
+        "originalBundleBytesChanged": false,
+        "originalProcessGroupGone": true,
+        "processReaped": true,
+        "productionErrorCauseProven": false,
+        "sourceRefs": [
+          "localProbe1Manifest",
+          "localProbe1Terminal"
+        ],
+        "status": "stopped-locally"
+      },
+      {
+        "attempt": 2,
+        "authenticationLoaded": false,
+        "cloudRequests": 0,
+        "exitCode": 1,
+        "observation": {
+          "freshnessClaimed": false,
+          "historical": true,
+          "observationKind": "original-local-terminal-has-no-timestamp",
+          "observedAtUtc": null
+        },
+        "onlineAcceptanceProven": false,
+        "originalBundleBytesChanged": false,
+        "originalProcessGroupGone": true,
+        "processReaped": true,
+        "productionErrorCauseProven": false,
+        "sourceRefs": [
+          "localProbe2Manifest",
+          "localProbe2Terminal"
+        ],
+        "status": "stopped-locally"
+      },
+      {
+        "attempt": 3,
+        "authenticationLoaded": false,
+        "cloudRequests": 0,
+        "exitCode": 0,
+        "observation": {
+          "freshnessClaimed": false,
+          "historical": true,
+          "observationKind": "original-local-terminal-has-no-timestamp",
+          "observedAtUtc": null
+        },
+        "onlineAcceptanceProven": false,
+        "originalBundleBytesChanged": false,
+        "originalProcessGroupGone": true,
+        "processReaped": true,
+        "productionErrorCauseProven": false,
+        "sourceRefs": [
+          "localProbe3Manifest",
+          "localProbe3Terminal"
+        ],
+        "status": "passed-locally"
+      }
+    ],
+    "cloudStartupErrorCauseProven": false,
+    "localRuntimeVersion": "1.20260903.1",
+    "passedBundleBytes": 5874812,
+    "passedBundleSha256": "a558cbfecab0c09fa8237e421af0f8333fc5e589a9b6775bc19c50eadb995f02",
+    "productionDeploymentProven": false,
+    "productionEnvironmentParityProven": false,
+    "riffoidOnlineAccCompleted": 0,
+    "scope": "local-workerd-without-production-bindings-or-network",
+    "targetCompatibilityDate": "2026-09-09"
+  },
+  "milestonesComplete": {
+    "M3": false,
+    "M4": false
+  },
+  "preparationCreatesNoNewRuntimeObservation": true,
+  "preparedAtUtc": "2026-10-19T13:21:02.941747+00:00",
+  "recordedDeploymentAndAcceptance": {
+    "newSuccessfulGatewayAckCount": 0,
+    "observation": {
+      "freshnessClaimed": false,
+      "historical": true,
+      "observationKind": "original-observation",
+      "observedAtUtc": "2026-10-19T07:30:16.731Z"
+    },
+    "originalAppRolloutAckCount": 0,
+    "originalAppRolloutIntentCount": 0,
+    "riffoidAcc": {
+      "ACC-01": "pending",
+      "ACC-02": "pending",
+      "ACC-03": "pending",
+      "ACC-04": "pending",
+      "ACC-05": "pending"
+    },
+    "riffoidOnlineAccCompleted": 0,
+    "scope": "selected-records-through-the-historical-reconciliation",
+    "sourceRefs": [
+      "gatewaySecondSourceFreeze",
+      "existingAcceptance",
+      "completedGetBootstrapSafe"
+    ]
+  },
+  "registry": {
+    "deploymentClaim": false,
+    "images": [
+      {
+        "deploymentAccepted": false,
+        "fullGetReadbackPassed": true,
+        "manifestGetCount": 2,
+        "observation": {
+          "freshnessClaimed": false,
+          "historical": true,
+          "observationKind": "original-terminal-has-no-observation-timestamp",
+          "observedAtUtc": null
+        },
+        "onlineAcceptancePassed": false,
+        "ownerReceiptSealedAtUtc": "2026-10-19T04:13:03.699673+00:00",
+        "role": "project-tools",
+        "rootManifestDigest": "sha256:402381b5b2c0f460e6af44bc4e953d53f6bdb648de4c9ccbeee837815580cd8f",
+        "sourceRefs": [
+          "registryBinding",
+          "registry-project-tools"
+        ],
+        "totalGetCount": 36,
+        "uniqueConfigAndLayerGetCount": 34
+      },
+      {
+        "deploymentAccepted": false,
+        "fullGetReadbackPassed": true,
+        "manifestGetCount": 2,
+        "observation": {
+          "freshnessClaimed": false,
+          "historical": true,
+          "observationKind": "original-terminal-has-no-observation-timestamp",
+          "observedAtUtc": null
+        },
+        "onlineAcceptancePassed": false,
+        "ownerReceiptSealedAtUtc": "2026-10-19T04:13:03.699673+00:00",
+        "role": "trusted-pi",
+        "rootManifestDigest": "sha256:dcd4a5fc6f02c9d0ee1290e07c268a8dba4aba1790e75b98c5f7bb83792da487",
+        "sourceRefs": [
+          "registryBinding",
+          "registry-trusted-pi"
+        ],
+        "totalGetCount": 59,
+        "uniqueConfigAndLayerGetCount": 57
+      }
+    ],
+    "riffoidAcceptanceClaim": false,
+    "status": "two-fixed-artifacts-uploaded-and-fully-read-back"
+  },
+  "schema": "riffoid-ir.selected-publication-progress/v7",
+  "sourceFiles": {
+    "completedGetBootstrapSafe": {
+      "basename": "bootstrap-physical.safe.json",
+      "bytes": 1919,
+      "sha256": "d62bed8507ce5e7a6a4f9156753f3563459e991247bfaf6d791d2f7a2691f34f"
+    },
+    "completedPriorAuthenticationRoutineSafe": {
+      "basename": "original-refresh-complete.safe.json",
+      "bytes": 812,
+      "sha256": "aa4b9a9ae9e273322737b973dbff29b25e74dfcb0e6f456eee3843927db7051d"
+    },
+    "earlierProtocolGet": {
+      "basename": "riffoid-ir-on-demand-protocol-read-20261019.safe.json",
+      "bytes": 955,
+      "sha256": "6e590a2fb093da4b705f366537cbb40f16071b7ef6b055ae551f80253145bcb0"
+    },
+    "existingAcceptance": {
+      "basename": "acceptance.json",
+      "bytes": 5035,
+      "sha256": "0abae1e405a4ecf3efa204c008eb7214ba3509a2210016fa0350aacece5cc75c"
+    },
+    "existingPiManifest": {
+      "basename": "manifest.json",
+      "bytes": 17125,
+      "sha256": "07be3b7df9618e0f048420af8b9f0a58b1094bc545b1853744315a0a6ab9d113"
+    },
+    "existingPiValidation": {
+      "basename": "validation.json",
+      "bytes": 634,
+      "sha256": "7cf1620f3f6a4182c8aa734028d9272602f0ebe51a357ddd9647dc0ab66b4e34"
+    },
+    "existingPluginChecks": {
+      "basename": "plugin-check.txt",
+      "bytes": 2961,
+      "sha256": "1fed09a8a41c7599b99485d45058504f0ad4b24fcc61b94159247ebc2085d9d6"
+    },
+    "existingPluginPreparation": {
+      "basename": "preparation.json",
+      "bytes": 1446,
+      "sha256": "012c8b02203d41f4026039a029b80691c2ccd7e5a3b7c4b4187612383e273319"
+    },
+    "existingSourcePublication": {
+      "basename": "riffoid-ir-source-publication-20261019.safe.json",
+      "bytes": 1669,
+      "sha256": "eb8219b598554e88114bd88fe444fd5a72677dad29ef3a87025455efda09eadf"
+    },
+    "expiredBeforeArmFreeze": {
+      "basename": "freeze.safe.json",
+      "bytes": 1483,
+      "sha256": "1ecf905541e18b412ba347d22f39abfab0fb2cb6ecf490899bf7387ba74c3ea7"
+    },
+    "first-subsequent-read-only-attemptStopped": {
+      "basename": "owner-wiring-stopped.safe.json",
+      "bytes": 334,
+      "sha256": "3216f10b0a4145e9cb2b7acf99ad82348273d627840780bdd5eec74f35ebbbc1"
+    },
+    "gatewayFirstIntent": {
+      "basename": "worker-put-intent.safe.json",
+      "bytes": 585,
+      "sha256": "161a66218deff8c1964ffb07630b5af6514af7eeeec710ae67fa0d6804a7bd05"
+    },
+    "gatewayFirstResponse": {
+      "basename": "worker-put-response.safe.json",
+      "bytes": 410,
+      "sha256": "094e6d88198c0aadfe113cf1a8b7bb816ce138c88ec38ef210c237a13aa73083"
+    },
+    "gatewayFirstStopped": {
+      "basename": "worker-put-stopped.safe.json",
+      "bytes": 369,
+      "sha256": "45b21a33d48774143b1c9cd27074cfdd3c2e8a62d106be7bb0b8f7b472dd7801"
+    },
+    "gatewaySecondBoundedDiagnostic": {
+      "basename": "worker-put-error-diagnostic.safe.json",
+      "bytes": 706,
+      "sha256": "2a78933a4c01c39630c1cd52bad61340619105703bdf74e3291e8dc4896960cd"
+    },
+    "gatewaySecondResponse": {
+      "basename": "worker-put-response.safe.json",
+      "bytes": 410,
+      "sha256": "90df6aaf799b8ff42ba16f25dd4cf9274830bcda72abf5fcd61be9ae98ee407c"
+    },
+    "gatewaySecondSourceFreeze": {
+      "basename": "freeze.safe.json",
+      "bytes": 1099,
+      "sha256": "4494ebe3919fdcadedcd23061adbc2ab743000d13a890be29a9f418aab937942"
+    },
+    "localProbe1Manifest": {
+      "basename": "review-manifest.json",
+      "bytes": 1644,
+      "sha256": "90be9a3e8fc0a7e9521af86f51b3c824241d8a06174ed1089f10186a99c0bbd9"
+    },
+    "localProbe1Terminal": {
+      "basename": "terminal.safe.json",
+      "bytes": 892,
+      "sha256": "8823d072db5fbd9e45e78998e479a1665fe1d5c3231399fab0ba0275d54bb68b"
+    },
+    "localProbe2Manifest": {
+      "basename": "review-manifest.json",
+      "bytes": 1644,
+      "sha256": "90be9a3e8fc0a7e9521af86f51b3c824241d8a06174ed1089f10186a99c0bbd9"
+    },
+    "localProbe2Terminal": {
+      "basename": "terminal.safe.json",
+      "bytes": 912,
+      "sha256": "fa8604b1670e659cd05a75ee635d55815de99a1c57e5ed4ef8c4ad3397c5c217"
+    },
+    "localProbe3Manifest": {
+      "basename": "review-manifest.json",
+      "bytes": 1936,
+      "sha256": "89db1eacb0cf02153d5c19566d27f37a6f494442380223eabc04f6d17e29d37e"
+    },
+    "localProbe3Terminal": {
+      "basename": "terminal.safe.json",
+      "bytes": 919,
+      "sha256": "09bbefbcb8109d492b48faa318b5e6e97854a87e871f5ab927524cc219170407"
+    },
+    "mergedMainCommit": {
+      "basename": "github-commit.original.json",
+      "bytes": 2710,
+      "sha256": "c4792ddffc7bcf76d5dfff4d390267b4ab338f7b1019ef1f550b27db3826533b"
+    },
+    "mergedMainRead": {
+      "basename": "main-read.safe.json",
+      "bytes": 807,
+      "sha256": "71ee625825178a86a8b6cd6da42b73d161b91b8fbfbd90d2a67d8b49f55de363"
+    },
+    "nextOriginalAuthenticationRoutineSafeComplete": {
+      "basename": "original-refresh-complete.safe.json",
+      "bytes": 812,
+      "sha256": "b2805e91a499ea1eab3f7ad25893d181e5a4e0a861399ab173c8c3bce4e6d4a1"
+    },
+    "operator401BatchArm": {
+      "basename": "arm.safe.json",
+      "bytes": 754,
+      "sha256": "df70dec8b63fd8a516c504c8586d0d00d96fd3643174672d711f44c0a00e90cd"
+    },
+    "operator401BatchFreeze": {
+      "basename": "freeze.safe.json",
+      "bytes": 2739,
+      "sha256": "b80136b2a7213e2d16256e7793323b11d76f9a80fcd8ddcd3761647dc0b306c4"
+    },
+    "operator401CollectorTerminal": {
+      "basename": "collect-terminal.safe.json",
+      "bytes": 580,
+      "sha256": "24127186985e7ec55cae6b06e256bf8b1bb96f040f9bafa4896770dbe7868939"
+    },
+    "operator401ParentTerminal": {
+      "basename": "terminal.safe.json",
+      "bytes": 507,
+      "sha256": "a0d2c29c37788a60d8f95df8dcfd6e07f18ecf3f655cdf2b2329f30467283b83"
+    },
+    "operator401SafeObservation": {
+      "basename": "operator-stop-observation.private.json",
+      "bytes": 1501,
+      "sha256": "d892719fee3603ba372532337eac384e3f082fc0ae9dd6fa252d0dfab8016b78"
+    },
+    "r10BoundedClassification": {
+      "basename": "collector-retry-classification.safe.json",
+      "bytes": 1155,
+      "sha256": "8dc6bf3f7d1e02503dedb18ed3c71b7a423fd099f26ff2d1e7bc7903a286257a"
+    },
+    "r10BoundedRuntimeTerminal": {
+      "basename": "terminal.safe.json",
+      "bytes": 845,
+      "sha256": "72e6d6df8d7e1a00cd00000ec5351d3a93c73a2f7597c1c76372fe50c085327e"
+    },
+    "r10CollectorTerminal": {
+      "basename": "collect-terminal.safe.json",
+      "bytes": 584,
+      "sha256": "2bbe019eb04f5c6ce5817a20d3d788d178b5db3b5ca481eba66d2e73cedd2a3f"
+    },
+    "r10ConsumedWindowArm": {
+      "basename": "arm.safe.json",
+      "bytes": 974,
+      "sha256": "fd8461dc16d226602d3ad8e22295660704e5d1b281cc7f3f8c4e7fec744f4dbb"
+    },
+    "r10NativeAttemptGateClosed": {
+      "basename": "failed-collect-gate-closed.safe.json",
+      "bytes": 224,
+      "sha256": "24ff3922c9e12153cd360fb1f534a49be77732d7f58b9dc717daa1b503dc38ad"
+    },
+    "r11OriginalExpiredStandbyProof": {
+      "basename": "standby-ended.private.json",
+      "bytes": 432,
+      "sha256": "6ee4bf063fd66dfa9c76bd301948769062ca452837a672c827e38fc6c9499eed"
+    },
+    "registry-project-tools": {
+      "basename": "terminal.safe.json",
+      "bytes": 9176,
+      "sha256": "206112ce3daceebf70cadf187329b7876b876334f9fa0b25a0e8215f4e765b22"
+    },
+    "registry-trusted-pi": {
+      "basename": "terminal.safe.json",
+      "bytes": 13982,
+      "sha256": "24606befe4ab3741f8d1dbcf7d87a46f2b8d465ce374b0bac3d83a2e9933dbf4"
+    },
+    "registryBinding": {
+      "basename": "owner-bindings.mjs",
+      "bytes": 10095,
+      "sha256": "914ad439d74d3551436308bc894e515b92744c157313017c0fe9828f5a1569cb"
+    },
+    "rootDerivedR10R11Checkpoint": {
+      "basename": "riffoid-ir-active-checkpoint-20261019-after-r11-expiry.json",
+      "bytes": 5184,
+      "sha256": "3fc5e055083ee49a42feeeea0380af96a2bab9bee4aa0cdf5d9377f756c56d31"
+    },
+    "second-subsequent-read-only-attemptStopped": {
+      "basename": "owner-wiring-stopped.safe.json",
+      "bytes": 298,
+      "sha256": "329f49f7a7041bc4cbf20917ce35d69bf6f641d59ae60dda2a5eec683a88856e"
+    },
+    "secondBatchCollectorTerminal": {
+      "basename": "collect-terminal.safe.json",
+      "bytes": 646,
+      "sha256": "e430acd2e28e9f987c01ba4eff3d52e454552d245b1d94a73d74a8273f203f8d"
+    },
+    "secondBatchParentTerminal": {
+      "basename": "terminal.safe.json",
+      "bytes": 508,
+      "sha256": "6d3e5c92822d9dc3632883b14d96e5584df722c2773a88a95b20a84ed8f7ff32"
+    },
+    "secondBatchPublisherTerminal": {
+      "basename": "execute-terminal.safe.json",
+      "bytes": 584,
+      "sha256": "ed6c9d40b49985b7056222138d2f1d4d31a8ebb2141460b4474e86e0d01e2615"
+    },
+    "secondBatchWindow": {
+      "basename": "arm.safe.json",
+      "bytes": 770,
+      "sha256": "514010f75d999d873a4285acb36e10e47f5d5e7f77c0899a3466429e884e2e33"
+    },
+    "standaloneReadonly200BrowserReview": {
+      "basename": "independent-review.private.json",
+      "bytes": 2731,
+      "sha256": "12e146b663c777a6aa7c0c66cc39d33d67aaaff05cc63aababae8752cf8afe71"
+    },
+    "standaloneReadonly200Result": {
+      "basename": "result.safe.json",
+      "bytes": 1436,
+      "sha256": "0a6c321053b360b4ded842b1eaa2c3671e2d5ecba6a8edc161796b809c3d78c6"
+    },
+    "standaloneReadonly200Supervision": {
+      "basename": "terminal.safe.json",
+      "bytes": 561,
+      "sha256": "06642311ac8b69ceeaf3901f1f1224a578e8115d316c1f172a445db16b05a03d"
+    },
+    "supplementIncompleteBaselineSafe": {
+      "basename": "bootstrap-stopped.safe.json",
+      "bytes": 360,
+      "sha256": "a99dd67abc536b22644f406ffa6ac68c708c19f5d02e5b2e46fe61d76ea89066"
+    },
+    "supplementTimeoutBatchArm": {
+      "basename": "arm.safe.json",
+      "bytes": 757,
+      "sha256": "ab3a6353d6e78b671b2356b245de5f50c0d811bd2c97f1d6a6399f75e9d672b8"
+    },
+    "supplementTimeoutBrowserSafeObservation": {
+      "basename": "batch-stop-observation.private.json",
+      "bytes": 2252,
+      "sha256": "d2d89244a8275b2683d51b4ac2faeb153775e26cbf5abe29f17a3b1e01286270"
+    },
+    "supplementTimeoutCollectorTerminal": {
+      "basename": "collect-terminal.safe.json",
+      "bytes": 580,
+      "sha256": "3c012caf94e0c165e266580cc40199abf9a711fe7ac210163ac3011d848f02b3"
+    },
+    "supplementTimeoutParentTerminal": {
+      "basename": "terminal.safe.json",
+      "bytes": 516,
+      "sha256": "11cd373f1ce190c3f28b6175cf7fc7952655dce2b60fc623d6e5e81afdb23788"
+    },
+    "supplementTimeoutWiringStopSafe": {
+      "basename": "owner-wiring-stopped.safe.json",
+      "bytes": 298,
+      "sha256": "329f49f7a7041bc4cbf20917ce35d69bf6f641d59ae60dda2a5eec683a88856e"
+    }
+  },
+  "sourcePullRequests": [
+    {
+      "merged": true,
+      "number": 2,
+      "observation": {
+        "freshnessClaimed": false,
+        "historical": true,
+        "observationKind": "existing-source-publication-receipt-no-timestamp",
+        "observedAtUtc": null
+      },
+      "repositoryRole": "plugin",
+      "sourceRefs": [
+        "existingSourcePublication"
+      ]
+    },
+    {
+      "merged": true,
+      "number": 256,
+      "observation": {
+        "freshnessClaimed": false,
+        "historical": true,
+        "observationKind": "original-main-commit-GET",
+        "observedAtUtc": "2026-10-19T03:53:00Z"
+      },
+      "repositoryRole": "host",
+      "sourceRefs": [
+        "mergedMainRead",
+        "mergedMainCommit"
+      ]
+    }
+  ],
+  "status": "deployment-and-online-acceptance-incomplete",
+  "subsequentReadOnlyAttempts": [
+    {
+      "attempt": "first-subsequent-read-only-attempt",
+      "completion": false,
+      "nativeCompleteReceiptPresent": false,
+      "observation": {
+        "freshnessClaimed": false,
+        "historical": true,
+        "observationKind": "original-stopped-receipt-has-no-timestamp",
+        "observedAtUtc": null
+      },
+      "rawGetCaptureCount": 0,
+      "sourceRefs": [
+        "first-subsequent-read-only-attemptStopped"
+      ],
+      "stopCode": "existing-oauth-valid-through-bounded-attempt-no-refresh"
+    },
+    {
+      "attempt": "second-subsequent-read-only-attempt",
+      "completion": false,
+      "nativeCompleteReceiptPresent": false,
+      "observation": {
+        "freshnessClaimed": false,
+        "historical": true,
+        "observationKind": "original-stopped-receipt-has-no-timestamp",
+        "observedAtUtc": null
+      },
+      "rawGetCaptureCount": 53,
+      "sourceRefs": [
+        "second-subsequent-read-only-attemptStopped"
+      ],
+      "stopCode": "hard-request-timeout"
+    }
+  ],
+  "selectedEvidenceAppendMetadata": {
+    "schema": "riffoid-ir.public-progress-append-metadata/v1",
+    "projectionRevision": "v8-r3",
+    "preparedAtUtc": "2026-10-19T15:24:45.983835+00:00",
+    "preparationCreatesNoNewRuntimeObservation": true,
+    "allExistingV7KeysAndValuesPreserved": true,
+    "logicalSourceNamesAreDescriptionsNotOriginalFilenames": true,
+    "baseJSON": {
+      "bytes": 35894,
+      "sha256": "28ae6de4e220de15f12e217f0a1271d1c195a80175b43875b026a7326f0d0be9"
+    },
+    "baseText": {
+      "bytes": 4915,
+      "sha256": "59f7688ef78d916232195d549155b362d8075c7b35072cd93f923e568bcb7bbb"
+    },
+    "previousDraft": {
+      "bytes": 49561,
+      "sha256": "f8f5b76b936e7a83b299970f98f39327c2e4650b3fa518242869a2e0b72d0a23"
+    },
+    "originalV8DraftAndV7RemainUnmodified": true
+  },
+  "laterSameArmReadOnlyAndPrepublicationHistory": {
+    "schema": "riffoid-ir.selected-readonly-and-prepublication-history/v1",
+    "allEntriesAreHistoricalObservations": true,
+    "r12TwoPrecredentialStops": [
+      {
+        "stopProofCheckedAtUtc": "2026-10-19T13:28:58.537Z",
+        "historicalObservation": true,
+        "browserGETCount": 0,
+        "bootstrapCreated": false,
+        "credentialHelperReached": false,
+        "nativeConnectionCreated": false,
+        "executeEntryCalled": false,
+        "code": "hard-request-timeout",
+        "precredentialPhaseIsSourceOrderedDerivation": true,
+        "sourceRef": "r12-first-stop-proof"
+      },
+      {
+        "stopProofCheckedAtUtc": "2026-10-19T13:30:39.215Z",
+        "historicalObservation": true,
+        "browserGETCount": 0,
+        "bootstrapCreated": false,
+        "credentialHelperReached": false,
+        "nativeConnectionCreated": false,
+        "executeEntryCalled": false,
+        "code": "hard-request-timeout",
+        "precredentialPhaseIsSourceOrderedDerivation": true,
+        "sourceRef": "r12-second-stop-proof"
+      }
+    ],
+    "r13MaintenanceSuccessThenIncompleteReadonlyBaseline": {
+      "maintenanceObservationEndedAtUtc": "2026-10-19T13:51:17.134Z",
+      "httpStatus": 200,
+      "valid": true,
+      "browserGETCount": 1,
+      "baselineStartedAtUtc": "2026-10-19T13:51:24.018Z",
+      "baselineEndedAtUtc": "2026-10-19T13:52:36.753Z",
+      "baselineComplete": false,
+      "capturedResponses": 51,
+      "bodyBytes": 393059,
+      "code": "hard-request-timeout",
+      "cloudWrites": 0,
+      "executeEntryCalled": false,
+      "partialResponsesReusedAsCompleteBaseline": false
+    },
+    "r14CompleteBaselineThenLocalValidityStop": {
+      "maintenanceObservations": [
+        {
+          "observedAtUtc": "2026-10-19T14:08:35.838Z",
+          "historicalObservation": true,
+          "httpStatus": 200,
+          "valid": true,
+          "phase": "collect-precredential",
+          "sourceRef": "r14-maintenance-observation-1"
+        },
+        {
+          "observedAtUtc": "2026-10-19T14:09:55.783Z",
+          "historicalObservation": true,
+          "httpStatus": 200,
+          "valid": true,
+          "phase": "collect-precredential",
+          "sourceRef": "r14-maintenance-observation-2"
+        },
+        {
+          "observedAtUtc": "2026-10-19T14:11:22.580Z",
+          "historicalObservation": true,
+          "httpStatus": 200,
+          "valid": true,
+          "phase": "collect-postbaseline",
+          "sourceRef": "r14-maintenance-observation-3"
+        }
+      ],
+      "collectorAttempts": 2,
+      "secondCollectorExitCode": 0,
+      "fullBaselineResponseCount": 53,
+      "nativeResponseCount": 15,
+      "verifiedUniqueRawResponses": 68,
+      "verifiedRawBytes": 6216425,
+      "fullBaselineEndedAtUtc": "2026-10-19T14:11:12.596Z",
+      "nativeCaptureEndedAtUtc": "2026-10-19T14:11:27.965Z",
+      "gatewayVersion": 236,
+      "servingBaselineComparedGroupsEqual": true,
+      "servingBaselineComparedGroupCount": 7,
+      "executeEntryCalled": true,
+      "executeEntryExitCode": 1,
+      "executeEntryStoppedAt": "private-credential-helper",
+      "code": "existing-oauth-valid-through-bounded-attempt-no-refresh",
+      "existingCredentialReadOccurred": true,
+      "credentialIdentityResultCreated": false,
+      "nativePublicationConnectionCreated": false,
+      "publicationBodyReached": false,
+      "executePhaseMaintenanceGETCount": 0,
+      "newGatewayPuts": 0,
+      "appRollouts": 0,
+      "guardMeaning": "Requires remaining validity through the bounded attempt plus 120 seconds; this is not a remote permission response or proof of current expiry.",
+      "physicalObservation": {
+        "observedAtUtc": "2026-10-19T14:11:27.965Z",
+        "historicalObservation": true,
+        "apps": [
+          {
+            "role": "project-tools",
+            "deploymentCount": 1,
+            "placementHealth": "running",
+            "containerStatus": "stopped",
+            "deploymentState": "placed",
+            "terminate": false,
+            "fullyReleased": false,
+            "deploymentVersion": 3,
+            "configuredInstances": 1,
+            "maximumInstances": 1,
+            "legacyInactiveCount": 10,
+            "v2InactiveCount": 10,
+            "dashboardInstanceCount": 0,
+            "listAndDetailPlacementFieldsAgree": true
+          },
+          {
+            "role": "trusted-pi",
+            "deploymentCount": 1,
+            "placementHealth": "running",
+            "containerStatus": "stopped",
+            "deploymentState": "placed",
+            "terminate": false,
+            "fullyReleased": false,
+            "deploymentVersion": 13,
+            "configuredInstances": 1,
+            "maximumInstances": 1,
+            "legacyInactiveCount": 10,
+            "v2InactiveCount": 10,
+            "dashboardInstanceCount": 0,
+            "listAndDetailPlacementFieldsAgree": true
+          }
+        ],
+        "virtualMachinesGoneInferred": false,
+        "zeroCostInferred": false
+      }
+    },
+    "r15SameScopeRoutineAndInitialEntryStop": {
+      "routineStartedAtUtc": "2026-10-19T14:17:28.997831+00:00",
+      "routineCompletedAtUtc": null,
+      "routineCompletionTimeNotPresentInSelectedReceipt": true,
+      "routineStatus": "same-existing-identity-and-six-scopes-refreshed",
+      "scopeCount": 6,
+      "refreshPostCount": 1,
+      "identityGetCount": 2,
+      "retryAttempts": 0,
+      "redirectsFollowed": 0,
+      "newProfileOrKeyringUsed": false,
+      "newConsentOrLoginStarted": false,
+      "credentialValuesPublished": false,
+      "initialMaintenanceObservedAtUtc": "2026-10-19T14:20:06.118Z",
+      "initialMaintenanceHttpStatus": 503,
+      "initialMaintenanceError": "entry_replay_unavailable",
+      "underlyingEntryClaimCause": null,
+      "authenticationFailureInferred": false,
+      "successfulHoldOrQuietVerificationFromThisResponse": false,
+      "collectorExitCode": 1,
+      "originalGroupsReapedAndGone": true,
+      "bootstrapCreated": false,
+      "credentialHelperReached": false,
+      "nativeConnectionCreated": false,
+      "executeEntryCalled": false,
+      "newGatewayPuts": 0,
+      "appRollouts": 0
+    },
+    "laterContinuationOutcome": {
+      "batchLabel": "R16",
+      "status": "expired-before-entry",
+      "successClaimed": false,
+      "originalWindowEndedAtUtc": "2026-10-19T14:27:27.742Z",
+      "windowExpired": true,
+      "cliPreflightCompleted": true,
+      "cliExitCode": 1,
+      "code": "r9-original-window-expired-prepared-only-no-rearm",
+      "cliOutcomeEvidenceKind": "explicit-root-derived-record-of-original-tool-return",
+      "standaloneOriginalCliStdoutFile": null,
+      "standaloneOriginalCliStdoutWasSaved": false,
+      "originalCliCompletionTimeUtc": null,
+      "browserHistoricalObservedAtUtc": "2026-10-19T14:27:56.045Z",
+      "browserMetadataAloneDoesNotEstablishCliExit": true,
+      "callerProofCreated": false,
+      "actualCallerAndAttemptRootsCreated": false,
+      "actualCallerAndAttemptRootsIndependentlyCheckedAbsent": 5,
+      "collectorAttempts": 0,
+      "nativeEntryCount": 0,
+      "browserGETCount": 0,
+      "executeEntries": 0,
+      "newGatewayPuts": 0,
+      "appRollouts": 0,
+      "newArmCreated": false,
+      "maintenanceEndPerformed": false,
+      "sourceRefs": [
+        "r16-root-derived-preflight-observation",
+        "r16-browser-expired-window-zero-get"
+      ]
+    },
+    "cumulativeGatewayPutsThroughCoveredEvidence": 2,
+    "newGatewaySuccessfulAcknowledgementsThroughCoveredEvidence": 0,
+    "appRolloutsThroughCoveredEvidence": 0,
+    "riffoidOnlineAccCompletedThroughCoveredEvidence": 0,
+    "milestonesCompletedByTheseObservations": {
+      "M3": false,
+      "M4": false
+    },
+    "maintenanceReleaseClaimedByThisAppend": false,
+    "sourceReferences": [
+      {
+        "logicalName": "r12-parent-stop",
+        "bytes": 879,
+        "sha256": "a4c30f1c9b5669b446287aba2750c83a8e651031ee9a8dc39d4168a592ee48a5"
+      },
+      {
+        "logicalName": "r12-first-stop-proof",
+        "bytes": 3567,
+        "sha256": "f8e45f42d85b2ef83bc142780abf46a629e46d4404bbf46e8943d38ef6ffd163"
+      },
+      {
+        "logicalName": "r12-second-stop-proof",
+        "bytes": 3568,
+        "sha256": "7170a596f24ec27149832ad39f16fc32f323ea73ee640bdc224c544d2694bab5"
+      },
+      {
+        "logicalName": "r12-ui-diagnosis-and-local-correction",
+        "bytes": 4881,
+        "sha256": "ecbe798f7146e9afd97de67523135d4a3fe7eeaa617e2590446cadb7286c237b"
+      },
+      {
+        "logicalName": "r13-parent-stop",
+        "bytes": 879,
+        "sha256": "8f473d78fabdd21c8450a32de05d5af08793ba4c5fb3894b233eade24a638f30"
+      },
+      {
+        "logicalName": "r13-maintenance-observation",
+        "bytes": 854,
+        "sha256": "719e676c03b42f736c4ba0b2a45e124f8454b3c6d2f3b2bb197dcc40b23049c6"
+      },
+      {
+        "logicalName": "r13-incomplete-get-baseline",
+        "bytes": 360,
+        "sha256": "cf42d6c7a6630f52c7a156cfbae5337ff46722d8876705614fc814401e9cbe14"
+      },
+      {
+        "logicalName": "r14-parent-stop",
+        "bytes": 871,
+        "sha256": "16100632b85ee95999c5c89bd3ca3773a96748b1c700ba194c3f5ffae25aca78"
+      },
+      {
+        "logicalName": "r14-browser-stop",
+        "bytes": 3505,
+        "sha256": "6b8f2e99ff5a02ceae3cee43105e20c818659314d9bdcb8fcfcc0b45fe2dc0bd"
+      },
+      {
+        "logicalName": "r14-successful-collector-terminal",
+        "bytes": 667,
+        "sha256": "317794aa0ff1d06edf934a0ea38c3b58e5630f2a99471cadf30b8d5edd322d3d"
+      },
+      {
+        "logicalName": "r14-execute-entry-terminal",
+        "bytes": 605,
+        "sha256": "916f2e027ad216e3db95c42cf9ba0f0227f0891d7d63d44038d7977ef6bc8447"
+      },
+      {
+        "logicalName": "r14-local-validity-stop",
+        "bytes": 334,
+        "sha256": "97fafc41428f518577230fa4ab9a0a4e1116a6c3cbe020c15974b1dcc9655136"
+      },
+      {
+        "logicalName": "r14-complete-baseline-byte-verification",
+        "bytes": 2122,
+        "sha256": "dfeec2ee4fd15cf600ac4c38faceb118767140d244021c88811a3079dee9385b"
+      },
+      {
+        "logicalName": "r14-native-state-capture-envelope",
+        "bytes": 70595,
+        "sha256": "1d2b4b4a2ed65ae3e269b74c52846470bc6975bd2b81341a95f9821c3e7c6aad"
+      },
+      {
+        "logicalName": "native-owner-source-order",
+        "bytes": 19963,
+        "sha256": "18a3b2dd5e856a0e2580ad494a3ff7c4259e0b47eda3e0e95746007173798342"
+      },
+      {
+        "logicalName": "fixed-credential-helper-source-order",
+        "bytes": 17924,
+        "sha256": "e33ab2c17653702551246a009c4420bed747c216e7b9a0a7f4dc674dd164c61c"
+      },
+      {
+        "logicalName": "r15-routine-completion",
+        "bytes": 812,
+        "sha256": "38bc40d1edb478fcc876ba78253715d351033b17e7028c3abde487d64c071f14"
+      },
+      {
+        "logicalName": "r15-routine-start",
+        "bytes": 839,
+        "sha256": "909d52f41996703a0a91e2c87764b4f9ee1ffc43f9c9e01e785d372da0ae9abe"
+      },
+      {
+        "logicalName": "r15-maintenance-error-response",
+        "bytes": 366,
+        "sha256": "cd6431fde1d7ea1b039db7133f2f334165cb2fbc768db8d7abe48504f07b01d7"
+      },
+      {
+        "logicalName": "r15-maintenance-error-observation",
+        "bytes": 960,
+        "sha256": "a2897c09af92cd4028c0a62fd4b23488f6ceb1363f6ee58b6778d34b1fe2b0ad"
+      },
+      {
+        "logicalName": "r15-parent-stop",
+        "bytes": 879,
+        "sha256": "6a4cec7ac45197b6d8b3fc6ff1c5762eacf9b5f2a40d945228c86aec4d889713"
+      },
+      {
+        "logicalName": "r15-collector-stop",
+        "bytes": 750,
+        "sha256": "ef34975336e1e5375a7182278b61608d67393a06adba9e6eb427e269d03b4880"
+      },
+      {
+        "logicalName": "r14-maintenance-observation-1",
+        "bytes": 875,
+        "sha256": "79094be5ed8856114ea5a299bdc70a6221aee067ebe031952cd251c8c50176bd"
+      },
+      {
+        "logicalName": "r14-maintenance-observation-2",
+        "bytes": 876,
+        "sha256": "98dedfebe47650d7d08b3ed42ce67d010b98bfd59ed582381378cb1c2fbef8d9"
+      },
+      {
+        "logicalName": "r14-maintenance-observation-3",
+        "bytes": 874,
+        "sha256": "a80ffb87e02ef5f6e690b510209df5499eaff4fdd428cae6227bcd13a1e4f30b"
+      },
+      {
+        "logicalName": "r16-browser-expired-window-zero-get",
+        "bytes": 2247,
+        "sha256": "4af9cf5dad703c55730456128e5e63067b94d2652191a4e5aa05f53e65874f9a"
+      },
+      {
+        "logicalName": "r16-root-derived-preflight-observation",
+        "bytes": 2420,
+        "sha256": "a8f592aea8d11ace6d6c1ee1e9de07f1deeb3c7e5a19f88c8f91e01f5e963f83"
+      }
+    ],
+    "latestCompleteServingResourceSnapshotEndedAtUtc": "2026-10-19T14:11:12.596Z",
+    "latestNativeStateCaptureEndedAtUtc": "2026-10-19T14:11:27.965Z",
+    "laterCompleteDeploymentReadbackClaimed": false
+  },
+  "r17HistoryAndReplayAvailabilityPriorityAppend": {
+    "schema": "riffoid-ir.public-progress-history-append/v1",
+    "projectionRevision": "v9",
+    "preparedAtUtc": "2026-10-19T16:25:13.604389Z",
+    "preparationCreatesNoNewRuntimeObservation": true,
+    "allPriorKeysAndValuesPreserved": true,
+    "allAppendedObservationsHistorical": true,
+    "baseProjection": {
+      "json": {
+        "bytes": 49561,
+        "sha256": "e9c11b2dc451de109b6e91d3ebf2f4db4211b2750f2f25fae48b0d272b562af9"
+      },
+      "text": {
+        "bytes": 7448,
+        "sha256": "e9922ff0f7d813e1a67dd1dfa7297d24d5481c18d9e2eb680fea5315f9c20663"
+      }
+    },
+    "r17": {
+      "originalScopeRoutineSucceeded": true,
+      "sameOriginalSixScopes": true,
+      "routineCompletionTimestampRecorded": false,
+      "operatorGetObservedAtUtc": [
+        "2026-10-19T15:52:58.469Z",
+        "2026-10-19T15:54:03.700Z",
+        "2026-10-19T15:54:29.560Z"
+      ],
+      "operatorGetStatus": [
+        200,
+        200,
+        200
+      ],
+      "operatorResponsesValid": true,
+      "twoSeparateCompleteGetCaptures": [
+        {
+          "phase": "initial",
+          "startedAtUtc": "2026-10-19T15:53:01.647Z",
+          "fullGetEndedAtUtc": "2026-10-19T15:53:51.905Z",
+          "fullResponses": 53,
+          "nativeResponses": 15,
+          "rawReferenceBytes": 6216425
+        },
+        {
+          "phase": "prepublication",
+          "startedAtUtc": "2026-10-19T15:54:34.423Z",
+          "fullGetEndedAtUtc": "2026-10-19T15:55:29.634Z",
+          "fullResponses": 53,
+          "nativeResponses": 15,
+          "rawReferenceBytes": 6216425
+        }
+      ],
+      "rawPayloadUniquenessAcrossCapturesClaimed": false,
+      "runPublicationEntered": true,
+      "stopPhase": "preflight",
+      "stopCode": "same-known-rejected-original-preservation-baseline",
+      "stoppedBeforeFirstAssetSessionPost": true,
+      "sixNonphysicalPreservationGroupsExactEqual": true,
+      "twoFixedHistoricalInactiveInstanceRowsAbsent": true,
+      "allRemainingCompleteRowsAndRelativeOrderExactEqual": true,
+      "absenceCause": null,
+      "physicalReleaseOrZeroCostInferred": false,
+      "privateRetention": {
+        "recordedAtUtc": "2026-10-19T16:19:29.099326+00:00",
+        "newFiles": 139,
+        "newBytes": 13783929,
+        "alreadyRetainedExactByteReferences": 241,
+        "allActualCopiesVerified": true
+      }
+    },
+    "r18": {
+      "adapterPureGroupsPassed": 3,
+      "callerPureGroupsPassed": 3,
+      "defaultDisabledPreparation": true,
+      "liveLaunched": false
+    },
+    "entry503": {
+      "originalResponseObservedAtUtc": "2026-10-19T14:20:06.118Z",
+      "httpStatus": 503,
+      "error": "entry_replay_unavailable",
+      "savedServingSourceAndNamespaceConsistent": true,
+      "perOriginalFailureDeploymentIdentityIndependentlyProved": false,
+      "establishedBoundary": "replay claim availability before body authentication and business handler",
+      "exactCause": null,
+      "indistinguishableBranches": [
+        "lookup or RPC throw",
+        "nominal two-second timeout",
+        "request abort",
+        "shard full",
+        "unexpected RPC result"
+      ],
+      "later200ExplainsEarlier503": false
+    },
+    "diagnosticPriority": {
+      "statusRecordAtUtc": "2026-10-19T16:20:20Z",
+      "statusSourceIsDerivedRootToolObservation": true,
+      "logKeysQuery": {
+        "sameQueryAttempts": 2,
+        "requestsExecuted": 0,
+        "bothRejectedByToolPolicy": "never",
+        "secondAttemptHumanApproved": true
+      },
+      "businessAuthorizationSufficientWithinExistingScope": true,
+      "repeatLoginOrCollectionUsedAsDiagnosis": false,
+      "replayProtectionChanged": false,
+      "r18HeldFor503Diagnosis": true
+    },
+    "futureErrorBodyCapture": {
+      "sourceReviewed": true,
+      "actualFull10021BodyObtained": false,
+      "exactHistorical10021Cause": null,
+      "sameOriginalFailureBytesOnly": true,
+      "eligibleJsonMaximumBytes": 65536,
+      "privateCreationMode": "0600",
+      "independentActualFileReadbackShaRequired": true,
+      "captureStatusSavedAloneIsReadbackProof": false,
+      "extraPutOrProtectionBypassAuthorizedByPreparation": false
+    },
+    "outcome": {
+      "recordedGatewayPutAttemptsStill": 2,
+      "newGatewayPutsInThisAppend": 0,
+      "newAppRollouts": 0,
+      "maintenanceEndPerformed": false,
+      "riffoidOnlineAccStarted": false,
+      "riffoidOnlineAccCompleted": 0,
+      "milestonesComplete": {
+        "M3": false,
+        "M4": false
+      },
+      "existingPiWebRiffPiEvidenceRetained": true
+    },
+    "sourceRefs": [
+      {
+        "logicalName": "priority-status-derived-record",
+        "bytes": 2934,
+        "sha256": "023ee7eea841ebdbea8aa40c057c6592508b5cd06a9b2e1ca5657a9b20004a13"
+      },
+      {
+        "logicalName": "completed-private-retention-receipt",
+        "bytes": 3290,
+        "sha256": "c227fe1f54fb535112c3b6ed47b52c564701d0f0e0415cc18cb56d948f6cae36"
+      },
+      {
+        "logicalName": "original-routine-safe-terminal",
+        "bytes": 1122,
+        "sha256": "79918078bc31253b0a2d16afe6f74cfb646ff7ffdb47f5f4d1058829f33840e0"
+      },
+      {
+        "logicalName": "three-operator-responses-and-stopped-proof",
+        "bytes": 4582,
+        "sha256": "f1b79447eebdfa5bc56e280cb5ffd4bab2251fb08bf092d934cf56921f7ad7e2"
+      },
+      {
+        "logicalName": "initial-complete-get-summary",
+        "bytes": 26481,
+        "sha256": "9bafbc49ff4d243121fc5dc2d8477337045a5f0082c2f6ef3c477da73f352177"
+      },
+      {
+        "logicalName": "prepublication-complete-get-summary",
+        "bytes": 26477,
+        "sha256": "814c6f1fa77078159552033b15485f7e9e3f53545be20f200838a54baf68673f"
+      },
+      {
+        "logicalName": "original-publication-preflight-stop",
+        "bytes": 463,
+        "sha256": "86b27a827a45b742e6f4b219680d29da3abb6a63c99e47fa58ffdda1c2acb6ff"
+      },
+      {
+        "logicalName": "exact-historical-instance-row-comparison",
+        "bytes": 12023,
+        "sha256": "087d9b115bf68c8ae3c764dbb445aa169300bd197f37dd49c6ffc76017449cb4"
+      },
+      {
+        "logicalName": "adapter-pure-validation",
+        "bytes": 1211,
+        "sha256": "4b0472990d4be89687cf333730f79f5b3a3973a02d7b3fea0046044615bff29a"
+      },
+      {
+        "logicalName": "same-window-caller-pure-validation",
+        "bytes": 1494,
+        "sha256": "5b341ca4edfe60784ad575d20591fb948a23f461eadfffc78f933eedfbefd09a"
+      },
+      {
+        "logicalName": "replay-availability-source-diagnosis",
+        "bytes": 8610,
+        "sha256": "6a078d43f0b5235ef5fb7132812e1b40772027527d14db41b50abb959347a7af"
+      },
+      {
+        "logicalName": "same-response-private-capture-source-review",
+        "bytes": 10148,
+        "sha256": "887d0f3a35fc81021a7f0889b58baa375f7046964c7eed5ece4fc14e549e4f0d"
+      }
+    ]
+  }
+}
