@@ -1,0 +1,247 @@
+{
+  "schema": "jhg46-sdk-t1-physical-release-contract-independent-review/v1",
+  "reviewedAt": "2026-10-18T22:24:30Z",
+  "batchRequestId": "fb07e239-2cb4-4379-9581-5711d86a0f30",
+  "mode": "Local saved-evidence and immutable-source review only; no new authority read or live action",
+  "verdict": "T1 is saved with expected original assignment-guard pending at the supplied read. Product release is not yet established. The replacement idle placement is cross-identified but differs from the current fixed packet explicit placement boundary; do not start T2 until both original release closure and this scope difference are resolved.",
+  "fixedPacket": {
+    "commit": "8f7b8c00ec4e01f7ab694fd6bf26dbd55960a2b1",
+    "path": "docs/project-view-native-sdk-publication-acceptance-packet-20261019.md",
+    "bytes": 12685,
+    "sha256": "be1f835cfacf4e0e71def4ad437aa6d7e04cd7ae5abb3c4780bb85531c27b569",
+    "relevantLines": {
+      "saveAndReleaseBeforeNextStage": "25-28",
+      "idleScope": "36"
+    },
+    "exactIdleClause": "最多一份已知 d03b… deployment / 8ef5… placement 的 basic/max1 空闲 VM 可 running、容器 stopped，仍可能计费。不将该例外扩大到新/unknown placement，不为清理删除或重启 VM。",
+    "noSourceOrFrozenGrantRewrite": true
+  },
+  "sources": [
+    {
+      "commit": "fca66cb0e1024b4e86bbbeb9a6d955b137599efa",
+      "path": "services/turn-runtime/core.ts",
+      "bytes": 71190,
+      "sha256": "4791345a0cab39fe4dd3e7e8e35266dd54cc1ac10588d7702538f14eb04d198b",
+      "reviewedLines": "304-327",
+      "diskMatchesFixedImplementation": true
+    },
+    {
+      "commit": "fca66cb0e1024b4e86bbbeb9a6d955b137599efa",
+      "path": "services/turn-runtime/host.ts",
+      "bytes": 11605,
+      "sha256": "1bdbbdca438fa2f535458d39099ea8b98f53dd6e9996eb42465bdb38c1eb149b",
+      "reviewedLines": "51",
+      "diskMatchesFixedImplementation": true
+    },
+    {
+      "commit": "fca66cb0e1024b4e86bbbeb9a6d955b137599efa",
+      "path": "services/model-budget/private-beta-release.ts",
+      "bytes": 844,
+      "sha256": "78d57dc765eb9578d750829e22fd121919ca5bdfb644d37e3f7f0e779f586226",
+      "reviewedLines": "1-10",
+      "diskMatchesFixedImplementation": true
+    },
+    {
+      "commit": "fca66cb0e1024b4e86bbbeb9a6d955b137599efa",
+      "path": "services/model-budget/private-beta-capacity.ts",
+      "bytes": 38886,
+      "sha256": "fc36f4de0ce6e79804b080e47a9b696c41c0627464bf4d373249ea7997bec74d",
+      "reviewedLines": "75-107",
+      "diskMatchesFixedImplementation": true
+    },
+    {
+      "commit": "fca66cb0e1024b4e86bbbeb9a6d955b137599efa",
+      "path": "services/workspace/durable.ts",
+      "bytes": 194560,
+      "sha256": "026c97de88ff636b05edae9a43b93bf5360f67f89b80306111f1686d0b96bead",
+      "reviewedLines": "1361-1377",
+      "diskMatchesFixedImplementation": true
+    }
+  ],
+  "savedEvidence": [
+    {
+      "path": ".local/jhg46-native-sdk-publication-acceptance-execution-20261019/authorization/batch-grant.private.json",
+      "bytes": 4254,
+      "sha256": "ef4365b39cfd0fdc2f5243e41c2908d726d0f4c899dec2d5e013a89fa839a244",
+      "role": "Current root-recorded authorization; only fixed preservation facts projected",
+      "rawBodyCopied": false
+    },
+    {
+      "path": ".local/jhg46-native-sdk-publication-acceptance-execution-20261019/preflight/physical-before-ordinary.safe.json",
+      "bytes": 595,
+      "sha256": "ec1225bad9051609ed51fd55c544c8e30276e87e3765570c8e8e913ff942906c",
+      "role": "Previously accepted current deployment and old placement",
+      "rawBodyCopied": false
+    },
+    {
+      "path": ".local/jhg46-native-sdk-publication-acceptance-execution-20261019/ordinary/turn-1-once/postguard-five-get-original.private.json",
+      "bytes": 21199,
+      "sha256": "b18133b39cb4cd122316c344f4fae12b49d766fcd7edc683233c95b9414cf7d6",
+      "role": "Original five successful ordinary product GETs; no new request made by reviewer",
+      "rawBodyCopied": false
+    },
+    {
+      "path": ".local/jhg46-native-sdk-publication-acceptance-execution-20261019/ordinary/turn-1-once/physical-postguard.tool-result.private.json",
+      "bytes": 16551,
+      "sha256": "dc01f295700675181c912a1d82c1807c474a83315db7b496564558818376d9db",
+      "role": "Original four successful physical GETs, list/exact/Dash joined locally",
+      "rawBodyCopied": false
+    },
+    {
+      "path": ".local/jhg46-native-sdk-publication-acceptance-execution-20261019/reviews/t1-dispatch-identity-review.safe.json",
+      "bytes": 8102,
+      "sha256": "4c2f832562a29073dd89e96baae9e724361fa6846e753fcb0a0d37f7992a2921",
+      "role": "Previously independently bound original dispatch and logical object",
+      "rawBodyCopied": false
+    },
+    {
+      "path": ".local/jhg46-native-sdk-acceptance-preparation-20261019/contract-candidate-v1/fresh-read-contract.json",
+      "bytes": 3994,
+      "sha256": "ee39d089e27e2419cdf8edd81da1e4455192a595b870843052681ad76a9f34da",
+      "role": "Current frozen fresh-read and original release conjunction",
+      "rawBodyCopied": false
+    },
+    {
+      "path": ".local/jhg46-native-resource-host-rollout-acceptance-execution-20261018/reviews/idle-baseline-scope-decision.safe.json",
+      "bytes": 8429,
+      "sha256": "ae85637fa4e03eb4e4430354a5c8d1877841a1306132eec4c843599d01c4c497",
+      "role": "Older a25f general known-idle interpretation; not a superseding authorization for this narrower current packet",
+      "rawBodyCopied": false
+    },
+    {
+      "path": ".local/jhg46-native-resource-host-rollout-acceptance-execution-20261018/reviews/t1-assignment-release-guard-source-diagnosis.safe.json",
+      "bytes": 15746,
+      "sha256": "24b227ef7072128a125440adc96d79eb7d0eb38bda90d9018185a284668d0eca",
+      "role": "Earlier source-checked release clock interpretation, rechecked against current fixed implementation",
+      "rawBodyCopied": false
+    },
+    {
+      "path": ".local/jhg46-native-resource-host-rollout-acceptance-execution-20261018/reviews/t1-product-authority-release-threshold-review.safe.json",
+      "bytes": 19516,
+      "sha256": "62f1638730384d6310a71f6400f99c1c65165f48d9172f426976e44b9778a70d",
+      "role": "Existing source-validated joint product release threshold",
+      "rawBodyCopied": false
+    }
+  ],
+  "productObservation": {
+    "window": {
+      "startedAt": "2026-10-18T22:22:48.845Z",
+      "endedAt": "2026-10-18T22:22:58.588Z"
+    },
+    "httpStatuses": [
+      200,
+      200,
+      200,
+      200,
+      200
+    ],
+    "snapshotActiveTurnIdNull": true,
+    "resourceWaitNull": true,
+    "recoveryHoldNull": true,
+    "releaseHold": {
+      "status": "release-pending",
+      "reasonCode": "trusted-pi-release-assignment-guard",
+      "since": 1792361874635,
+      "sinceUtc": "2026-10-18T22:17:54.635Z",
+      "nextAttemptAt": 1792362173928
+    },
+    "releaseConfirmed": false,
+    "savedAndToolsTerminalDoNotReplaceRelease": true
+  },
+  "releaseTiming": {
+    "assignmentGuardMs": 360000,
+    "quietMs": 30000,
+    "runtimeReleaseDeadlineMs": 600000,
+    "runtimeClockOrigin": "Original ReleaseState.begunAt, created at first eligible original release reconciliation; public releaseHold.since carries it. Not model submission, Dash assigned_at, placement created_at or Beta slot creation.",
+    "assignmentEligibilityLowerBoundUtc": "2026-10-18T22:23:54.635Z",
+    "runtimeRecoveryHoldThresholdUtc": "2026-10-18T22:27:54.635Z",
+    "eligibilityIsNotSuccess": "Both observedAt-begunAt>=360000 and observedAt-absentSince>=30000 are required after exact original release returns running:false; true-running resets absentSince. Quiet may overlap assignment guard.",
+    "capacityClosure": "Original identity/dispatch/generation/lease capacity confirmReleased must return matching released ticket with finishedAt before durable released state/hold clearance.",
+    "snapshotIsBeforeAssignmentEligibility": true,
+    "expectedPendingIsNotUnknownExecution": true,
+    "outerBetaDeadline": "For this exact original release-pending assignment/quiet guard, original slot.created_at+policy.maxTurnDurationMs (900000). It never slides. Terminal states without this recognized guard instead use finishedAt+releaseTimeoutMs (120000).",
+    "outerSlotCreatedAtObserved": false,
+    "outerAbsoluteDeadlineComputed": false,
+    "noGuessFromDashAssignmentOrPlacementCreation": true,
+    "expiryOrElapsedTimeDoesNotReleaseCapacity": true,
+    "originalHumanWindowNotExtended": true
+  },
+  "physicalObservation": {
+    "window": {
+      "startedAt": "2026-10-18T22:23:03.757Z",
+      "endedAt": "2026-10-18T22:23:06.081Z"
+    },
+    "allFourGetSucceeded": true,
+    "httpStatuses": [
+      200,
+      200,
+      200,
+      200
+    ],
+    "logicalCount": 10,
+    "allLogicalInactive": true,
+    "originalT1LogicalId": "fcf8a550257f2f3d48772331f6fb2fdd8012ed50330d0bb32ccc377dfe7f1f49",
+    "originalT1LogicalPresentInactive": true,
+    "dashInstances": 0,
+    "dashLogicalIdSetMatches": true,
+    "currentDeploymentCount": 1,
+    "listAndExactSameDeploymentAndPlacement": true,
+    "deploymentId": "d03b8c4d-8cc2-475e-ba96-6e46d062983c",
+    "applicationId": "a03628c4-f032-461f-a65b-612ccac11a06",
+    "applicationVersion": 13,
+    "deploymentVersion": 13,
+    "sameApprovedV13Image": true,
+    "profile": {
+      "vcpu": 0.25,
+      "memoryMiB": 1024,
+      "diskMB": 4000
+    },
+    "currentPlacementId": "9f18c9ab-e7ea-47bc-8238-efce81feea0e",
+    "createdAt": "2026-10-18T22:17:58.540999936Z",
+    "vmHealth": "running",
+    "containerStatus": "stopped",
+    "terminate": false,
+    "placementOwnedBySameDeploymentVersion": true,
+    "oldPreflightPlacementId": "8ef5d3a1-a30c-47c6-8608-b557b6bbc23a",
+    "samePreflightDeployment": true,
+    "samePreflightPlacement": false,
+    "knownCurrentIdentityNotUnjoinedUnknown": true,
+    "causedByT1NotProven": true,
+    "oldPlacementDisposalNotProven": true,
+    "zeroVmOrZeroFeeNotClaimed": true
+  },
+  "scopeDecision": {
+    "currentPacketExplicitlyForbidsExtendingExceptionToNewOrUnknownPlacement": true,
+    "olderGeneralClause": "全目标应用最多一份已知 basic/max1 空闲 VM 可保持 running、容器 stopped，窗口结束后仍可能计费。其他资源完整保留。",
+    "olderGeneralInterpretationCannotEraseNewFixedPacketNarrowerBoundary": true,
+    "sameDeploymentVersionAndOneIdleCapacityAloneSufficientForSilentAcceptance": false,
+    "newPlacementMayBeTechnicallyCompatibleButNotYetWithinExactCurrentRecordedBoundary": true,
+    "additionalRuntimeTurnOrGatePermittedByThisReview": false,
+    "nextAction": "Keep T2/gate and all further writes stopped. Existing same-original-ID read-only guard/release observation may continue without replay. Resolve the explicitly changed placement boundary before advancing; do not replace or relabel the old preflight identity as unchanged.",
+    "noNewProductRuleOrUnstatedPrivateRawFieldRequirementAdded": true
+  },
+  "releaseClosureStillRequired": [
+    "Same original T1/R1 canonical and Session head; successful terminal original tools and original request/runtime generation remain bound.",
+    "After the natural original guard, fresh same-owner snapshot/receipt with activeTurnId/releaseHold/recoveryHold/resourceWait all null under unchanged cold/no-retention configuration, plus original-user Beta available and no unresolved exposure.",
+    "Complete current logical/scheduler/exact/Dash evidence within the explicitly resolved physical scope. Neither saved, elapsed six minutes, inactive logical objects, empty Dash nor one idle VM alone is release proof.",
+    "Use existing source-validated product authority; do not claim independently read private raw stop/lease/capacity ACK fields, force-clear, new maintenance hold or new execution."
+  ],
+  "actions": {
+    "networkCalls": 0,
+    "uiCalls": 0,
+    "authReads": 0,
+    "apiCalls": 0,
+    "cloudWrites": 0,
+    "productEdits": 0,
+    "testsRun": 0,
+    "onlyLocalEvidenceReadAndNewReviewWrite": true
+  },
+  "privacy": {
+    "rawResponseBodiesCopied": false,
+    "userActorTenantEmailHostLocationCredentialOrPromptCopied": false
+  },
+  "mustResolveBeforeT2": [
+    "Original T1 product-authority release remains pending in supplied evidence.",
+    "Current replacement placement9f18 differs from explicitly frozen placement8ef5 and cannot be silently absorbed into the current exception."
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "schema": "jhg46-ordinary-identity-read-safe-preparation/v1",
+  "preparedAt": "2026-10-18T03:23:05.511352+00:00",
+  "reviewOnly": true,
+  "executed": false,
+  "databaseBinding": "CATALOG",
+  "databaseBindingType": "d1",
+  "actualBindingFromVerifiedSection": true,
+  "sourceSectionSha256": "c7f7d7a2c3aafa7f071b5c90ed9af0c440eb547f596097d8cf264aa56b7d4535",
+  "supportedSurface": "Cloudflare OpenAPI POST /accounts/{account_id}/d1/database/{database_id}/query",
+  "sqlSha256": "615b027594d5838ccd53fe928c6f7f1152a316c4adced127414668c0d0e23446",
+  "parameters": "fresh /api/me userId, approved ordinary email, fresh /api/me selected personal tenant ID",
+  "expectedAuthVersion": 2,
+  "mustMatchCurrentAuthenticatedMe": true,
+  "noCredentialsOrInvitationTokenSelected": true,
+  "mutatingSqlOrMultipleStatementsAllowed": false,
+  "queryNotExecuted": true,
+  "independentReviewPending": true
+}

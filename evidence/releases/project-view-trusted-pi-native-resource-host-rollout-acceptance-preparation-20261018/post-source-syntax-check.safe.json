@@ -1,0 +1,15 @@
+{
+  "schema": "jhg46-runtime-witness-synthetic-post-source-compile/v1",
+  "startedAt": "2026-10-18T14:56:47.212Z",
+  "endedAt": "2026-10-18T14:56:47.213Z",
+  "syntheticInputsOnly": true,
+  "syntheticTargetVersion": 987654,
+  "syntheticHashesAreNotAuthority": true,
+  "generatedCodeBytes": 16236,
+  "generatedCodeSha256": "b7010bac94083c4fc8f6be8109803a0cfddbef40a4da21ab892e98def2fe8086",
+  "sourceParsedAsAsyncArrowWithoutInvocation": true,
+  "actualFutureTargetVersionStillNull": true,
+  "noPostRequestSourceWritten": true,
+  "apiAuthNetworkOrCloudCalls": 0,
+  "oldFixtureMatrixOrSuitesRerun": false
+}

@@ -1,0 +1,110 @@
+{
+  "cloudflareApplicationChanges": 0,
+  "containerLaunches": 0,
+  "credentialServerRevocationOrExpiryProved": false,
+  "independentRemoteReader": {
+    "bytes": 5274,
+    "fixedRecordCount": 27,
+    "originalRemoteCommandCount": 5,
+    "path": "independent-remote-cleanup.json",
+    "sha256": "d3f0af3ea58cd8d9049a25fbd1fcd7cfdbe8b5a7e4ce4e82cd45c6c89b9d3632",
+    "status": "original-publication-and-local-cleanup-confirmed"
+  },
+  "limitations": [
+    "Independent reader revalidates fixed authoritative original records and process absence; it does not generate another Registry credential or repeat Registry requests.",
+    "Temporary credential-file deletion does not establish server-side Registry credential revocation or OAuth revocation.",
+    "Current PID absence and original recorded reaping are checked; no unrecorded local driver PID is inferred."
+  ],
+  "localFinalAckCompleteAndUnique": true,
+  "localProcessChecks": [
+    {
+      "argumentsInspected": false,
+      "exitCode": 0,
+      "name": "oauth-consent-once",
+      "observationAt": "2026-10-18T02:06:39.661503+00:00",
+      "pid": 30182,
+      "pidCurrentlyAbsent": true,
+      "psExitCode": 1,
+      "recordedReaped": true,
+      "recordedStartedAt": "2026-10-18T01:59:10.490785+00:00",
+      "stderrBytes": 0,
+      "stdoutBytes": 0
+    },
+    {
+      "argumentsInspected": false,
+      "exitCode": 0,
+      "name": "oauth-token-once",
+      "observationAt": "2026-10-18T02:06:39.663122+00:00",
+      "pid": 30207,
+      "pidCurrentlyAbsent": true,
+      "psExitCode": 1,
+      "recordedReaped": true,
+      "recordedStartedAt": "2026-10-18T01:59:27.732602+00:00",
+      "stderrBytes": 0,
+      "stdoutBytes": 0
+    },
+    {
+      "argumentsInspected": false,
+      "exitCode": 0,
+      "name": "original-ssh",
+      "observationAt": "2026-10-18T02:06:39.664751+00:00",
+      "pid": 30219,
+      "pidCurrentlyAbsent": true,
+      "psExitCode": 1,
+      "recordedReaped": true,
+      "recordedStartedAt": "2026-10-18T01:59:30.761721+00:00",
+      "stderrBytes": 0,
+      "stdoutBytes": 0
+    }
+  ],
+  "localTerminalEndedAt": "2026-10-18T02:03:09.756144+00:00",
+  "mergeAllowed": false,
+  "oauthContainersWriteGrantIsPersistent": true,
+  "originalRecordReferences": [
+    {
+      "bytes": 290,
+      "path": "intent.json",
+      "sha256": "20fe0e89809dc016ff088566fd61722e934fa099d2b3f847ca8ee50ad867d6ae"
+    },
+    {
+      "bytes": 13982,
+      "path": "terminal.json",
+      "sha256": "22b360150dfbcd30e7d49c6933d8637367fc509dda3b784ccfc58656bb3c80f8"
+    },
+    {
+      "bytes": 70,
+      "path": "oauth-consent-once-original-cli.json",
+      "sha256": "b589846bf4686a9d2e88693427b95dca28d75a60306f6fd08015a9804d721aca"
+    },
+    {
+      "bytes": 159,
+      "path": "oauth-consent-once-terminal.json",
+      "sha256": "b17fbd35ab6edc629e9ebbf8c3595c4e07413d1f687371353302d370155d576d"
+    },
+    {
+      "bytes": 70,
+      "path": "oauth-token-once-original-cli.json",
+      "sha256": "08bddd71b49747a5c557dde16ef64cfeb5f6e18dd5452940145c31ed950b3756"
+    },
+    {
+      "bytes": 159,
+      "path": "oauth-token-once-terminal.json",
+      "sha256": "e83f89eac33350ef111f172783e6e3a8c1cb41318e6ab6694075a4c97b02da62"
+    },
+    {
+      "bytes": 148,
+      "path": "original-ssh.json",
+      "sha256": "0b257070345d970a5765a22d4708dfdc125a0566b0584019d1c92c377031b394"
+    }
+  ],
+  "rawAuthCliOutputRead": false,
+  "rawCredentialsOrOAuthOrConfigRead": false,
+  "readOnlyReview": true,
+  "remoteTerminalEndedAt": "2026-10-18T02:03:05.358823+00:00",
+  "requestId": "fb99c7e4-21a7-4215-8261-c17dd7c148aa",
+  "requestedRegistryCredentialTtlMinutes": 15,
+  "reviewedAt": "2026-10-18T02:06:39.665000+00:00",
+  "rolloutAllowed": false,
+  "schema": "trusted-pi-fb99-independent-local-stop-review/v1",
+  "status": "original-publication-and-independent-local-remote-cleanup-confirmed"
+}

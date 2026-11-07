@@ -1,0 +1,12 @@
+{
+  "at": "2026-10-18T14:29:38.608588+00:00",
+  "destination": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-issue165-trusted-pi:jhg46-native-resource-host-20261018-0bb9af7a",
+  "humanGrantSha256": "d80be132a0cba57abba491965451b0988d59e052d5f9cf16be6a5d725473a904",
+  "operationId": "registry-local-readback-v1",
+  "operationsManifestSha256": "16313c7193782acce5cd88de7c0e2caf97c76e59c807b581b8b58ef54642eafa",
+  "parentRequestId": "695e8875-459a-41b3-a148-2e228f2c3727",
+  "requestId": "c263a2f3-f445-430e-b562-2e48f1eeb637",
+  "schema": "trusted-pi-local-registry-readback-intent/v1",
+  "sourceImageId": "sha256:0bb9af7a5909c41187cf56402a21420100c72a8de0025b0a7152f8804e85d191",
+  "supervisorPid": 12188
+}

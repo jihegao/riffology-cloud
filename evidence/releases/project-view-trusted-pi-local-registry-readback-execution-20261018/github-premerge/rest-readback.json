@@ -1,0 +1,58 @@
+{
+  "readAt": "2026-10-18T14:32:49.979644+00:00",
+  "pr": {
+    "number": 253,
+    "state": "open",
+    "draft": false,
+    "merged": false,
+    "mergeable": true,
+    "mergeable_state": "clean",
+    "updated_at": "2026-10-18T13:59:50Z"
+  },
+  "head": "0a10da572264470aaac111e6f5da2bd20b2f2c45",
+  "base": "65df9b771a5d0497304a5955e33974e8ea9aa9ac",
+  "expectedHeadMatches": true,
+  "expectedBaseMatches": true,
+  "source": {
+    "commit": "0a10da572264470aaac111e6f5da2bd20b2f2c45",
+    "tree": "576793bfe8b17639fb03db04fbdb951fd41f2d73",
+    "parents": [
+      "65df9b771a5d0497304a5955e33974e8ea9aa9ac"
+    ],
+    "files": [
+      {
+        "name": "services/trusted-pi/trusted-pi-turn-host.mjs",
+        "sha": "48d181fff69b3b7a74a8cfadf71c88258a8005fa",
+        "status": "modified",
+        "additions": 4,
+        "deletions": 1
+      },
+      {
+        "name": "tests/m2/trusted-pi-turn-host.test.mjs",
+        "sha": "00bafb586199838d3953c53546b4abeafdfc42f1",
+        "status": "modified",
+        "additions": 67,
+        "deletions": 0
+      }
+    ]
+  },
+  "checks": [
+    {
+      "name": "check",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/jihegao/riffology-cloud/actions/runs/39119659267/job/117652481483",
+      "completedAt": "2026-10-18T10:43:22Z"
+    }
+  ],
+  "formalReviews": [],
+  "effectiveMainRules": [],
+  "body": {
+    "file": "pr253-body.md",
+    "bytes": 9811,
+    "sha256": "db9cb5cb0b96b9c941e9fb1cc851569c473d6f91afea81554955d27a8905692e",
+    "possibleClosingKeywordLines": []
+  },
+  "mutation": false,
+  "publicationOrIndependentCleanupNotProvedHere": true
+}

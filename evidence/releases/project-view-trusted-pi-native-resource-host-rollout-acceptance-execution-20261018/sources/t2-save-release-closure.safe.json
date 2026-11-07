@@ -1,0 +1,134 @@
+{
+  "schema": "jhg46-d0-t2-save-release-closure-independent-review/v1",
+  "recordedAt": "2026-10-18T16:43:52.686639+00:00",
+  "reviewMode": "pure-local-original-file review; no external execution or repeated tests",
+  "bindings": [
+    {
+      "file": "grant.private.json",
+      "bytes": 5663,
+      "sha256": "ce6ef11632fc5c983cd0e35afbf8e38c90fa24f43db868c75556c4b12b840755"
+    },
+    {
+      "file": "ordinary/turn-2-once/intent.private.json",
+      "bytes": 2784,
+      "sha256": "07211c447ccc29d02575803dcf4504963b8ab43d8e153876612b0ff240d55504"
+    },
+    {
+      "file": "ordinary/turn-2-once/original-ui-t2-ack.clone.raw.private.json",
+      "bytes": 3415,
+      "sha256": "4d9501f55daf3aa9f1deef4fa0f05b22d848505b8d4e8db2892ae25590c0f6c7"
+    },
+    {
+      "file": "ordinary/turn-2-once/original-receipt-post-guard-read.raw.private.json",
+      "bytes": 15146,
+      "sha256": "e49fd232100042a5d2fe384534da75131fa7fe19ef2d039be9a90cd28dddbb41"
+    },
+    {
+      "file": "ordinary/turn-2-once/physical-current-full-inventory-post-guard.tool-result.private.json",
+      "bytes": 15761,
+      "sha256": "082b9a8cfeec145131d97d769a3866864f9e9e528f14fe60bba84d3addd36c56"
+    },
+    {
+      "file": "ordinary/turn-2-once/canonical-receipt-derived-sandbox-identity.private.json",
+      "bytes": 1402,
+      "sha256": "c86e73966e51ab021b003877784d9b26aca3d01a501152bab2fbc041724c56c3"
+    },
+    {
+      "file": "reviews/t2-intent-independent-review.safe.json",
+      "bytes": 5530,
+      "sha256": "2754160cb5d43cd37938c14d31cc235a7afe045d28c11f4a632faf162e3d1cc5"
+    },
+    {
+      "file": "reviews/t2-product-resource-tools-stage-review.safe.json",
+      "bytes": 11584,
+      "sha256": "948200ca00d658117b2f001716c97c83ad88477d3ea4a6f7a68a90f00b19fb90"
+    },
+    {
+      "file": "reviews/t1-product-authority-release-threshold-review.safe.json",
+      "bytes": 19516,
+      "sha256": "62f1638730384d6310a71f6400f99c1c65165f48d9172f426976e44b9778a70d"
+    },
+    {
+      "file": "reviews/t1-save-release-closure.safe.json",
+      "bytes": 9384,
+      "sha256": "72dbe9049381c23e204529722be64541cc00cc286529068e6ef9bcb27223fe3b"
+    }
+  ],
+  "checks": {
+    "fixedPostGuardBytesSha": true,
+    "five200OriginalBodiesAndCopiesByteHashExact": true,
+    "sameOwnerMeBracketAndOriginalActor": true,
+    "originalUi202NoReplaySameT2AndWire": true,
+    "originalSessionScopeGenerationRuntime": true,
+    "originalT2CompletedSavedNoError": true,
+    "sameOriginalReceiptTurnSnapshotAndR2Head": true,
+    "originalT1Unchanged": true,
+    "allActiveReleaseRecoveryResourceWaitNullAndAvailable": true,
+    "originalKeyReceiptUnchangedFromCompletedRead": true,
+    "productToolIndependentReviewPassedSameR2": true,
+    "allStageOriginalReferencesStillBound": true,
+    "fixedPhysicalBytesSha": true,
+    "unfilteredCurrentFour200AndCredentialGuard": true,
+    "nineLogicalInactiveExactlyMatchDashNineAndNoDashInstances": true,
+    "oneKnownCurrentV13Ec8BasicIdleScheduler": true,
+    "canonicalCheckpointOriginalScopeSessionTurnDispatchPath": true,
+    "independentCanonicalSandboxDerivationMatchesInactiveLogicalDash": true,
+    "originalWindowGrantAndObserverCount": true,
+    "priorFrozenColdProductAuthorityAndT2IntentReviewsNoMustFix": true
+  },
+  "canonicalR2": {
+    "revisionId": "f53f1165ed49240ac45896f27f33739f9e573efd7d9bef8c0e4f0424ee0b7bfa",
+    "filesSha256": "8f8e54bc82c48d0fe3065d96993e16bfece3a735f49feccec50e84f517660fc6",
+    "sessionSha256": "81be03985df62609713b637a41edfb49ca31444eb51d5731f576edbdea822f7f",
+    "committedAt": 1792341079840
+  },
+  "release": {
+    "authority": "Same original saved-Revision/server product authority, reusing the previously reviewed cold runtime/release chain with current same-owner/key/snapshot/Beta/tool/physical conjunction.",
+    "productObservedFrom": "2026-10-18T16:38:44.717Z",
+    "productObservedThrough": "2026-10-18T16:38:53.935Z",
+    "sessionCount": 1,
+    "turnCount": 2,
+    "observerCount": 4,
+    "observerCountIsTurnCount": false,
+    "rawPrivateNativeStopLeaseOrOperationReceiptRead": false,
+    "elapsedTimeOrAvailableAloneUsedAsReleaseProof": false
+  },
+  "physical": {
+    "from": "2026-10-18T16:39:42.592Z",
+    "through": "2026-10-18T16:39:45.121Z",
+    "logicalInactive": 9,
+    "dashDurableObjects": 9,
+    "dashInstances": 0,
+    "currentUnfilteredSchedulerDeployments": 1,
+    "currentPlacementIdSha256": "eace47040cb83da21ec71ef6585381cee740493186d577cebbc93010a89cd162",
+    "currentVmRunning": true,
+    "currentContainerStopped": true,
+    "canonicalDispatchSandboxAssociationPassed": true,
+    "allHistoricalPlacementsDisposedClaimed": false
+  },
+  "decision": {
+    "t2OriginalCanonicalSavePassed": true,
+    "frozenProductAuthorityReleaseConjunctionPassed": true,
+    "mayEnterAlreadyApprovedFiniteBrowserGateOriginalPrechecksAndSingleOwnedPolicyFlow": true,
+    "finiteGateAlreadyOpenedByThisReview": false,
+    "v1BrowserOrCompleteArtifactBodyAcceptanceComplete": false,
+    "t3MayProceedBeforeV1Acceptance": false,
+    "newProjectSessionRepairTurnRetryFallbackOrWindowExtensionAuthorizedHere": false
+  },
+  "limits": [
+    "Original finite-gate factory, actor/scope/generation/window/expiry and owned-policy checks still apply. No gate write was performed by this reviewer.",
+    "V1 browser UI, parameter changes, saved-refresh/re-entry and complete artifact chunk/body checks remain planned. This review did not read or execute the actual saved JS bytes.",
+    "Raw native stop/lease/operation fields remain server-internal. This is the frozen product-authority conjunction, not a claim those private raw fields were exposed.",
+    "Current one known basic/max1 idle VM may remain running with container stopped under the accepted difference. No claim of zero VM, complete historical placement disposal, zero fees or settled usage."
+  ],
+  "performed": {
+    "localFileReadAndThisSafeReceiptOnly": true,
+    "liveApiBrowserAuthSqlDockerOrModelCalls": 0,
+    "fixturesOrTestsRepeated": false,
+    "frozenInputOrOriginalRecordEdits": false
+  },
+  "privacy": {
+    "rawGrantReplyPromptActorTenantProjectWorkspaceSessionTurnKeyProviderRequestHostValuesCopied": false
+  },
+  "mustFix": []
+}

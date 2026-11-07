@@ -1,4 +1,6 @@
-# 浏览器 native DOM 发布包（2026-10-17，待授权）
+# 浏览器 native DOM 发布包（2026-10-17，默认关闭已发布）
+
+已按 `c3cb51fd9e257eccae08b9380f028e816391421a` 冻结包的新授权执行：PR #235 正常合并为 `29da0349`；原单次 PUT 于11:06:48.382 UTC确认，新 Gateway版本 `b62db92d-693a-4043-9ad1-f126e3a70c64`、实际源码 `0475703a…`。前后独立 Personal各39 GET完成资源保留核对，页面准入保持关闭。[实际发布与公开资产证据](../evidence/releases/project-view-browser-native-publication-result-20261017.json)。下文保留发布前的固定快照、授权历史与执行合同；它不代表普通用户验收完成。
 
 本包准备合并 [PR #235](https://github.com/jihegao/riffology-cloud/pull/235)，仅替换既有 `riffology-m1-gateway-staging` 的 Gateway bundle 和静态资产。实现固定为 `bc4c0377dd4a59c6ddf6b9de71e3f0fcbe028999`；页面准入保持关闭，真实用户验收仍待完成。用户已选择优先兼容现有 DOM JavaScript，并接受页面可外发已获授权的项目数据，见 [本地执行合同](project-view-browser-local-contract-20261017.md)。这次选择不等于发布授权；此前已执行的发布授权指向 PR #233 和旧镜像包。对已撤回 `df12d802…` / `7d6520d3…` 的发布确认后来收到授权答复，该答复保留范围意向，但不能代替修复版 candidate-v3 的精确输入确认。
 

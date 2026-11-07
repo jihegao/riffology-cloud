@@ -1,0 +1,73 @@
+{
+  "checks": {
+    "allInventoryByteHashesMatched": true,
+    "frozenEightSourcesAndReaderFixturesReceiptsMatchReviewedCandidate": true,
+    "newHumanGrantOrActualSecretOrArchiveBodyIncluded": false,
+    "parentIdentityProjectionExactCopy": true,
+    "relativeLinksResolvedInIntendedRepositoryLayout": 21,
+    "wordingOriginalChildrenCorrected": true
+  },
+  "factChecks": [
+    "Persistent containers:write is explicit, has no task account/repository OAuth resource filter, may be renewed and does not expire with the15-minute Registry JWT. Executor pins target user/account/repository only.",
+    "Temporary Registry config/process/route cleanup does not revoke persistent OAuth or restore five scopes; later reduction requires another consent.",
+    "Prior403 exact cause and REST minimum scope remain unknown; new Containers client contract does not guarantee resolution. New proposed200HTML/201schema allowed-status/body contract does not rewrite prior201-only attempt.",
+    "Original c3e archive is reused read-only with stable identity, fixed bytes/SHA and full52blob/48diffID re-verification. This batch adds no export/build/pull/load/container action.",
+    "One exact new grant precedes auth reads/consent/SSH/API; one new credential POST and platform push are proposed. Ready is saved before POST; unknown/refusal/no final ACK stops under original identity without retry or fallback.",
+    "Independent reader success and narrowly known pre-credential EOF-stop paths remain distinct; failure cleanup cannot become publication success, arbitrary unknowns remain pending. Local original OAuth/SSH children need separate absence confirmation.",
+    "Current-main observation638a366 and merged243/237 successful CI are represented accurately as recorded. Conflict-free merge preview and seven matching blobs are not a new239 CI run, merge or protected-gate waiver.",
+    "Duplicate244 is closed not_planned and its original Backlog item archived, with original body/history retained and no Done or redundant source fix.",
+    "PR239 merge, application/Gateway/assets/bindings/policy/gates rollout, real project/model/Turn/Run and subscription/autopay changes remain excluded. JHG46/JHG56 remain incomplete."
+  ],
+  "inventory": {
+    "allDeclaredFilesAndDirectoryContentsMatched": true,
+    "bytes": 3508,
+    "entries": 22,
+    "intendedRepositoryPath": "evidence/releases/project-view-trusted-pi-registry-recovery-preparation-20261018/inventory.json",
+    "readmeIncluded": true,
+    "safeOriginalCopies": 21,
+    "sha256": "0c9d3a4a162d3b28b16749fa3bfe57874407dc06d7407fbc3069a7b973a0242d"
+  },
+  "limits": [
+    "Only local immutable-source, safe-receipt, documentation, inventory and link review was performed; no target test or real auth/SSH/Docker/account API was run.",
+    "Recorded GitHub/current-main/Project facts are checked against supplied safe receipts; reviewer did not query live GitHub or independently replay those observations.",
+    "Links resolve against the intended docs/evidence repository layout, not staging filesystem layout.",
+    "This receipt is intentionally published separately outside the inventory it binds, avoiding a circular hash.",
+    "Passing preparation review is not human execution authorization, live scope/permission proof, tag absence, Registry publication, remote cleanup or product acceptance."
+  ],
+  "localStateSources": {
+    "currentMainReconciliation": {
+      "bytes": 3657,
+      "sha256": "155be62303b0c0b90f2bbd6df0493ce2b972f58cc296d0322f5abb3a04a26509"
+    },
+    "duplicate244Resolution": {
+      "bytes": 639,
+      "sha256": "a90c38dd7595e46619865972f6c4c9b48093c1bb2c2ee4dcbf5556c795865533"
+    }
+  },
+  "mustFix": [],
+  "operationManifest": {
+    "bytes": 1313,
+    "sha256": "3779af353a82fa334fc805a54ff02fe91a2f905d2cc9daf4733b1fd92189589c",
+    "sourceBytes": 72306,
+    "sourceCount": 8
+  },
+  "packet": {
+    "bytes": 12138,
+    "intendedRepositoryPath": "docs/project-view-trusted-pi-registry-recovery-packet-20261018.md",
+    "sha256": "d23108d668b9a6a51976400718c3dd8cc8c206422f71b779f0c2be48502f8df7"
+  },
+  "requestId": "9ec39434-0856-4ee7-af30-adf3dd5b5df4",
+  "reviewedAt": "2026-10-17T16:24:24.382228+00:00",
+  "reviewerSideEffects": {
+    "authorSourcesOrPacketModified": 0,
+    "oauthOrCredentialFilesRead": 0,
+    "realServiceCalls": 0,
+    "testsOrTargetScriptsRun": 0
+  },
+  "schema": "jhg46-registry-recovery-public-packet-review/v1",
+  "sourceIndependentReview": {
+    "bytes": 8426,
+    "sha256": "69738f55f61ba5b9bb11de16034320f1d8f75ce3b48748b91faf4f9ae9c3db0f"
+  },
+  "status": "passed-no-mustfix-preparation-only"
+}

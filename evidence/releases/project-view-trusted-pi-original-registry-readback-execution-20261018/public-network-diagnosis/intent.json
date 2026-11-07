@@ -1,0 +1,16 @@
+{
+  "at": "2026-10-18T13:31:05.337316+00:00",
+  "automaticRetries": 0,
+  "bodyStored": false,
+  "credentialsReadOrSent": false,
+  "newForwardingRoutes": 0,
+  "officialEndpointSource": "https://github.com/cloudflare/speedtest",
+  "perGetBodyLimitBytes": 1048576,
+  "perGetMaxSeconds": 20,
+  "plannedPublicGets": 2,
+  "publicUrl": "https://speed.cloudflare.com/__down?bytes=1048576",
+  "registryBandwidthProvedByThisProbe": false,
+  "registryCalls": 0,
+  "schema": "jhg46-public-path-diagnosis/v1",
+  "sourceSha256": "86ebe37845147e6e6af3f247beba4024c4102927849c886a48e277dc891dcf7a"
+}

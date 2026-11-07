@@ -1,0 +1,20 @@
+{
+  "schema": "jhg46-current-family-stable-recombination/v1",
+  "checkedAt": "2026-10-18T17:39:12.062821+00:00",
+  "actualLocalNodeExitCode": 0,
+  "settingsFileSha256": "2989f5427bd7571d64a53f2bb8a7d8c098eefb536688db3464319a8d5323d04c",
+  "versionFileSha256": "d28e9bed33904c90b300b9cff3cdc5ab6c756be318ff12a6bbfabb7f35deb765",
+  "projectionSourceSha256": "6554f7b22b63364ff6871d5f20a11da3ac48105060b8cb5e29d2e2cc60b5f40c",
+  "recomputedStableMetadataSha256": "64d4d58d0822536915b6f8efab957059fcff0a4b315b4e7edc96e394b5277c19",
+  "equalsOriginalFinalClosedWitness": true,
+  "originalFinalWitnessEnvelopeSha256": "c31a2eb61bf41eecebbf950bd42045ab380dcb8870df6fad219ca14e3d202891",
+  "sourceModuleIdentityFromDatedOriginalWitness": {
+    "bytes": 5771650,
+    "sha256": "9c8e4b6b763e9887d1624f00ed3a8efb2a8a24d984d96bc68fdb289cb4d362c3"
+  },
+  "secretNamesDerivedFromCurrent106Bindings": 11,
+  "configuredExports": 25,
+  "newSourceOrSecretEndpointGetDuringThisRecombination": false,
+  "newCloudWrites": 0,
+  "notACompleteFreshExecutionWitness": true
+}

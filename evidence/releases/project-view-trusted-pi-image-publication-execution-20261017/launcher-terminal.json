@@ -1,0 +1,15 @@
+{
+  "endedAt": "2026-10-17T15:32:51.282405+00:00",
+  "exitCode": 1,
+  "reaped": true,
+  "streams": {
+    "stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stdout": {
+      "bytes": 755,
+      "sha256": "185df4cd0d7b99e5e3fd7cf1b792d1a39399cb748fb1caed923bcf969d9d2fb1"
+    }
+  }
+}

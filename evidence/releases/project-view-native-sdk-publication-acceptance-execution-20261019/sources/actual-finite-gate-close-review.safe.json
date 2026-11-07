@@ -1,0 +1,167 @@
+{
+  "schema": "jhg46-sdk-actual-finite-gate-close-independent-review/v1",
+  "reviewedAt": "2026-10-19T00:44:29.764853+00:00",
+  "mustFix": [],
+  "checks": {
+    "priorKnownOpenIndependentReviewAndOriginalOwnIdentity": true,
+    "sameOriginalOwnedDeleteIntentAndEmptyBody": true,
+    "firstFailureStopOriginalSingleDelete200Chain": true,
+    "intentStartSendAckOrderingInsideOriginalWindow": true,
+    "actualPostDeleteVersionReadSole236NotGuessed": true,
+    "finalContextAllOriginalFileHashesAndOpenPreserved": true,
+    "preclose-openComplete53GetActualWitness": true,
+    "preclose-openOriginalMatchesOriginalToolResult": true,
+    "final-closedComplete53GetActualWitness": true,
+    "final-closedOriginalMatchesOriginalToolResult": true,
+    "precloseOnlyOriginalOwnedVersionThenFinalAfterActualRead": true,
+    "finalCollectorBoundDerivedActualContext": true,
+    "precloseFullProjectionExactAnnotationBridge": true,
+    "finalclosedFullProjectionExactAnnotationBridge": true
+  },
+  "bindings": [
+    {
+      "file": "gate/close-once/actual-version-original.tool-result.private.json",
+      "bytes": 2365,
+      "sha256": "a41e19fdcc58baa31c35344328e2f03da0857caf860d2c36c751eb2243371ad3",
+      "privateBodyCopied": false
+    },
+    {
+      "file": "gate/close-once/execution-start.private.json",
+      "bytes": 282,
+      "sha256": "e8957afda3f6a55b81292fa878aba8b1ec6db0dbccf91e6f303dfa38bcac8184",
+      "privateBodyCopied": false
+    },
+    {
+      "file": "gate/close-once/final-context.actual.private.json",
+      "bytes": 819,
+      "sha256": "01175360e6bdb77e0f050babc31d4ad2dc4b07f4e5a199b804b2ef4b58066f33",
+      "privateBodyCopied": false
+    },
+    {
+      "file": "gate/close-once/intent.private.json",
+      "bytes": 650,
+      "sha256": "a214ab783bb74ff442cf5139f7c14bff686b2090ecbbf1841b5de7a99be1ddf7",
+      "privateBodyCopied": false
+    },
+    {
+      "file": "gate/close-once/original-ack.tool-result.private.json",
+      "bytes": 662,
+      "sha256": "2d8e24c852a5380257069b27a36452749fa9df2f5a6cc435b9b3e1c147bf272a",
+      "privateBodyCopied": false
+    },
+    {
+      "file": "gate/close-once/preclose-normalized.actual.private.json",
+      "bytes": 2295,
+      "sha256": "968e0ccbfb00874d0f45cb33d9919e05d0400a0d21875e0d64a89bc2002c71d0",
+      "privateBodyCopied": false
+    },
+    {
+      "file": "gate/close-once/request.actual.private.json",
+      "bytes": 167,
+      "sha256": "482dea67cd2711fc87ee1c9ac0faefb00c5ad7081aa36cfff1a7b5d47d468d7d",
+      "privateBodyCopied": false
+    },
+    {
+      "file": "gate/close-once/send-once.request.cf.private.txt",
+      "bytes": 768,
+      "sha256": "5aaf922ac0a9db160ac4eb7e04e29321e7ed4ee7e966ebb0d77534e2d193fbdd",
+      "privateBodyCopied": false
+    },
+    {
+      "file": "gate/preclose-open-witness.original.private.json",
+      "bytes": 12374,
+      "sha256": "d5d27a057a51f0066fff71e61f359b9ae7c117006232eef8b179bd49744445b3",
+      "privateBodyCopied": false
+    },
+    {
+      "file": "gate/preclose-open-witness.tool-result.private.json",
+      "bytes": 14794,
+      "sha256": "0ce7f3103942f8e4c49dddc5ec6e26a32ad99e59d185029eefecb25a9dcde209",
+      "privateBodyCopied": false
+    },
+    {
+      "file": "gate/final-closed-witness.original.private.json",
+      "bytes": 12789,
+      "sha256": "c6f82ca7037af33de2b33f6463e35e51deafcb6fbc8b69b1e74379b7a246fabc",
+      "privateBodyCopied": false
+    },
+    {
+      "file": "gate/final-closed-witness.tool-result.private.json",
+      "bytes": 15238,
+      "sha256": "50bfcf43358b471a60dba09541ef58a33a2cbde926011cf1c298450664675252",
+      "privateBodyCopied": false
+    },
+    {
+      "file": "gate/final-closed-normalized.actual.private.json",
+      "bytes": 2618,
+      "sha256": "90af3b8bf52aced19f1a18850eb12bcca7c39250c44eaef9af5d54153efcb6ab",
+      "privateBodyCopied": false
+    },
+    {
+      "file": "reviews/actual-finite-gate-open-review.safe.json",
+      "bytes": 10624,
+      "sha256": "804daabff85fe739c4987c730578688dac40b6c54dcf1cb360c5da0613fc3329",
+      "privateBodyCopied": false
+    }
+  ],
+  "actualClose": {
+    "requestId": "95b9b8c6-8d52-566d-8476-dfa3e02f6b79",
+    "ownedOpenVersionId": "05d93023-ca6a-4a5e-ba7b-32811b48e167",
+    "originalOpenBodySha256": "f31736f67192cad12e0d47b2cae388533cc8fdc52b56d46042869c22730dbcb4",
+    "closeIntentSha256": "a214ab783bb74ff442cf5139f7c14bff686b2090ecbbf1841b5de7a99be1ddf7",
+    "closeAckSha256": "2d8e24c852a5380257069b27a36452749fa9df2f5a6cc435b9b3e1c147bf272a",
+    "originalDeleteSentAtUnixMs": 1792370519538,
+    "originalDeleteAckAtUnixMs": 1792370520202,
+    "status": 200,
+    "closeActualVersionReadSha256": "a41e19fdcc58baa31c35344328e2f03da0857caf860d2c36c751eb2243371ad3",
+    "actualFinalClosedVersionId": "cb577ad1-4439-434b-aee2-326d647dc0d0",
+    "actualFinalClosedVersionNumber": 236,
+    "soleLatest100": true,
+    "publishedClosedVersionIdPreserved": "d2660428-5ccb-4fb9-b1bd-d6b8ba26959f",
+    "originalPolicyEndsAt": "2026-10-19T01:59:00Z",
+    "firstFailureStopReason": "report-first-host-tab-unavailable"
+  },
+  "closure": {
+    "precloseOpenGetCount": 53,
+    "finalClosedGetCount": 53,
+    "finalCounts": {
+      "bindings": 106,
+      "secrets": 11,
+      "exports": 25,
+      "containerAssociations": 6,
+      "assets": 96,
+      "apps": 16,
+      "namespaces": 50
+    },
+    "gateBinding": "absent",
+    "sourceSha256": "304373a50d7a9ca8a99cdfbda0dcae261aa34d53727b757dfeb099c88efb5e0b",
+    "rawFinalStableSha256": "81f81a6c990e7ce6ebe187378e18034f10b05c80cba3ff96a8e3afe2bddd8779",
+    "derivedPublishedStableSha256": "d7d0a8db0e14c2f11cc9f8e3d06050bc6887a10d123f4bf86888b7192eb2ab24",
+    "controlPlaneSha256": "47cffd4f19c05708438ad9824d69d38801cf48001d7da8b64e32cd03d89a6c68",
+    "completePrivatePublishedAfterProjectionRecomputed": true,
+    "onlyExactAnnotationsPredictedAllOtherFieldsRetained": true,
+    "rawFinalWitnessUnmodified": true,
+    "noGenericHashWhitelistOrBroadMetadataIgnore": true
+  },
+  "result": "Original owned policy was deleted once with known200 ACK, actual distinct236 closed version and full read-only53GET source/control/resource preservation. Raw81f81 and derived d7d0 are intentionally distinct and both bound to the exact prediction.",
+  "notVerifiedByThisReview": [
+    "Final ordinary same-owner fiveGET terminal/head/holds/capacity after close.",
+    "Final full physical inventory/known idle placement and UI/document/frame/port exit.",
+    "Overall V1 or Report pass, artifact body/chunks complete proof, refresh/reentry, Session2/T3/V2.",
+    "Unique cause of reported Report unavailable, all historical resources released, global zero executions, zero fees or usage settlement."
+  ],
+  "limits": [
+    "This is gate cleanup only. Root reports first Report host tab failed; the review does not turn a cleanup GET503/frame0 into an earlier page-failure root-cause proof.",
+    "Asset96 is frozen/config authority in these metadata witnesses; no fresh96body download is claimed here.",
+    "Full published private after configuration was read only locally for complete projection hashing, never output/copied as raw configuration. Secret GET metadata does not read policy plaintext.",
+    "Original known owned open intent/body/201ACK/version chain remains unchanged; final context derives from original DELETE and postACK latest reads, without rewriting published plan or sender source.",
+    "No further send/retry/rollback, foreign deletion or new model/Turn authority is granted by this review."
+  ],
+  "reviewerActions": {
+    "localActualRecordsAndHashReviewOnly": true,
+    "networkUiAuthSqlModelGitOrNewTests": false,
+    "candidateImportedOrExecuted": false,
+    "originalsOrFrozenSourceEdited": false
+  },
+  "privateUserTenantEmailActorHostLocationPolicyCredentialOrRawBodiesCopied": false
+}

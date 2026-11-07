@@ -1,0 +1,172 @@
+{
+  "schema": "trusted-pi-native-resource-snapshot-host-offline-execution-public-result/v1",
+  "requestId": "695e8875-459a-41b3-a148-2e228f2c3727",
+  "draft": false,
+  "result": "offline-image-compatibility-mock-passed-and-independently-cleaned",
+  "authorization": {
+    "source": "direct-human-question-reply",
+    "answerUtf8Sha256": "eb5651218116542d0646169c31ac52d0f5cd1d0e152653260fcb895c6fd850d8",
+    "humanGrantSha256": "62c6202a1290703326591dcc2519964b782510f75483062b4113f770d58d4196",
+    "receivedAndRecordedAt": "2026-10-18T11:46:27.805511+00:00",
+    "approvalTimeIsLocalObservationOfReply": true,
+    "publicationPacketCommit": "0900f19147cdea6c790260955bef5fa7a2f41af8",
+    "runtimeOriginalWindowExtended": false,
+    "newTurnAuthorized": false,
+    "costCap": null,
+    "arrearsNotify": true,
+    "schema": "trusted-pi-native-host-execution-authorization-safe/v1",
+    "originalReceipt": {
+      "bytes": 660,
+      "sha256": "76717a9935e136a2b14ac6ece938ec92958f4fb0365f907513b5d2c36c699e08"
+    },
+    "rawHumanReplyPublished": false,
+    "rawGrantPublished": false
+  },
+  "inputs": {
+    "publicationPacketCommit": "0900f19147cdea6c790260955bef5fa7a2f41af8",
+    "canonicalImplementationCommit": "0a10da572264470aaac111e6f5da2bd20b2f2c45",
+    "pullRequest": 253,
+    "archiveBytes": 12364,
+    "archiveSha256": "91b42a14a3c1c8caafb0b98230f156408bc39be065d408091055e91f7c724b81",
+    "operationsManifestSha256": "fe1ab539e48c1a19d1b48e355b63c93a7c8c1c82bdcee319a385c7aac1ef78c5",
+    "inputManifestSha256": "7106ff37f714ec60135962a9f71e661d911ba5e0e4870178175a8b1bf5260d22"
+  },
+  "actualTimes": {
+    "authorizationRecordedAt": "2026-10-18T11:46:27.805511+00:00",
+    "buildSendIntentAt": "2026-10-18T11:47:02.970827+00:00",
+    "probeStartedAt": "2026-10-18T11:47:08.690Z",
+    "probeEndedAt": "2026-10-18T11:47:10.673Z",
+    "runnerEndedAt": "2026-10-18T11:47:11.166794+00:00",
+    "independentReadSendIntentAt": "2026-10-18T11:47:39.117575+00:00",
+    "safeOriginalRecordsCollectedAt": "2026-10-18T11:49:30.876288+00:00"
+  },
+  "base": {
+    "configSha256": "07c199e17490cc4fdf3e8027770f8a7413090d4e7c3a1f44aa9064e115641059",
+    "indexSha256": "a946b164d10d074fcc9859f6c54c3b65d1901b41696c5ee8d8e31e275ddd1593",
+    "launchConfigMatched": true,
+    "manifestSha256": "f18a826d40b2fd60e2cf8c49d7f7b8f595fa609fe2be4c28593479ae846960ea",
+    "noRepoDigestClaim": true,
+    "rootfsLayers": 48
+  },
+  "derivedLocalImage": {
+    "engineId": "sha256:0bb9af7a5909c41187cf56402a21420100c72a8de0025b0a7152f8804e85d191",
+    "iidFile": "sha256:0bb9af7a5909c41187cf56402a21420100c72a8de0025b0a7152f8804e85d191",
+    "descriptor": {
+      "digest": "sha256:0bb9af7a5909c41187cf56402a21420100c72a8de0025b0a7152f8804e85d191",
+      "mediaType": "application/vnd.oci.image.index.v1+json",
+      "size": 856
+    },
+    "buildIdentityBinding": {
+      "baseRootfsDiffIdPrefixMatched": true,
+      "baseRootfsLayerCount": 48,
+      "configDigest": null,
+      "derivedRootfsLayerCount": 49,
+      "descriptorCoreMatched": true,
+      "descriptorDigest": "sha256:0bb9af7a5909c41187cf56402a21420100c72a8de0025b0a7152f8804e85d191",
+      "engineIdRole": "descriptor",
+      "iidRole": "descriptor"
+    },
+    "localOnlyTag": "riffology-jhg46-native-resource-snapshot-host:695e8875-459a-41b3-a148-2e228f2c3727",
+    "actualImageConfigUser": "root",
+    "preservedLaunchConfigFields": [
+      "User",
+      "Entrypoint",
+      "Cmd",
+      "WorkingDir",
+      "Env"
+    ],
+    "configDigest": null,
+    "runnablePlatformManifestKnown": false,
+    "registryPushPerformed": false
+  },
+  "actualExecution": {
+    "builds": 1,
+    "containersCreated": 1,
+    "originalCidStarts": 1,
+    "originalContainerId": "6bc8aab107db59fc1c67183145ac103355258ac0982866256e7993e2e8292572",
+    "mode": "image",
+    "nodeVersion": "22.23.2",
+    "uid": 10002,
+    "gid": 10002,
+    "checkedTargets": 12,
+    "overlayTargets": 1,
+    "checks": {
+      "activeReleaseAlias": true,
+      "actualNativeHostAndControlledFacade": true,
+      "allSessionsDisposed": true,
+      "allTargetBytesAndPermissions": true,
+      "coldRestoreMetadataAndNoReplay": true,
+      "environmentOnlyPath": true,
+      "foreignScopeRejectedBeforeSession": true,
+      "invalidProvenanceRejectedBeforeSession": true,
+      "legacyFiveFieldInputAndOutput": true,
+      "temporaryDirectoriesRemoved": true,
+      "unknownRootRejectedBeforeSession": true,
+      "validResourceTerminalAndDigest": true,
+      "zeroAmbientFetch": true,
+      "zeroProjectToolExecutions": true
+    },
+    "syntheticRequests": {
+      "ambientFetch": 0,
+      "model": 3,
+      "projectToolExecutions": 0,
+      "research": 3,
+      "sessionCreations": 3,
+      "sessionDisposals": 3
+    },
+    "realProviderRequestsWithinProbe": 0,
+    "credentialsReadByProbe": false,
+    "sourceMacEncodingNormalized": false
+  },
+  "cleanup": {
+    "runner": {
+      "cleanupConfirmed": true,
+      "labelListEmpty": true,
+      "originalContainerId": "6bc8aab107db59fc1c67183145ac103355258ac0982866256e7993e2e8292572",
+      "originalIdAbsent": true
+    },
+    "independentDockerGets": 2,
+    "originalIdNotFound": true,
+    "labelListEmpty": true,
+    "cleanupConfirmed": true,
+    "originalCliCount": 17,
+    "allOriginalCliReapedAndOriginalProcessAbsent": true
+  },
+  "originalSources": {
+    "eightFiles": 8,
+    "totalBytes": 11802,
+    "inventorySha256": "0e006a649344efc5983ef4c8e04606a0e5627285c04a6eaee7b1b203b35ef941",
+    "prettyProbeReport": {
+      "bytes": 3706,
+      "sha256": "c7c9dc4cd54962eff4788e571ac117512c6c003230fdbaba84f8b0bf49017118"
+    },
+    "independentReaderOriginalStdout": {
+      "bytes": 2360,
+      "sha256": "2e0b2db4fd4695b0498e516537e10c8ec226011ea188daca625714c49ddf442b"
+    },
+    "prettyIndependentResult": {
+      "bytes": 2964,
+      "sha256": "9d35ab43de3fb2ca2f9ffba5c527ce4b4258d4a6487850ad13056d0ed215f105"
+    },
+    "originalStdoutAndPrettyResultSemanticallyEqual": true
+  },
+  "boundaries": {
+    "nativeSupervisorAndRealCapacityReleaseAccepted": false,
+    "projectWriteRootCauseProvenRepaired": false,
+    "ordinaryUserAcceptancePassed": false,
+    "failedT1Replayed": false,
+    "newTurnExecutedByBatch": false,
+    "remainingT2T3Executed": false,
+    "browserGateChanged": false,
+    "pr253MergedByBatch": false,
+    "registryPublishedByBatch": false,
+    "applicationOrGatewayChangedByBatch": false,
+    "globalActivityOrFeeCountersRead": false,
+    "usageFees": "unreconciled-not-zero",
+    "originalRealAcceptanceDeadlineUtc": "2026-10-18T12:42:46Z",
+    "deadlineExtended": false,
+    "jhg46Complete": false
+  },
+  "history": "Prior57a/a21 failures, b093 successful probe, c3e/9ec stops, fb99 publication, Gateway/rollout/end, failed T1 and original locks/history/reservations remain unchanged.",
+  "nextStep": "Review the actual offline result; any export/push/rollout or new real-user execution requires its own concrete inputs and remaining authorization."
+}

@@ -1,0 +1,18 @@
+{
+  "archive": {
+    "bytes": 6195,
+    "path": "jhg46-pi-probe-readable-v1-20261017.tar.gz",
+    "sha256": "5817ecf49cf2e3128a9695c9fb6d75182d8cd6958b815e553f571a13167e89dc",
+    "uncompressedBytes": 30720,
+    "uncompressedSha256": "38d1866b85d372876de243ce7e3fa429dd014876937195d56c3c607cf5f10d47"
+  },
+  "archiveTracked": false,
+  "humanGrantRequiredBeforeRealExecution": true,
+  "operationsManifest": {
+    "bytes": 1495,
+    "sha256": "ae0614dafe7067367703ad41a9e0ff19f25de3ab7c788b85f01c1ff5c6b4fffd"
+  },
+  "realTransportOrMockExecuted": false,
+  "requestId": "b0933502-20df-480a-9a91-d833f5c4358c",
+  "schema": "trusted-pi-probe-readable-reviewed-payload/v1"
+}

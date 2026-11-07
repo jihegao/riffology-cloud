@@ -1,0 +1,49 @@
+{
+  "archive": {
+    "bytes": 6195,
+    "path": "jhg46-pi-probe-readable-v1-20261017.tar.gz",
+    "sha256": "5817ecf49cf2e3128a9695c9fb6d75182d8cd6958b815e553f571a13167e89dc",
+    "uncompressedBytes": 30720,
+    "uncompressedSha256": "38d1866b85d372876de243ce7e3fa429dd014876937195d56c3c607cf5f10d47"
+  },
+  "canonicalImplementationCommit": "0d23a12d869abccb9515a8e7f8196b0266258226",
+  "canonicalPullRequest": "https://github.com/jihegao/riffology-cloud/pull/239",
+  "excluded": [
+    "build",
+    "pull",
+    "registry-push",
+    "image-export",
+    "OAuth-Registry-provider-credential-read-or-mint",
+    "ssh-forward",
+    "Cloudflare-write",
+    "merge",
+    "provider",
+    "project",
+    "Turn",
+    "Run"
+  ],
+  "imageId": "sha256:a946b164d10d074fcc9859f6c54c3b65d1901b41696c5ee8d8e31e275ddd1593",
+  "issue": "https://github.com/jihegao/riffology-cloud/issues/242",
+  "operations": [
+    "ssh-fixed-probe-input-and-operations-transfer-once",
+    "cached-a946-sdk-mock-original-cid-once-and-cleanup"
+  ],
+  "originalDirectory": "/tmp/riffoid-jhg46-image-20261017.AU613w/pi-package-mode-repair-v1",
+  "parentRequestId": "a21af2c8-44ff-4f67-a07f-c364bcd6d295",
+  "payload": {
+    "input-manifest.json": {
+      "bytes": 6884,
+      "sha256": "f27b35dcbe84b58e3442018332374dbf20fa0d315528a322e56ea2a2bcfea5d4"
+    },
+    "probe/compatibility-probe.mjs": {
+      "bytes": 12020,
+      "sha256": "bded581766c4656b05b72c6fce39fcb43461a44cbe407c0d1e9ab4a23edf2097"
+    }
+  },
+  "recipient": "AMD128",
+  "remoteDirectory": "/tmp/riffoid-jhg46-image-20261017.AU613w/pi-probe-readable-v1",
+  "requestId": "b0933502-20df-480a-9a91-d833f5c4358c",
+  "reviewOnly": true,
+  "schema": "trusted-pi-probe-readable-scope/v1",
+  "sourceKernelSha256": "c0afbbba0277c82b27fd145c3db830c2faa9375222d77b5044b12d22116d8a81"
+}

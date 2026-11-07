@@ -1,0 +1,131 @@
+{
+  "actualBindings": {
+    "artifactId": null,
+    "ordinaryActor": null,
+    "r1": null,
+    "r2": null,
+    "r3": null,
+    "scope": null,
+    "session1": null,
+    "session2": null,
+    "turn1": null,
+    "turn2": null,
+    "turn3": null
+  },
+  "batchRequestId": "d0b12dd5-c04e-41d9-9a05-c685431d6695",
+  "executionAuthorized": false,
+  "expectedData": {
+    "V1": {
+      "factor2": 20,
+      "factor5": 50,
+      "series": [
+        2,
+        3,
+        5
+      ]
+    },
+    "V2": {
+      "factor2": 24,
+      "factor5": 60,
+      "series": [
+        2,
+        3,
+        7
+      ]
+    }
+  },
+  "hardLimits": {
+    "actualTrustedPiCallDeadlineMs": 115000,
+    "bashTimeoutMaximumMs": 30000,
+    "configuredReviewDeadline": "2026-12-31T15:59:59.999Z",
+    "effectiveExpiryRule": "min(original explicit human grant/#104 authority deadline, configured reviewAt, any narrower scoped grant); config Dec31 does not extend Oct20 human authority",
+    "humanReviewDeadline": "2026-10-20T15:59:59.999Z",
+    "monitorIntervalMs": 60000,
+    "outerPolicyMaxTurnDurationMs": 900000,
+    "outerReleaseTimeoutMs": 120000,
+    "perTurnNativeExecutionDeadlineMs": 600000,
+    "perUserActiveTurns": 1,
+    "policyMaxProviderCallDurationMs": 360000,
+    "privateBetaLogicalGlobalActiveTurns": 2,
+    "toolCommandTotalDeadlineMaximumMs": 120000,
+    "trustedPiUnderlyingGlobalSlots": 1
+  },
+  "modelPins": {
+    "gatewayId": "riffology-g5-20260916",
+    "lazyProjectEnabled": false,
+    "maxInputTokensPerCall": 262144,
+    "maxOutputTokensPerCall": 4096,
+    "model": "gpt-5.6-luna",
+    "profileSha256": "7291181d366d597b4c5ebcf365d43dd455904bfdcc4825ba7bf020aac9903341",
+    "profileVersion": "g5-openai-luna-20260916-wiring-v1",
+    "protocol": "openai-responses",
+    "provider": "openai",
+    "providerRetryOrFallback": false,
+    "trustedPiRequestDeadlineMs": 115000,
+    "workspaceRuntimeReuseEnabled": false
+  },
+  "newCreateIntent": {
+    "actualReturnedScope": null,
+    "body": {
+      "starterVersion": "blank-v1",
+      "title": "JHG46 Native Pages Acceptance 20261018 d0b12dd5"
+    },
+    "idempotencyKey": null,
+    "maxAttempts": 1,
+    "method": "POST",
+    "path": "/api/tenants/{freshPersonalTenantId}/projects"
+  },
+  "noRunOrServerSimulation": true,
+  "perStepReleaseConjunction": [
+    "original turn terminal; activeTurn null",
+    "execution/persistence outcome and original canonical checkpoint/CAS/Session head exact",
+    "original runtime/tool resource dispositions and capacity release product authority match same dispatch/generation/lease; no release/recovery/resourceWait",
+    "physical/logical target resources meet approved bounded idle baseline; no extra/unknown resources",
+    "unknown stop; no next Turn/Session/new scope fallback"
+  ],
+  "prompts": [
+    {
+      "bytes": 3833,
+      "file": "prompts/turn-1-create-skill.md",
+      "sha256": "a179caed905f3f484a94fea0088de7ad92a72bb5b739e2fd2940bdfdd3c0dcf2"
+    },
+    {
+      "bytes": 2101,
+      "file": "prompts/turn-2-build-v1.md",
+      "sha256": "1e59966637fec33c3d2d5728ed1c4b9c8c00c30dee990fdeb2866ddf99afe6df"
+    },
+    {
+      "bytes": 962,
+      "file": "prompts/turn-3-cold-edit-v2.md",
+      "sha256": "c8c858c602fbc2c923c4b9c2e400696fc45527faaa25b54287eaf59434cea149"
+    }
+  ],
+  "reviewOnly": true,
+  "schema": "jhg46-new-blank-two-session-three-turn-input/v1",
+  "scope": {
+    "artifactProbeInTurn": 2,
+    "canonicalCheckpointAliases": [
+      "R1",
+      "R2",
+      "R3"
+    ],
+    "existingProjectRestores": 0,
+    "explicitProductTurns": 3,
+    "extraRepairTurnAllowed": false,
+    "newBlankProjects": 1,
+    "productSessions": 2,
+    "providerCallsNotEqualToTurnCount": true,
+    "syntheticArtifactFileBytes": 17408
+  },
+  "sessionRule": "UI first T1 lazily creates Session1 if absent; T1/T2 use Session1. Only after R2 and original release create Session2; its only Turn is T3. Total2, never extra repair Session/Turn.",
+  "t1OnlyDeltaFromOriginalRecipe": {
+    "mustSucceedBeforeWrite": true,
+    "notClaimedOriginalProjectWriteFixed": true,
+    "oneProjectBash": {
+      "script": "mkdir -p -- .pi/skills/native-pages-check",
+      "timeoutMs": 30000
+    },
+    "skillBytes": 2698,
+    "skillSha256": "f05062374fccbffa83a7e6da5505a3229bd975ff8d5aaf30e832c8f0a3c3d294"
+  }
+}

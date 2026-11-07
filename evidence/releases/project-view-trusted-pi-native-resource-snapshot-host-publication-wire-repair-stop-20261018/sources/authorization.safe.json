@@ -1,0 +1,37 @@
+{
+  "additionalSameSixScopeTokenAndOwnedRouteAttemptsAuthorized": 1,
+  "approvalObservedAt": "2026-10-18T12:34:29.890696+00:00",
+  "approvalTimestampBasis": "root observed direct human reply at processing; user message carried no independent timestamp",
+  "candidateSourceBindingSha256": "2e47be8e7478dd1cdf176792e4c76e836a2b2fad73e091f4b06b9d8c85f434f8",
+  "conditionalRootNormalMerge": {
+    "head": "0a10da572264470aaac111e6f5da2bd20b2f2c45",
+    "pr": 253,
+    "requires": "trusted complete publication, independent original cleanup, fresh current GitHub gates"
+  },
+  "grantExpiresAt": "2026-10-18T13:34:29.890696+00:00",
+  "humanGrantBytes": 4022,
+  "humanGrantSha256": "0b63246cfc0dda411a3405f401aaf9bfd2887483b2067242ca945741d7dac911",
+  "oldRuntimeDeadlineExtended": false,
+  "oldStateFileHashes": {
+    "intent.json": "a1858a04bfb8dcdb1591e88162a70b1025618db0270a5eef100574a30685c64e",
+    "normal-login-identity-safe.json": "0d1835cac735535e39451db2c05baefaf9260db3081c926dda10cc88eb9ed92f",
+    "oauth-token-once-intent.json": "77904f9a7ecacd6fafe56e51814889daf1e9d783fc1eb2253d6e342e14993255",
+    "oauth-token-once-original-cli.json": "7d5289b35dcb2350cd9afbfefdde63359b5a6bb56070981d36ca241c40cf91a5",
+    "oauth-token-once-terminal.json": "e83f89eac33350ef111f172783e6e3a8c1cb41318e6ab6694075a4c97b02da62",
+    "original-ssh.json": "4356e4c03cf0f59075c541226ea18f81955210b9cb114882aa0eec1c0e8088ab",
+    "route-once-intent.json": "8331aaa94260d2cc5d34eb7a1cfaf75ca89b4e69cd4bb2eca516da4bad0a2d41",
+    "terminal.json": "76f6db8fd64b1434473fa665b47ebf2ab979ce79f0c573f6ddd6e0eea448926f"
+  },
+  "operationsManifestSha256": "76dfb4606c75424c01a00220805f6efb5b32afbf474fd003fe540641bb97c309",
+  "publicationCommit": "e521161a565f04f3b8cab34f1601ce07abf64ff1",
+  "realExecutionNotYetStarted": true,
+  "replySha256": "10884647ef1e722d84a67c958d239a6ed56364ad7ed184df03cddfed1aaafc6b",
+  "requestId": "c263a2f3-f445-430e-b562-2e48f1eeb637",
+  "sameOriginalRequestDirectorySourceTag": true,
+  "schema": "jhg46-c263-wire-repair-human-authorization/v1",
+  "originalReceipt": {
+    "bytes": 2159,
+    "sha256": "2d4271ebd5b7978abb150d4de71527e670b9b6e00b72ce7f07ec44a008061434"
+  },
+  "projection": "Question identifier omitted; no raw human reply or grant body published. realExecutionNotYetStarted is the original pre-execution snapshot."
+}

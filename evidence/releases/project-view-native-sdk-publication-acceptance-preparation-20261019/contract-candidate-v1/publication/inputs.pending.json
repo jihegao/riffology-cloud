@@ -1,0 +1,93 @@
+{
+  "schema": "jhg46-fixed-sdk-gateway-publication-inputs-pending/v1",
+  "requestId": "1feadf24-3eb8-58be-abd7-872c68ab45e6",
+  "reviewOnly": true,
+  "finalized": false,
+  "executionSealed": false,
+  "worker": "riffology-m1-gateway-staging",
+  "accountId": "8b0d70250211aa10d89e20605a1c7e5e",
+  "fixedPullRequest": 257,
+  "fixedHead": "fca66cb0e1024b4e86bbbeb9a6d955b137599efa",
+  "normalMergeProof": null,
+  "actualMergedSourceTreeProof": null,
+  "candidateBundle": {
+    "file": ".local/jhg46-native-sdk-acceptance-preparation-20261019/build-candidate-v2/output/gateway.mjs",
+    "bytes": 5774988,
+    "sha256": "304373a50d7a9ca8a99cdfbda0dcae261aa34d53727b757dfeb099c88efb5e0b"
+  },
+  "candidateAssetManifest": {
+    "file": ".local/jhg46-native-sdk-acceptance-preparation-20261019/build-candidate-v2/output/assets-manifest.json",
+    "bytes": 15987,
+    "sha256": "62611357af29d0b5480e36128bb25a59454cab97e1f174db49f347771ca77df9"
+  },
+  "candidateSourceGraph": {
+    "file": ".local/jhg46-native-sdk-acceptance-preparation-20261019/build-candidate-v2/output/source-graph.json",
+    "bytes": 879161,
+    "sha256": "ee731e078e47ab8a6e67e316e3b66ee53828022267937214197a98c6a98d6fab"
+  },
+  "candidateBuildReceipt": {
+    "file": ".local/jhg46-native-sdk-acceptance-preparation-20261019/build-candidate-v2/output/build-manifest.json",
+    "bytes": 5651,
+    "sha256": "c4289bb276ed6ede021acd6c8d2c439aeb007ea8ca5b15b582bf4b1aa7564e20"
+  },
+  "guardedPublisherSourceAndManifest": null,
+  "senderPlan": null,
+  "metadataBody": null,
+  "workerPutBody": null,
+  "actualGrantSha256": null,
+  "actualGatewayAck": null,
+  "actualAssetReadback": null,
+  "lastKnownNotFresh": {
+    "workerVersion": "4f887d24-7874-4fb3-b3ac-caf6d74ab461",
+    "solePercentage": 100,
+    "sourceSha256": "9c8e4b6b763e9887d1624f00ed3a8efb2a8a24d984d96bc68fdb289cb4d362c3",
+    "browserPolicyBinding": "absent",
+    "counts": {
+      "bindings": 106,
+      "secrets": 11,
+      "exports": 25,
+      "containerAssociations": 6,
+      "assets": 96,
+      "apps": 16,
+      "namespaces": 50
+    }
+  },
+  "publicationRule": "One fixed existing Worker PUT after actual fixed build/merged-source preservation input seal; only its fixed asset manifest upload protocol. Both browser and remote admission remain closed. No new application, namespace, runtime rollout or model execution.",
+  "unknownResult": "Keep original once lock/intent/ACK evidence; no resend/rollback. Only original read-only reconciliation; known trustworthy original ACK required for formal finalization.",
+  "allNullBodiesOrMissingFixedInputsStopBeforeCredentialRead": true,
+  "fixedSourceFrame": {
+    "sha256": "63ebcd050b0ccf5019265070890bee69d99902120f2252c376678aff299d374b",
+    "path": "/project-views/63ebcd050b0ccf5019265070890bee69d99902120f2252c376678aff299d374b/frame.html"
+  },
+  "fixedSourceDeadlinesMs": {
+    "individualHttp": 10000,
+    "wholeBrokerRpc": 30000,
+    "frameSdkRequest": 35000,
+    "moduleInstall": 40000,
+    "hostStartup": 45000
+  },
+  "candidateBundleAndAssetsStillUnknown": false,
+  "candidateBuildSourceBinding": null,
+  "candidateBuildIndependentReview": null,
+  "candidateBuildScope": {
+    "esbuildOnlyNoCliAuthCloud": true,
+    "sourceFiles": 477,
+    "moduleGraphInputs": 1124,
+    "gitInputs": 303,
+    "dependencyInputs": 821,
+    "assets": {
+      "paths": 96,
+      "web": 28,
+      "immutable": 68,
+      "changedPaths": [
+        "/project-view-local.js",
+        "/project-views.js"
+      ],
+      "unchangedPaths": 94,
+      "allImmutableByteIdenticalToDeployed9c8": true,
+      "totalBytes": 53784755,
+      "noAssetSessionOrUpload": true
+    },
+    "authorBuildSuppliedNotIndependentAcceptance": true
+  }
+}

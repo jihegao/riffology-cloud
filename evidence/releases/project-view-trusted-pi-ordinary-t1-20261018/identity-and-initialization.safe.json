@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "projectId": "e7044b0b-839a-4e44-9636-ab0c3b77b7ae",
+  "workspaceId": "3e1e0106-503e-42e1-89ce-35a26612935e",
+  "workspaceGeneration": 1,
+  "scopeSha256": "9949802a2876284ffa2b604411b9283de83fa45c806c24bd7ab2981ff5059286",
+  "schema": "jhg46-ordinary-t1-initialization-safe/v1",
+  "ordinaryIdentity": {
+    "oneRow": true,
+    "authVersion": 2,
+    "acceptedInvitation": true,
+    "activePersonalOwner": true,
+    "activePlatformRole": false,
+    "readOnlyIdentityMetaVerified": true
+  },
+  "projectCreate": {
+    "uiOnlySingleAttempt": true,
+    "status": 202,
+    "sentAt": "2026-10-18T10:05:03.901Z",
+    "keySha256": "452fb56205d21282fee6ba499921ee59dc52e57d6fa42141d13ab5db09fc7526",
+    "bodyBytes": 78,
+    "bodySha256": "0440589116c810fd49524dd69f5810017692cd8ad552a2064bac216d2854dfa5"
+  },
+  "projectReady": {
+    "status": 200,
+    "observedAt": "2026-10-18T10:07:52.779Z",
+    "projectStatus": "ready"
+  },
+  "initialSnapshot": {
+    "status": 200,
+    "observedAt": "2026-10-18T10:06:06.134Z",
+    "sessions": 0,
+    "turns": 0,
+    "activeTurnId": null,
+    "releaseHold": null,
+    "recoveryHold": null,
+    "resourceWait": null
+  },
+  "authorityLimit": "Ready plus successful same-scope snapshot is a product authority projection backed by validated initialization/stop/quota-release receipts; raw bootstrap stop receipts and zero-VM state were not independently fetched."
+}

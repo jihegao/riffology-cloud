@@ -1,0 +1,17 @@
+{
+  "grantSha256": "bea3e26bcd34380293afbf6c17df77385652e551d1d0ab1f838c557454fed3de",
+  "launcherSha256": "6824287d91c57f3dc137f46044eb9d527e5f3e0d461ca4120a25ab76c7256d48",
+  "once": true,
+  "operationsManifestSha256": "bc8e45a8783748be4db9fc8040745aa239a2a4473b89740dbc09f290add82383",
+  "remoteArgv": [
+    "/usr/bin/python3",
+    "/tmp/riffoid-jhg46-image-20261017.AU613w/pi-package-mode-repair-v1/operations/build-probe-repair.py",
+    "--execute",
+    "--request-id",
+    "a21af2c8-44ff-4f67-a07f-c364bcd6d295",
+    "--grant-sha256",
+    "bea3e26bcd34380293afbf6c17df77385652e551d1d0ab1f838c557454fed3de"
+  ],
+  "requestId": "a21af2c8-44ff-4f67-a07f-c364bcd6d295",
+  "startedAt": "2026-10-17T13:26:01.734241+00:00"
+}

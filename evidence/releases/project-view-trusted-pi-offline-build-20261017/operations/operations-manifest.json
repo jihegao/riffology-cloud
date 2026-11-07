@@ -1,0 +1,28 @@
+{
+  "archiveSha256Unchanged": "c92e672ca39d10d61467801f457147e3ee9cf2cfbbbe8b96d00a618a6a208bae",
+  "files": {
+    "EXECUTION.md": {
+      "bytes": 7762,
+      "sha256": "c3868f7008fae91b49d17f7e24fcb3124c6d473d849d81ce35c12b129b4db52a"
+    },
+    "pull-operator.py": {
+      "bytes": 18907,
+      "sha256": "4ef6352c4a48e52c8b1cd6ca1c0120d2b296c71851380b92d06ec8748fe934e7"
+    },
+    "pull-receiver.py": {
+      "bytes": 13527,
+      "sha256": "caab07b759505ad31a9340201c803c03057a9e62537150a4d367b5f5bc73cc3b"
+    },
+    "scope.json": {
+      "bytes": 1788,
+      "sha256": "b414eb83deed1aabc2010c4ff3e0a641320b20a60409d343a357cbdbc974ad48"
+    },
+    "test_operations.py": {
+      "bytes": 15066,
+      "sha256": "1ca033a7d2285dc74b4cce60843063f6d337b947743527f53c429b2db54d3c0a"
+    }
+  },
+  "humanGrantCreated": false,
+  "realExecutionPerformed": false,
+  "schema": "trusted-pi-route-pull-operations-manifest/v1"
+}

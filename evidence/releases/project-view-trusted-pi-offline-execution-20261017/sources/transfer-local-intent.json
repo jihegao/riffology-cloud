@@ -1,0 +1,7 @@
+{
+  "requestId": "57a70587-2b21-4a56-aed1-09c8a32d868a",
+  "recipient": "AMD128",
+  "codeSha256": "23163afd594f6d6631ebc9620464b995a64e54af195f68ef9c755966bec37707",
+  "bodySha256": "c92e672ca39d10d61467801f457147e3ee9cf2cfbbbe8b96d00a618a6a208bae",
+  "writesOnlyFixedNewDirectory": true
+}

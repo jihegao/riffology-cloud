@@ -1,0 +1,22 @@
+{
+  "at": "2026-10-18T13:26:02.462628+00:00",
+  "dockerOrRegistryCalls": 0,
+  "errorCode": null,
+  "localStopErrors": [],
+  "operationId": "registry-readback-recovery-v1",
+  "originalSshPid": 95679,
+  "originalSshReaped": true,
+  "remoteWrites": 0,
+  "requestId": "c263a2f3-f445-430e-b562-2e48f1eeb637",
+  "sshExitCode": 0,
+  "streams": {
+    "stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stdout": {
+      "bytes": 4483,
+      "sha256": "932c0e565157d0333ed1dff1547178eda01ed4d25b750ce2a513b8d4fae2d7d2"
+    }
+  }
+}

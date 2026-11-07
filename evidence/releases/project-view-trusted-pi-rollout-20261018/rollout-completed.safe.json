@@ -1,0 +1,31 @@
+{
+  "schema": "jhg46-original-rollout-completed-safe-projection/v1",
+  "source": {
+    "originalFile": "rollout-completed-observation.json",
+    "bytes": 4234,
+    "sha256": "2a7dd77d745d0f6cf190c80aea0c63d98da52d8de7d8d09fba784140ba8f3b64"
+  },
+  "observedAt": "2026-10-18T09:29:21.092Z",
+  "status": 200,
+  "success": true,
+  "rolloutId": "f1a653cc-44c2-49b9-87f3-33bb8940a540",
+  "rolloutStatus": "completed",
+  "rolloutRecordCurrentVersion": 11,
+  "targetVersion": 12,
+  "targetImage": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-issue165-trusted-pi@sha256:f18a826d40b2fd60e2cf8c49d7f7b8f595fa609fe2be4c28593479ae846960ea",
+  "steps": [
+    {
+      "id": 1,
+      "status": "completed",
+      "started_at": "2026-10-18T09:27:27.612999936Z",
+      "completed_at": "2026-10-18T09:29:05.976Z"
+    }
+  ],
+  "dashboardObservation": {
+    "status": 200,
+    "instancesArrayCount": 0,
+    "durableObjectRowsCount": 6,
+    "doesNotProveZeroSchedulerVmOrRelease": true
+  },
+  "configurationActorHostLocationOrEventsIncluded": false
+}

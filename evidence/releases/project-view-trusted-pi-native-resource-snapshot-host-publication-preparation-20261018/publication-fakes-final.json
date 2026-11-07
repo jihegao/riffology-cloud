@@ -1,0 +1,47 @@
+{
+  "schema": "jhg46-host-publication-author-fakes/v1",
+  "startedAt": "2026-10-18T12:01:18.705100+00:00",
+  "endedAt": "2026-10-18T12:01:18.780323+00:00",
+  "command": [
+    "python3",
+    "-m",
+    "unittest",
+    "-v",
+    "test_recovery.py"
+  ],
+  "cwdRole": "new-candidate-v1",
+  "exitCode": 0,
+  "streams": {
+    "stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stderr": {
+      "bytes": 1623,
+      "sha256": "fd52cb2916265c023b6cfdf178ef834ae78f8a2b5cf273900220a1e8b6c65358"
+    }
+  },
+  "realSshDockerAuthApiOrProvider": 0,
+  "sourceFiles": {
+    "pub_common.py": {
+      "bytes": 5833,
+      "sha256": "6e623f79dc8078b0b25fb16a77b674aefd16bf0e9d3ba8f86e446737cda22897"
+    },
+    "local-recovery.py": {
+      "bytes": 17623,
+      "sha256": "ac057dd758529e7073ce1214cb63f7c8cae3ea3a42e7eddf5aeaa9998ab8e50b"
+    },
+    "remote-recovery.py": {
+      "bytes": 13876,
+      "sha256": "fd642a57029c2b782db4df0582365ee494ab3b9ddabc97eac2446c5793036795"
+    },
+    "test_recovery.py": {
+      "bytes": 18086,
+      "sha256": "a876a530762affb641e739f55891126dde6b8d249cf65fc8c4db7b2fb9773711"
+    },
+    "operations-manifest.json": {
+      "bytes": 1795,
+      "sha256": "6fd9aefcdb09cf0465b3062a0270e4ef3817f74d8829fa99cbfe1f3d031efd8c"
+    }
+  }
+}

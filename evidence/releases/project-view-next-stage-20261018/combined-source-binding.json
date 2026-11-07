@@ -1,0 +1,294 @@
+{
+  "schema": "jhg46-next-stage-source-content-binding/v2",
+  "recordedAt": "2026-10-18T03:23:20.481928+00:00",
+  "reviewOnly": true,
+  "deployable": false,
+  "referenceBase": "This file directory (combined-v2); all file references below resolve relative to it.",
+  "contentRoot": "../content-v2",
+  "sourceInputInventory": {
+    "file": "source-input-inventory.json",
+    "bytes": 160700,
+    "sha256": "a00991d336d395b2923d1b98e6f8228d1562655b7670207dcf51ca2ea2777d7e"
+  },
+  "sourceDelta": {
+    "file": "source-delta.patch",
+    "bytes": 40420,
+    "sha256": "160331d42229e8095c626a9d7b70d1ecd8655a95703f024424e0c4deff00ce46"
+  },
+  "preparedSourceReconciliation": {
+    "file": "prepared-source-reconciliation.json",
+    "bytes": 862,
+    "sha256": "e29ba20c9c05edfb84e3860e1adbaa1e5beaf2f4e8b676b8d04334c66acfd459"
+  },
+  "compositionSourceActuallyExecuted": {
+    "file": "compose-source-once.executed.py",
+    "bytes": 4374,
+    "sha256": "037660bdadd220c69986b1a3c69a5895d4b5c80797d15cc272ea8ef58a8a6b2f"
+  },
+  "builderSource": {
+    "file": "freeze-gateway-once.mjs",
+    "bytes": 14036,
+    "sha256": "d89d4adc0e4131d7792c16210b3f5ed391d0e7a27a1a9646023883d1171cea0f"
+  },
+  "launchSource": {
+    "file": "launch-build-once.py",
+    "bytes": 2725,
+    "sha256": "31d1da797885c3cad9ef934c5fa073a22b06600644caaf1effa12497f694d0da"
+  },
+  "baseMainCommit": "638a366d31a37f7bc1d7dcd124e0b5ba753d6401",
+  "sourceHeads": {
+    "pr239": "17d6545c308c6ae7647080bdde0ba55021384700",
+    "pr246": "05681cf3cf53d965784df486c25c622b74421ef0",
+    "issue248Implementation": "c669921f4796c5b35c6f2e049c92876f4faf7c5b"
+  },
+  "productionOverlays": {
+    "services/capacity/core.ts": "c669921f4796c5b35c6f2e049c92876f4faf7c5b",
+    "services/capacity/durable.ts": "c669921f4796c5b35c6f2e049c92876f4faf7c5b",
+    "services/capacity/paired.ts": "c669921f4796c5b35c6f2e049c92876f4faf7c5b",
+    "services/gateway/app.ts": "c669921f4796c5b35c6f2e049c92876f4faf7c5b",
+    "services/gateway/index.ts": "c669921f4796c5b35c6f2e049c92876f4faf7c5b",
+    "services/model-budget/private-beta-capacity.ts": "c669921f4796c5b35c6f2e049c92876f4faf7c5b",
+    "services/model-budget/private-beta-maintenance.ts": "c669921f4796c5b35c6f2e049c92876f4faf7c5b",
+    "Dockerfile.trusted-pi.cloud": "17d6545c308c6ae7647080bdde0ba55021384700",
+    "Dockerfile.trusted-pi.vertical": "17d6545c308c6ae7647080bdde0ba55021384700",
+    "services/project-views/package.ts": "05681cf3cf53d965784df486c25c622b74421ef0"
+  },
+  "sourceFiles": 477,
+  "sourceContentBytes": 9744361,
+  "explicitBuildTsconfig": {
+    "path": "tsconfig.json",
+    "gitMode": "100644",
+    "gitBlob": "158123389c593502c3f2abd262f5f2eed5f529ee",
+    "sourceCommit": "638a366d31a37f7bc1d7dcd124e0b5ba753d6401",
+    "bytes": 396,
+    "sha256": "03809951d75370134b3aaae38177c3db561f2ecb6004f6dbc67f6f6a3c2d07f0"
+  },
+  "actualMainMergePerformedByPreparation": false,
+  "futureMergeCommitOrMaintenancePrNumberNotPredicted": true,
+  "productionSourceTreeMustEqualActualNormalMergedSourceLater": true,
+  "artifacts": {
+    "gateway.mjs": {
+      "file": "../gateway-build-v2/gateway.mjs",
+      "bytes": 5771650,
+      "sha256": "9c8e4b6b763e9887d1624f00ed3a8efb2a8a24d984d96bc68fdb289cb4d362c3"
+    },
+    "source-graph.json": {
+      "file": "../gateway-build-v2/source-graph.json",
+      "bytes": 879161,
+      "sha256": "f8a9c6bdc9a5a4adc1ea51fcbc9c1c24a8219d421b86ffe29a371a50ac4591bf"
+    },
+    "esbuild-metafile.json": {
+      "file": "../gateway-build-v2/esbuild-metafile.json",
+      "bytes": 1003936,
+      "sha256": "3125677be8dc94513ed2249147a7e07cef729b9a30cf6edb2783d11862035f49"
+    },
+    "assets-sha256.json": {
+      "file": "../gateway-build-v2/assets-sha256.json",
+      "bytes": 20499,
+      "sha256": "b1fd4e1fe0b538af20cfb090242fa996f75bf26f8076e259a774ee2d5338b39a"
+    },
+    "assets-manifest.json": {
+      "file": "../gateway-build-v2/assets-manifest.json",
+      "bytes": 15987,
+      "sha256": "b24e87bf762801056e447c106600e1fcee9f23e43c01830436006b5dca8ce1ad"
+    },
+    "build-manifest.json": {
+      "file": "../gateway-build-v2/build-manifest.json",
+      "bytes": 5233,
+      "sha256": "ffda5ffa12e0a7a1c241eb63a5abc553c4eff521505c825a5b58c5978c52985d"
+    },
+    "auxiliary-inputs-before.json": {
+      "file": "../gateway-build-v2/auxiliary-inputs-before.json",
+      "bytes": 87934,
+      "sha256": "a4e48e3fe07c6fd047d15fb5a6ead3acac138bfa2d6d6b1b25053c30dbf95387"
+    },
+    "auxiliary-inputs-after.json": {
+      "file": "../gateway-build-v2/auxiliary-inputs-after.json",
+      "bytes": 87934,
+      "sha256": "a4e48e3fe07c6fd047d15fb5a6ead3acac138bfa2d6d6b1b25053c30dbf95387"
+    },
+    "intent.json": {
+      "file": "../gateway-build-v2/intent.json",
+      "bytes": 1005,
+      "sha256": "72a4c9477622769271da82028bf1910904e2751e0e6486f4a2e8205af6d8d14e"
+    },
+    "terminal.json": {
+      "file": "../gateway-build-v2/terminal.json",
+      "bytes": 708,
+      "sha256": "91fe6dcb2dff81351ae5b3bb6d1069617ce73b47d0307e2bdaa930e377370705"
+    }
+  },
+  "build": {
+    "esbuildVersion": "0.28.1",
+    "nodeVersion": "v26.10.0",
+    "nodeExecPath": "/opt/homebrew/Cellar/node/26.10.0_1/bin/node",
+    "options": {
+      "bundle": true,
+      "write": false,
+      "metafile": true,
+      "format": "esm",
+      "platform": "neutral",
+      "target": "es2024",
+      "mainFields": [
+        "module",
+        "main"
+      ],
+      "conditions": [
+        "workerd",
+        "worker",
+        "browser"
+      ],
+      "tsconfig": "/Users/jihegao/apps/riffology-cloud/.local/jhg46-next-stage-preparation-20261018/content-v2/tsconfig.json",
+      "external": [
+        "cloudflare:workers",
+        "node:*"
+      ],
+      "logLevel": "silent"
+    },
+    "buildAttempts": 1,
+    "sourceBytesStableDuringAndAfterBuild": true,
+    "inputCount": 1124,
+    "gitInputs": 303,
+    "dependencyInputs": 821,
+    "changedInputsFromOldV3": [
+      "services/capacity/core.ts",
+      "services/capacity/durable.ts",
+      "services/capacity/paired.ts",
+      "services/gateway/app.ts",
+      "services/gateway/index.ts",
+      "services/model-budget/private-beta-capacity.ts",
+      "services/project-views/package.ts"
+    ],
+    "addedInputsFromOldV3": [
+      "services/model-budget/private-beta-maintenance.ts"
+    ],
+    "removedInputsFromOldV3": [],
+    "auxiliaryBeforeFile": {
+      "file": "auxiliary-inputs-before.json",
+      "bytes": 87934,
+      "sha256": "a4e48e3fe07c6fd047d15fb5a6ead3acac138bfa2d6d6b1b25053c30dbf95387"
+    },
+    "auxiliaryAfterFile": {
+      "file": "auxiliary-inputs-after.json",
+      "bytes": 87934,
+      "sha256": "a4e48e3fe07c6fd047d15fb5a6ead3acac138bfa2d6d6b1b25053c30dbf95387"
+    },
+    "explicitTsconfig": true,
+    "metafileIsModuleGraphNotAllFilesystemReads": true,
+    "playwrightInputs": 0,
+    "exports": [
+      "ContainerProxy",
+      "EntryReplayGuard",
+      "G5ControlledWindow",
+      "G5TenantModelBudget",
+      "InvitedRunCapacity",
+      "ManagedProductRuntime",
+      "ModelProxyService",
+      "ObserverExecutor",
+      "PiDeveloperBudget",
+      "PrivateBetaCapacity",
+      "ProductTurnRuntime",
+      "ProductionModelBudget",
+      "ProjectRuntime",
+      "ProjectToolSandbox",
+      "ProjectViewCapacity",
+      "ProjectViewRuntime",
+      "RevisionStore",
+      "ServiceRun",
+      "ServiceRuntime",
+      "ServiceSandbox",
+      "SimulationSandbox",
+      "TenantModelBudget",
+      "TenantQuota",
+      "ToolArtifactStore",
+      "ToolBridgeAgent",
+      "ToolBridgeService",
+      "TrustedPiCapacity",
+      "TrustedPiSandbox",
+      "WorkspaceAgent",
+      "default"
+    ]
+  },
+  "buildManifestReferenceResolution": {
+    "sourceInputInventory": "combined-v2/source-input-inventory.json",
+    "preparedSourceReconciliation": "combined-v2/prepared-source-reconciliation.json",
+    "sourceDelta": "combined-v2/source-delta.patch",
+    "artifactsAndAuxiliary": "gateway-build-v2/"
+  },
+  "auxiliarySummary": {
+    "explicitConfigToolAndPackageMetadataStable": true,
+    "toolsFiles": 207,
+    "selectedDependencyPackageMetadataLookups": 186,
+    "existingDependencyPackageJsonFiles": 28,
+    "missingAncestorPackageJsonPathsWitnessed": 158,
+    "scope": "Explicit config and tools plus metadata ancestry of selected dependency modules. The esbuild metafile is a module input graph, not all filesystem reads."
+  },
+  "assets": {
+    "paths": 96,
+    "web": 28,
+    "immutable": 68,
+    "allByteIdenticalToFrozenV3": true,
+    "manifestByteEquivalentToFrozenV3": true,
+    "totalBytes": 53782277,
+    "noAssetSessionOrUpload": true
+  },
+  "frame": {
+    "path": "/project-views/4bd78b2cf7c06051af24d97c2fd7665eea3b96ddbffe6b23daec485ee1e3eff2/frame.html",
+    "sha256": "4bd78b2cf7c06051af24d97c2fd7665eea3b96ddbffe6b23daec485ee1e3eff2"
+  },
+  "rawBuildEvidence": {
+    "offline-build-launch-intent.json": {
+      "file": "offline-build-launch-intent.json",
+      "bytes": 1252,
+      "sha256": "abca655ff08ff0dcf431f17ebe60d28ce070dc82fa743a6ff8bdeaead0dc41e9"
+    },
+    "offline-build-original-cli.json": {
+      "file": "offline-build-original-cli.json",
+      "bytes": 70,
+      "sha256": "9785f3d1c57d8bbb494e25f97d45489876fdd7f1c7ddbf757c16127aeaf412a7"
+    },
+    "offline-build-launch-terminal.json": {
+      "file": "offline-build-launch-terminal.json",
+      "bytes": 866,
+      "sha256": "95980656d9373d1a262ec219aa01e7cec3f721e9740756a0da4a52b6463d051b"
+    },
+    "offline-build.stdout": {
+      "file": "offline-build.stdout",
+      "bytes": 4078,
+      "sha256": "b8ccebfae248208de427e62926fa902f9a2900f9bf9fa83e383b2d1854419ffa"
+    },
+    "offline-build.stderr": {
+      "file": "offline-build.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "oldPreparation": {
+    "sourceBinding": {
+      "file": "../source-content-binding.json",
+      "bytes": 7225,
+      "sha256": "a7bc2910ca743be44c7147f764a3ef75c1ab5b9e98480e7c0cb9f0a9e136cf3d"
+    },
+    "bundle": {
+      "file": "../gateway-build-v1/gateway.mjs",
+      "bytes": 5750293,
+      "sha256": "3ce10d83d9792dc56be5f8c4c079bfbdfcd91b3d95320fd9453f7df434cf8319"
+    },
+    "preservedUnmodified": true,
+    "notAuthorizedForPublication": true
+  },
+  "existingImageNotRebuiltOrRetagged": true,
+  "generatedOutputNotes": "Generated comment paths and wrapper labels can vary with build location. Fixed output bytes are authoritative; source overlay/module graph record describes the production input changes.",
+  "boundaries": {
+    "credentialsRead": false,
+    "apiAuthSshDockerCloudCalls": false,
+    "dependencyInstallOrUpgrade": false,
+    "testsRepeated": false,
+    "assetSessionOrUpload": false,
+    "imageBuildOrRegistry": false,
+    "newPublisherOrMetadataPreparedForThisBundle": false,
+    "freshActualBaselineAssemblyAndWitnessesStillRequired": true,
+    "normalMergeAndNewExplicitHumanPublicationGrantStillRequired": true,
+    "nativeContainerOrProviderOrOrdinaryProjectAcceptanceProved": false
+  }
+}

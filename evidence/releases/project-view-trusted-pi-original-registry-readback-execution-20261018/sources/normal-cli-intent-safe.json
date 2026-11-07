@@ -1,0 +1,24 @@
+{
+  "schema": "jhg46-public-safe-cli-intent-projection/v1",
+  "originalBytes": 387,
+  "originalSHA256": "645f66dd208fbc76b1919595e6fe99f08013abf76f19d80e6582527d80b90536",
+  "projectionNote": "Two executable paths replaced with fixed-source placeholders; no token or command output. Actual source policy pins remain in the public preparation.",
+  "data": {
+    "argv": [
+      "$PINNED_NODE",
+      "--no-warnings",
+      "$PINNED_WRANGLER_CLI",
+      "auth",
+      "token",
+      "--json",
+      "--profile",
+      "default",
+      "--env-file",
+      "/dev/null"
+    ],
+    "at": "2026-10-18T13:12:53.975235+00:00",
+    "diskLogs": false,
+    "stdoutAndStderr": "memory-only",
+    "timeoutSeconds": 30
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "at": "2026-10-18T13:12:57.003472+00:00",
+  "destination": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-issue165-trusted-pi:jhg46-native-resource-host-20261018-0bb9af7a",
+  "humanGrantSha256": "eb6294d0b9dd1344e8717f5a8dd6ac879e7a41ed9455c0c2cb703f0ffbb2f97f",
+  "operationId": "registry-readback-recovery-v1",
+  "operationsManifestSha256": "59fd2dd0f464e38b50b56e7c1d65229b6d81d86b12c935a822d5eeefead74342",
+  "originalHumanGrantSha256": "0b63246cfc0dda411a3405f401aaf9bfd2887483b2067242ca945741d7dac911",
+  "originalOperationsManifestSha256": "76dfb4606c75424c01a00220805f6efb5b32afbf474fd003fe540641bb97c309",
+  "parentRequestId": "695e8875-459a-41b3-a148-2e228f2c3727",
+  "requestId": "c263a2f3-f445-430e-b562-2e48f1eeb637",
+  "schema": "trusted-pi-registry-readback-recovery-intent/v1",
+  "sourceImageId": "sha256:0bb9af7a5909c41187cf56402a21420100c72a8de0025b0a7152f8804e85d191",
+  "supervisorLinuxStartTicks": "173590209",
+  "supervisorPid": 3453402
+}

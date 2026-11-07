@@ -1,0 +1,6 @@
+{
+  "at": "2026-10-18T01:59:38.157837+00:00",
+  "destination": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-issue165-trusted-pi:jhg46-pi-resource-compat-20261017-a946b164",
+  "expectedManifest": "sha256:f18a826d40b2fd60e2cf8c49d7f7b8f595fa609fe2be4c28593479ae846960ea",
+  "requestId": "fb99c7e4-21a7-4215-8261-c17dd7c148aa"
+}

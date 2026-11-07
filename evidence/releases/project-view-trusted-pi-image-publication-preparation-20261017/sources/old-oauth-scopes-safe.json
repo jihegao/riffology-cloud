@@ -1,0 +1,24 @@
+{
+  "schema": "project-view-oauth-refresh-observation/v1",
+  "observedAt": "2026-10-17T07:28:32.360470+00:00",
+  "command": "local Wrangler 4.129.0 auth token --json; stdout captured in memory only; no interactive login; no requested scope expansion",
+  "exitCode": 0,
+  "tokenPrintedOrRelayed": false,
+  "debugLogSink": "/dev/null/wrangler.log (no persistent log)",
+  "newRegistryCredentialCreated": false,
+  "workerOrAppMutated": false,
+  "refreshedConfiguration": {
+    "path": "/Users/jihegao/.wrangler/config/default.toml",
+    "previousExpiry": "2026-10-17T04:57:58.049Z",
+    "newExpiry": "2026-10-17T08:28:31.332Z",
+    "scopesUnchanged": true,
+    "scopes": [
+      "user:read",
+      "offline_access",
+      "account:read",
+      "workers:write",
+      "workers_scripts:write"
+    ]
+  },
+  "success": true
+}

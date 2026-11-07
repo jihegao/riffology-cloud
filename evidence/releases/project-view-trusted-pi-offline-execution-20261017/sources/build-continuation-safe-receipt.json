@@ -1,0 +1,45 @@
+{
+  "schema": "jhg46-root-original-preflight-continuation-transport-result/v1",
+  "requestId": "57a70587-2b21-4a56-aed1-09c8a32d868a",
+  "endedAt": "2026-10-17T12:12:06.920877+00:00",
+  "sshExitCode": 1,
+  "outerTransportTimedOut": false,
+  "ownedSshReaped": true,
+  "runnerSha256": "12a22b87f8dbab84d144dbcac0b141d050703f620a5417c0607bb5ab7a38fcd8",
+  "streams": {
+    "stdout": {
+      "bytes": 967,
+      "sha256": "532a333def2f63cdba58dbdd1645ce3dfe31b006a0107604f665c7a5c3052398"
+    },
+    "stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "remoteResult": {
+    "actualImageConfigUser": "root",
+    "baseDerivedLaunchConfigPreserved": [
+      "User",
+      "Entrypoint",
+      "Cmd",
+      "WorkingDir",
+      "Env"
+    ],
+    "cleanup": {
+      "cleanupConfirmed": true,
+      "labelListEmpty": true,
+      "originalContainerId": "b088b79e10cea6ea12bd39995e5410e89e48994cf86fb6814879b2a829011da1",
+      "originalIdAbsent": true
+    },
+    "continuationOfOriginalReadonlyFailure": true,
+    "endedAt": "2026-10-17T12:12:03.007244+00:00",
+    "errorCode": "command-nonzero-start-original-once",
+    "imageId": "sha256:b2c2f93eff23011fe7863545e2b62b3b3d0d6fd4da161371afae399c0ce59c27",
+    "noCloudOrProviderAcceptanceClaim": true,
+    "parentOriginalResultSha256": "41062ccf80772745c44296cd2944b6389babb88fb6206e1edc59fdd144c412a9",
+    "requestId": "57a70587-2b21-4a56-aed1-09c8a32d868a",
+    "runtimeContract": "Root supervisor and original Sandbox entrypoint retained; native supervisor drops child to10002. Mock overrides user10002 and proves SDK only.",
+    "schema": "trusted-pi-build-probe-result/v1",
+    "status": "unknown-stopped"
+  }
+}

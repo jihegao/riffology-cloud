@@ -1,0 +1,60 @@
+{
+  "actualAckRolloutId": null,
+  "actualAckTargetVersion": null,
+  "actualSentWireSha256": null,
+  "actuallySentWireObserved": false,
+  "baseVersionLastRecorded": 12,
+  "bodyCanonicalSha256": "d02b6f60f2aecbc09cf0be8bf011770ddd5b6e7e429b78aed3bd46b776a90891",
+  "bodyFile": "body.wire.json",
+  "canonicalAndPlannedWireBytesEqual": true,
+  "canonicalFile": "body.canonical.json",
+  "effectiveResources": {
+    "diskMB": 4000,
+    "label": "basic",
+    "maxInstances": 1,
+    "memoryMiB": 1024,
+    "vcpu": 0.25
+  },
+  "executionAuthorized": false,
+  "fixedConfig": {
+    "digest": "sha256:cea60e390b6726ec0147153e1318b3655c8386460e98d02e35bb571768e49da5",
+    "mediaType": "application/vnd.oci.image.config.v1+json",
+    "size": 19067
+  },
+  "fixedRegistryRunnable": {
+    "digest": "sha256:ec8dbe9efe229a1626ea3202b618653f82f8d29d9da8b19310c3b3838f2a2623",
+    "mediaType": "application/vnd.oci.image.manifest.v1+json",
+    "size": 9585
+  },
+  "lastFreshReadPlusNamedSingleWriterStillHasRace": true,
+  "lastRecordedBaseImage": "sha256:f18a826d40b2fd60e2cf8c49d7f7b8f595fa609fe2be4c28593479ae846960ea",
+  "lastRecordedNotFreshBaseline": true,
+  "maxMutationAttempts": 1,
+  "method": "POST",
+  "nonImageConfigurationReadbackRule": "canonical original configuration after removing image must equal fresh after configuration after removing image; if any normalized field differs, hold and stop without retry/rollback",
+  "oldRequestBodyAndV11NotReplayable": true,
+  "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a03628c4-f032-461f-a65b-612ccac11a06/rollouts",
+  "plannedWireBytes": 455,
+  "plannedWireSha256": "d02b6f60f2aecbc09cf0be8bf011770ddd5b6e7e429b78aed3bd46b776a90891",
+  "readOnlyNormalizedFieldsNotSent": [
+    "disk",
+    "memory",
+    "memory_mib",
+    "network",
+    "runtime",
+    "vcpu"
+  ],
+  "requestId": "35abe255-f107-522d-a0f0-e86618c656a9",
+  "reviewOnly": true,
+  "schema": "jhg46-a036-ec8-fixed-rollout-input/v1",
+  "serverConditionalWriteDocumented": false,
+  "sourceReviewedOldInputSha256": "d7956988abe42af2089f4ab886530481e0cadeb7a6b1d5868fd1ac262971ec86",
+  "supportedWritableFields": [
+    "command",
+    "entrypoint",
+    "image",
+    "instance_type",
+    "observability"
+  ],
+  "unknownRule": "retain original request/body/lock/maintenance hold; read-only reconciliation only; no retry, new request, fallback or auto rollback"
+}

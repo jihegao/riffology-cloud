@@ -1,0 +1,126 @@
+{
+  "schema": "jhg46-current-gateway-three-family-read/v1",
+  "recordedAt": "2026-10-18T17:37:30.275196+00:00",
+  "accountId": "8b0d70250211aa10d89e20605a1c7e5e",
+  "worker": "riffology-m1-gateway-staging",
+  "fixedSoleActiveVersion": "4f887d24-7874-4fb3-b3ac-caf6d74ab461",
+  "collectorTemplateSha256": "335257c2088aa3344995b0b14283c0429b9152c15809d48c47e4b3d3d697c99e",
+  "getRequests": 29,
+  "fragmentCalls": 10,
+  "allHttp200": true,
+  "cloudWrites": 0,
+  "newOAuthCredentialReads": 0,
+  "allWorkerSecretValueFieldsAbsent": true,
+  "readFamilies": [
+    {
+      "family": "settings",
+      "canonicalResultSha256": "3926e958af229da1e20ca35a0532147b520e7aded2a4251c8d665200735ca5f3",
+      "firstObservedAt": "2026-10-18T17:36:25.673Z",
+      "lastObservedAt": "2026-10-18T17:36:44.886Z",
+      "originalDecodedFamilyDocument": {
+        "file": "settings.original-family.private.json",
+        "bytes": 24042,
+        "sha256": "8f8a660cff89bceee7126b362c55cdbef451982fc3c211fb88719d70f7aaac25"
+      },
+      "derivedPrettyResultDocument": {
+        "file": "settings.private.json",
+        "bytes": 27882,
+        "sha256": "2989f5427bd7571d64a53f2bb8a7d8c098eefb536688db3464319a8d5323d04c"
+      },
+      "fragments": [
+        {
+          "file": "settings-0.tool-result.private.json",
+          "bytes": 10783,
+          "sha256": "2e6c6a02d18d6626ddeda9d32215db9d49add625633d60a7a25ba5634d97ca63"
+        },
+        {
+          "file": "settings-14000.tool-result.private.json",
+          "bytes": 10788,
+          "sha256": "86662de3fd80736800298132001de840b3efa2575adde854118455ee8126340e"
+        },
+        {
+          "file": "settings-21000.tool-result.private.json",
+          "bytes": 5507,
+          "sha256": "493c647709c3b55d560508a0eef3d586508ec4c9b1c22a749816e84ebe342b9a"
+        },
+        {
+          "file": "settings-7000.tool-result.private.json",
+          "bytes": 10787,
+          "sha256": "d2a9e4fc158fd6ea18fc82a5b5decfcc0b46acec5af1ff241e8ab49d86bd8912"
+        }
+      ]
+    },
+    {
+      "family": "version",
+      "canonicalResultSha256": "875f3dec426ba461369af3bbdaf51405f793d94a6448939ab822c421d0be2b2a",
+      "firstObservedAt": "2026-10-18T17:36:51.067Z",
+      "lastObservedAt": "2026-10-18T17:37:14.472Z",
+      "originalDecodedFamilyDocument": {
+        "file": "version.original-family.private.json",
+        "bytes": 28075,
+        "sha256": "bb6236635851f14d91efb27c278e29754a3951b7f602c541133bdd24420edf51"
+      },
+      "derivedPrettyResultDocument": {
+        "file": "version.private.json",
+        "bytes": 36469,
+        "sha256": "d28e9bed33904c90b300b9cff3cdc5ab6c756be318ff12a6bbfabb7f35deb765"
+      },
+      "fragments": [
+        {
+          "file": "version-0.tool-result.private.json",
+          "bytes": 10781,
+          "sha256": "1bdda7470e49163ad921c5849c73608aa640840939a11f096971c1f731d0d8c6"
+        },
+        {
+          "file": "version-14000.tool-result.private.json",
+          "bytes": 10786,
+          "sha256": "e13af89f7953f3af3ed33606b52ed623c224a17d7f4e5eef9be229e0d6a98a02"
+        },
+        {
+          "file": "version-21000.tool-result.private.json",
+          "bytes": 10786,
+          "sha256": "510051f5472a16f6851c321688eaa3a52a74747648d48bcc5ea40ba90bf2728c"
+        },
+        {
+          "file": "version-28000.tool-result.private.json",
+          "bytes": 1547,
+          "sha256": "71c147f5bc1808fd2092fe9aadb97ca1ee16345f7f3f4fb67b48ebbff23bd3a1"
+        },
+        {
+          "file": "version-7000.tool-result.private.json",
+          "bytes": 10785,
+          "sha256": "f069b49c205ae1c1e439d44e590e4076d88174e86d8c4046d62d91fa66121ea8"
+        }
+      ]
+    },
+    {
+      "family": "deployments",
+      "canonicalResultSha256": "d035c91e06dd4cf3d95bf582099e9558b9fa59dc47bb4a4e5fbc6fd45d07b21d",
+      "firstObservedAt": "2026-10-18T17:36:52.491Z",
+      "lastObservedAt": "2026-10-18T17:36:52.763Z",
+      "originalDecodedFamilyDocument": {
+        "file": "deployments.original-family.private.json",
+        "bytes": 449,
+        "sha256": "6ceffba6bdbc233e6566551d0c79a8beff547a6928778a7f4d8447e4064f2b6d"
+      },
+      "derivedPrettyResultDocument": {
+        "file": "deployments.private.json",
+        "bytes": 454,
+        "sha256": "ba809b05bfa01cf30149f18a9162a4ac7c79b284b75620f92a9ff0c74b548d89"
+      },
+      "fragments": [
+        {
+          "file": "deployments-0.tool-result.private.json",
+          "bytes": 1858,
+          "sha256": "95520eae1ab62c2ce2fc2252f51cf8bed2c31a3be9dc548d4ec9908a039e2f87"
+        }
+      ]
+    }
+  ],
+  "privacy": "All original decoded configuration kept local0600; no card/address/credential or raw configuration in this safe receipt.",
+  "limits": [
+    "Decoded connector result JSON and tool-result envelope retained; these are not HTTP wire-body captures.",
+    "Preparation observations for only three families; complete resource preservation and serving source must be recombined and verified separately.",
+    "These dated reads are not the future same-request pre-PUT witness or user acceptance."
+  ]
+}

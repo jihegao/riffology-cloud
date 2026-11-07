@@ -1,0 +1,26 @@
+{
+  "credentialPostAttempted": false,
+  "credentialStdinSent": false,
+  "endedAt": "2026-10-18T01:34:19.666328+00:00",
+  "errorCode": "normal-oauth-cli-unconfirmed-no-fallback",
+  "finalPublicationAckVerified": false,
+  "independentOriginalCredentialAndRouteCleanupRequired": true,
+  "localStopErrors": [],
+  "mergeAllowed": false,
+  "originalSshReaped": false,
+  "remoteStoppedByLocalCleanupProved": false,
+  "requestId": "9ec39434-0856-4ee7-af30-adf3dd5b5df4",
+  "safeRemoteEvents": [],
+  "schema": "trusted-pi-publication-local-terminal/v1",
+  "sshExitCode": null,
+  "streams": {
+    "stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

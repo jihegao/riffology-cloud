@@ -1,0 +1,331 @@
+{
+  "schema": "jhg46-registry-recovery-and-argv-repair-final-public-document-review/v1",
+  "reviewer": "result_review",
+  "reviewedAt": "2026-10-18T01:51:02.439915+00:00",
+  "baselineCommit": "f6f4b0503ae18bb5728b3153a14d8b1f2bea1ac4",
+  "actualStoppedRequestId": "9ec39434-0856-4ee7-af30-adf3dd5b5df4",
+  "preparedRequestId": "fb99c7e4-21a7-4215-8261-c17dd7c148aa",
+  "outcome": "no-must-fix",
+  "mustFix": [],
+  "scope": "Static final public document, inventory, exact source mirror and retained evidence mapping review; actual failed attempt remains separate from unexecuted preparation.",
+  "counts": {
+    "actualInventoryEntries": 9,
+    "actualFiles": 10,
+    "preparationInventoryEntries": 28,
+    "preparationFiles": 29,
+    "newMarkdownLocalLinks": 34
+  },
+  "checks": {
+    "actualInventoryExact": true,
+    "preparationInventoryExact": true,
+    "allTenActualResultFilesExactFinalLocalCopies": true,
+    "twentySixPrivateSourceBindingFilesExact": true,
+    "twentyFourUnmappedPublishedMirrorsExact": true,
+    "deltaEnvelopeLosslesslyDecodesOriginal15095Bytes": true,
+    "parserReceiptOnlyDisplayCommandChanged": true,
+    "eightManifestInputsExact73639BytesAndReader2207": true,
+    "twoSiblingReviewBindingsMatch": true,
+    "old3779ManifestEightInputsAndFiveActualRecordsUnchanged": true,
+    "old14dPacketAndTwentyFourPreparationFilesUnchanged": true,
+    "readinessOnlyNewTopSectionAndTrackedProductionDiffZero": true,
+    "allNewMarkdownLocalLinksResolve": true,
+    "noPrivateGrantReplyRawCliOutputOrNewPersonalPathInNarrativeAndActualProjection": true,
+    "retainedParserSixCasesAnd16Plus7ReceiptStreamsExact": true,
+    "scopeOnlyThreeFixedRequestIdentityFieldsChanged": true,
+    "persistentOauthAndAccountRegistryCredentialLimitsAccuratelyRetained": true,
+    "noNewGrantOrCandidateExecutionLockPresent": true,
+    "actualDriverStagesNotReachedDistinctFromUnknownCliSideEffects": true,
+    "parserEvidenceNotPresentedAsRecoveredCliOutputOrActualAuthResult": true,
+    "prior403ReasonAndFeesRemainUnknown": true,
+    "newRequestRequiresUpdatedExplicitAuthorization": true,
+    "metadataCurrentFrontKeepsHistoricalF6CiAndNoMergeAdmissionBoundary": true
+  },
+  "preparedOperationsManifest": {
+    "file": "evidence/releases/project-view-trusted-pi-registry-argv-repair-preparation-20261018/operations-manifest.json",
+    "bytes": 1313,
+    "sha256": "89f2f285f5f732a6f3c9b8705a47fde4b5f073970e585e779371fb20ac2680fa",
+    "eightInputBytes": 73639
+  },
+  "preparedIndependentReader": {
+    "file": "evidence/releases/project-view-trusted-pi-registry-argv-repair-preparation-20261018/independent-cleanup-readonly.py",
+    "bytes": 9065,
+    "sha256": "2207c49844d8bfa4777510d6c60d4333f509dd1d7ab42fabf71e6188c77d6266"
+  },
+  "publishedMappingChecks": {
+    "sourceBindingDescribesPrivateCandidateFiles": 26,
+    "unmappedExactMirrors": 24,
+    "parserReceiptProjection": "Only command display is changed; original694B/SHA676ddaf5b10335c69bc1df78d4ecd91b08bb2152d246b7ace507065a762ecab9 retained.",
+    "patchEnvelope": "Losslessly decodes original15095B/SHAa777107a3b8e7b201020707602d527cc4b11192d1350433019b84b5a9a8e37ba.",
+    "personalSourcePinLimit": "Exact executable inputs retain previously frozen local CLI source pins; narrative and actual safe projections contain no personal absolute paths. No grant, human reply, OAuth storage or actual CLI output body is included."
+  },
+  "reviewedFiles": [
+    {
+      "file": "docs/project-view-trusted-pi-registry-argv-repair-packet-20261018.md",
+      "bytes": 7046,
+      "sha256": "aa7ab90f817bb2edd72d96189c840f824b751eaa9be56bba1c394c35596f031c"
+    },
+    {
+      "file": "docs/project-view-trusted-pi-registry-recovery-result-20261018.md",
+      "bytes": 2296,
+      "sha256": "7c2e1bb8736183c1d00659661c178e9edba99f2062a128b89483624bf20926e2"
+    },
+    {
+      "file": "docs/release-readiness.md",
+      "bytes": 152834,
+      "sha256": "da16c62fe78e5cfd456ec44bec44a15ee99f31658f878e39e139a3f986f718fa"
+    },
+    {
+      "file": "evidence/releases/project-view-trusted-pi-registry-argv-order-review-20261018.json",
+      "bytes": 7085,
+      "sha256": "c71ef9ebcbaad1a5f5c34bc260226502e9bfa2ec9aef69659a994dd94aca9be4"
+    },
+    {
+      "file": "evidence/releases/project-view-trusted-pi-registry-argv-repair-preparation-20261018/AUTHORIZATION.md",
+      "bytes": 4784,
+      "sha256": "927dbf5fa58f22785f0fa93f6dff04480bc07fd6d95ee12d88133bb8123aa4f6"
+    },
+    {
+      "file": "evidence/releases/project-view-trusted-pi-registry-argv-repair-preparation-20261018/EXECUTION.md",
+      "bytes": 5380,
+      "sha256": "32c4bd44b98a2649c6b7a29426d62ced7ff0ffdba953dd1bf7aaa7bdc81ed3d9"
+    },
+    {
+      "file": "evidence/releases/project-view-trusted-pi-registry-argv-repair-preparation-20261018/README.md",
+      "bytes": 3489,
+      "sha256": "96db4af2042a457cc9aea6123f70da409996c9556a0e400a98f8e7264d6cb311"
+    },
+    {
+      "file": "evidence/releases/project-view-trusted-pi-registry-argv-repair-preparation-20261018/argv-order-diagnosis.json",
+      "bytes": 5741,
+      "sha256": "d9c60e3d6cdeb4d22a609c3b075122780b7b24c3f4f4bc1adf9981bb0a5483b2"
+    },
+    {
+      "file": "evidence/releases/project-view-trusted-pi-registry-argv-repair-preparation-20261018/candidate-source-binding.json",
+      "bytes": 4338,
+      "sha256": "aa79181f8c699706bd04c8cb09536ab885db3b66fbf857b6e5ce5be2c188e507"
+    },
+    {
+      "file": "evidence/releases/project-view-trusted-pi-registry-argv-repair-preparation-20261018/independent-cleanup-readonly.py",
+      "bytes": 9065,
+      "sha256": "2207c49844d8bfa4777510d6c60d4333f509dd1d7ab42fabf71e6188c77d6266"
+    },
+    {
+      "file": "evidence/releases/project-view-trusted-pi-registry-argv-repair-preparation-20261018/independent-reader-checks.json",
+      "bytes": 651,
+      "sha256": "f0f498ed22ca86071b1f46fa67bb0eeec23c5e09d035350416ead5a1375ce799"
+    },
+    {
+      "file": "evidence/releases/project-view-trusted-pi-registry-argv-repair-preparation-20261018/independent-reader-checks.stderr",
+      "bytes": 215,
+      "sha256": "d39789180b50e37364f6279ace2b0884825cb392af2977acedd445cc5b689036"
+    },
+    {
+      "file": "evidence/releases/project-view-trusted-pi-registry-argv-repair-preparation-20261018/independent-reader-checks.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "evidence/releases/project-view-trusted-pi-registry-argv-repair-preparation-20261018/inventory.json",
+      "bytes": 4611,
+      "sha256": "bdc9c9ad591912ee5eb80c5d9902527ca9ab2192317326a431640f4711f828dd"
+    },
+    {
+      "file": "evidence/releases/project-view-trusted-pi-registry-argv-repair-preparation-20261018/local-recovery.py",
+      "bytes": 19225,
+      "sha256": "c6923da17446f0b3b2473c554c149963636f632b950b26fa5b1ff553b891a600"
+    },
+    {
+      "file": "evidence/releases/project-view-trusted-pi-registry-argv-repair-preparation-20261018/oci_verify.py",
+      "bytes": 5748,
+      "sha256": "0a23618e34b9a2acf608acc86d281ebd68f60a62ba2b102ecda92502c294acea"
+    },
+    {
+      "file": "evidence/releases/project-view-trusted-pi-registry-argv-repair-preparation-20261018/offline-checks.json",
+      "bytes": 1793,
+      "sha256": "e6723e9b0029e2d92fefcfac5cfcc8cbdca9d18d6dae9eaf4320c2b7ee906020"
+    },
+    {
+      "file": "evidence/releases/project-view-trusted-pi-registry-argv-repair-preparation-20261018/operations-manifest.json",
+      "bytes": 1313,
+      "sha256": "89f2f285f5f732a6f3c9b8705a47fde4b5f073970e585e779371fb20ac2680fa"
+    },
+    {
+      "file": "evidence/releases/project-view-trusted-pi-registry-argv-repair-preparation-20261018/parse-fixed-wrangler-argv.mjs",
+      "bytes": 5944,
+      "sha256": "164062cd1f7e14f8ae89fc41290107e37c3cadc8e8f4ae4b4d93a6a61722b80c"
+    },
+    {
+      "file": "evidence/releases/project-view-trusted-pi-registry-argv-repair-preparation-20261018/parser-check-first.receipt.safe.json",
+      "bytes": 823,
+      "sha256": "4960ccb9297cdfcc991386d2e481d5d66b43f2adf1fb74f9bed269701f5ccf68"
+    },
+    {
+      "file": "evidence/releases/project-view-trusted-pi-registry-argv-repair-preparation-20261018/parser-check-first.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "evidence/releases/project-view-trusted-pi-registry-argv-repair-preparation-20261018/parser-check-first.stdout",
+      "bytes": 4547,
+      "sha256": "536d84bf40786023fd03e1f289f6190b22a9d9c8c4239fb163763d7c1b843c06"
+    },
+    {
+      "file": "evidence/releases/project-view-trusted-pi-registry-argv-repair-preparation-20261018/pub_common.py",
+      "bytes": 3291,
+      "sha256": "43e5e41b0953da9deac52fe8533d9190172f0309fd163f44fec6c5ed6250eadc"
+    },
+    {
+      "file": "evidence/releases/project-view-trusted-pi-registry-argv-repair-preparation-20261018/public-preparation-review.json",
+      "bytes": 4350,
+      "sha256": "08a94fe157d73f4ce8dc9241850a4fd2273857489dee243ce249d3e904434f18"
+    },
+    {
+      "file": "evidence/releases/project-view-trusted-pi-registry-argv-repair-preparation-20261018/recovery-fake-checks.json",
+      "bytes": 569,
+      "sha256": "75b9e80c1755ea8fe9dd0cae6e30553de03d2989051cf88494bc12adbca47499"
+    },
+    {
+      "file": "evidence/releases/project-view-trusted-pi-registry-argv-repair-preparation-20261018/recovery-fake-checks.stderr",
+      "bytes": 225,
+      "sha256": "0eaa3e5019cd0249f8c95ea01071159d17460da14bd884b3a4f06b1d2b4936e0"
+    },
+    {
+      "file": "evidence/releases/project-view-trusted-pi-registry-argv-repair-preparation-20261018/recovery-fake-checks.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "evidence/releases/project-view-trusted-pi-registry-argv-repair-preparation-20261018/remote-recovery.py",
+      "bytes": 13818,
+      "sha256": "339aa74fd246024886ca243526bd097d39be16150719a3b117474a7fcad6a178"
+    },
+    {
+      "file": "evidence/releases/project-view-trusted-pi-registry-argv-repair-preparation-20261018/scope.json",
+      "bytes": 5086,
+      "sha256": "33cc5a4e5124f36eef9656073404e9b8e779233c859867ae8d985edf46cc9e51"
+    },
+    {
+      "file": "evidence/releases/project-view-trusted-pi-registry-argv-repair-preparation-20261018/source-copy-receipt.json",
+      "bytes": 1850,
+      "sha256": "af8ccc5321164333f9d5da9413f8f65e0170e10ebdfcc30359a71f8bb98cbb25"
+    },
+    {
+      "file": "evidence/releases/project-view-trusted-pi-registry-argv-repair-preparation-20261018/source-delta.patch.base64.json",
+      "bytes": 20411,
+      "sha256": "1c5ffc859a91607792246d40f41a2d5e90b805de7beacfe11879d7bb337c90cc"
+    },
+    {
+      "file": "evidence/releases/project-view-trusted-pi-registry-argv-repair-preparation-20261018/test_independent_reader.py",
+      "bytes": 6568,
+      "sha256": "1ccd6830166f0f2cc8447ad34b066659364c18a5d78e282b414777dfb4914eb4"
+    },
+    {
+      "file": "evidence/releases/project-view-trusted-pi-registry-argv-repair-preparation-20261018/test_recovery.py",
+      "bytes": 16307,
+      "sha256": "08832bab64eb8048588a5c124ad64713da0c3c17ee58e0f1b256fabaf162a1b0"
+    },
+    {
+      "file": "evidence/releases/project-view-trusted-pi-registry-recovery-result-20261018/README.md",
+      "bytes": 4285,
+      "sha256": "7158274e29ac6782fe4fcfe7322a6f7a28d3d19f6b035df32279893e1cb8608e"
+    },
+    {
+      "file": "evidence/releases/project-view-trusted-pi-registry-recovery-result-20261018/inventory.json",
+      "bytes": 1773,
+      "sha256": "ed809e48e63fbe1772adc1e69d620a7419227bbb728bf940f708472a02c6f1cf"
+    },
+    {
+      "file": "evidence/releases/project-view-trusted-pi-registry-recovery-result-20261018/result.json",
+      "bytes": 6191,
+      "sha256": "750ab7cb846fb62fb3931d0bf8a4115647f8416507423c4a32afee0dbd9688d5"
+    },
+    {
+      "file": "evidence/releases/project-view-trusted-pi-registry-recovery-result-20261018/sources/attempt-intent.json",
+      "bytes": 290,
+      "sha256": "04f0e2ff603e6115a89bdc32c822ebb8a8fcba2ae6391e567c6c10296bfe8393"
+    },
+    {
+      "file": "evidence/releases/project-view-trusted-pi-registry-recovery-result-20261018/sources/consent-cli-intent.safe.json",
+      "bytes": 1074,
+      "sha256": "da2c766e583abca8e9b88fc1f7ba386e74be84c8d0adc48342ead972e3837f61"
+    },
+    {
+      "file": "evidence/releases/project-view-trusted-pi-registry-recovery-result-20261018/sources/consent-cli-original.json",
+      "bytes": 70,
+      "sha256": "8178c766c322b59cc06dfdfaf7b984dc42f75af541b95bb9b0e221ed224f0314"
+    },
+    {
+      "file": "evidence/releases/project-view-trusted-pi-registry-recovery-result-20261018/sources/consent-cli-terminal.json",
+      "bytes": 190,
+      "sha256": "4d1b7850eb7343487085eb8dfa613e72a85a05005e7bd94ab15c0bff2286f28d"
+    },
+    {
+      "file": "evidence/releases/project-view-trusted-pi-registry-recovery-result-20261018/sources/driver-terminal.json",
+      "bytes": 836,
+      "sha256": "1e3b5f3bc9bd08b4669b5a620a156bf0361e8f26f97275f40cd6d788f8d2e6c6"
+    },
+    {
+      "file": "evidence/releases/project-view-trusted-pi-registry-recovery-result-20261018/sources/human-authorization.safe.json",
+      "bytes": 1046,
+      "sha256": "d303628ce338f28163c9a210e7f441d62e7b2306e6c771c03e757c9b300214f6"
+    },
+    {
+      "file": "evidence/releases/project-view-trusted-pi-registry-recovery-result-20261018/sources/independent-local-stop.safe.json",
+      "bytes": 5577,
+      "sha256": "6043ea627396b8c40c3b0b85f169284103d23dcf3c9124b1e9cdf80325585648"
+    },
+    {
+      "file": "evidence/releases/project-view-trusted-pi-registry-recovery-result-review-20261018.json",
+      "bytes": 2904,
+      "sha256": "722091e244875608ac0eb4ada59f74e4f9a535d236b9b6c99813683372f197a6"
+    }
+  ],
+  "unpublishedMetadataTemplates": [
+    {
+      "name": "i214-template.md",
+      "bytes": 27583,
+      "sha256": "21825d078d7c14c8c84d54208373a3643dfa1cbd5cf4ddef3a81c8b754f0dc99",
+      "scopeReviewed": "current front only; historical body not re-audited",
+      "placeholderHeadRequiresActualCommitSubstitution": true
+    },
+    {
+      "name": "i238-template.md",
+      "bytes": 10910,
+      "sha256": "e0108f60b30f570a684cfd016d42787cd167b2db4a6eb125a2215a6c6ff0c831",
+      "scopeReviewed": "current front only; historical body not re-audited",
+      "placeholderHeadRequiresActualCommitSubstitution": true
+    },
+    {
+      "name": "i247-template.md",
+      "bytes": 4586,
+      "sha256": "2aff768e9dee066b30318019e2a8bcd2d30afcf7bc5077313310f4cee30c8fbb",
+      "scopeReviewed": "current front only; historical body not re-audited",
+      "placeholderHeadRequiresActualCommitSubstitution": true
+    },
+    {
+      "name": "pr236-template.md",
+      "bytes": 3013,
+      "sha256": "62ad3ce757bc99e4900a9007fc9a8a3d5ac1b3887a75c591db62f0d33d1815b3",
+      "scopeReviewed": "current front only; historical body not re-audited",
+      "placeholderHeadRequiresActualCommitSubstitution": true
+    }
+  ],
+  "metadataLimit": "Templates were reviewed locally before publication; placeholder HEAD must be replaced with the actual evidence commit. No metadata write or online state revalidation was performed by this review.",
+  "reviewActions": {
+    "authorFilesChanged": 0,
+    "testsRerun": 0,
+    "fullCliHelpOrAuthCalls": 0,
+    "privateGrantReplyOrCredentialReads": 0,
+    "networkSshDockerOrCloudCalls": 0,
+    "gitHubMutations": 0
+  },
+  "limits": [
+    "This is a byte-bound static review, not an execution grant or observation of repaired login, Registry publication, cleanup or user acceptance.",
+    "The stopped9ec CLI may have had browser/network/local OAuth effects; these remain unknown. Driver non-arrival and missing records are not global zero-activity or fee evidence.",
+    "The real pinned-parser extraction proves an argv grammar defect and its prepared repair; it does not recover original CLI output or prove actual OAuth scope changes or the old403 cause.",
+    "The newfb99/89f2 input remains unexecuted and requires updated explicit human authorization. Original14d/3779 inputs,9ec consumed lock/five records and earlier histories were retained.",
+    "Persistent OAuth authority has no task account/repository resource filter and does not expire with the15-minute Registry credential. Temporary auth cleanup is not OAuth/JWT revocation or expiry.",
+    "PR239/246 merges, rollout, Gateway/app/gate changes, real projects/models/Turn/Run and ordinary invited-user acceptance are excluded. JHG46 and fullJHG56 remain incomplete.",
+    "Prior f6 and PR246 hosted CI successes remain bound to their historic heads/merge refs and conditional skips; no success is asserted for the new evidence head."
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "schema": "jhg46-future-native-sdk-acceptance-window-pending/v1",
+  "batchRequestId": "fb07e239-2cb4-4379-9581-5711d86a0f30",
+  "grant": null,
+  "authorizationReplySha256": null,
+  "authorizationObservedAt": null,
+  "startsAt": null,
+  "endsAt": null,
+  "maximumDurationMs": 14400000,
+  "absoluteHumanAuthorityCeiling": "2026-10-20T15:59:59.999Z",
+  "effectiveExpiry": "min(new explicit authorization observation+4h, any narrower approved end, October20 human authority ceiling); expired or null may not execute",
+  "oldA25fWindowOrLocksReused": false,
+  "feesBudgetCeiling": null,
+  "noFeeCeilingIsNotZeroFees": true,
+  "notifyExplicitArrears": true,
+  "paymentOrSubscriptionChanges": false,
+  "automaticRetryProviderFallback": false
+}

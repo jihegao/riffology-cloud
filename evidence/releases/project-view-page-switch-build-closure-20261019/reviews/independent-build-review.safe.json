@@ -1,0 +1,106 @@
+{
+  "schema": "jhg46-issue258-offline-build-independent-review/v1",
+  "reviewedAt": "2026-10-19T01:07:10.064206+00:00",
+  "mustFix": [],
+  "verdict": "The frozen offline build identities and exact comparisons are consistent. This is a non-deployable handoff artifact, not live publication or acceptance.",
+  "sourceCommit": "bdee1975d1f8df20be5e9f83fd7b50d6885b27ad",
+  "sourceTree": "672a753740f1c0cdef58c991b59b4dfc7d606d54",
+  "sourceParents": [
+    "004e5cd5940c6e283b1b58501c3f409a569f6e20"
+  ],
+  "bindings": [
+    {
+      "file": "safe-summary.json",
+      "bytes": 3932,
+      "sha256": "ec03ac8e535ad94f51f7aaa4630401592fcc346202e09eb69152bf71ee68654e"
+    },
+    {
+      "file": "source-content-binding.json",
+      "bytes": 12179,
+      "sha256": "b846cdc45f9e936231f4caf3fbfc6d4ee10fc843fab9399424628dda319d1e8f"
+    },
+    {
+      "file": "source-input-inventory.json",
+      "bytes": 159656,
+      "sha256": "d1814ce30585a761b4a84a5cc1e81c7fefc0591276a421ab94c76b2a187b9061"
+    },
+    {
+      "file": "output/build-manifest.json",
+      "bytes": 5551,
+      "sha256": "e413bb0ce171c5682219c87f44ff42bd4ae692f37c1a59aabfd480eb7f597034"
+    },
+    {
+      "file": "offline-build-launch-terminal.json",
+      "bytes": 729,
+      "sha256": "65a15a95519d14e9c7d4c37f5b7bd6fc5f61d1d74f407337db222e54ae309d93"
+    },
+    {
+      "file": "output/gateway.mjs",
+      "bytes": 5774988,
+      "sha256": "304373a50d7a9ca8a99cdfbda0dcae261aa34d53727b757dfeb099c88efb5e0b"
+    },
+    {
+      "file": "output/source-graph.json",
+      "bytes": 879161,
+      "sha256": "ee731e078e47ab8a6e67e316e3b66ee53828022267937214197a98c6a98d6fab"
+    },
+    {
+      "file": "output/assets-sha256.json",
+      "bytes": 20499,
+      "sha256": "c5390bcc77bf48a1c0f51698fab6cf9bafcd80b31e9131ab7de5d1181888312d"
+    },
+    {
+      "file": "output/assets-manifest.json",
+      "bytes": 15987,
+      "sha256": "e97e2ec563718ac6d1bd759af25a23e32fb65e8fccff3cdb665ee880ffbe7cde"
+    }
+  ],
+  "checks": {
+    "summaryAndContentBindingReferencesChecked": 48,
+    "buildManifestByteReferencesChecked": 14,
+    "allBoundFileBytesSha256Match": true,
+    "allSelected477SourceBodiesMatchFixedGitTreeAndBlobIdentity": true,
+    "trackedSourceAfter477Matches": true,
+    "selectedChangedSourcePaths": [
+      "services/web/project-views.js"
+    ],
+    "all1124ModuleBodiesRehashed": true,
+    "gitModuleInputs": 303,
+    "dependencyModuleInputs": 821,
+    "bundleActualBytes": 5774988,
+    "bundleByteExactToPriorSdk3043": true,
+    "moduleGraphByteExactToPriorSdk3043": true,
+    "assetsActualBodiesRehashedAndComparedToPrior": 96,
+    "changedAssetPaths": [
+      "/project-views.js"
+    ],
+    "sameAssetPaths": 95,
+    "sameImmutableAssets": 68,
+    "sameOtherWebAssets": 27,
+    "assetTotalBytes": 53785385,
+    "currentProjectViewsAssetIsReviewedC6c2": true,
+    "frameHtmlSourceByteExactToPrior63eb": true,
+    "toolDependencyAndAssetBeforeAfterWitnessesByteEqual": true,
+    "oneOriginalBuildReported": true,
+    "originalProcessExitCode": 0,
+    "originalProcessReaped": true,
+    "originalProcessTimedOutOrRetried": false,
+    "reviewOnlyAndDeployableFalse": true
+  },
+  "interpretation": [
+    "Only services/web/project-views.js changed among477 selected Git inputs; its c6c2 bytes are delivered as a static asset. The unchanged Gateway3043 bundle and1124 module graph do not omit this asset fix; asset manifest/inventory distinguish it.",
+    "The frame remains63eb because its actual source bytes and prior fixed frame binding are unchanged. No new frame, SDK deadline, backend, runtime image or Registry action is introduced.",
+    "This review hashes actual output bodies and selected/module source bodies; it does not rerun esbuild, tests or every filesystem lookup. BLAKE3 manifest records are bound as actual builder outputs; this review independently recomputes body SHA256, not the BLAKE3 implementation.",
+    "The author launch terminal and output records report one direct esbuild attempt, exit0/reaped and no auth/network/cloud side effects. This is not an independent full packet capture or live resource verification.",
+    "Main merge/source equivalence, future full baseline and a new concrete publication/acceptance scope remain separate. No deployable publisher, live grant, gate, real project/Turn or original failed request replay is produced here.",
+    "The prior SDK candidate artifacts remain read-only references and their bound output bytes were checked without modification."
+  ],
+  "reviewerActions": {
+    "localReadHashAndReadOnlyGit": true,
+    "wroteOwnReceiptOnly": true,
+    "buildOrTestsRerun": false,
+    "networkAuthenticationCloudRegistryBrowserPaidActions": false,
+    "productSourceOrOriginalArtifactEdits": false
+  },
+  "privateProductBodiesIdentityEmailTenantCredentialConfigurationOrHostLocationCopied": false
+}

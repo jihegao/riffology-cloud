@@ -1,0 +1,396 @@
+{
+  "schema": "jhg46-native-host-publication-wire-repair-stopped-public-result/v1",
+  "draft": false,
+  "requestId": "c263a2f3-f445-430e-b562-2e48f1eeb637",
+  "result": "push-cli-reported-success-complete-registry-proof-missing-original-cleanup-confirmed",
+  "publicationVerified": false,
+  "mergeAllowed": false,
+  "authorization": {
+    "publicationCommit": "e521161a565f04f3b8cab34f1601ce07abf64ff1",
+    "humanGrantSha256": "0b63246cfc0dda411a3405f401aaf9bfd2887483b2067242ca945741d7dac911",
+    "operationsManifestSha256": "76dfb4606c75424c01a00220805f6efb5b32afbf474fd003fe540641bb97c309",
+    "candidateSourceBindingSha256": "2e47be8e7478dd1cdf176792e4c76e836a2b2fad73e091f4b06b9d8c85f434f8",
+    "approvalObservedAt": "2026-10-18T12:34:29.890696+00:00",
+    "grantExpiresAt": "2026-10-18T13:34:29.890696+00:00",
+    "oldRuntimeDeadlineExtended": false,
+    "conditionalMergeConditionsSatisfied": false
+  },
+  "actualExport": {
+    "allRawBlobHashesSizesReachable": true,
+    "allRunnableDiffIdsMatched": true,
+    "archiveBytes": 407961600,
+    "archiveSha256": "deddc21059715d3d63fc9c652e84e510be7117cda315102c3b1fd0f0bcf2f6d8",
+    "blobCount": 53,
+    "config": {
+      "digest": "sha256:cea60e390b6726ec0147153e1318b3655c8386460e98d02e35bb571768e49da5",
+      "mediaType": "application/vnd.oci.image.config.v1+json",
+      "size": 19067
+    },
+    "layers": [
+      {
+        "digest": "sha256:1317dd93c0c3b4562b5180bc49726f743cc1622f5fd1327aa883d8d8968012e3",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 30649033
+      },
+      {
+        "digest": "sha256:f81f4a720b08330f7bfb48beaa1aa3ef420da9a925ff2f955897c6c8a02dc7ec",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 47505857
+      },
+      {
+        "digest": "sha256:2be099879e773021b91e149ca103715b48341d4c7088c2612c5a0081dd22797a",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 493
+      },
+      {
+        "digest": "sha256:17abb60538b761810d4643c6439e5fc006d93e8317294795aa416fc8b709524f",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 131
+      },
+      {
+        "digest": "sha256:5f06475c22fdc31cfe5f04907f567ef4b821980741c9f3c3a46e9c2fe81fb2a1",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 45212329
+      },
+      {
+        "digest": "sha256:7d96278bc0645dc77b944562ec87469247c9f1dcfa9feb95eb2d279d5220d914",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 2988033
+      },
+      {
+        "digest": "sha256:64934db2d8a2bcf4576fb90ad2dbe43ece4e7d9864dcb1a70d6e4d9fedac819a",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 203
+      },
+      {
+        "digest": "sha256:71b7e662ea744409a3224e890b8b71b5711ac23078fd9048851453629b34cd6d",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 39446577
+      },
+      {
+        "digest": "sha256:17d90541aea3975a0648cc43d64dd715dcdcfe3fe0853b20185ad753057e8c89",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 39518258
+      },
+      {
+        "digest": "sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 32
+      },
+      {
+        "digest": "sha256:769135a6efef25c9eb2d9f612e0d9da76b19dce79eace0b4ed9ba5b7677bb618",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 37179
+      },
+      {
+        "digest": "sha256:c4e9406357ab6ba9cc171d9c6da018aba5aaa4eec0fa4e9ca34e89e9ec07d98c",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 69744
+      },
+      {
+        "digest": "sha256:fbf7c7028dc238451a8fd40c9675ecba3e7733555646a2db53bafb48fab35c37",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 19560637
+      },
+      {
+        "digest": "sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 32
+      },
+      {
+        "digest": "sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 32
+      },
+      {
+        "digest": "sha256:92c5c475ab3917d5c0943d1aceb2395f99b1265caa64aa1a379725040559be33",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 99
+      },
+      {
+        "digest": "sha256:1b4746a07dcbaf6316c454c0bae0d0f30f132675f0eb54c7f84aa21a8070c752",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 47930478
+      },
+      {
+        "digest": "sha256:d1c591b43542de5c747b967902d527f55a3039a7422d000474165140557b8737",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 4490
+      },
+      {
+        "digest": "sha256:c1f7df5d26c03be3ee67dcaa370517b5cac7eba2089d4b9ed172b2b8451dbdc2",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 961
+      },
+      {
+        "digest": "sha256:ff8f22125ad2050cff8b203caf65951b85b3f668f18a5bdd11c75dd85608f0f5",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 88896392
+      },
+      {
+        "digest": "sha256:411141593df7ad34cd15563653a7f747d63e7db29dd3350d83de1d4eda4717c0",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 2979
+      },
+      {
+        "digest": "sha256:613f515f021cbe65d2f896e10dc6c3d0478873ff09a0074f22421df5c28567fb",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 4843
+      },
+      {
+        "digest": "sha256:537658ceee64f93f297b6337ee8ebc85bf87f3c856b8da3fa9cd360b0d1153e1",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 31076
+      },
+      {
+        "digest": "sha256:8aa5b3e267f7ecf5f989ea08b2d2a72708ab98654f4c99d5ae13dd9a8e0e7ac0",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 45843784
+      },
+      {
+        "digest": "sha256:934b183f56c8b56bc1756d50fbbe6e9655317ea5cd43f8a41a149d90231ad533",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 5511
+      },
+      {
+        "digest": "sha256:0827d428792775c2fdd8305bd9b195d9606be8d6e25dd1f279129909508fd507",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 4731
+      },
+      {
+        "digest": "sha256:301894d6f50c2740c5ec389bc7844a0dd7f9078abe2e8c7e8444f53528a37b94",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 2781
+      },
+      {
+        "digest": "sha256:cb395c85aad08ba5d74f737489a96ba4b2de10489c94467e441cf38e714d2ac8",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 3540
+      },
+      {
+        "digest": "sha256:e3d17f0ec7c5f4104920dcfcebcd95d4a6e41298971f4265f9616cb8509c23a9",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 9120
+      },
+      {
+        "digest": "sha256:0bb9257292726378be8fd3fd47bc40c12140ea20065bdf0161361fc49d552d04",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 9119
+      },
+      {
+        "digest": "sha256:9c5f38ccc3b82a49834f6d141b0d4e774ff5416332d1459b3bbd6e32bf658834",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 906
+      },
+      {
+        "digest": "sha256:6ad02f9de5086647ed7ae8ffad9da806baff2a7405772c5f4d13d56b6c5d3a32",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 4984
+      },
+      {
+        "digest": "sha256:b77608313843b61e962375e7b6e9ac20f840a060454367b4e6bd4527ef8a1f9f",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 9839
+      },
+      {
+        "digest": "sha256:1353efb6b21027028e231763c356eab0f2aabf757ac4eb678625ccfeb7183647",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 9837
+      },
+      {
+        "digest": "sha256:6a48de7cb2ca10ced5c73f70aacef5d238222be140725fe5a1304445b0101726",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 10068
+      },
+      {
+        "digest": "sha256:735b46e656c5d5f18a61ec86938a8b3b35a2c05689728f6b7e7a56d45c47e1a5",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 10066
+      },
+      {
+        "digest": "sha256:b08c5fb962ddc26e899ee067969d07f2b671165a3068ff5c528d519733309c39",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 3849
+      },
+      {
+        "digest": "sha256:ab7043ee7646cb2ed71bddde5077a77596a07c10a1bddf7c249faf311dbb1da5",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 10213
+      },
+      {
+        "digest": "sha256:04c2b410481d966c31888d09ed76cf17e10da72bf223e4240b58ca5342c7e9ea",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 10211
+      },
+      {
+        "digest": "sha256:0158583f76613a48aa1ee03c036760955ed2fab8f3571819fc3760f30680c41e",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 4058
+      },
+      {
+        "digest": "sha256:eaf4c93171627f665605c9a20802cf0756fb48c4e8947ef98027bac796383e82",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 199
+      },
+      {
+        "digest": "sha256:a6f544fd88fb3adce8607b5838654e0049d2fea6b3f325c7b543de5552e68aa8",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 1401
+      },
+      {
+        "digest": "sha256:21f8ce344dde50734cb07ccccc09551cf538bc0569f3a47652819a4ee199e655",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 2413
+      },
+      {
+        "digest": "sha256:26b3cfd1deb60602f4afdc1a9001590941e20edc6fa1195e420a7d82edb10b09",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 7237
+      },
+      {
+        "digest": "sha256:76a2bc3ffaf6cbb560a06f7ba774e07d9bd0cf23eb5a81ae7e9c28abfeca2ab6",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 10261
+      },
+      {
+        "digest": "sha256:ef5e43a18cfd6684b9283fc40ccac15098d7d1edae4b0018e9c20e969dece834",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 951
+      },
+      {
+        "digest": "sha256:a0cd0a76740cfe12e22392be70aca13f3b0d108abe4c04aeb80712013acd28fc",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 10259
+      },
+      {
+        "digest": "sha256:b854884075477e17743815f7e2c4bafe48e2f1125eb106e525e97da7efcf62a5",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 31089
+      },
+      {
+        "digest": "sha256:2889a56a0b94420aa581f2eb7936a3c2d749ae66501d59a43ac4c9673e37e9d9",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 4825
+      }
+    ],
+    "linuxAmd64Manifest": {
+      "digest": "sha256:ec8dbe9efe229a1626ea3202b618653f82f8d29d9da8b19310c3b3838f2a2623",
+      "mediaType": "application/vnd.oci.image.manifest.v1+json",
+      "size": 9585
+    },
+    "originalIndex": {
+      "digest": "sha256:0bb9af7a5909c41187cf56402a21420100c72a8de0025b0a7152f8804e85d191",
+      "mediaType": "application/vnd.oci.image.index.v1+json",
+      "size": 856
+    },
+    "publisherSignatureVerified": false,
+    "registryPublicationClaim": false,
+    "rootfsLayerCount": 49,
+    "schema": "trusted-pi-original-oci-verification/v1",
+    "sourceImageId": "sha256:0bb9af7a5909c41187cf56402a21420100c72a8de0025b0a7152f8804e85d191",
+    "unpackedBytesObserved": 1283181056
+  },
+  "credential": {
+    "postIntentAt": "2026-10-18T12:36:19.373717+00:00",
+    "postStatus": 201,
+    "acceptedStatusAndSuccess": true,
+    "bodyPersisted": false,
+    "stdinSent": true,
+    "permissions": [
+      "push",
+      "pull"
+    ],
+    "expirationMinutesRequested": 15,
+    "accountLevelNotRepositoryScoped": true,
+    "serverRevocationOrNaturalExpiryProved": false
+  },
+  "pushCommandReported": {
+    "attempts": 1,
+    "exitCode": 0,
+    "reaped": true,
+    "errorCode": null,
+    "stopErrors": [],
+    "endedAt": "2026-10-18T12:36:38.892650+00:00",
+    "stdoutBytes": 15371,
+    "stdoutSha256": "4ce0f090f032fb91b05fda54acc314fa78e9cb8b7f90ca00d9e4e9d7fa560009",
+    "stderrBytes": 0,
+    "strictDigestLines": [
+      {
+        "digest": "sha256:ec8dbe9efe229a1626ea3202b618653f82f8d29d9da8b19310c3b3838f2a2623",
+        "matchesOriginalManifest": true,
+        "size": 9585,
+        "stream": "stdout"
+      }
+    ],
+    "rawStreamPublished": false,
+    "currentRegistryStateProved": false
+  },
+  "actualFailure": {
+    "remoteEndedAt": "2026-10-18T12:45:16.036354+00:00",
+    "remoteStatus": "unknown-stopped",
+    "remoteErrorCode": "publication-local-error",
+    "exportVerificationPushAttempts": [
+      1,
+      1,
+      1
+    ],
+    "localEndedAt": "2026-10-18T12:48:39.599189+00:00",
+    "localSshExitCode": 255,
+    "localErrorCode": "original-publication-ssh-nonzero",
+    "localOriginalSshReaped": true,
+    "localStopErrors": [],
+    "finalPublicationAckVerified": false,
+    "completeRegistryReadbackRecordPresent": false,
+    "expectedReadbackSlots": 52,
+    "actualPartialReadCountKnown": false,
+    "causeBeyondRecordedErrorClassKnown": false
+  },
+  "independentStopObservation": {
+    "observedAt": "2026-10-18T12:52:22.784525+00:00",
+    "safeOriginalRecords": 18,
+    "safeOriginalRecordBytes": 15457,
+    "inventorySha256": "2aa92004cf27aed267d916a3ab0b9fdc1c99a024e796d8a02c33b0f9f3314967",
+    "observationSha256": "b42ac3e5cbd00ca8281fcf057debf42e17e6802db46a26dee6cfb49062453216",
+    "wholeJsonSemanticBindingPassed": true,
+    "sixRemoteOriginalCliAndSupervisorAbsent": true,
+    "temporaryAuthDirectoryAndConfigAbsent": true,
+    "route7897": {
+      "absent": true,
+      "connectErrno": 111,
+      "listenerCount": 0
+    },
+    "cleanupConfirmed": true,
+    "archive": {
+      "expectedVerifiedBytes": 407961600,
+      "independentlyRehashed": false,
+      "statBytes": 407961600,
+      "statMatched": true
+    },
+    "registryCurrentStateNotQueried": true,
+    "publicationVerified": false,
+    "mergeAllowed": false,
+    "newDockerRegistryOrWriteCalls": 0
+  },
+  "localOriginalProcesses": {
+    "at": "2026-10-18T12:49:39.329298+00:00",
+    "allOriginalPidsAbsent": true,
+    "pids": [
+      35240,
+      35359
+    ]
+  },
+  "scopeBoundaries": {
+    "sameOriginalC263RequestDirectorySourceTag": true,
+    "extraExportOrPushPerformedAfterStop": false,
+    "firstFailedAndRepairLocksPreserved": true,
+    "pr253MergedByBatch": false,
+    "applicationGatewayOrGateChangedByBatch": false,
+    "modelTurnRunOrProjectExecutionByBatch": false,
+    "oldRealAcceptanceDeadlineUtc": "2026-10-18T12:42:46Z",
+    "deadlineExtended": false,
+    "usageFees": "unreconciled-not-zero",
+    "globalActivityCountersRead": false,
+    "jhg46Complete": false
+  },
+  "nextStep": "A future readback-only proposal and its fixed-input authorization are separate; none is executed or implied by this stopped result. No automatic re-push, token/route recreation or merge."
+}

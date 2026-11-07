@@ -1,0 +1,289 @@
+{
+  "actions": {
+    "api": 0,
+    "authOrCua": 0,
+    "cloudWrites": 0,
+    "localSourceReadsAndHashChecksOnly": true,
+    "providerContainerOrTurnExecution": 0,
+    "testsOrBuilds": 0
+  },
+  "actualSourceDelta": {
+    "apiMeHandlerBytes": 1106,
+    "apiMeHandlerBytesIdentical": true,
+    "apiMeHandlerSha256": "b2467fb3efa91aea99ba10888e78d6af2fa1023862cdd4ba8655218ffd29c810",
+    "apiMeNewLines": [
+      252,
+      261
+    ],
+    "apiMeOldLines": [
+      224,
+      233
+    ],
+    "changedFullFile": "services/gateway/app.ts",
+    "newBytes": 62928,
+    "newSha256": "8d1e4c75a69c5ec14ca951d500c3092076a2865226f53b68fb73dba3b36feedf",
+    "other13SourceBytesAndRangesUnchanged": true
+  },
+  "allSevenFileBindingsExact": true,
+  "executed": false,
+  "executionAuthorized": false,
+  "externalRefs": [
+    {
+      "bytes": 892,
+      "file": "../identity-read-preparation-v1/safe-preparation.json",
+      "sha256": "ee156a1c5c1d7191ce848e6dd4e2e49b3bfadce6c08cfcd93aaa474760129d72"
+    },
+    {
+      "bytes": 160700,
+      "file": "../combined-v2/source-input-inventory.json",
+      "sha256": "a00991d336d395b2923d1b98e6f8228d1562655b7670207dcf51ca2ea2777d7e"
+    },
+    {
+      "bytes": 5771650,
+      "file": "../gateway-build-v2/gateway.mjs",
+      "sha256": "9c8e4b6b763e9887d1624f00ed3a8efb2a8a24d984d96bc68fdb289cb4d362c3"
+    },
+    {
+      "bytes": 879161,
+      "file": "../gateway-build-v2/source-graph.json",
+      "sha256": "f8a9c6bdc9a5a4adc1ea51fcbc9c1c24a8219d421b86ffe29a371a50ac4591bf"
+    },
+    {
+      "bytes": 5896,
+      "file": "../gateway-ops-v3/operations-manifest.json",
+      "sha256": "77899ca757e87fe737c7db91e054158202a045204d5db235e129484ba5981ed0"
+    },
+    {
+      "bytes": 8333,
+      "file": "../gateway-ops-v3-independent-review/review.json",
+      "sha256": "f5701d18ad843e66119c95d994279ae1bf3398d94a12f3da22d3b25a34e8086d"
+    },
+    {
+      "bytes": 10978,
+      "file": "../combined-v2/source-content-binding.json",
+      "sha256": "786cdb428a40e1d996539b8d6157d8705bf73eade02ca6d8ba4bddc7a1fcfeaf"
+    },
+    {
+      "bytes": 9079,
+      "file": "../ordinary-acceptance-v1/README.md",
+      "sha256": "b9d0c4bb52d88e6fc364118b0ce96e85f719c8f72663e6e02ebb33a452e2ce95"
+    },
+    {
+      "bytes": 3443,
+      "file": "../ordinary-acceptance-v1/prompts/turn-1-create-skill.md",
+      "sha256": "1df6ef71590068a5aca85e3d7ab8683aeee80b96d8ebb23f9e51b4727bba1525"
+    },
+    {
+      "bytes": 2101,
+      "file": "../ordinary-acceptance-v1/prompts/turn-2-build-v1.md",
+      "sha256": "1e59966637fec33c3d2d5728ed1c4b9c8c00c30dee990fdeb2866ddf99afe6df"
+    },
+    {
+      "bytes": 962,
+      "file": "../ordinary-acceptance-v1/prompts/turn-3-cold-edit-v2.md",
+      "sha256": "c8c858c602fbc2c923c4b9c2e400696fc45527faaa25b54287eaf59434cea149"
+    },
+    {
+      "bytes": 6892,
+      "file": "../ordinary-acceptance-v1/source-bindings.json",
+      "sha256": "14c5de75e73b5c8a1f4ee68d63b48ac5e7cebf812d3f067208d7a80af68f8cbc"
+    },
+    {
+      "bytes": 4884,
+      "file": "../ordinary-acceptance-v1/manifest.json",
+      "sha256": "78d41fd9286da618bf460c5284890cda06c5ad3303e6bf3548cb1495445f9af8"
+    },
+    {
+      "bytes": 14223,
+      "file": "../independent-ordinary-recipe-review.json",
+      "sha256": "910965813620b03e66510194ff2849eb835eae58d0fcba24f6262c494bfc8d4d"
+    }
+  ],
+  "identityBoundary": {
+    "apiMeNotSufficientForAuthVersionInvitationRole": true,
+    "freshMe": null,
+    "identityAcceptancePending": true,
+    "onlySafeCatalogPreparationHashReferenced": true,
+    "privateDatabaseIdOrRawSourceBodiesIncluded": false,
+    "sqlNotExecuted": true
+  },
+  "mustFix": [],
+  "outcome": "passed-source-refresh-not-ready",
+  "pending": [
+    "Actual normal merge/source proof and final finite execution seal/grant.",
+    "Actual new Gateway publication and one compatible a036 rollout with trustworthy original release/physical readback.",
+    "Fresh ordinary authentication plus separately reviewed exact minimal identity query; no current identity acceptance evidence.",
+    "Finite one-project/two-session/three-turn/browser-scope authorization, actual IDs from original receipts, exact gate open/close and cleanup/count witnesses."
+  ],
+  "ready": false,
+  "recipePreservation": {
+    "V1Factor2Factor5": [
+      20,
+      50
+    ],
+    "V2Factor2Factor5": [
+      24,
+      60
+    ],
+    "browserOutputLocalUnverified": true,
+    "hashScope": "JSON tool-result artifact, not original synthetic file",
+    "noFourthRepairTurn": true,
+    "oneBlankTwoSessionsThreeTurns": true,
+    "priorV1FilesAndIndependentReviewAllExact": true,
+    "readmeAndThreePromptsByteIdentical": true,
+    "releaseBeforeNextTurnOrSession": true,
+    "sameSlashR1R2AndFiveAssetsTwoPagesSharedModuleCss": true,
+    "syntheticFileBytes": 17408
+  },
+  "reviewedAt": "2026-10-18T03:46:01.368249+00:00",
+  "reviewedFiles": [
+    {
+      "bytes": 7804,
+      "file": "manifest.json",
+      "sha256": "bf4e619b905824d9bf9e781a212dcc964d8856d6e2f8ac4dcfa3cbcfe858a4bd"
+    },
+    {
+      "bytes": 9079,
+      "file": "README.md",
+      "sha256": "b9d0c4bb52d88e6fc364118b0ce96e85f719c8f72663e6e02ebb33a452e2ce95"
+    },
+    {
+      "bytes": 3443,
+      "file": "prompts/turn-1-create-skill.md",
+      "sha256": "1df6ef71590068a5aca85e3d7ab8683aeee80b96d8ebb23f9e51b4727bba1525"
+    },
+    {
+      "bytes": 2101,
+      "file": "prompts/turn-2-build-v1.md",
+      "sha256": "1e59966637fec33c3d2d5728ed1c4b9c8c00c30dee990fdeb2866ddf99afe6df"
+    },
+    {
+      "bytes": 962,
+      "file": "prompts/turn-3-cold-edit-v2.md",
+      "sha256": "c8c858c602fbc2c923c4b9c2e400696fc45527faaa25b54287eaf59434cea149"
+    },
+    {
+      "bytes": 11284,
+      "file": "source-bindings.json",
+      "sha256": "a8113bf94661c9c37af21b28543491f9f3792ec44448268abe68c34d884a215f"
+    },
+    {
+      "bytes": 10560,
+      "file": "source-delta.patch",
+      "sha256": "02ccada07bd87c978b2fcbb6e9d2b64d60621e24537dd0edea78377bfceb9488"
+    }
+  ],
+  "schema": "jhg46-independent-ordinary-recipe-source-refresh-review/v1",
+  "scope": "Independent static audit of seven frozen v2 preparation files; no recipe behavior change, test rerun or service observation.",
+  "sourceAndOperations": {
+    "actualMergesAndPublicationNotAsserted": true,
+    "bundleSha256": "9c8e4b6b763e9887d1624f00ed3a8efb2a8a24d984d96bc68fdb289cb4d362c3",
+    "gatewayOpsFinalized": false,
+    "gatewayOpsIndependentReviewSha256": "f5701d18ad843e66119c95d994279ae1bf3398d94a12f3da22d3b25a34e8086d",
+    "gatewayOpsManifestSha256": "77899ca757e87fe737c7db91e054158202a045204d5db235e129484ba5981ed0",
+    "moduleGraphNotAllFilesystemReads": true,
+    "moduleGraphSha256": "f8a9c6bdc9a5a4adc1ea51fcbc9c1c24a8219d421b86ffe29a371a50ac4591bf",
+    "sourceContentBindingSha256": "786cdb428a40e1d996539b8d6157d8705bf73eade02ca6d8ba4bddc7a1fcfeaf"
+  },
+  "sourceRows": [
+    {
+      "bytes": 62928,
+      "file": "services/gateway/app.ts",
+      "lineRangesWithinFile": true,
+      "priorBytesUnchanged": false,
+      "sha256": "8d1e4c75a69c5ec14ca951d500c3092076a2865226f53b68fb73dba3b36feedf"
+    },
+    {
+      "bytes": 83635,
+      "file": "services/web/app.js",
+      "lineRangesWithinFile": true,
+      "priorBytesUnchanged": true,
+      "sha256": "ab2ddcb5d7d647b4faab1041da1df2c0f78800f0b7036089aaad5ad8aa887165"
+    },
+    {
+      "bytes": 55601,
+      "file": "services/turn/journal.ts",
+      "lineRangesWithinFile": true,
+      "priorBytesUnchanged": true,
+      "sha256": "2e8aed983da8fcc57b82a030c86b5ede56846d880a4abb5351d02ea6017e1c52"
+    },
+    {
+      "bytes": 23072,
+      "file": "services/runtime/controlled-pi.mjs",
+      "lineRangesWithinFile": true,
+      "priorBytesUnchanged": true,
+      "sha256": "cf4143bff6cf049d2ab8247ef86ceb5f5391da67a86acb56ea901a119b2d6871"
+    },
+    {
+      "bytes": 7776,
+      "file": "services/project-views/package.ts",
+      "lineRangesWithinFile": true,
+      "priorBytesUnchanged": true,
+      "sha256": "1d7683036c31ff238367f5f16e72b7f1381acf214cda97cf7fc032802b4a1d41"
+    },
+    {
+      "bytes": 7651,
+      "file": "services/project-views/frame-source.mjs",
+      "lineRangesWithinFile": true,
+      "priorBytesUnchanged": true,
+      "sha256": "c2b8ddbbf93553380fa1309741c5578618337016e692319711cda54caf23b2e3"
+    },
+    {
+      "bytes": 14900,
+      "file": "services/web/project-views.js",
+      "lineRangesWithinFile": true,
+      "priorBytesUnchanged": true,
+      "sha256": "9da41ade420c660a61f0ad4fc46408b728e81248bdeb30bdc419e63bdc61f1c9"
+    },
+    {
+      "bytes": 2713,
+      "file": "services/project-views/browser-policy.ts",
+      "lineRangesWithinFile": true,
+      "priorBytesUnchanged": true,
+      "sha256": "d7e3d0543c2d0982eb7138b2c3dd6a00555429163541cae21e7660635e67f179"
+    },
+    {
+      "bytes": 2518,
+      "file": "services/artifacts/materializer.ts",
+      "lineRangesWithinFile": true,
+      "priorBytesUnchanged": true,
+      "sha256": "55bab3650bb1c99d045bdfbdec3fadc255d97097a049a6da61956885fec60e3c"
+    },
+    {
+      "bytes": 194560,
+      "file": "services/workspace/durable.ts",
+      "lineRangesWithinFile": true,
+      "priorBytesUnchanged": true,
+      "sha256": "026c97de88ff636b05edae9a43b93bf5360f67f89b80306111f1686d0b96bead"
+    },
+    {
+      "bytes": 11657,
+      "file": "services/trusted-pi/product-tool-bridge.mjs",
+      "lineRangesWithinFile": true,
+      "priorBytesUnchanged": true,
+      "sha256": "e536e9231a7fa41be956e3066535a62b7de460b37a4e5a40937c67d9f5981e74"
+    },
+    {
+      "bytes": 2370,
+      "file": "tests/m3/project-views-fixture.mjs",
+      "lineRangesWithinFile": true,
+      "priorBytesUnchanged": true,
+      "sha256": "3d7a53af429e3b1da2f5d61598837d82b615762cd84458b165e8f436eae9898d"
+    },
+    {
+      "bytes": 4368,
+      "file": "tests/m3/project-view-native-computation-browser.test.mjs",
+      "lineRangesWithinFile": true,
+      "priorBytesUnchanged": true,
+      "sha256": "5fd765c3458cd94bf6e36bad3488c764058c2889304664dc1c55c58fed890644"
+    },
+    {
+      "bytes": 23500,
+      "file": "tests/m3/project-views-browser.test.mjs",
+      "lineRangesWithinFile": true,
+      "priorBytesUnchanged": true,
+      "sha256": "51e61464b37ec17248698446c47c020847af8b4bae49fde5796573631fee137b"
+    }
+  ],
+  "sourceRowsCount": 14
+}

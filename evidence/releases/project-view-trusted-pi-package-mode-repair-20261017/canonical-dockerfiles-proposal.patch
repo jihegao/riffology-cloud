@@ -1,0 +1,22 @@
+--- a/Dockerfile.trusted-pi.cloud
++++ b/Dockerfile.trusted-pi.cloud
+@@ -8,7 +8,7 @@
+     && chown trustedpi:trustedpi /var/lib/riffology/pi /var/lib/riffology/turns \
+     && chmod 0700 /var/lib/riffology/pi /var/lib/riffology/turns /var/lib/riffology/runtime-control
+ 
+-COPY --chown=root:root services/trusted-pi/package.json services/trusted-pi/package-lock.json /opt/riffology/
++COPY --chown=root:root --chmod=0444 services/trusted-pi/package.json services/trusted-pi/package-lock.json /opt/riffology/
+ RUN cd /opt/riffology \
+     && npm ci --omit=dev --ignore-scripts \
+     && npm cache clean --force
+--- a/Dockerfile.trusted-pi.vertical
++++ b/Dockerfile.trusted-pi.vertical
+@@ -8,7 +8,7 @@
+     && chown trustedpi:trustedpi /var/lib/riffology/pi /var/lib/riffology/turns \
+     && chmod 0700 /var/lib/riffology/pi /var/lib/riffology/turns /var/lib/riffology/runtime-control
+ 
+-COPY --chown=root:root services/trusted-pi/package.json services/trusted-pi/package-lock.json /opt/riffology/
++COPY --chown=root:root --chmod=0444 services/trusted-pi/package.json services/trusted-pi/package-lock.json /opt/riffology/
+ RUN cd /opt/riffology \
+     && npm ci --omit=dev --ignore-scripts \
+     && npm cache clean --force

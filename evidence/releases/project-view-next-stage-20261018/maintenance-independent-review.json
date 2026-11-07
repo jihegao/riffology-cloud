@@ -1,0 +1,165 @@
+{
+  "schema": "jhg46-maintenance-independent-source-review/v1",
+  "reviewedAt": "2026-10-18T03:07:39.519164+00:00",
+  "issue": 248,
+  "repository": "jihegao/riffology-cloud",
+  "base": "638a366d31a37f7bc1d7dcd124e0b5ba753d6401",
+  "head": "a610dee8e4acad24c7a39ca3faedda3c1211e842",
+  "tree": "8a1272a976d6b3b27cd46393743ccbab612de39c",
+  "result": "no-must-fix",
+  "mustFix": [],
+  "sourceSnapshot": {
+    "file": "independent-source-review/source-sha256.json",
+    "bytes": 4240,
+    "sha256": "58a22b0817cea689311566016e6185857cdfabe4b8bbe82e96f72793a8da0224"
+  },
+  "patch": {
+    "bytes": 64980,
+    "sha256": "e5b7aebee829eb1936bd98b09b2cb7e20b29870658b965c9bd0d1bd410f18bc3",
+    "equalsAuthorPatch": true
+  },
+  "authorRecords": [
+    {
+      "file": "author-validation/receipt.json",
+      "bytes": 5857,
+      "sha256": "2d0f6ca5a88b1b5601f51f59f174cc8562b9bcc74bec8f85fe00daa36899ac06"
+    },
+    {
+      "file": "author-validation/source-sha256.json",
+      "bytes": 2388,
+      "sha256": "e6d69dd376875713921a4ef0302bf9822aa624a8d066fba0a86db85f05f8c96e"
+    },
+    {
+      "file": "author-validation/implementation.patch",
+      "bytes": 64980,
+      "sha256": "e5b7aebee829eb1936bd98b09b2cb7e20b29870658b965c9bd0d1bd410f18bc3"
+    }
+  ],
+  "reviewedScope": [
+    {
+      "topic": "Same actor serialization and admission-only hold",
+      "sources": [
+        "services/model-budget/private-beta-capacity.ts:47",
+        "services/model-budget/private-beta-capacity.ts:113",
+        "services/model-budget/private-beta-capacity.ts:188"
+      ],
+      "finding": "Begin/end and new admission use the original capacity queue. Exact prior admission keys recover before the hold check. New admissions check the durable hold before reconcile and again before INSERT. No maintenance guard was added to existing bind/model/tool authorization or original monitoring/release."
+    },
+    {
+      "topic": "Atomic CAS and original-identity idempotency",
+      "sources": [
+        "services/model-budget/private-beta-maintenance.ts:28",
+        "services/model-budget/private-beta-maintenance.ts:47",
+        "services/model-budget/private-beta-maintenance.ts:56",
+        "services/model-budget/private-beta-capacity.ts:171"
+      ],
+      "finding": "State and receipt are written in one synchronous transaction with no await; new mutations sync before ACK. Revision, original request, actor/authVersion, policy/pin and pause/resume revision guard end. Prior begin/end returns historical receipt plus current state and performs no reopening or clearing of a later hold."
+    },
+    {
+      "topic": "Operator/current identity and origin boundary",
+      "sources": [
+        "services/gateway/app.ts:133",
+        "services/gateway/app.ts:198",
+        "services/gateway/index.ts:151",
+        "services/catalog/admin.ts:27"
+      ],
+      "finding": "Existing current operator check applies to GET and POST. Mutation uses existing same-origin check and exact action/request/CAS fields; Gateway derives actor from principal. Revoked/anonymous/ordinary identities cannot use this route; no admin execution or resource mutation API was added."
+    },
+    {
+      "topic": "Original Beta/native proof and read-only status",
+      "sources": [
+        "services/model-budget/private-beta-capacity.ts:178",
+        "services/model-budget/private-beta-capacity.ts:193",
+        "services/capacity/durable.ts:20",
+        "services/capacity/core.ts:151",
+        "services/capacity/paired.ts:29"
+      ],
+      "finding": "End requires zero original Beta active/quarantined slots and no unknown/reserved/dispatched calls, then the original native actor/global cold and pair terminal proof. Missing native ledger or partial pair family fails closed; held/queued/dispatched/bound/idle/releasing/partial states are unresolved. Reads bypass allocator constructors and mutating snapshot/alarm/retire/promotion paths. All SQL cursors are consumed synchronously. No physical container-release claim is made."
+    },
+    {
+      "topic": "Hard limits and pause/config drift",
+      "sources": [
+        "services/model-budget/private-beta-capacity.ts:49",
+        "services/model-budget/private-beta-capacity.ts:155",
+        "services/model-budget/private-beta-capacity.ts:168",
+        "services/model-budget/private-beta-capacity.ts:284",
+        "docs/pi-maintenance-admission.md:66"
+      ],
+      "finding": "Kill/pause/reviewAt, user/Turn/tool/model limits, scope/auth checks, unknown quarantine and original usage reservations remain unchanged. End rechecks current policy and persisted pause/resume revision after the native read; no timer resumes maintenance. Native and Beta reads are ledger proofs rather than a global writer lock."
+    }
+  ],
+  "tests": {
+    "independentlyExecuted": false,
+    "newTestsAdded": false,
+    "reason": "Existing author tests cover the reviewed risk paths; no material uncovered failure justified repeating the passed targeted suites.",
+    "authorReportedOnly": {
+      "initialRelated45": {
+        "name": "initialRelated",
+        "tests": 45,
+        "pass": 45,
+        "fail": 0,
+        "skipped": 0,
+        "exitCode": 0,
+        "qualification": "Before final missing/corrupt state cases and final state validation; finalChanged reran affected paths afterwards."
+      },
+      "finalChanged15": {
+        "name": "finalChanged",
+        "tests": 15,
+        "pass": 15,
+        "fail": 0,
+        "skipped": 0,
+        "exitCode": 0
+      },
+      "finalNative2": {
+        "name": "finalNative",
+        "tests": 2,
+        "pass": 2,
+        "fail": 0,
+        "skipped": 0,
+        "exitCode": 0
+      },
+      "typecheckExitCode": 0,
+      "diffcheckExitCode": 0
+    },
+    "reviewedTestFiles": [
+      "tests/m1/private-beta-admin.test.ts",
+      "tests/m2/archive-resource-readonly.test.ts",
+      "tests/m2/private-beta-maintenance-workerd.test.mjs"
+    ]
+  },
+  "platformContractChecks": [
+    {
+      "url": "https://developers.cloudflare.com/durable-objects/api/sqlite-storage-api/#transactionsync",
+      "checked": "transactionSync callback must be synchronous; exception rolls back; sync resolves pending writes; synchronous KV is available for SQLite-backed DO."
+    },
+    {
+      "url": "https://developers.cloudflare.com/durable-objects/api/sqlite-storage-api/#exec",
+      "checked": "SQL cursors must be fully consumed before await; these pure readers use toArray/one synchronously."
+    },
+    {
+      "url": "https://developers.cloudflare.com/durable-objects/api/alarms/",
+      "checked": "Maintenance methods add no alarm calls and do not use existing allocator wrappers that schedule/retire/promote."
+    }
+  ],
+  "skillsRead": [
+    "/Users/jihegao/.agents/skills/durable-objects/SKILL.md",
+    "/Users/jihegao/.agents/skills/workers-best-practices/SKILL.md"
+  ],
+  "limits": [
+    "No proof of actual Cloudflare instances/physical release or rollout; actualContainerReleaseVerified remains false.",
+    "Cross-DO proof reads are not a global lock. A future explicitly authorized runner must freeze/recheck deployment, configuration and all other execution-gate identities.",
+    "A final enabled boolean cannot prove an unobserved off/on deployment history; persistent pause/resume drift is detected.",
+    "Historical ACK must be interpreted with returned current revision/hold; unknown mutation recovery uses original request ID, without automatic replay.",
+    "Existing Beta constructor schema CREATE statements are separate from method-level read-only status claim.",
+    "No configuration/reviewAt was changed and no source permission expands live execution authority."
+  ],
+  "actions": {
+    "sourceEdits": false,
+    "testReruns": false,
+    "commitsOrPushes": false,
+    "accountApiAuthSshDocker": false,
+    "providerCalls": false,
+    "deployment": false,
+    "officialPublicDocumentationReadOnly": true
+  }
+}

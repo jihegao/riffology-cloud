@@ -1,0 +1,314 @@
+{
+  "schema": "jhg46-page-switch-source-content-binding/v1",
+  "recordedAt": "2026-10-19T01:05:58.566901+00:00",
+  "referenceBase": "build-v1 directory; all file references relative to it",
+  "reviewOnly": true,
+  "deployable": false,
+  "newPublicationOperationsPrepared": false,
+  "sourceCommit": "bdee1975d1f8df20be5e9f83fd7b50d6885b27ad",
+  "sourceTree": "672a753740f1c0cdef58c991b59b4dfc7d606d54",
+  "sourceParentCommits": [
+    "004e5cd5940c6e283b1b58501c3f409a569f6e20"
+  ],
+  "sourceInputInventory": {
+    "file": "source-input-inventory.json",
+    "bytes": 159656,
+    "sha256": "d1814ce30585a761b4a84a5cc1e81c7fefc0591276a421ab94c76b2a187b9061"
+  },
+  "selectedSourceAfterBuild": {
+    "file": "tracked-source-after.json",
+    "bytes": 108387,
+    "sha256": "24a1a8071766caa1e92d8ffeee078c941ae6e875035cc7491522f40d29011a99"
+  },
+  "selectedSourceCount": 477,
+  "selectedSourceContentBytes": 9748216,
+  "selectedRoots": [
+    "services",
+    "package.json",
+    "package-lock.json",
+    "Dockerfile.trusted-pi.cloud",
+    "Dockerfile.trusted-pi.vertical",
+    "scripts/m3/build-project-view-frame.mjs",
+    "infra/wrangler.gateway-staging.jsonc",
+    ".github/workflows/check.yml",
+    "tsconfig.json"
+  ],
+  "productionSourcesFromSingleGitCommit": true,
+  "selectedSourceChangedFromSdk3043": [
+    "services/web/project-views.js"
+  ],
+  "sourceAuthority": "Fixed Git objects, not the user checkout. All materialized Git blobs and all graph inputs were rechecked; no dotenv, .git history or untracked user files were copied.",
+  "materialization": {
+    "materializer": {
+      "file": "materialize-source-once.py",
+      "bytes": 3436,
+      "sha256": "2d0b4c52ea31fe00a42fd50b5b2b24d9995943e7ee108488d865d84d90a9d972"
+    },
+    "processObservedExitCode": 0,
+    "rawStdoutSeparatelySaved": false,
+    "stdoutCaptureLimit": "Materializer stdout/exit were observed in tool result; build stdout/stderr below are separately saved raw.",
+    "builder": {
+      "file": "freeze-gateway-once.mjs",
+      "bytes": 16478,
+      "sha256": "5bd16940e00b180acd67acd0ef25a91be227c76e79bcac00f67b6976f2885580"
+    },
+    "launcher": {
+      "file": "launch-build-once.py",
+      "bytes": 3248,
+      "sha256": "85d2d61d60029f52036d721c5a14173fcfd9e54bfa72343224b34bb2dc90442c"
+    },
+    "helperProvenance": {
+      "file": "helper-provenance.safe.json",
+      "bytes": 1163,
+      "sha256": "b6de9098e3e4be975bf8cf88f2d53db692ed9e985278f04257f78af2b3d3e7e0"
+    },
+    "explicitEmptyEnv": {
+      "file": "empty.env",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "existingDependenciesOnly": true
+  },
+  "actualBuild": {
+    "manifest": {
+      "file": "output/build-manifest.json",
+      "bytes": 5551,
+      "sha256": "e413bb0ce171c5682219c87f44ff42bd4ae692f37c1a59aabfd480eb7f597034"
+    },
+    "intent": {
+      "file": "output/intent.json",
+      "bytes": 1013,
+      "sha256": "fb79b5ead0ff5834c43aa203a971015de1b9ceb18d976f1ba702b1a86b41e437"
+    },
+    "terminal": {
+      "file": "output/terminal.json",
+      "bytes": 756,
+      "sha256": "949175f394f284aca51fc41129969db54d6235a6dbddc647573454fd770635a3"
+    },
+    "launcherIntent": {
+      "file": "offline-build-launch-intent.json",
+      "bytes": 1741,
+      "sha256": "e536daa7dcbf3fbe7f0b8a2483ff24c85fc7c1f3d0fa3200fd21edc56cce3791"
+    },
+    "originalCli": {
+      "file": "offline-build-original-cli.json",
+      "bytes": 70,
+      "sha256": "4595027888da5c55e43860fd0cdada5054f86c3b5ed27bc9ae1f0c7af00d9f24"
+    },
+    "launcherTerminal": {
+      "file": "offline-build-launch-terminal.json",
+      "bytes": 729,
+      "sha256": "65a15a95519d14e9c7d4c37f5b7bd6fc5f61d1d74f407337db222e54ae309d93"
+    },
+    "stdout": {
+      "file": "offline-build.stdout",
+      "bytes": 4553,
+      "sha256": "1f8b7a349234ec1d7046fce7ce4bb8cba7d93fba1065200ce80c9e40343719a5"
+    },
+    "stderr": {
+      "file": "offline-build.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "buildAttempts": 1,
+    "process": {
+      "pid": 33504,
+      "exitCode": 0,
+      "reaped": true,
+      "startedAt": "2026-10-19T01:05:04.800518+00:00",
+      "endedAt": "2026-10-19T01:05:05.612355+00:00"
+    },
+    "method": "Existing direct esbuild API pipeline; no Wrangler CLI invocation. Sanitized environment, explicit zero-byte envfile, actual esbuild onLoad hashes and metafile.",
+    "graphInputs": 1124,
+    "gitModuleInputs": 303,
+    "dependencyModuleInputs": 821,
+    "playwrightModuleInputs": 0,
+    "moduleGraphIsNotEveryFilesystemLookup": true
+  },
+  "toolAndDependencyWitness": {
+    "before": {
+      "file": "output/auxiliary-inputs-before.json",
+      "bytes": 88244,
+      "sha256": "837ea8f54ddae8f2e6a898a2d6e1b588782ade94b8ff32e8d1364215cfd0259b"
+    },
+    "after": {
+      "file": "output/auxiliary-inputs-after.json",
+      "bytes": 88244,
+      "sha256": "837ea8f54ddae8f2e6a898a2d6e1b588782ade94b8ff32e8d1364215cfd0259b"
+    },
+    "byteExactBeforeAfter": true,
+    "tools": 208,
+    "dependencyPackageMetadataLookups": 186,
+    "existingPackageJsons": 28,
+    "nodeVersion": "v26.10.0",
+    "esbuildVersion": "0.28.1",
+    "wranglerVersionHashedOnly": "4.129.0",
+    "dependencyModulesBefore": {
+      "file": "output/dependency-modules-before.json",
+      "bytes": 145603,
+      "sha256": "f8eff61083ccf83108be3b27908ceea9e787ba199376f0aff2dc4f3e0122273f"
+    },
+    "dependencyModulesAfter": {
+      "file": "output/dependency-modules-after.json",
+      "bytes": 145603,
+      "sha256": "f8eff61083ccf83108be3b27908ceea9e787ba199376f0aff2dc4f3e0122273f"
+    }
+  },
+  "priorSuccessfulSdkCandidate": {
+    "sourceCommit": "fca66cb0e1024b4e86bbbeb9a6d955b137599efa",
+    "binding": {
+      "file": "../../jhg46-native-sdk-acceptance-preparation-20261019/build-candidate-v2/source-content-binding.json",
+      "bytes": 13060,
+      "sha256": "4f5bcd14f20e06b810405a730c3d57d8cbfe0905bbffa95f9696535243f6ce06"
+    },
+    "manifest": {
+      "file": "../../jhg46-native-sdk-acceptance-preparation-20261019/build-candidate-v2/output/build-manifest.json",
+      "bytes": 5651,
+      "sha256": "c4289bb276ed6ede021acd6c8d2c439aeb007ea8ca5b15b582bf4b1aa7564e20"
+    },
+    "bundle": {
+      "file": "../../jhg46-native-sdk-acceptance-preparation-20261019/build-candidate-v2/output/gateway.mjs",
+      "bytes": 5774988,
+      "sha256": "304373a50d7a9ca8a99cdfbda0dcae261aa34d53727b757dfeb099c88efb5e0b"
+    },
+    "graph": {
+      "file": "../../jhg46-native-sdk-acceptance-preparation-20261019/build-candidate-v2/output/source-graph.json",
+      "bytes": 879161,
+      "sha256": "ee731e078e47ab8a6e67e316e3b66ee53828022267937214197a98c6a98d6fab"
+    },
+    "assetsInventory": {
+      "file": "../../jhg46-native-sdk-acceptance-preparation-20261019/build-candidate-v2/output/assets-sha256.json",
+      "bytes": 20499,
+      "sha256": "43fb4a80fe591acaae7dcf7a8ae144f50ce83a123ffd832e6f91da49baa4aa47"
+    },
+    "assetsManifest": {
+      "file": "../../jhg46-native-sdk-acceptance-preparation-20261019/build-candidate-v2/output/assets-manifest.json",
+      "bytes": 15987,
+      "sha256": "62611357af29d0b5480e36128bb25a59454cab97e1f174db49f347771ca77df9"
+    }
+  },
+  "artifacts": {
+    "asset-inputs-after.json": {
+      "file": "output/asset-inputs-after.json",
+      "bytes": 20499,
+      "sha256": "c5390bcc77bf48a1c0f51698fab6cf9bafcd80b31e9131ab7de5d1181888312d"
+    },
+    "asset-inputs-before.json": {
+      "file": "output/asset-inputs-before.json",
+      "bytes": 20499,
+      "sha256": "c5390bcc77bf48a1c0f51698fab6cf9bafcd80b31e9131ab7de5d1181888312d"
+    },
+    "assets-manifest.json": {
+      "file": "output/assets-manifest.json",
+      "bytes": 15987,
+      "sha256": "e97e2ec563718ac6d1bd759af25a23e32fb65e8fccff3cdb665ee880ffbe7cde"
+    },
+    "assets-sha256.json": {
+      "file": "output/assets-sha256.json",
+      "bytes": 20499,
+      "sha256": "c5390bcc77bf48a1c0f51698fab6cf9bafcd80b31e9131ab7de5d1181888312d"
+    },
+    "auxiliary-inputs-after.json": {
+      "file": "output/auxiliary-inputs-after.json",
+      "bytes": 88244,
+      "sha256": "837ea8f54ddae8f2e6a898a2d6e1b588782ade94b8ff32e8d1364215cfd0259b"
+    },
+    "auxiliary-inputs-before.json": {
+      "file": "output/auxiliary-inputs-before.json",
+      "bytes": 88244,
+      "sha256": "837ea8f54ddae8f2e6a898a2d6e1b588782ade94b8ff32e8d1364215cfd0259b"
+    },
+    "build-manifest.json": {
+      "file": "output/build-manifest.json",
+      "bytes": 5551,
+      "sha256": "e413bb0ce171c5682219c87f44ff42bd4ae692f37c1a59aabfd480eb7f597034"
+    },
+    "dependency-modules-after.json": {
+      "file": "output/dependency-modules-after.json",
+      "bytes": 145603,
+      "sha256": "f8eff61083ccf83108be3b27908ceea9e787ba199376f0aff2dc4f3e0122273f"
+    },
+    "dependency-modules-before.json": {
+      "file": "output/dependency-modules-before.json",
+      "bytes": 145603,
+      "sha256": "f8eff61083ccf83108be3b27908ceea9e787ba199376f0aff2dc4f3e0122273f"
+    },
+    "esbuild-metafile.json": {
+      "file": "output/esbuild-metafile.json",
+      "bytes": 1017462,
+      "sha256": "38dc2974ef07935f38e01e76516478afdcd50af88939530f3dcba88fb8181443"
+    },
+    "gateway.mjs": {
+      "file": "output/gateway.mjs",
+      "bytes": 5774988,
+      "sha256": "304373a50d7a9ca8a99cdfbda0dcae261aa34d53727b757dfeb099c88efb5e0b"
+    },
+    "intent.json": {
+      "file": "output/intent.json",
+      "bytes": 1013,
+      "sha256": "fb79b5ead0ff5834c43aa203a971015de1b9ceb18d976f1ba702b1a86b41e437"
+    },
+    "source-graph.json": {
+      "file": "output/source-graph.json",
+      "bytes": 879161,
+      "sha256": "ee731e078e47ab8a6e67e316e3b66ee53828022267937214197a98c6a98d6fab"
+    },
+    "terminal.json": {
+      "file": "output/terminal.json",
+      "bytes": 756,
+      "sha256": "949175f394f284aca51fc41129969db54d6235a6dbddc647573454fd770635a3"
+    }
+  },
+  "assets": {
+    "paths": 96,
+    "web": 28,
+    "immutable": 68,
+    "changedPaths": [
+      "/project-views.js"
+    ],
+    "unchangedPaths": 95,
+    "allImmutableByteIdenticalToSdk3043": true,
+    "totalBytes": 53785385,
+    "noAssetSessionOrUpload": true,
+    "changed": [
+      {
+        "path": "/project-views.js",
+        "before": {
+          "path": "/project-views.js",
+          "bytes": 17054,
+          "sha256": "e420e10e0196a9b9ce5f8c6959f8c8551ee0eeae3a2f0a317d9eac8f986ea47c",
+          "assetHash": "c8fb54772ae5b503c0466ac51584e751"
+        },
+        "after": {
+          "path": "/project-views.js",
+          "bytes": 17684,
+          "sha256": "c6c2de3b53250342498cbb424b720e990ed8b8c1a273157d4cad87d8fefae2a0",
+          "assetHash": "4c665918794a03dbd35f5e83f58bbfc8"
+        }
+      }
+    ],
+    "allOutputBodiesRehashedAfterBuild": true,
+    "immutableBodiesAuthority": "Prior SDK candidate byte-exact bodies, each also bound to current fixed Git static-index sha256/byteLength by the executed builder."
+  },
+  "frame": {
+    "path": "/project-views/63ebcd050b0ccf5019265070890bee69d99902120f2252c376678aff299d374b/frame.html",
+    "sha256": "63ebcd050b0ccf5019265070890bee69d99902120f2252c376678aff299d374b"
+  },
+  "checks": {
+    "allSelectedSourcesMatchGitBlobsAfterBuild": true,
+    "bundleByteIdenticalToSdk3043": true,
+    "moduleGraphByteIdenticalToSdk3043": true,
+    "assetsSame96Paths": true,
+    "onlyProjectViewsJsChanged": true,
+    "all68ImmutableAndOther27WebBodiesUnchanged": true,
+    "originalFrozenBaselineUnchanged": true,
+    "noWranglerCliAuthNetworkOrDeployment": true,
+    "actualProcessExitZeroReaped": true
+  },
+  "limits": [
+    "This is an offline fixed-head build, not a normal merge proof or live deployment/acceptance receipt.",
+    "No publisher, deployment metadata, cloud grant, asset session/upload, OAuth read, Registry/provider request, container/image operation, Safari control, real project/Turn or gate was prepared or executed.",
+    "No additional tests were rerun in this build; original #258 raw local test evidence remains separate.",
+    "Source evidence/candidate files and prior SDK build were preserved. User deadlines and prior fb07 stop/cleanup history are unchanged."
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "projectId": "e7044b0b-839a-4e44-9636-ab0c3b77b7ae",
+  "workspaceId": "3e1e0106-503e-42e1-89ce-35a26612935e",
+  "workspaceGeneration": 1,
+  "scopeSha256": "9949802a2876284ffa2b604411b9283de83fa45c806c24bd7ab2981ff5059286",
+  "schema": "jhg46-ordinary-t1-terminal-snapshot-safe/v1",
+  "httpStatus": 200,
+  "observedAt": "2026-10-18T10:14:03.337Z",
+  "sessionId": "bc034608-8a61-47c4-b323-9f6143bca607",
+  "turnId": "bd291436-baeb-43bb-9cc2-b92f62c06c78",
+  "sessions": 1,
+  "turns": 1,
+  "activeTurnId": null,
+  "releaseHold": {
+    "status": "release-pending",
+    "reasonCode": "trusted-pi-release-assignment-guard",
+    "since": 1792318389674,
+    "nextAttemptAt": 1792318447453
+  },
+  "recoveryHold": null,
+  "resourceWait": null,
+  "turn": {
+    "status": "failed",
+    "executionOutcome": "failed",
+    "errorCode": "turn-native-exit-failed",
+    "persistenceOutcome": "failed",
+    "persistenceErrorCode": "turn-checkpoint-unknown",
+    "checkpoint": null,
+    "createdAt": 1792318341929,
+    "startedAt": 1792318345070,
+    "finishedAt": 1792318391429,
+    "runtimeGeneration": 1
+  },
+  "sessionHead": null,
+  "admission": {
+    "state": "enabled",
+    "reasonCode": null,
+    "retryable": true
+  },
+  "rawOriginalSha256": "6b94220b35546a9d2ef56ebd35bd9b44e5ddadadcb66385e6fa836a2fe52b223"
+}

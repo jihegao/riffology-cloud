@@ -1,0 +1,53 @@
+{
+  "schema": "jhg46-original-a036-dash-placement-safe/v1",
+  "accountId": "8b0d70250211aa10d89e20605a1c7e5e",
+  "applicationId": "a03628c4-f032-461f-a65b-612ccac11a06",
+  "startedAt": "2026-10-18T03:38:26.799Z",
+  "endedAt": "2026-10-18T03:38:27.260Z",
+  "onlyGet": true,
+  "cloudWrites": 0,
+  "complete": true,
+  "unfiltered": true,
+  "trace": [
+    {
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/dash/applications/a03628c4-f032-461f-a65b-612ccac11a06/instances",
+      "query": {
+        "per_page": 1000
+      },
+      "status": 200,
+      "success": true,
+      "at": "2026-10-18T03:38:27.260Z"
+    }
+  ],
+  "physicalInstancesCount": 0,
+  "durableObjectHistoryCount": 6,
+  "physicalInstances": [],
+  "durableObjectBindings": [
+    {
+      "id": "530aa3d4600b573fa77f7e158d5c7a1d7c23dc1f52a111ce9b81fbf7fdec6455",
+      "deploymentId": null
+    },
+    {
+      "id": "6c4a88eefa189d779c8f7f99ccb0901f269d95641fbcef813536bbbcb43749f4",
+      "deploymentId": null
+    },
+    {
+      "id": "7cf3903091b50513c5b951ad0d95df1e72a58316f439472244ed8fbd92e47488",
+      "deploymentId": null
+    },
+    {
+      "id": "8c7f1550268543cb24cf59b079f413ac68a48a6b976bdf8032b8b9bb19225184",
+      "deploymentId": null
+    },
+    {
+      "id": "e31ba9a00782777799a5db4b766f5dfc7a2c4880762cb931953004486c4a1933",
+      "deploymentId": null
+    },
+    {
+      "id": "f1bcf4c6a28938fc8615505019129bacab72b18273de32e126b46624fb611b79",
+      "deploymentId": null
+    }
+  ],
+  "source": "installed Wrangler4.129 ApplicationsService.listDashApplicationInstances and buildInstanceRows; actual raw instances and DO history kept separate",
+  "scope": "point-in-time application control-plane placement inventory; must combine with original logical release proof and fresh held preflight, not global zero activity"
+}

@@ -1,0 +1,9 @@
+{
+  "deadlineSeconds": 1500,
+  "effectiveSshConfigSha256": "ebad3f2106d3b534bee080ac62e517b412eb492f24798a94bc339a4eba42a494",
+  "forwardAgent": false,
+  "localProxy": "127.0.0.1:7892",
+  "noInheritedForwards": true,
+  "remoteBind": "127.0.0.1:7897",
+  "requestId": "fb99c7e4-21a7-4215-8261-c17dd7c148aa"
+}

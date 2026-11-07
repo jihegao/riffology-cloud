@@ -1,0 +1,118 @@
+{
+  "actualInputs": {
+    "executionCopyAll11SourcesMatchFrozen": true,
+    "fullJsonPureGrantValidAtOriginalApprovedAt": true,
+    "grantBytes": 4632,
+    "grantNewlineCount": 119,
+    "grantSha256": "52c85c3501a881891516f37384033d016fefc57b809ff4493896a57da835d048",
+    "intentGrantHashMatchesActual": true,
+    "operationsManifestSha256": "6fd9aefcdb09cf0465b3062a0270e4ef3817f74d8829fa99cbfe1f3d031efd8c",
+    "terminalFileSha256": "76f6db8fd64b1434473fa665b47ebf2ab979ce79f0c573f6ddd6e0eea448926f"
+  },
+  "actualRecordedLocalTerminal": {
+    "credentialPostAttempted": false,
+    "credentialStdinSent": false,
+    "errorCode": "original-publication-ssh-nonzero",
+    "finalPublicationAckVerified": false,
+    "localStopErrors": [],
+    "originalSshReaped": true,
+    "sshExitCode": 1
+  },
+  "actualRecordedStreams": {
+    "stderr": {
+      "bytes": 771,
+      "sha256": "a2e7627af8cdb22d69ec2e2f4f1be21e48060a566b564b1ff20923e36e05a522"
+    },
+    "stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "actualSafeEventCount": 0,
+  "method": "Read actual grant shape and fixed source; evaluate only public pure grant parser using local bytes. No local driver/CLI/SSH/remote code or transport executed.",
+  "predictionVersusActual": [
+    "The exact local wire and pure remote grant parser deterministically fail JSON on the first two bytes before execute reaches ROOT.mkdir.",
+    "Actual remote stderr raw body was not persisted by the fixed driver; this diagnosis does not claim observed remote traceback contents.",
+    "Authoritative actual remote ROOT/archive/auth/route/process absence remains a separate root-owned readback; source order alone is not a substitute.",
+    "Normal token refresh and two identity GETs already occurred according to local records; this is not zero cloud/auth activity."
+  ],
+  "pureTransportReproduction": {
+    "beforeRemoteRootMkdirBySourceOrder": true,
+    "firstLineJsonError": {
+      "class": "JSONDecodeError",
+      "column": 1,
+      "line": 2,
+      "position": 2
+    },
+    "firstReadBytes": 2,
+    "firstReadHex": "7b0a",
+    "localWireRule": "g.rstrip(LF)+LF",
+    "remoteLineBoundPasses": true,
+    "remoteReadRule": "stdin.buffer.readline(32769)",
+    "sameGrantWholePayloadParses": true
+  },
+  "recordedAt": "2026-10-18T12:22:14.931441+00:00",
+  "recoveryNotExecuted": {
+    "automaticRetryAllowed": false,
+    "grantTransportCorrectionOnlyProposed": true,
+    "newExplicitContinuationAuthorizationRequired": true,
+    "noCredentialsExportPushOrMergeAttemptedByThisDiagnostic": true,
+    "preserveOriginalOnce": true
+  },
+  "requestId": "c263a2f3-f445-430e-b562-2e48f1eeb637",
+  "schema": "trusted-pi-c263-grant-wire-local-diagnosis/v1",
+  "serviceActions": {
+    "docker": 0,
+    "oauthCli": 0,
+    "oauthRead": 0,
+    "provider": 0,
+    "registryApi": 0,
+    "ssh": 0
+  },
+  "sources": {
+    "AUTHORIZATION.md": {
+      "bytes": 1620,
+      "sha256": "b32305821007e7ab86c4d1dfcff846980071344d68199105687d53fec4600a57"
+    },
+    "EXECUTION.md": {
+      "bytes": 4340,
+      "sha256": "8145ea3d2d5cd034d941cdddfc13f75bc65c28709b9a5484c12a5183f9264ec2"
+    },
+    "independent-cleanup-readonly.py": {
+      "bytes": 10731,
+      "sha256": "b3ef15d9aefea3bbaf8d7e7c68e3c51a9c4cedeff16b8837b970330a742f4d26"
+    },
+    "local-recovery.py": {
+      "bytes": 17623,
+      "sha256": "ac057dd758529e7073ce1214cb63f7c8cae3ea3a42e7eddf5aeaa9998ab8e50b"
+    },
+    "oci_verify.py": {
+      "bytes": 5748,
+      "sha256": "0a23618e34b9a2acf608acc86d281ebd68f60a62ba2b102ecda92502c294acea"
+    },
+    "pub_common.py": {
+      "bytes": 5833,
+      "sha256": "6e623f79dc8078b0b25fb16a77b674aefd16bf0e9d3ba8f86e446737cda22897"
+    },
+    "remote-recovery.py": {
+      "bytes": 13876,
+      "sha256": "fd642a57029c2b782db4df0582365ee494ab3b9ddabc97eac2446c5793036795"
+    },
+    "renewal-source-contract.json": {
+      "bytes": 2497,
+      "sha256": "0593104af3bcc19871b2b55074d85aae105e2a04fef8f9041ab3e31887775f60"
+    },
+    "scope.json": {
+      "bytes": 5036,
+      "sha256": "5706179ecc40a18e52f726c712ed7d480fecb7b7741eb6debd14f87531649577"
+    },
+    "test_independent_reader.py": {
+      "bytes": 7676,
+      "sha256": "4c5914379229436d8599208272dfaf9a502147ce8acbdf2636791d954be99830"
+    },
+    "test_recovery.py": {
+      "bytes": 18086,
+      "sha256": "a876a530762affb641e739f55891126dde6b8d249cf65fc8c4db7b2fb9773711"
+    }
+  }
+}

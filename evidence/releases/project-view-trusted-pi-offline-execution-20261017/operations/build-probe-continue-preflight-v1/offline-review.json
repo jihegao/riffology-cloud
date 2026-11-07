@@ -1,0 +1,44 @@
+{
+  "actualRemoteExecutionByThisPreparation": false,
+  "continuationScope": "First build only after exact proven readonly unsupported-format failure; plain builder header parser; no replayed mutating operation",
+  "files": {
+    "EXECUTION.md": {
+      "bytes": 3807,
+      "sha256": "912090b2b220b5b5c8b38abf78bda25c66bf02fbc452b5b100ae7e09534a32ab"
+    },
+    "build-probe-once.py": {
+      "bytes": 33205,
+      "sha256": "12a22b87f8dbab84d144dbcac0b141d050703f620a5417c0607bb5ab7a38fcd8"
+    },
+    "test_build_probe.py": {
+      "bytes": 12569,
+      "sha256": "462f52be85c6e49e4b9f4f1626c428d290c877e8b27eabf803c3048f2443d49f"
+    }
+  },
+  "independentReadonlyObservationSha256": "939d1de365031ece879c44ef3aa8879339828a627f26dd45b8ae5416b464ff82",
+  "independentStaticReview": {
+    "result": "no must-fix",
+    "reviewedRunnerSha256": "12a22b87f8dbab84d144dbcac0b141d050703f620a5417c0607bb5ab7a38fcd8",
+    "reviewer": "source_audit",
+    "testsIndependentlyRerun": false
+  },
+  "newBuildOrRequestIdentity": false,
+  "noOAuthScopeCredentialRoutePullOrNewPayload": true,
+  "originalResultAndAll14RegularRecordsUnchanged": true,
+  "originalTaskwideLockPreserved": true,
+  "parentOriginalResultSha256": "41062ccf80772745c44296cd2944b6389babb88fb6206e1edc59fdd144c412a9",
+  "parentRunnerSha256": "1066f2331c6d411b5d9c8c8f7d48cb03e5f537b0ebd0273abe1b89088254000f",
+  "priorCredentialPostOutcome": "unknown-preserved",
+  "recordedAt": "2026-10-17T12:10:59Z",
+  "requestId": "57a70587-2b21-4a56-aed1-09c8a32d868a",
+  "schema": "trusted-pi-original-readonly-preflight-continuation-review/v1",
+  "tests": {
+    "count": 14,
+    "exitCode": 0,
+    "failed": 0,
+    "mode": "local synthetic filesystem/mocks only; no Docker/SSH/API/credential",
+    "passed": 14,
+    "reportedSeconds": 0.012,
+    "skipped": 0
+  }
+}

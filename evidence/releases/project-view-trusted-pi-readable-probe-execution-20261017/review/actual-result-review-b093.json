@@ -1,0 +1,129 @@
+{
+  "approvedPacketCommit": "7b8b15f1da4517c073566a017e6fc5aa4557a385",
+  "confirmedFacts": {
+    "activeAliasActuallyInspected": true,
+    "all15FrozenSdkChecksTrue": true,
+    "allLocalSshExitZeroReapedAndNoStopOrLogErrors": true,
+    "allOriginalCommandsRecordedReapedAndOriginalProcessesAbsent": true,
+    "allTwelveTargetBytesMatchFrozenManifest": true,
+    "boundedUniqueRemoteRecordReferences": 77,
+    "cachedRootfsAndOriginalLaunchConfigMatched": true,
+    "cachedRootfsLayerCount": 48,
+    "checkedTargets": 12,
+    "credentialsReadByProbe": false,
+    "frozenManifestSha256": "f27b35dcbe84b58e3442018332374dbf20fa0d315528a322e56ea2a2bcfea5d4",
+    "gid": 10002,
+    "imageId": "sha256:a946b164d10d074fcc9859f6c54c3b65d1901b41696c5ee8d8e31e275ddd1593",
+    "imageIdRole": "local Engine/descriptor index, size856; not config or Registry digest",
+    "independentCorrectOperationLabelAllListEmpty": true,
+    "independentDockerGets": 2,
+    "independentExactOriginalNotFound": true,
+    "localSshCleanupIsNotRemoteCleanupProof": true,
+    "localSshTerminals": 3,
+    "mock": "Exactly one scoped create/start observed; frozen original image-mode report passed and original wait/completed inspect records returned zero.",
+    "originalCommandLifecycles": 14,
+    "originalContainerId": "ed9ac44df539c4bb3e9e046d777c37c650baa0a467e0e13c3b788baffcaab131",
+    "realProviderRequestsWithinFrozenMock": 0,
+    "rootOwnerAndNoGroupOtherWriteCheckedByFrozenProbe": true,
+    "syntheticRequests": {
+      "ambientFetchCalls": 0,
+      "model": 3,
+      "projectToolExecutions": 0,
+      "research": 1
+    },
+    "transfer": "Exactly one approved transfer reported full fixed ACK with two input files0444 and operation files0600.",
+    "uid": 10002
+  },
+  "grantSha256": "78c8c59e91a9313e0760ecb71466868fae28c44d2568703d6f8acc26850f947a",
+  "historyPreserved": [
+    {
+      "bytes": 48594,
+      "path": "evidence/releases/project-view-trusted-pi-offline-execution-20261017/result.json",
+      "sha256": "72f567cd1d8171722fce84f1982cb6f341330576824feec7a9f5740a61e0b1a5"
+    },
+    {
+      "bytes": 18484,
+      "path": "evidence/releases/project-view-trusted-pi-package-mode-execution-20261017/result.json",
+      "sha256": "b2ff465736bc63958cfd884349c3dd6c92ac13e45113f048ff14dc5068215306"
+    }
+  ],
+  "limitations": [
+    "Proves the approved offline image SDK mock on cached a946 only; does not prove native supervisor execution, container fence or capacity release beyond this mock original-CID cleanup.",
+    "No Registry publication/export, Cloudflare serving-image update, page admission change, PR merge or ordinary authenticated-user workflow occurred in this batch.",
+    "No paid model, real project initialization/save/browser/cold recovery or complete JHG-56 identity/isolation acceptance is proved.",
+    "Provider0 is scoped to this injected network-none mock, not account-wide zero execution, zero fees, invoice settlement or arrears absence.",
+    "Current Node version is not included in the safe independent report projection and is not newly asserted here.",
+    "Original57a credential POST unknown and originala21 entry failure remain unchanged; neither is rewritten by this later passing mock."
+  ],
+  "mustFix": [],
+  "operationsManifestSha256": "ae0614dafe7067367703ad41a9e0ff19f25de3ab7c788b85f01c1ff5c6b4fffd",
+  "parentRequestId": "a21af2c8-44ff-4f67-a07f-c364bcd6d295",
+  "preExecutionSnapshotMeaning": "authorization-receipt realTransferOrMockStarted:false was recorded before the actual execution; not a current zero-execution claim.",
+  "privacy": {
+    "envOrFullInspectOrArbitraryStderrIncluded": false,
+    "privateStreamBodiesIncluded": false,
+    "rawGrantOrHumanReplyReadOrIncluded": false
+  },
+  "readerSha256": "bf86993670c344e264e2b3dff915051fee2ef2f0db5a54404aafcff8bc482a91",
+  "recordedAt": "2026-10-17T14:43:11.658657+00:00",
+  "requestId": "b0933502-20df-480a-9a91-d833f5c4358c",
+  "reviewedBindings": [
+    "Eight executed operation files and reader remain exact frozen bytes.",
+    "Three local private streams match terminal hashes and parsed allowlisted stdout equals saved remoteReceipt; original SSH identities match terminal records.",
+    "All28 original command stream byte/hash projections match their77 unique referenced records.",
+    "Twelve projected image target paths/sizes/hashes equal original frozen manifest.",
+    "Actual independent exact-CID NotFound plus correct empty operation label proves this original mock cleanup independently of local SSH reaping."
+  ],
+  "reviewer": "result_review",
+  "reviewerExternalActions": {
+    "apiWrites": 0,
+    "dockerOrContainerExecution": 0,
+    "originalRecordsModified": false,
+    "ssh": 0,
+    "testsRerun": 0
+  },
+  "schema": "trusted-pi-probe-readable-actual-result-independent-review/v1",
+  "sourceArtifacts": [
+    {
+      "bytes": 970,
+      "path": "authorization-receipt.json",
+      "sha256": "1f9f0efcfa526193a32623d5eb48ddf56b33c1d20be29c0f15234184f2b6b959"
+    },
+    {
+      "bytes": 823,
+      "path": "operations/transfer-once/result.json",
+      "sha256": "abf0d02db33aa764f98b76203a8dc567fab2e08345fb4fd6efbf4eb777fbfd09"
+    },
+    {
+      "bytes": 1418,
+      "path": "operations/mock-launch-once/result.json",
+      "sha256": "7d28f747ba0ba86573516f3ed13f882d4a15d5ca5b7d1721d795fbb9654c0760"
+    },
+    {
+      "bytes": 30964,
+      "path": "independent-readback-once/result.json",
+      "sha256": "e77565f415c62963bd6b86d4926ea2ed135764152a7ee4979d095bf247c432a7"
+    },
+    {
+      "bytes": 654,
+      "path": "operations/transfer-once/ssh-terminal.json",
+      "sha256": "ef3738ecd3b340e60e08b601c589a82ce838e171e9faefd7bd1d1e9488f3d895"
+    },
+    {
+      "bytes": 655,
+      "path": "operations/mock-launch-once/ssh-terminal.json",
+      "sha256": "586307d9162702a754210efad14b1f88f7429b216aaaa8caa9d3f77e6f9650fb"
+    },
+    {
+      "bytes": 655,
+      "path": "independent-readback-once/ssh-terminal.json",
+      "sha256": "bb0eafebc0ed9303e48f678711fc3d459808f15d7299743133702e0a4204109c"
+    },
+    {
+      "bytes": 2517,
+      "path": "run-independent-readback-once.py",
+      "sha256": "1623358ad7e6e0c8e778f5146da21c2a6aea278f9c670c5f3272bcc389bb3feb"
+    }
+  ],
+  "status": "passed-offline-image-sdk-mock-and-independent-original-cleanup"
+}

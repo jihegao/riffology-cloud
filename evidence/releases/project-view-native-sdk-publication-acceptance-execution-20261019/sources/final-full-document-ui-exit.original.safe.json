@@ -1,0 +1,14 @@
+{
+  "schema": "jhg46-fb07-final-full-document-ui-exit/v1",
+  "at": "2026-10-19T00:47:15.713Z",
+  "origin": "https://app.riffoid.com",
+  "pathname": "/",
+  "hash": "",
+  "title": "riffoid",
+  "projectListHeadingObserved": true,
+  "remainingIframeCount": 0,
+  "oldWireGlobalAbsent": true,
+  "oldBrowserObserverGlobalAbsent": true,
+  "oldTurnCaptureGlobalAbsent": true,
+  "scopeLimit": "Full document exit and source pagehide disposal; no raw browser port/listener counters are exposed."
+}

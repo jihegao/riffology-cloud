@@ -1,0 +1,21 @@
+{
+  "allReaderOriginalFileRefsByteHashMatched": true,
+  "at": "2026-10-18T13:27:37.877920+00:00",
+  "checks": {
+    "archive-revalidation.json": {
+      "bytes": 1187,
+      "jsonEqualsOriginalObservedEvent": true,
+      "sha256": "f13bd19ade8d90889935d96ece7136b0c786df34e77695fbfa51a414026198a8"
+    },
+    "terminal.json": {
+      "bytes": 886,
+      "jsonEqualsOriginalObservedEvent": true,
+      "sha256": "224109713d9eb7dc3585ebd8d5f119ba3f3fd2acf96d4d56802c525f8d6b90da"
+    }
+  },
+  "mergeAllowed": false,
+  "newRemoteReadsOrMutations": 0,
+  "publicationVerified": false,
+  "readerOriginalFileRefs": 14,
+  "schema": "jhg46-c263-readback-independent-record-binding/v1"
+}

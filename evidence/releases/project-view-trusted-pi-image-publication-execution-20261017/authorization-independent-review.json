@@ -1,0 +1,65 @@
+{
+  "actualQuestionCall": "call_af6d271f1b0442a5950f45c3844d36d9",
+  "actualQuestionIndex": 0,
+  "approvedPacketCommit": "fc807579e44745119014048d152fafccd6c946f5",
+  "authorizationReceipt": {
+    "bytes": 729,
+    "executionStartedFalseIsHistoricalSnapshot": true,
+    "rawPrivateBodyPublished": false,
+    "sha256": "a2faca382488d8c29ca71b61812aef86a10245f630ff35e74cb9f7957bc58526"
+  },
+  "grant": {
+    "approvedIsTrue": true,
+    "bytes": 2250,
+    "compactSortedUtf8SingleLineWithOneLf": true,
+    "humanReplyAndManifestRawByteHashesMatch": true,
+    "schemaVerified": true,
+    "scopeFieldsExactlyMatchFrozenScope": true,
+    "sha256": "e0f980ad3905beab671ee333542806964d0d976d58361f50494bbaf888110e84"
+  },
+  "humanReplyProjection": {
+    "actualAffirmativeAnswerVerified": true,
+    "bytes": 2229,
+    "isCanonicalProjectionNotVerbatimTranscript": true,
+    "privateBodyIncluded": false,
+    "sha256": "82a23454350ff63da180c2b018936a1ae2e0ed3cd80128bd83fac10e392683b6"
+  },
+  "limitation": "Authorization binding only, not execution/publication, credential validity, Registry readback, cleanup, merge or JHG-46 completion proof.",
+  "mustFix": [],
+  "operationsManifest": {
+    "bytes": 1319,
+    "copiedSourceFilesAllByteHashesAnd600ModesMatched": 8,
+    "sha256": "986c2d6e12e72785978e0bdfcf6e6357ba82e59cb16c40dc5c1cf8c7530ac4d1"
+  },
+  "reader": {
+    "bytes": 7854,
+    "sha256": "2cf04125f41a89804ab284fe378990529b5eb9ad11b76888202b481a45a93ab9"
+  },
+  "requestId": "c3e04c41-72da-409b-a2b1-f924e6cc67fa",
+  "reviewedAt": "2026-10-17T15:31:14.520263+00:00",
+  "reviewer": "result_review",
+  "reviewerActions": {
+    "oauthOrRegistryProviderCredentialFilesRead": false,
+    "onlyFixedAuthorizationAndPublicSourceFilesRead": true,
+    "originalFilesModified": false,
+    "privateBodyCopiedOrPubliclyIncluded": false,
+    "sshOrApiOrContainerExecution": false,
+    "testsRun": false
+  },
+  "schema": "trusted-pi-publication-actual-grant-independent-review/v1",
+  "scopeReview": [
+    "Human approval points to fixed fc807579 publication packet and final986c manifest.",
+    "Grant exactly preserves fixed c3e/a946/account/repository/tag/PR239 head, one export/push/credential route and final guarded merge scope.",
+    "Same-account original-five-scope normal renewal is covered by the question; no new scope, login expansion, automatic renewal or retry is added.",
+    "No application rollout, container execution, Gateway/assets/policy changes or real project/model/Turn/Run added; excluded list exactly matches frozen scope.",
+    "Credential15-minute request and local cleanup remain distinct from server-side expiry/revocation."
+  ],
+  "status": "matched-exact-current-human-grant",
+  "window": {
+    "approvedAt": "2026-10-17T15:27:41.508143+00:00",
+    "currentlyValidAtReview": true,
+    "durationSeconds": 3600,
+    "expiresAt": "2026-10-17T16:27:41.508143+00:00",
+    "localObservationNotSubmissionTime": true
+  }
+}

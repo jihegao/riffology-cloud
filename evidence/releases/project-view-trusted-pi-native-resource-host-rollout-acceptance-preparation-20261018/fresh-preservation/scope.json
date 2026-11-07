@@ -1,0 +1,59 @@
+{
+  "accountId": "8b0d70250211aa10d89e20605a1c7e5e",
+  "appVersionCountsById": {
+    "a03156a6-9bf5-43fb-8b7f-a1f5b8d1a650": 2,
+    "a031ae38-f967-483f-ae2e-3dbed3d35268": 1,
+    "a0321718-f17e-4ccf-974a-fd447dde5920": 1,
+    "a03313e4-fa9d-4de2-ac2c-d2cc69efd875": 1,
+    "a0332851-f795-46df-9f8e-ee0ddc220095": 1,
+    "a035c941-2207-406e-97aa-a42ab6e9d249": 2,
+    "a03628c4-f032-461f-a65b-612ccac11a06": 2,
+    "a03693b8-f5be-4247-9280-f0c38435d911": 1,
+    "a036b418-dcce-4d2f-bd3d-6debf982ea6f": 1,
+    "a03836ca-d275-4f7d-898f-bc16d0875089": 2,
+    "a039ed42-159d-43db-be13-69315bce5189": 1,
+    "a03a6e91-25cb-4a8d-89a8-be522368dde4": 1,
+    "a03c0a4c-7533-4190-ba2b-ff4fecaabb48": 1,
+    "a03c0d4b-d529-4d81-a2b6-bfb901222a18": 1,
+    "a03ddc7e-1c6e-4cea-93ec-ac03d7b0073a": 1,
+    "a03ea65b-b039-4f56-8422-36c719b87b72": 1
+  },
+  "baselineExportSupported": false,
+  "closedWorkerVersionId": "5a840cbc-49c5-45cd-badc-b75553c78566",
+  "expectedLists": {
+    "apps": 16,
+    "domains": 3,
+    "instances": 0,
+    "namespaces": 50,
+    "registries": 1,
+    "routes": 5,
+    "schedules": 1
+  },
+  "lastTargetImage": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-issue165-trusted-pi@sha256:f18a826d40b2fd60e2cf8c49d7f7b8f595fa609fe2be4c28593479ae846960ea",
+  "lastTargetVersion": 12,
+  "module": {
+    "bytes": 5771650,
+    "mainModule": "index.js",
+    "sha256": "9c8e4b6b763e9887d1624f00ed3a8efb2a8a24d984d96bc68fdb289cb4d362c3"
+  },
+  "newTargetImage": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-issue165-trusted-pi@sha256:ec8dbe9efe229a1626ea3202b618653f82f8d29d9da8b19310c3b3838f2a2623",
+  "phases": [
+    "before-runtime-rollout",
+    "after-runtime-rollout"
+  ],
+  "projectViewApplicationId": "a031ae38-f967-483f-ae2e-3dbed3d35268",
+  "rawConfigurationReturned": false,
+  "requestId": "d0b12dd5-c04e-41d9-9a05-c685431d6695",
+  "resourceCounts": {
+    "appVersionLists": 16,
+    "apps": 16,
+    "bindings": 106,
+    "containerAssociations": 6,
+    "exports": 25,
+    "namespaces": 50,
+    "secrets": 11
+  },
+  "schema": "jhg46-ec8-runtime-fresh-preservation-scope/v1",
+  "targetApplicationId": "a03628c4-f032-461f-a65b-612ccac11a06",
+  "worker": "riffology-m1-gateway-staging"
+}

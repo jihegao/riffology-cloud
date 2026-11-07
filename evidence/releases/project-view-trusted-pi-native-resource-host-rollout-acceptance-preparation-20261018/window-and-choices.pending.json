@@ -1,0 +1,43 @@
+{
+  "actualEndsAt": null,
+  "actualStartsAt": null,
+  "effectiveExpiry": "min(new explicit <=4h window, October20 human authority, configured policy and any narrower authorization)",
+  "fees": {
+    "budgetCeiling": null,
+    "noPaymentSubscriptionChange": true,
+    "notifyExplicitArrears": true,
+    "unknownUsageNotZero": true
+  },
+  "hardHumanAuthorityCeiling": "2026-10-20T15:59:59.999Z",
+  "idleVmChoiceMeaning": {
+    "allowedIdentityCases": [
+      "existing originally accepted deployment d030d0a3-5a0c-4aa3-a4f2-f2bc156ca905 / placement758d8e05-8835-dacf-6b77-0b8cfda700ca if fresh complete lists and exact GET still identify it; retain its actual version/image label, never call it ec8 merely because app config changed",
+      "or one new exact deployment/placement in this ACK target version with ec8 image/configuration proof; no guessed next-version/rollout foreign key"
+    ],
+    "containerStatus": "stopped",
+    "costsMayContinueAfterWindow": true,
+    "extraOrUnknownResource": "retain hold and stop; do not stop/delete/PATCH/rollback to manufacture acceptance",
+    "maximumTargetAppPhysicalBaseline": 1,
+    "noExaminedRolloutIdForeignKey": "correlate actual IDs/version/image/time/single-writer only; do not invent causal foreign-key proof",
+    "oldVmNotNewImageProof": true,
+    "profile": "default/basic/max1",
+    "vmHealthMayRemain": "running"
+  },
+  "keepHardConcurrencyKillAndUnknownIsolation": true,
+  "maximumDurationMs": 14400000,
+  "newHumanGrantPresent": false,
+  "noDefaultAcceptance": true,
+  "oldRuntimeWindowEndsAt": "2026-10-18T12:42:46Z",
+  "oldWindowUnchanged": true,
+  "ready": false,
+  "schema": "jhg46-next-runtime-window-and-choice-input/v1",
+  "userChoicesRequired": {
+    "allowAtMostOneKnownIdleBasicVmWithPossibleOngoingFees": null,
+    "allowTargetVersionsRollingAckTargetPlusFreshCurrent": null
+  },
+  "versionChoiceMeaning": {
+    "expectedAfterVersions": "exact original ACK target version plus fresh original current version; no prefilled13",
+    "other15ApplicationsAllVersions": "exact complete unchanged hashes; this exception never applies to them",
+    "previousVersions": "preserve every original full snapshot/image/history; live-list retention and rollback availability of dropped older versions are not promised"
+  }
+}

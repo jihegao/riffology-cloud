@@ -1,0 +1,37 @@
+{
+  "schema": "jhg46-public-safe-projection/v1",
+  "originalFile": "independent-grant-preflight.json",
+  "originalBytes": 1418,
+  "originalSHA256": "5c473ac949fb9c8cc8db89ed8b3ba2e34846ca4873a657bb83259d991b648d74",
+  "projectionNote": "Pre-execution static grant/source observation; driverExecuted=false and zero calls are snapshots before the real run.",
+  "data": {
+    "schema": "jhg46-original-readback-independent-grant-preflight/v1",
+    "actualAuthProcessNetworkSshRegistryDockerCalls": 0,
+    "allBoundSourceBytesMatched": true,
+    "approvedAt": "2026-10-18T13:10:39+00:00",
+    "boundSourceFiles": 16,
+    "completeSourceBindingSha256": "1dc5e1dbadd9c7496a2f6ac0ed609240df1f9fc48f486c2d4e43445eb76488ab",
+    "driverExecuted": false,
+    "expiresAt": "2026-10-18T14:10:39+00:00",
+    "grantBytes": 4549,
+    "grantSha256": "eb6294d0b9dd1344e8717f5a8dd6ac879e7a41ed9455c0c2cb703f0ffbb2f97f",
+    "mustFix": [],
+    "newReadbackStateAbsent": true,
+    "oldStateFileCounts": {
+      "first": 8,
+      "wireRepair": 11
+    },
+    "oldTwoStatesPreservedDuringIndependentPreflight": true,
+    "operationId": "registry-readback-recovery-v1",
+    "operationsManifestSha256": "59fd2dd0f464e38b50b56e7c1d65229b6d81d86b12c935a822d5eeefead74342",
+    "preliminaryWrapperObservation": "UTC timestamps use +00:00, semantically equal to root-provided Z; strict textual wrapper assertion was corrected before any module/driver call.",
+    "producerConsumerOriginalByteAndShaIdentity": true,
+    "pullOnly15Minutes": true,
+    "realInputsAndGrantParsingPassedAtCurrentTime": true,
+    "recordedAt": "2026-10-18T13:12:26.628398+00:00",
+    "requestId": "c263a2f3-f445-430e-b562-2e48f1eeb637",
+    "rootOriginalPreparationAlsoReportsOldTwoStatesPreserved": true,
+    "sameOriginalRootAndFixedChild": true,
+    "singleJsonLineExactOneLfNoCr": true
+  }
+}

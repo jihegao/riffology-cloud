@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "projectId": "e7044b0b-839a-4e44-9636-ab0c3b77b7ae",
+  "workspaceId": "3e1e0106-503e-42e1-89ce-35a26612935e",
+  "workspaceGeneration": 1,
+  "scopeSha256": "9949802a2876284ffa2b604411b9283de83fa45c806c24bd7ab2981ff5059286",
+  "schema": "jhg46-ordinary-t1-original-ui-request-safe/v1",
+  "session": {
+    "sessionId": "bc034608-8a61-47c4-b323-9f6143bca607",
+    "keySha256": "89637923ba119329f4cbfb6ad5cf945aae6fdbf4d05e5c3388bc6786d130104b",
+    "status": 201,
+    "sentAt": "2026-10-18T10:12:14.267Z"
+  },
+  "turn": {
+    "turnId": "bd291436-baeb-43bb-9cc2-b92f62c06c78",
+    "sessionId": "bc034608-8a61-47c4-b323-9f6143bca607",
+    "keySha256": "95bfa03ed8d9522d23a2c526c36c4b2c2ee829f9a13abc968405d76daa0ae386",
+    "method": "POST",
+    "bodyBytes": 3473,
+    "bodySha256": "36ee35cbd1a879f0b2ac8771f7bc1410ec6d82415f1b9f80f4d1d56ecb51f16c",
+    "sentAt": "2026-10-18T10:12:17.477Z",
+    "ackAt": "2026-10-18T10:12:22.266Z",
+    "ackStatus": 202,
+    "replayed": false
+  },
+  "singleUiSubmit": true,
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "originalBatchEndsAt": "2026-10-18T12:42:46Z",
+  "promptAndBodyNotCopied": true
+}

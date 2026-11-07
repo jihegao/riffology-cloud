@@ -1,0 +1,35 @@
+{
+  "schema": "jhg46-original-pre-end-quiescence-safe-projection/v1",
+  "source": {
+    "originalFile": "maintenance-pre-end-quiescence.semantic.private.json",
+    "bytes": 1136,
+    "sha256": "a60101b9c32c80c78fd060eccf9c8c45b82f4aaea7a9705056b12ed4ea07118a"
+  },
+  "observedAt": "2026-10-18T09:53:54.183Z",
+  "status": 200,
+  "requestId": "6c6d9d94-be91-45e3-8044-bf1768308d7a",
+  "revision": 1,
+  "holdRequestId": "6c6d9d94-be91-45e3-8044-bf1768308d7a",
+  "controlRevision": 19,
+  "ledgerBefore": {
+    "activeSlots": 0,
+    "quarantinedSlots": 0,
+    "unresolvedCalls": 0,
+    "quiescent": true
+  },
+  "ledgerAfter": {
+    "activeSlots": 0,
+    "quarantinedSlots": 0,
+    "unresolvedCalls": 0,
+    "quiescent": true
+  },
+  "native": {
+    "quiescent": true,
+    "coldUnresolved": 0,
+    "pairUnresolved": 0,
+    "actualContainerReleaseVerified": false
+  },
+  "quiescent": true,
+  "actualContainerReleaseVerified": false,
+  "actorUserEmailOrRawPrivateRecordIncluded": false
+}

@@ -1,0 +1,184 @@
+{
+  "schema": "jhg46-observed-state-decision-independent-review/v1",
+  "reviewedAt": "2026-10-18T09:40:17.300135+00:00",
+  "reviewer": "result_review",
+  "reviewScope": "Static proposal v2 and fixed local observations; public documentation and exact installed CLI semantics. No real account request or mutation by reviewer.",
+  "result": "proposal-may-be-submitted-for-explicit-human-review-only",
+  "mustFix": [],
+  "mustFixMeaning": "Empty means the reviewed proposal wording and limits have no remaining blocking review finding. It does not mean that execution conditions are satisfied.",
+  "proposalReviewOnly": true,
+  "authorized": false,
+  "canEndMaintenance": false,
+  "endGuardsPassed": false,
+  "freshExecutionAuthorityEstablishedByThisReview": false,
+  "boundFiles": [
+    {
+      "file": "runtime-acceptance-execution-v1/proposed-observed-state-decision-v2.json",
+      "bytes": 3499,
+      "sha256": "b935f8781201072b61b5fbdbbc6d288eafd4c5d184df4180e61349b8140b834f",
+      "rawPayloadNotProjected": true
+    },
+    {
+      "file": "runtime-acceptance-execution-v1/proposed-observed-state-decision.json",
+      "bytes": 2887,
+      "sha256": "16c972a3ae084c8d361fd3896ed264592262807409d393c6f9031a3610902db0",
+      "rawPayloadNotProjected": true
+    },
+    {
+      "file": "runtime-acceptance-execution-v1/rollout-original-ack.json",
+      "bytes": 2383,
+      "sha256": "5b1593c981a16c45aef1d9a8f3a6009649c98a4c52e0c8b641b63c32ed4bdab0",
+      "rawPayloadNotProjected": true
+    },
+    {
+      "file": "runtime-acceptance-execution-v1/rollout-completed-observation.json",
+      "bytes": 4234,
+      "sha256": "2a7dd77d745d0f6cf190c80aea0c63d98da52d8de7d8d09fba784140ba8f3b64",
+      "rawPayloadNotProjected": true
+    },
+    {
+      "file": "runtime-acceptance-execution-v1/rollout-target-version12.private.json",
+      "bytes": 3297,
+      "sha256": "740db51e77fada489b6ded1172e478d1e87132ac513c79f7bb145621415ba658",
+      "rawPayloadNotProjected": true
+    },
+    {
+      "file": "runtime-acceptance-execution-v1/held-target-preflight-0925.json",
+      "bytes": 8215,
+      "sha256": "e5ed2d4acb5ba1adb94a7a7cbfe01d9e14c65da7167cc3d48b3cb86257a028b4",
+      "rawPayloadNotProjected": true
+    },
+    {
+      "file": "runtime-acceptance-execution-v1/held-full-preservation-0925.json",
+      "bytes": 11307,
+      "sha256": "e629064ab9bbdec17d8fea9a919d7844b041d03d49f076f0bc2e1342b759750e",
+      "rawPayloadNotProjected": true
+    },
+    {
+      "file": "runtime-acceptance-execution-v1/post-rollout-preservation.json",
+      "bytes": 7933,
+      "sha256": "2a05e0e6c7c4a80f994eb820d631e54bdff3044ec7b3e258d7c71ade0871cfeb",
+      "rawPayloadNotProjected": true
+    },
+    {
+      "file": "runtime-acceptance-execution-v1/post-rollout-preservation-observed-two.json",
+      "bytes": 623,
+      "sha256": "b1f367ecb9bae5ba97e815c7b372a7805bbd2a74107934ecca1d49ba27e47e58",
+      "rawPayloadNotProjected": true
+    },
+    {
+      "file": "runtime-acceptance-execution-v1/scheduler-deployments-original-read.private.json",
+      "bytes": 3833,
+      "sha256": "f0cfddc916df12faec2d395b762e8303ab8e252fc3b81ba94b274bc5ac07a47a",
+      "rawPayloadNotProjected": true
+    },
+    {
+      "file": "runtime-acceptance-execution-v1/maintenance-quiescence-0926.semantic.private.json",
+      "bytes": 1136,
+      "sha256": "6fd543c2f6f9a3422a5992d2bd7c5b7302eb31222a3b9d00362d0301be796b14",
+      "rawPayloadNotProjected": true
+    }
+  ],
+  "threeClarificationsVerified": {
+    "version10CurrentAvailabilityAndRollbackNotGuaranteed": true,
+    "deploymentCausationNotPromotedBeyondObservedCorrelation": true,
+    "combinedDeploymentsAndDashIdentityImageProfileAndTerminateGuardExplicit": true
+  },
+  "fixedObservedFacts": {
+    "originalRolloutId": "f1a653cc-44c2-49b9-87f3-33bb8940a540",
+    "originalRolloutPostStatus": 201,
+    "originalTargetVersion": 12,
+    "originalExactRolloutCompletedObserved": true,
+    "versionListBefore": [
+      11,
+      10
+    ],
+    "versionListAfter": [
+      12,
+      11
+    ],
+    "version10Conclusion": "No longer present in the recorded current all-versions response; cause and current live availability are unproven. Original snapshots and historical rollout configuration evidence do not establish current object retention or rollback availability.",
+    "deploymentObservationAt": "2026-10-18T09:33:36.703Z",
+    "deploymentId": "d030d0a3-5a0c-4aa3-a4f2-f2bc156ca905",
+    "placementId": "758d8e05-8835-dacf-6b77-0b8cfda700ca",
+    "appVersion": 12,
+    "matchesDigestPinnedF18": true,
+    "vmHealth": "running",
+    "containerStatus": "stopped",
+    "terminate": false,
+    "vmStartedEventPresent": true,
+    "noExplicitRolloutIdForeignKeyInObservedDeployment": true,
+    "dashEmptyDoesNotEstablishZeroVm": "The recorded deployment population contains a VM. Empty raw Dash instance population is only a fact about that returned population and cannot override it.",
+    "historicalPreservationAttemptsRemainHeld": [
+      {
+        "file": "post-rollout-preservation.json",
+        "code": "LIST_ARRAY_OR_EXACT_COUNT",
+        "complete": false
+      },
+      {
+        "file": "post-rollout-preservation-observed-two.json",
+        "code": "RESPONSE_BODY_LIMIT",
+        "complete": false
+      }
+    ],
+    "historicalHeldScope": "These two fixed observations remain held. This review does not replace or evaluate later preservation observations."
+  },
+  "supportedSurfaceSemantics": {
+    "officialVersionListUrl": "https://developers.cloudflare.com/api/resources/containers/subresources/applications/subresources/versions/methods/list/",
+    "officialVersionListDescription": "Returns all versions for a default scheduler-backed application; the examined schema has no query pagination or documented latest-two retention rule.",
+    "installedWranglerVersion": "4.129.0",
+    "installedCliSha256": "0a7bc2107ca92b2cc6db58b6a36d38d44b549eebd7db7ec34c36db9da7a91264",
+    "exactRolloutGetSourceLines": [
+      135887,
+      135908
+    ],
+    "exactRolloutGetMeaning": "View configuration and state of one identified rollout; this is not proof of current application version-object availability.",
+    "applicationDeploymentListSourceLines": [
+      135164,
+      135183
+    ],
+    "applicationDeploymentListMeaning": "GET one original application deployment population with placements; no container/SDK construction or lifecycle action is required."
+  },
+  "proposalBoundaries": {
+    "onlyTwoExceptionsProposed": [
+      "Accept recorded current versions12/11 with version10 absent; preserve offline and historical evidence without claiming live retention.",
+      "Accept only the exact observed deployment/placement as original default/basic/max1 idle capacity, despite a live VM with stopped container."
+    ],
+    "originalBatchEndsAt": "2026-10-18T12:42:46Z",
+    "deadlineExtensionProposed": false,
+    "originalHoldRequestId": "6c6d9d94-be91-45e3-8044-bf1768308d7a",
+    "sameOriginalHoldRequired": true,
+    "endExpectedRevision": 1,
+    "sameOriginalPolicyAndControlRequired": true,
+    "remainingScope": "Original approved ordinary identity; one new blank project, exactly two Sessions and three fixed OpenAI/gpt-5.6-luna Turns; one finite gate PUT/DELETE; every original Turn terminal/save/runtime/tool/container/capacity release still required.",
+    "idleBaselineDoesNotDischargeUnknownTurnOrRelease": true,
+    "noFourthTurnRetryFallbackOrCapacityExpansion": true,
+    "noVmStopDestroyOrRecreateNoPatchNoAdditionalRollout": true,
+    "noRegistryOrPaymentSubscriptionChange": true
+  },
+  "requiredBeforeAnyActualEnd": [
+    "A direct human response explicitly accepting this bounded replacement of the two unmet original conditions; no silence or elapsed time is approval.",
+    "Fresh exact original hold, same operator authentication version, control/policy and actual maintenance revision; no stale snapshot is a live end authorization.",
+    "Fresh original completed rollout, current app12/f18, full non-image configuration equality and preservation of the other15 applications/versions and current Gateway/resources.",
+    "Fresh full unfiltered deployments plus raw Dash and logical history; exact account/application/deployment/placement/v12/f18/basic identity, terminate=false, one specified idle VM and stopped container; no additional or unbound live/unknown placement.",
+    "Fresh joint Beta/native quiescence with no active, quarantined or unresolved original work; all original terminal and release conditions remain applicable.",
+    "Still inside the original finite window with time reserved for the remaining authorized work and gate close; no automatic end or expiry unlock."
+  ],
+  "materialRisksToPresent": [
+    "Current live use or rollback availability of version10 is not confirmed.",
+    "The VM remains running; stopped describes the container and is not a VM stop, physical-zero, free-capacity or fee-zero proof. It may continue accruing usage.",
+    "The deployment relation to the rollout is inferred from creation timing, target identity and single-writer window; the API object does not provide a rollout_id foreign key.",
+    "Ending the maintenance hold restores existing normal Pi admissions. It does not create exclusivity for the acceptance actor or relax existing concurrency and hard limits."
+  ],
+  "privacyAndActions": {
+    "noEmailActorHostOrLocationFieldsProjected": true,
+    "privateConfigurationAndCredentialValuesNotProjected": true,
+    "reviewerCloudWrites": 0,
+    "reviewerAccountApiRequests": 0,
+    "reviewerAuthCredentialReads": 0,
+    "reviewerSshDockerProviderOrModelActions": 0,
+    "reviewerTestsOrBuilds": 0,
+    "authorInputsModified": false
+  },
+  "stopRule": "Until explicit acceptance and every fresh guard match, keep original hold and identities; read-only original reconciliation only. This review never authorizes end, ordinary work or any additional mutation."
+}

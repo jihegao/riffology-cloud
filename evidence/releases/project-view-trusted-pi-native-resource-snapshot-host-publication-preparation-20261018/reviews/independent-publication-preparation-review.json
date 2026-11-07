@@ -1,0 +1,144 @@
+{
+  "schema": "trusted-pi-native-host-publication-independent-preparation-review/v1",
+  "reviewedAt": "2026-10-18T12:04:54.145376+00:00",
+  "requestId": "c263a2f3-f445-430e-b562-2e48f1eeb637",
+  "parentRequestId": "695e8875-459a-41b3-a148-2e228f2c3727",
+  "method": "Independent local source review and byte/hash comparison only. No authored Python module, CLI, fixture suite, SSH, Docker, OAuth or network request executed by the reviewer.",
+  "inputs": {
+    "operationsManifest": {
+      "file": "candidate-v1/operations-manifest.json",
+      "bytes": 1795,
+      "sha256": "6fd9aefcdb09cf0465b3062a0270e4ef3817f74d8829fa99cbfe1f3d031efd8c"
+    },
+    "completeCandidateBinding": {
+      "file": "candidate-v1/candidate-source-binding.json",
+      "bytes": 3973,
+      "sha256": "08466e9d852deaff0e9b6bf315253d259a29356a9cccb7f645a693a27905b7ae"
+    },
+    "reader": {
+      "file": "candidate-v1/independent-cleanup-readonly.py",
+      "bytes": 10731,
+      "sha256": "b3ef15d9aefea3bbaf8d7e7c68e3c51a9c4cedeff16b8837b970330a742f4d26"
+    },
+    "normalRefreshSourceContract": {
+      "file": "candidate-v1/renewal-source-contract.json",
+      "bytes": 2497,
+      "sha256": "0593104af3bcc19871b2b55074d85aae105e2a04fef8f9041ab3e31887775f60"
+    },
+    "safeChecks": {
+      "file": "candidate-v1/offline-checks.safe.json",
+      "bytes": 1668,
+      "sha256": "d4b01a634ff5e7117cc390a355453133d23c814ff0b1f33501c1922344b7eaf7"
+    },
+    "coreFinalReceipt": {
+      "file": "candidate-v1/publication-fakes-final.json",
+      "bytes": 1329,
+      "sha256": "98537534bf129f1d55558481ac797a52e7e11dd12a347ac4c43025d3c88913c2"
+    },
+    "coreStdout": {
+      "file": "candidate-v1/publication-fakes-final.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "coreStderr": {
+      "file": "candidate-v1/publication-fakes-final.stderr",
+      "bytes": 1623,
+      "sha256": "fd52cb2916265c023b6cfdf178ef834ae78f8a2b5cf273900220a1e8b6c65358"
+    },
+    "readerAuthorReceipt": {
+      "file": "candidate-v1/reader-offline-checks.safe.json",
+      "bytes": 1896,
+      "sha256": "c75315cb7b1f2b12c1c627f38f8482989dc337f73a799f53a586ca31fb1a3fed"
+    },
+    "readerAuthorLog": {
+      "file": "reader-fixtures-first.stdout",
+      "bytes": 1051,
+      "sha256": "5495003ff9d5614b4211fb7633371d580f0cbfad39b5d16685e43e2dd46acb74"
+    }
+  },
+  "pinChecks": {
+    "coreFiles": 8,
+    "additionalManifestBoundFiles": 3,
+    "completeCandidateFiles": 16,
+    "allActualBytesMatch": true,
+    "sourceScopeSha256": "5706179ecc40a18e52f726c712ed7d480fecb7b7741eb6debd14f87531649577",
+    "ociVerifierUnchangedFromFb99": true,
+    "fixedCliCompleteAndFourExtractedFragmentHashesMatch": true,
+    "prior695eSafeSourceEvidenceHashesMatch": true,
+    "safeChecksTimeAfterFinalCoreRun": true
+  },
+  "sourceIdentity": {
+    "engineId": "sha256:0bb9af7a5909c41187cf56402a21420100c72a8de0025b0a7152f8804e85d191",
+    "sourceDescriptor": {
+      "digest": "sha256:0bb9af7a5909c41187cf56402a21420100c72a8de0025b0a7152f8804e85d191",
+      "mediaType": "application/vnd.oci.image.index.v1+json",
+      "size": 856
+    },
+    "expectedRootfsDiffIdCount": 49,
+    "runnableManifestKnownNow": false,
+    "configDigestKnownNow": false,
+    "archiveBytesOrShaKnownNow": false
+  },
+  "staticChecks": {
+    "grantBeforeSensitiveWork": "Exact human grant/hash, scope and all11 actual operation-source byte pins are validated before OAuth metadata, token CLI or SSH. The <=1hour timezone-aware window is rechecked before Registry POST, tagging and pushing.",
+    "normalExistingRefreshOnly": "The only CLI args are auth token --json --profile default, followed by the fixed --env-file /dev/null pair. No login/consent command is permitted. Exact existing6 scopes are checked before the normal command and the same exact set/fresh expiry plus fixed user hash/account afterward. Missing token, failed refresh, scope drift or permission refusal stops without fallback.",
+    "installedSourceContract": "Fixed Wrangler4.129.0 CLI SHA0a7bc210 and the4 pinned source fragments were read as public source only. The handler uses local state; expired access token may cause one refresh-token exchange without requesting new scopes. Failure returns no token; no login fallback exists in that helper. The source contract is not proof of future auth or network success.",
+    "credentialSecrecy": "Inherited token variables are excluded, empty dotenv is explicit, disk logs/metrics are disabled, and normal CLI output/token stay bounded memory-only. OAuth is not sent to AMD; Registry username/password go only by one bounded SSHstdin line, then private0600 temporary Docker auth.",
+    "onceAndSourceBefore": "New local/remote exclusive directories are permanent once locks. Fixed0bb index/856, linux-amd64,49RootFS and root supervisor launch are required before one image-save; source after-read must preserve RootFS and launch Config. No build, pull, load, container or old archive/lock reuse path exists.",
+    "completeExportVerificationBeforeRegistryMint": "The approved unchanged OCI verifier validates every actual raw blob size/hash and reachability from the exact fixed index, selects its unique linux/amd64 child, binds its config to all49 fresh Engine diffIDs, and checks every decompressed runnable layer. Only then are raw metadata/proof saved and Ready emitted; the local driver checks fixed-root proof and saves Ready before one Registry credential POST.",
+    "discoveredChildTrustBoundary": "Child descriptors start null and are not supplied as execution inputs. The local driver accepts only a structurally complete proof from the fixed hash-checked SSH bootstrap. Full graph verification occurs in that exporter; the separate reader rehashes3 small original raw objects and follows the fixed index to the exact platform/config/layer descriptors. No arbitrary child HEX replaces the approved root identity.",
+    "registryMintAndTarget": "One POST accepts only HTTP200/201 with success true and exact result fields; all HTTP outcomes retain safe status/bytehash/integer error codes without body/message. JWT is15minute account-wide push/pull, not repo-scoped; all actual executor paths use the fixed existing account/repository and new tag.",
+    "pushAndReadback": "Authenticated exact MANIFEST_UNKNOWN404 and new local tag absence precede tagging. One linux/amd64 push publishes the verified runnable manifest; raw tag/digest manifest+config+all49 layer slots require exact size/SHA, exact manifest header and original small-body equality. There is no overwrite, redirect, retry, conversion or rollback path.",
+    "ackAndUnknown": "Only one Ready followed by one complete exact final ACK, zero SSH exit, one export/verification/push count and credential cleanup can mark publication. Missing/duplicate/conflicting/trailing ACK data or unknown HTTP/CLI results stop at original identity without replay.",
+    "processAndTemporaryCleanup": "Only original owned process groups are stopped/reaped. Reverse routing is one loopback7897 to existing local7892, with no agent or inherited forwards. Remote auth file/directory cleanup errors fail success; local cleanup explicitly does not pretend to prove remote stop.",
+    "independentReader": "Read-only fixed original record/stream hashes, original supervisor and6 CLI PID/startTicks absence, direct fixed-index/raw-manifest/config/layer chain, actual52 raw readback slots and auth-directory/7897 absence are required. Known precredential EOF stop checks only3 prior CLI lifecycles and absence of later records; it never becomes publication success. Reader stats archive owner/mode/size against exporter terminal, without a new export or full-archive rehash.",
+    "conditionalMerge": "Driver has no GitHub credential or mutation path and all terminals/readback keep mergeAllowed false. Any conditional normal PR253 merge is root separate contract at fixed head0a10 with fresh checks/review, complete actual publication+independent cleanup and no new drift/must-fix.",
+    "scopePreserved": "No application/Gateway/gate/model/Turn/Run/project/subscription action or old paid-acceptance deadline extension is included. Prior history, archives, locks, reservations and failed T1 remain unchanged."
+  },
+  "existingCheckEvidence": {
+    "coreSuite": {
+      "authorPassed": 17,
+      "authorFailed": 0,
+      "finalStartedAt": "2026-10-18T12:01:18.705100+00:00",
+      "finalEndedAt": "2026-10-18T12:01:18.780323+00:00",
+      "sourceAndBothStreamPinsMatch": true
+    },
+    "readerSuite": {
+      "authorPassed": 11,
+      "authorFailed": 0,
+      "sourceAnd1051ByteLogPinsMatch": true
+    },
+    "pythonAstFilesAuthorReported": 7,
+    "reviewerRepeatedSuites": false,
+    "history": "First17-green source/receipt and prior safe-wrapper timestamp bytes are retained separately; the corrected safe-wrapper time is after the final run. No additional product/test execution is inferred."
+  },
+  "mustFix": [],
+  "readyForSpecificHumanReview": true,
+  "executionAuthorized": false,
+  "mergeAuthorizedByThisReview": false,
+  "pendingActualEvidence": [
+    "New explicit grant for these fixed c263 bytes and exact scope.",
+    "Fresh original source inspect, single export/full graph/diffID proof, derived runnable/config/archive identities.",
+    "Actual same-scope refresh/identity and single credential POST/transfer outcomes.",
+    "Single push/full raw readback and exact final ACK.",
+    "Independent original supervisor/CLI/auth-copy/route and local original process cleanup proofs.",
+    "Root conditional fresh GitHub merge checks and resulting state if separately authorized."
+  ],
+  "limits": [
+    "Preparation fixtures and installed source inspection do not establish real OAuth/Registry/remote success.",
+    "Temporary auth deletion is not Registry JWT revocation/natural-expiry proof; persistent same-scope OAuth may be normally refreshed and is not automatically revoked/downgraded.",
+    "Reader independently rehashes only original small metadata/records; the exporter owns full blob/diffID verification.",
+    "No global-zero-activity, zero-VM, zero-fee or completed ordinary/paid acceptance claim.",
+    "This candidate does not repair or replay the failed T1 and does not complete JHG46/fullJHG56."
+  ],
+  "reviewerActions": {
+    "testReruns": 0,
+    "fullCliExecutions": 0,
+    "oauthFilesRead": 0,
+    "ssh": 0,
+    "docker": 0,
+    "cloudApi": 0,
+    "provider": 0,
+    "gitHubMutations": 0
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "schema": "jhg46-authorized-read-observation-order-correction/v1",
+  "recordedAt": "2026-10-18T22:07:40.794210+00:00",
+  "batchRequestId": "fb07e239-2cb4-4379-9581-5711d86a0f30",
+  "fixedPacketCommit": "8f7b8c00ec4e01f7ab694fd6bf26dbd55960a2b1",
+  "originalFrozenInputSha256": "c65b9f38a1086748617f1651fb8a448c19b80253619aba29c711b2d09238e657",
+  "originalFrozenInputPreserved": true,
+  "originalOrderNotFullySatisfied": true,
+  "problem": "Packet step2 and staticReadback.beforeNewTurns place fixed frame full-body GET before Turns, but the existing fixed product deliberately returns empty503 until browser policy enabled; step4 allows that policy only after R2 and release.",
+  "sourceEvidence": [
+    {
+      "path": "services/project-views/browser-delivery.ts",
+      "sourceHead": "fca66cb0e1024b4e86bbbeb9a6d955b137599efa",
+      "bytes": 1016,
+      "sha256": "728aa2a84603434d2bd1c548e7ab347ad8a617ca1e668449be338b452585ba55"
+    },
+    {
+      "path": "services/project-views/browser-policy.ts",
+      "sourceHead": "fca66cb0e1024b4e86bbbeb9a6d955b137599efa",
+      "bytes": 2713,
+      "sha256": "d7e3d0543c2d0982eb7138b2c3dd6a00555429163541cae21e7660635e67f179"
+    }
+  ],
+  "originalFrameGetAttempted": false,
+  "frameStaticReadback": "pending; no live body proof claimed",
+  "scopeInterpretation": "Adjust timing of the same authorized nonwriting observation within the already authorized batch; no new recipient/data, source, resource, write, retry, policy, Turn or provider scope.",
+  "correction": [
+    "Keep all96 asset complete-body GET/hash verification before project Turns.",
+    "Keep original new T1/T2, canonical save/release and observer installed before the original finite policy PUT.",
+    "After the original trusted PUT ACK, before V1 page/SDK acceptance, perform the original single no-Cookie GET of the same fixed63eb frame and verify complete body bytes/SHA.",
+    "If that actual frame GET fails, stop later stages and perform only original owned cleanup when ownership/ACK is trusted."
+  ],
+  "newFramePath": "/project-views/63ebcd050b0ccf5019265070890bee69d99902120f2252c376678aff299d374b/frame.html",
+  "rootDecision": "Proceed within existing authorization, recording the scheduling correction transparently; do not mark the original whole static step passed.",
+  "independentReadOnlyReview": "plan_review confirmed original frozen wording and source behavior and recommended this minimal timing correction; no tests or requests performed by reviewer."
+}

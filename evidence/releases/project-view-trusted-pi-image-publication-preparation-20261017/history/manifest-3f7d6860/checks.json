@@ -1,0 +1,20 @@
+{
+  "endedAt": "2026-10-17T15:10:07.870672+00:00",
+  "exitCode": 0,
+  "manifestSha256": "3f7d6860b1623c129ae85a29e2a0c293c1743df4f772f12f7ceb8ce2cfe1a220",
+  "noRealSshDockerOAuthRegistryProviderOrApi": true,
+  "rerunReason": "minimum archive fsync/close/log-persistence terminal repair after core review",
+  "schema": "trusted-pi-publication-local-fake-checks/v1",
+  "startedAt": "2026-10-17T15:10:07.811421+00:00",
+  "streams": {
+    "stderr": {
+      "bytes": 106,
+      "sha256": "35649ccb7621214ac024bd31428022d326fb76b6926043ad7d6527b41cd3c0f8"
+    },
+    "stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "testsExpected": 8
+}

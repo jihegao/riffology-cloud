@@ -1,0 +1,18 @@
+{
+  "endedAt": "2026-10-17T15:40:41.435640+00:00",
+  "errorCode": null,
+  "exitCode": 0,
+  "reaped": true,
+  "stopErrors": [],
+  "streams": {
+    "stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stdout": {
+      "bytes": 13726,
+      "sha256": "fcbe43460993f6ccd72b94eb1848b3159968ecaaeb739e0ada022a60dd5bfc5b"
+    }
+  },
+  "streamsMayBeIncomplete": false
+}

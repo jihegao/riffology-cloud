@@ -1,0 +1,345 @@
+{
+  "schema": "jhg46-rollout-t1t2-v1failed-owned-close-author-source-bindings/v2",
+  "sourceRoot": "Original batch execution directory; relative refs only. Original private response/script/prompt/identity bodies are not included.",
+  "sources": [
+    {
+      "source": "ordinary/turn-1-once/original-ui-session1-t1-ack.clone.raw.private.json",
+      "bytes": 5792,
+      "sha256": "c8a3a8535f71489aea1e46c2a01a9a8376c25d6ee9540f58d4071ecdf8337359",
+      "bodyCopied": false
+    },
+    {
+      "source": "ordinary/turn-1-once/first-read-1-response-original.raw.private.json",
+      "bytes": 6677,
+      "sha256": "d0692a849b297fe823a91fd53de2f5e379388bd366553da740724193ef0d9335",
+      "bodyCopied": false
+    },
+    {
+      "source": "ordinary/turn-1-once/original-receipt-post-assignment-guard-read.raw.private.json",
+      "bytes": 13364,
+      "sha256": "f1415f4b4ccdaab6bfb47dcf05662677eabb87dcfef349fc7bbc8a81c17a256a",
+      "bodyCopied": false
+    },
+    {
+      "source": "ordinary/turn-1-once/events-and-files-original.raw.private.json",
+      "bytes": 7327,
+      "sha256": "d8d38d3c33020e615275330fa9ac043fe58dbbdc4629f590d1a176ae6e527e9a",
+      "bodyCopied": false
+    },
+    {
+      "source": "ordinary/turn-1-once/tools-and-diff-original.raw.private.json",
+      "bytes": 3443,
+      "sha256": "20fcd9c9e1dc33e881270adea2da365711b8b62a97e4a709e8ba149eea62b585",
+      "bodyCopied": false
+    },
+    {
+      "source": "ordinary/turn-1-once/physical-full-post-t1.tool-result.private.json",
+      "bytes": 1022,
+      "sha256": "fb119d029db6035cecc84304d9e236946c6690d520767403614ea71a71782efd",
+      "bodyCopied": false
+    },
+    {
+      "source": "ordinary/turn-1-once/physical-reconciliation-preserve-each-read.tool-result.private.json",
+      "bytes": 15616,
+      "sha256": "53a316c0ed4a290fc28d147a5bd112d7110e17022747ed7583476f99e03dfdc8",
+      "bodyCopied": false
+    },
+    {
+      "source": "ordinary/turn-1-once/physical-current-full-inventory-post-guard.tool-result.private.json",
+      "bytes": 14929,
+      "sha256": "a5d3c1941871c87e6ca0175cbb9f237fda45dcc13ad99aebf2b1f663229282d0",
+      "bodyCopied": false
+    },
+    {
+      "source": "ordinary/turn-1-once/canonical-receipt-derived-sandbox-identity.private.json",
+      "bytes": 1575,
+      "sha256": "bc02188604b043ac3b3cdaca490d6aaf553bb52cf0c0c93801d0e6a6edd052dd",
+      "bodyCopied": false
+    },
+    {
+      "source": "ordinary/turn-2-once/intent.private.json",
+      "bytes": 2784,
+      "sha256": "07211c447ccc29d02575803dcf4504963b8ab43d8e153876612b0ff240d55504",
+      "bodyCopied": false
+    },
+    {
+      "source": "ordinary/turn-2-once/original-ui-t2-ack.clone.raw.private.json",
+      "bytes": 3415,
+      "sha256": "4d9501f55daf3aa9f1deef4fa0f05b22d848505b8d4e8db2892ae25590c0f6c7",
+      "bodyCopied": false
+    },
+    {
+      "source": "ordinary/turn-2-once/original-receipt-first-read.raw.private.json",
+      "bytes": 14096,
+      "sha256": "a42f04a964310cbcfc1911943516f47e4ca24366d817d38fe60ed605afa0b727",
+      "bodyCopied": false
+    },
+    {
+      "source": "ordinary/turn-2-once/original-receipt-second-read-with-events.raw.private.json",
+      "bytes": 76767,
+      "sha256": "907f146663d755bdec14ad0e3323b10af6445bb071e82a4840348af9d058d9ae",
+      "bodyCopied": false
+    },
+    {
+      "source": "ordinary/turn-2-once/events-remainder-and-files-diff-original.raw.private.json",
+      "bytes": 13974,
+      "sha256": "53a434208b3508424722ef748c34ca6488095826b9fdd012125ebe1d27160cc4",
+      "bodyCopied": false
+    },
+    {
+      "source": "ordinary/turn-2-once/original-cached-reads-local-export.private.json",
+      "bytes": 98938,
+      "sha256": "211c5fc1f82f242a24a827c893e1f775e99e06995cc5bb7152c0ecb4722945e9",
+      "bodyCopied": false
+    },
+    {
+      "source": "ordinary/turn-2-once/original-supported-tool-receipts.raw.private.json",
+      "bytes": 14340,
+      "sha256": "758f42aa41b5e34e4aef9e62be15a61b974a6629f112c458ac04be3f00dbca64",
+      "bodyCopied": false
+    },
+    {
+      "source": "ordinary/turn-2-once/tool-receipts-and-expected-bytes-check.safe.json",
+      "bytes": 2587,
+      "sha256": "a37aeba4d63202b12a3283372633c41fcbc04c4ac6326e7c42faed560ca82062",
+      "bodyCopied": false
+    },
+    {
+      "source": "ordinary/turn-2-once/original-receipt-post-guard-read.raw.private.json",
+      "bytes": 15146,
+      "sha256": "e49fd232100042a5d2fe384534da75131fa7fe19ef2d039be9a90cd28dddbb41",
+      "bodyCopied": false
+    },
+    {
+      "source": "ordinary/turn-2-once/physical-current-full-inventory-post-guard.tool-result.private.json",
+      "bytes": 15761,
+      "sha256": "082b9a8cfeec145131d97d769a3866864f9e9e528f14fe60bba84d3addd36c56",
+      "bodyCopied": false
+    },
+    {
+      "source": "ordinary/turn-2-once/canonical-receipt-derived-sandbox-identity.private.json",
+      "bytes": 1402,
+      "sha256": "c86e73966e51ab021b003877784d9b26aca3d01a501152bab2fbc041724c56c3",
+      "bodyCopied": false
+    },
+    {
+      "source": "browser-gate/closed-witness-original.tool-result.private.json",
+      "bytes": 11058,
+      "sha256": "c8497476ecd57ef9cce0e68e792200a858fe38c5b74ca015272abfb20be19d38",
+      "bodyCopied": false
+    },
+    {
+      "source": "browser-gate/listed-target-current-reconciliation.tool-result.private.json",
+      "bytes": 9570,
+      "sha256": "14607e9f04ebe1073363ed9d4a7e4e6558a9a59965fe9da61657ee7f829b0e63",
+      "bodyCopied": false
+    },
+    {
+      "source": "reviews/original-rollout-ack-review.safe.json",
+      "bytes": 8575,
+      "sha256": "1d58903be022c7f4ee9898c8184ebed60705e36e9465bfed3eb8fe57d81bf017",
+      "bodyCopied": false
+    },
+    {
+      "source": "reviews/completed-rollout-physical-joint-review.safe.json",
+      "bytes": 15460,
+      "sha256": "e578d558f3ffbe645511c4bb01c6aee966aa05852e8a5e7f419d08345451f857",
+      "bodyCopied": false
+    },
+    {
+      "source": "rollout/root-after-comparison.safe.json",
+      "bytes": 2418,
+      "sha256": "1a994be6c3d60ac280c6bee968a8e1f43bb156136db449da99a26b4c93bdfbd7",
+      "bodyCopied": false
+    },
+    {
+      "source": "reviews/post-rollout-preservation-closure.safe.json",
+      "bytes": 17493,
+      "sha256": "ee4bb521c442778f5264c702fe0b4e9136752965ceb32850d11b3cf9c7db404d",
+      "bodyCopied": false
+    },
+    {
+      "source": "reviews/maintenance-end-closure.safe.json",
+      "bytes": 10344,
+      "sha256": "c08cacaafe8bc104a60671aff7d1b11e8d8a9de7204ece6afa60bf51469c7000",
+      "bodyCopied": false
+    },
+    {
+      "source": "ordinary/identity-readback-closure.safe.json",
+      "bytes": 1420,
+      "sha256": "a866d11603c689ca9a75b1e6f849b62b2002f68d7e8381ae4eebfa88c9d3b9a3",
+      "bodyCopied": false
+    },
+    {
+      "source": "ordinary/initial-read-semantic.private.json",
+      "bytes": 4166,
+      "sha256": "5c7d480c9691baacea5e720a1937c261dad04a2fd8b9e667a956a38da5c020c2",
+      "bodyCopied": false
+    },
+    {
+      "source": "browser-gate/open-once/intent.private.json",
+      "bytes": 1619,
+      "sha256": "d1af86ef82d8df64e0cf19c1f10037d0b8288fc075f97ee8f8c7b8f3923bf3ec",
+      "bodyCopied": false
+    },
+    {
+      "source": "browser-gate/open-once/original-ack.tool-result.private.json",
+      "bytes": 706,
+      "sha256": "4d50e41186f5ee17528a134143d67a45f7c85ff7d71aa398594b0edcf071a188",
+      "bodyCopied": false
+    },
+    {
+      "source": "browser-gate/open-once/actual-version-original.tool-result.private.json",
+      "bytes": 2363,
+      "sha256": "86b82183458707dd9fed2446eb1e62a6e0b7583741c05c5efb0116e1b5b18767",
+      "bodyCopied": false
+    },
+    {
+      "source": "browser-gate/close-once/intent.private.json",
+      "bytes": 1657,
+      "sha256": "4f33ce74026d5f3012df13f937f1de7a42f89367ec1470dd11508667aafc9867",
+      "bodyCopied": false
+    },
+    {
+      "source": "browser-gate/close-once/original-ack.tool-result.private.json",
+      "bytes": 662,
+      "sha256": "9ef95ec9f2b62eb70ad6d26dd69226fe411c6a9d032fdc403081694fef8c898b",
+      "bodyCopied": false
+    },
+    {
+      "source": "browser-gate/close-once/actual-version-original.tool-result.private.json",
+      "bytes": 2365,
+      "sha256": "4b2d5bae28e4524181f0de82f92935daa29ebbfcc3b8e8b336eaa9a5ce7f4f73",
+      "bodyCopied": false
+    },
+    {
+      "source": "browser-gate/after-close-witness-original.tool-result.private.json",
+      "bytes": 14819,
+      "sha256": "c31a2eb61bf41eecebbf950bd42045ab380dcb8870df6fad219ca14e3d202891",
+      "bodyCopied": false
+    },
+    {
+      "source": "browser-gate/metadata-only-reconstruction-original.tool-result.private.json",
+      "bytes": 2152,
+      "sha256": "757897e40b45712d1caa48d937df7fa2cb160f454970d24945490a4cf660162f",
+      "bodyCopied": false
+    },
+    {
+      "source": "ordinary/browser-v1/first-page-failure-original.raw.private.json",
+      "bytes": 26069,
+      "sha256": "00c0179cee87672d84f7c0b58c49038b4ecdbc69c15818fa9e420c26fe71bf54",
+      "bodyCopied": false
+    },
+    {
+      "source": "ordinary/browser-v1/actual-project-view-response.original.private.json",
+      "bytes": 7597,
+      "sha256": "058b0d095d0722f1caa5f8ce7507a65656a795e9c1d1a4a63e6646c667ba9b98",
+      "bodyCopied": false
+    },
+    {
+      "source": "ordinary/browser-v1/actual-main-from-package.private.mjs",
+      "bytes": 2542,
+      "sha256": "f35830bb9af40ff488ca423e5a376636ac981add643fc8a97a585acaa94559a2",
+      "bodyCopied": false
+    },
+    {
+      "source": "ordinary/browser-v1/after-owned-delete-original.raw.private.json",
+      "bytes": 37794,
+      "sha256": "dd53a23b19eaf5b856ead9ed4727a7f8b0ee0a02970e43e48aa964e463f766d8",
+      "bodyCopied": false
+    },
+    {
+      "source": "ordinary/browser-v1/final-physical-readback-original.tool-result.private.json",
+      "bytes": 15770,
+      "sha256": "cffa90941de33dade70a460326b95bd43e84b21ebce8d4dce797bc6b867adf4d",
+      "bodyCopied": false
+    },
+    {
+      "source": "ordinary/browser-v1/ui-exit-observation.safe.json",
+      "bytes": 951,
+      "sha256": "4b6ef9140c50a33d46960bd87e79bde24cb9140faf4c750165700b87e802ae1b",
+      "bodyCopied": false
+    }
+  ],
+  "originalSourceBytesUnmodified": true,
+  "captureRecovery": {
+    "cachedLocalBlobFile": {
+      "source": "ordinary/turn-2-once/original-cached-reads-local-export.private.json",
+      "bytes": 98938,
+      "sha256": "211c5fc1f82f242a24a827c893e1f775e99e06995cc5bb7152c0ecb4722945e9",
+      "bodyCopied": false
+    },
+    "originalSecondReadStringByteExact": true,
+    "originalRemainderStringByteExact": true,
+    "httpReplay": false
+  },
+  "copiedSafeReceipts": [
+    {
+      "source": "reviews/t1-save-release-closure.safe.json",
+      "bytes": 9384,
+      "sha256": "72dbe9049381c23e204529722be64541cc00cc286529068e6ef9bcb27223fe3b",
+      "bodyCopied": false
+    },
+    {
+      "source": "reviews/t1-canonical-key-dispatch-identity-review.safe.json",
+      "bytes": 5823,
+      "sha256": "36b6c043708881d116f328208d9f58c829440bfcb804fd81178f44a5f08887dd",
+      "bodyCopied": false
+    },
+    {
+      "source": "reviews/t1-product-authority-release-threshold-review.safe.json",
+      "bytes": 19516,
+      "sha256": "62f1638730384d6310a71f6400f99c1c65165f48d9172f426976e44b9778a70d",
+      "bodyCopied": false
+    },
+    {
+      "source": "reviews/t2-save-release-closure.safe.json",
+      "bytes": 6183,
+      "sha256": "708a6203bf1e8a9808f981abd3ee85f00fba2ff0ae74160125cc81fccc6c4bcc",
+      "bodyCopied": false
+    },
+    {
+      "source": "reviews/t2-product-resource-tools-stage-review.safe.json",
+      "bytes": 11584,
+      "sha256": "948200ca00d658117b2f001716c97c83ad88477d3ea4a6f7a68a90f00b19fb90",
+      "bodyCopied": false
+    },
+    {
+      "source": "reviews/t2-intent-independent-review.safe.json",
+      "bytes": 5530,
+      "sha256": "2754160cb5d43cd37938c14d31cc235a7afe045d28c11f4a632faf162e3d1cc5",
+      "bodyCopied": false
+    },
+    {
+      "source": "reviews/owned-gate-close-failed-acceptance-closure.safe.json",
+      "bytes": 4107,
+      "sha256": "4874f41b5b71f47753f2e2c68af70ff5f98461c91ce1fbeef050fe9bc36bed2a",
+      "bodyCopied": false
+    },
+    {
+      "source": "reviews/browser-gate-exact-annotation-bridge-review.safe.json",
+      "bytes": 5530,
+      "sha256": "c36b1d952f03b80f567c818a6fdf5a9e582f469c32116405f515b2225624fbe8",
+      "bodyCopied": false
+    },
+    {
+      "source": "reviews/v1-page-sdk-timeout-source-diagnosis.safe.json",
+      "bytes": 8811,
+      "sha256": "c8141d6d0656c20f3877164905a7cfb0f140e07166b6d342102d86b6f7a7737f",
+      "bodyCopied": false
+    },
+    {
+      "source": "ordinary/browser-v1/actual-package-validation.safe.json",
+      "bytes": 8619,
+      "sha256": "96d434772ed473e2720965602e63bb4dd52a1e69b7c1e1d9a1b880866114ba78",
+      "bodyCopied": false
+    },
+    {
+      "source": "ordinary/browser-v1/ui-exit-observation.safe.json",
+      "bytes": 951,
+      "sha256": "4b6ef9140c50a33d46960bd87e79bde24cb9140faf4c750165700b87e802ae1b",
+      "bodyCopied": false
+    }
+  ],
+  "currentAuthority": "Existing independent closure receipts retain their authorship. New author projections await separate independent review."
+}

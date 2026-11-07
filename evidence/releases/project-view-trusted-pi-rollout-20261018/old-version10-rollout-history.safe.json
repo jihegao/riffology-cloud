@@ -1,0 +1,17 @@
+{
+  "schema": "jhg46-old-version-rollout-history-safe-projection/v1",
+  "source": {
+    "originalFile": "old-version10-rollout-history.json",
+    "bytes": 3088,
+    "sha256": "976044b5f4e2f6ba1eae8f4dfd5abdb4b2cb574ec45cd647575fc31d3cfaf510"
+  },
+  "observedAt": "2026-10-18T09:37:03.310Z",
+  "status": 200,
+  "rolloutId": "e6da2870-7da9-42e5-9cac-e37ed34208eb",
+  "rolloutStatus": "replaced",
+  "fromVersion": 10,
+  "targetVersion": 11,
+  "currentConfigurationPresent": true,
+  "historyReadableDoesNotProveVersionObjectOrRollbackAvailable": true,
+  "configurationOrActorOrCredentialBodiesIncluded": false
+}

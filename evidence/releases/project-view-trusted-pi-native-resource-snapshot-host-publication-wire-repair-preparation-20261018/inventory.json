@@ -1,0 +1,118 @@
+{
+  "fileCount": 22,
+  "files": [
+    {
+      "bytes": 3624,
+      "path": "AUTHORIZATION.md",
+      "sha256": "d5e67b2c8766a42827d85003e0da88d08acc87a3c4d8b0591e332f03ff9478d9"
+    },
+    {
+      "bytes": 6344,
+      "path": "EXECUTION.md",
+      "sha256": "03b48a61b5d6fbed482d43e7d64e698c58b82dac9b02ac4fce52bb2f411ca6b5"
+    },
+    {
+      "bytes": 2887,
+      "path": "README.md",
+      "sha256": "7571b3c75be7ca0d4e9bbd407707e7215862f3a5b6f4c3ad43782a5b05027633"
+    },
+    {
+      "bytes": 5838,
+      "path": "candidate-source-binding.json",
+      "sha256": "2e47be8e7478dd1cdf176792e4c76e836a2b2fad73e091f4b06b9d8c85f434f8"
+    },
+    {
+      "bytes": 4459,
+      "path": "evidence/actual-grant-wire-diagnosis.json",
+      "sha256": "32c3570ed810a650c95d92496cab18019b25e913c40ff94e6e0ef51964942748"
+    },
+    {
+      "bytes": 290,
+      "path": "evidence/original-input-intent.json",
+      "sha256": "a1858a04bfb8dcdb1591e88162a70b1025618db0270a5eef100574a30685c64e"
+    },
+    {
+      "bytes": 826,
+      "path": "evidence/original-local-terminal.json",
+      "sha256": "76f6db8fd64b1434473fa665b47ebf2ab979ce79f0c573f6ddd6e0eea448926f"
+    },
+    {
+      "bytes": 774,
+      "path": "evidence/original-stopped-readback.json",
+      "sha256": "99bbf7e36fd112f2b2625896d7453f5ed6b38f7142f3be64d7688eb0f08c07e6"
+    },
+    {
+      "bytes": 10731,
+      "path": "independent-cleanup-readonly.py",
+      "sha256": "b3ef15d9aefea3bbaf8d7e7c68e3c51a9c4cedeff16b8837b970330a742f4d26"
+    },
+    {
+      "bytes": 18065,
+      "path": "local-recovery.py",
+      "sha256": "add3c4e22595a75a736bd717a08f01dec862eaa1f0f889fbb7c0798f2c054a84"
+    },
+    {
+      "bytes": 5748,
+      "path": "oci_verify.py",
+      "sha256": "0a23618e34b9a2acf608acc86d281ebd68f60a62ba2b102ecda92502c294acea"
+    },
+    {
+      "bytes": 1644,
+      "path": "offline-checks.safe.json",
+      "sha256": "d91ec0f4a947a0cd2b8cb6398a58e569c0857305ed20965be6321ec486ccfaa2"
+    },
+    {
+      "bytes": 1795,
+      "path": "operations-manifest.json",
+      "sha256": "76dfb4606c75424c01a00220805f6efb5b32afbf474fd003fe540641bb97c309"
+    },
+    {
+      "bytes": 5833,
+      "path": "pub_common.py",
+      "sha256": "6e623f79dc8078b0b25fb16a77b674aefd16bf0e9d3ba8f86e446737cda22897"
+    },
+    {
+      "bytes": 7215,
+      "path": "public-file-map.json",
+      "sha256": "c79f8a468061b7b5da42f545ff74695e5e0f37c7d50c84c87621531331314a44"
+    },
+    {
+      "bytes": 13876,
+      "path": "remote-recovery.py",
+      "sha256": "fd642a57029c2b782db4df0582365ee494ab3b9ddabc97eac2446c5793036795"
+    },
+    {
+      "bytes": 2497,
+      "path": "renewal-source-contract.json",
+      "sha256": "0593104af3bcc19871b2b55074d85aae105e2a04fef8f9041ab3e31887775f60"
+    },
+    {
+      "bytes": 2427,
+      "path": "reviews/wire-repair-independent-review.json",
+      "sha256": "2ef52cb4331e6373a80f23e6cabeb2541a5a802057aa792540d756ef5f447577"
+    },
+    {
+      "bytes": 5036,
+      "path": "scope.json",
+      "sha256": "5706179ecc40a18e52f726c712ed7d480fecb7b7741eb6debd14f87531649577"
+    },
+    {
+      "bytes": 7676,
+      "path": "test_independent_reader.py",
+      "sha256": "4c5914379229436d8599208272dfaf9a502147ce8acbdf2636791d954be99830"
+    },
+    {
+      "bytes": 20861,
+      "path": "test_recovery.py",
+      "sha256": "5ba1efd0f5bd80ba4125e451c4bf8b3e1a2937d4c841d6c77ea20b71b1b964c9"
+    },
+    {
+      "bytes": 1232,
+      "path": "wire-checks-first.json",
+      "sha256": "e0e1f66bb00b8b69ad8d373b0e8eb01b68986a59ce11a41e7bbf4408d3a5f469"
+    }
+  ],
+  "requestId": "c263a2f3-f445-430e-b562-2e48f1eeb637",
+  "schema": "trusted-pi-c263-wire-repair-public-inventory/v1",
+  "scope": "Preparation only; same-request recovery remains unauthorized and unexecuted."
+}

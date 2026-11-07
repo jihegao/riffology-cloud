@@ -1,0 +1,954 @@
+{
+  "readerSha256": "bf86993670c344e264e2b3dff915051fee2ef2f0db5a54404aafcff8bc482a91",
+  "remoteReceipt": {
+    "commandLifecycles": [
+      {
+        "currentOriginalProcessAbsent": true,
+        "exitCode": 1,
+        "linuxStartTicks": "165459505",
+        "name": "previous-a21-cid-inspect",
+        "pid": 3192993,
+        "recordedReaped": true,
+        "streams": {
+          "stderr": {
+            "bytes": 112,
+            "sha256": "47aa0db0620282cb0dbc239570e5da0d8ba5a21990cb5c9962e73926593f2e90"
+          },
+          "stdout": {
+            "bytes": 1,
+            "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+          }
+        }
+      },
+      {
+        "currentOriginalProcessAbsent": true,
+        "exitCode": 0,
+        "linuxStartTicks": "165459509",
+        "name": "previous-a21-label",
+        "pid": 3193032,
+        "recordedReaped": true,
+        "streams": {
+          "stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "stdout": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        }
+      },
+      {
+        "currentOriginalProcessAbsent": true,
+        "exitCode": 0,
+        "linuxStartTicks": "165459513",
+        "name": "cached-image-inspect",
+        "pid": 3193111,
+        "recordedReaped": true,
+        "streams": {
+          "stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "stdout": {
+            "bytes": 4824,
+            "sha256": "6fbb8b6aa87d9e89504f3ec229d83c53248ef3948bc5b1fa52f144a388ef8005"
+          }
+        }
+      },
+      {
+        "currentOriginalProcessAbsent": true,
+        "exitCode": 0,
+        "linuxStartTicks": "165459524",
+        "name": "probe-label-before",
+        "pid": 3193151,
+        "recordedReaped": true,
+        "streams": {
+          "stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "stdout": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        }
+      },
+      {
+        "currentOriginalProcessAbsent": true,
+        "exitCode": 0,
+        "linuxStartTicks": "165459528",
+        "name": "create-once",
+        "pid": 3193189,
+        "recordedReaped": true,
+        "streams": {
+          "stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "stdout": {
+            "bytes": 65,
+            "sha256": "7752723df556fb05f302b7ef3756db888c10ca892c6028f8579c7dc4a7d7cfcf"
+          }
+        }
+      },
+      {
+        "currentOriginalProcessAbsent": true,
+        "exitCode": 0,
+        "linuxStartTicks": "165459544",
+        "name": "created-original-inspect",
+        "pid": 3193275,
+        "recordedReaped": true,
+        "streams": {
+          "stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "stdout": {
+            "bytes": 5046,
+            "sha256": "4861738129de3f2ac2821106ec9805bbad7cabac7d866e0f8858949cb94f4eb3"
+          }
+        }
+      },
+      {
+        "currentOriginalProcessAbsent": true,
+        "exitCode": 0,
+        "linuxStartTicks": "165459548",
+        "name": "start-original-once",
+        "pid": 3193315,
+        "recordedReaped": true,
+        "streams": {
+          "stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "stdout": {
+            "bytes": 2978,
+            "sha256": "56b918764ae85ab11ba4891bd828753ed34f45f9faa0ca955ee3b3c53dd66e4f"
+          }
+        }
+      },
+      {
+        "currentOriginalProcessAbsent": true,
+        "exitCode": 0,
+        "linuxStartTicks": "165459773",
+        "name": "wait-original",
+        "pid": 3193796,
+        "recordedReaped": true,
+        "streams": {
+          "stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "stdout": {
+            "bytes": 2,
+            "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+          }
+        }
+      },
+      {
+        "currentOriginalProcessAbsent": true,
+        "exitCode": 0,
+        "linuxStartTicks": "165459778",
+        "name": "completed-original-inspect",
+        "pid": 3193835,
+        "recordedReaped": true,
+        "streams": {
+          "stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "stdout": {
+            "bytes": 5606,
+            "sha256": "7f79118fadb2c797da0e1202fa60ff1bf92c935f1333db5d1c0861fedf6d9a2e"
+          }
+        }
+      },
+      {
+        "currentOriginalProcessAbsent": true,
+        "exitCode": 0,
+        "linuxStartTicks": "165459782",
+        "name": "cleanup-label-before",
+        "pid": 3193874,
+        "recordedReaped": true,
+        "streams": {
+          "stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "stdout": {
+            "bytes": 65,
+            "sha256": "7752723df556fb05f302b7ef3756db888c10ca892c6028f8579c7dc4a7d7cfcf"
+          }
+        }
+      },
+      {
+        "currentOriginalProcessAbsent": true,
+        "exitCode": 0,
+        "linuxStartTicks": "165459787",
+        "name": "cleanup-original-before",
+        "pid": 3193938,
+        "recordedReaped": true,
+        "streams": {
+          "stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "stdout": {
+            "bytes": 5606,
+            "sha256": "7f79118fadb2c797da0e1202fa60ff1bf92c935f1333db5d1c0861fedf6d9a2e"
+          }
+        }
+      },
+      {
+        "currentOriginalProcessAbsent": true,
+        "exitCode": 0,
+        "linuxStartTicks": "165459791",
+        "name": "cleanup-original-remove",
+        "pid": 3193992,
+        "recordedReaped": true,
+        "streams": {
+          "stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "stdout": {
+            "bytes": 65,
+            "sha256": "7752723df556fb05f302b7ef3756db888c10ca892c6028f8579c7dc4a7d7cfcf"
+          }
+        }
+      },
+      {
+        "currentOriginalProcessAbsent": true,
+        "exitCode": 1,
+        "linuxStartTicks": "165459800",
+        "name": "cleanup-original-after",
+        "pid": 3194033,
+        "recordedReaped": true,
+        "streams": {
+          "stderr": {
+            "bytes": 112,
+            "sha256": "7e8947c7273da487589e91d2782238fb9ef12134fbb7633584e3d67ec89201ea"
+          },
+          "stdout": {
+            "bytes": 1,
+            "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+          }
+        }
+      },
+      {
+        "currentOriginalProcessAbsent": true,
+        "exitCode": 0,
+        "linuxStartTicks": "165459804",
+        "name": "cleanup-label-after",
+        "pid": 3194071,
+        "recordedReaped": true,
+        "streams": {
+          "stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "stdout": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        }
+      }
+    ],
+    "dockerCommands": 2,
+    "endedAt": "2026-10-17T14:39:37.942823+00:00",
+    "fileRecords": [
+      {
+        "bytes": 571,
+        "modeOctal": "0600",
+        "path": "intent.json",
+        "present": true,
+        "sha256": "d10dd6b6c3c7bd13667a5e949ab92ff473e3d87a86c50181e46eed5ca0fc72e3"
+      },
+      {
+        "bytes": 1227,
+        "modeOctal": "0600",
+        "path": "result.json",
+        "present": true,
+        "sha256": "9904c1249b0c93d54bc23d5e48e2b550d9adf8d113238181cedc6ee6692d3e79"
+      },
+      {
+        "bytes": 64,
+        "modeOctal": "0664",
+        "path": "probe.cid",
+        "present": true,
+        "sha256": "b962a3534b30b8fa2ddd75e9f13f83a87b36f3f901b6bf60d466052afb2eeff3"
+      },
+      {
+        "bytes": 178,
+        "modeOctal": "0600",
+        "path": "original-container-cleanup.json",
+        "present": true,
+        "sha256": "d9165fef573e58030ea506bdc1bd3c84c050afec24019a1f13b95277a812ef64"
+      },
+      {
+        "bytes": 441,
+        "modeOctal": "0600",
+        "path": "cached-image-identity.json",
+        "present": true,
+        "sha256": "8c3fb34e3c148c4a9b8d82bedddeee6cd4ff6cb5b8471157a76ceb4ec55e22b4"
+      },
+      {
+        "bytes": 3608,
+        "modeOctal": "0600",
+        "path": "probe-report.json",
+        "present": true,
+        "sha256": "aa3b4738192328a3c9498b300a337b47fc8afc77a7286243e8755a6ef6561b12"
+      },
+      {
+        "bytes": 457,
+        "modeOctal": "0600",
+        "path": "previous-a21-cid-inspect.intent.json",
+        "present": true,
+        "sha256": "1f38200332532f87b7e6bfe161b4f3c4b82ecbd9d5c60fdeb11305c4d872650d"
+      },
+      {
+        "bytes": 603,
+        "modeOctal": "0600",
+        "path": "previous-a21-cid-inspect.result.json",
+        "present": true,
+        "sha256": "855de8c876104430baa716a1c896db9b3661d8b17f9bef6b168687d06119450e"
+      },
+      {
+        "bytes": 107,
+        "modeOctal": "0600",
+        "path": "previous-a21-cid-inspect.original-cli.json",
+        "present": true,
+        "sha256": "7e9cd3b1894a8baa6180d7dbbd7a75cfb40c206cc1df699d8f95b24656a59c74"
+      },
+      {
+        "bytes": 1,
+        "modeOctal": "0600",
+        "path": "previous-a21-cid-inspect.stdout",
+        "present": true,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "bytes": 112,
+        "modeOctal": "0600",
+        "path": "previous-a21-cid-inspect.stderr",
+        "present": true,
+        "sha256": "47aa0db0620282cb0dbc239570e5da0d8ba5a21990cb5c9962e73926593f2e90"
+      },
+      {
+        "bytes": 490,
+        "modeOctal": "0600",
+        "path": "previous-a21-label.intent.json",
+        "present": true,
+        "sha256": "12414a7829f6a9204f5118ab688575115b134fe26663d2f53cef31e6a1e53660"
+      },
+      {
+        "bytes": 599,
+        "modeOctal": "0600",
+        "path": "previous-a21-label.result.json",
+        "present": true,
+        "sha256": "871fdd88688b3638a2a0ff676ace7f9ab124a52af8971b12b3ed72514f2aed5a"
+      },
+      {
+        "bytes": 107,
+        "modeOctal": "0600",
+        "path": "previous-a21-label.original-cli.json",
+        "present": true,
+        "sha256": "dd4ef8bfd56777911a9d7fd5c3d6865f2bfcc9c2b27ee958f2f65044bd0e3afd"
+      },
+      {
+        "bytes": 0,
+        "modeOctal": "0600",
+        "path": "previous-a21-label.stdout",
+        "present": true,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 0,
+        "modeOctal": "0600",
+        "path": "previous-a21-label.stderr",
+        "present": true,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 460,
+        "modeOctal": "0600",
+        "path": "cached-image-inspect.intent.json",
+        "present": true,
+        "sha256": "d5ab6fbfd3984c9328bbd486400f4f7dc4032c35f6a53c554e6bac60ae977f41"
+      },
+      {
+        "bytes": 605,
+        "modeOctal": "0600",
+        "path": "cached-image-inspect.result.json",
+        "present": true,
+        "sha256": "01fd2b6a7a6fe5931233014851f77f3c8ee3795c7363786d4e154a5f73bb689f"
+      },
+      {
+        "bytes": 107,
+        "modeOctal": "0600",
+        "path": "cached-image-inspect.original-cli.json",
+        "present": true,
+        "sha256": "90ea55241b19e67e357e97ba44e7383880bb599f26d814523aefed60a073e0c1"
+      },
+      {
+        "bytes": 4824,
+        "modeOctal": "0600",
+        "path": "cached-image-inspect.stdout",
+        "present": true,
+        "sha256": "6fbb8b6aa87d9e89504f3ec229d83c53248ef3948bc5b1fa52f144a388ef8005"
+      },
+      {
+        "bytes": 0,
+        "modeOctal": "0600",
+        "path": "cached-image-inspect.stderr",
+        "present": true,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 485,
+        "modeOctal": "0600",
+        "path": "probe-label-before.intent.json",
+        "present": true,
+        "sha256": "58327599373de539525fe3c1250ef39cbcef9e901d528ea7af11b1dee078ed13"
+      },
+      {
+        "bytes": 599,
+        "modeOctal": "0600",
+        "path": "probe-label-before.result.json",
+        "present": true,
+        "sha256": "7381ac1e274e658000ce1db22209baabfad9598edc46aa83bdea82f516f3e619"
+      },
+      {
+        "bytes": 107,
+        "modeOctal": "0600",
+        "path": "probe-label-before.original-cli.json",
+        "present": true,
+        "sha256": "43b4e4587cd0c85401823f413d0a52116183962c299523d805426717e8f89a80"
+      },
+      {
+        "bytes": 0,
+        "modeOctal": "0600",
+        "path": "probe-label-before.stdout",
+        "present": true,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 0,
+        "modeOctal": "0600",
+        "path": "probe-label-before.stderr",
+        "present": true,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 1569,
+        "modeOctal": "0600",
+        "path": "create-once.intent.json",
+        "present": true,
+        "sha256": "e46a9100d39fabbab49882a84355b153904f946ebe6561282148c433a867e456"
+      },
+      {
+        "bytes": 601,
+        "modeOctal": "0600",
+        "path": "create-once.result.json",
+        "present": true,
+        "sha256": "722fad1aecb175c0f1b9e768ada33805613328b59680a1eb847240634bda99c6"
+      },
+      {
+        "bytes": 107,
+        "modeOctal": "0600",
+        "path": "create-once.original-cli.json",
+        "present": true,
+        "sha256": "5908dcefc95eebe0b4b1f80a88ce0ef5be5a4a617fb7f3716bd4b35e362e0357"
+      },
+      {
+        "bytes": 65,
+        "modeOctal": "0600",
+        "path": "create-once.stdout",
+        "present": true,
+        "sha256": "7752723df556fb05f302b7ef3756db888c10ca892c6028f8579c7dc4a7d7cfcf"
+      },
+      {
+        "bytes": 0,
+        "modeOctal": "0600",
+        "path": "create-once.stderr",
+        "present": true,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 457,
+        "modeOctal": "0600",
+        "path": "created-original-inspect.intent.json",
+        "present": true,
+        "sha256": "56d4f973979feac3102efc149135bd3d6db71caead34c1950e520365d336d2cd"
+      },
+      {
+        "bytes": 605,
+        "modeOctal": "0600",
+        "path": "created-original-inspect.result.json",
+        "present": true,
+        "sha256": "f32ddd16e6e34f603fa5e7991f5197f8e61fa0f2eda0a937cc102fbbbf4114ae"
+      },
+      {
+        "bytes": 107,
+        "modeOctal": "0600",
+        "path": "created-original-inspect.original-cli.json",
+        "present": true,
+        "sha256": "c76c277c683db8c2f7de1ced3d1e7593ea66756c88af253e4dca19d49b1fac58"
+      },
+      {
+        "bytes": 5046,
+        "modeOctal": "0600",
+        "path": "created-original-inspect.stdout",
+        "present": true,
+        "sha256": "4861738129de3f2ac2821106ec9805bbad7cabac7d866e0f8858949cb94f4eb3"
+      },
+      {
+        "bytes": 0,
+        "modeOctal": "0600",
+        "path": "created-original-inspect.stderr",
+        "present": true,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 420,
+        "modeOctal": "0600",
+        "path": "start-original-once.intent.json",
+        "present": true,
+        "sha256": "b85b8b9a61d07523faa37fc4d92be7683e01da8270c6e86c023b47a1d4b8a2a1"
+      },
+      {
+        "bytes": 605,
+        "modeOctal": "0600",
+        "path": "start-original-once.result.json",
+        "present": true,
+        "sha256": "8f9043b4eae4d1e54465c1312b64c1a31279b8ba5fc27779c95dd73da2ecb05f"
+      },
+      {
+        "bytes": 107,
+        "modeOctal": "0600",
+        "path": "start-original-once.original-cli.json",
+        "present": true,
+        "sha256": "7427db69691d62fda5a77a0bd724436ac6318fbc98d030835bbb4d79368c5f41"
+      },
+      {
+        "bytes": 2978,
+        "modeOctal": "0600",
+        "path": "start-original-once.stdout",
+        "present": true,
+        "sha256": "56b918764ae85ab11ba4891bd828753ed34f45f9faa0ca955ee3b3c53dd66e4f"
+      },
+      {
+        "bytes": 0,
+        "modeOctal": "0600",
+        "path": "start-original-once.stderr",
+        "present": true,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 403,
+        "modeOctal": "0600",
+        "path": "wait-original.intent.json",
+        "present": true,
+        "sha256": "9c76ba24afb380d848ada63f9fc82c3f2acd2b9fbae447e493ca49aed2654be2"
+      },
+      {
+        "bytes": 598,
+        "modeOctal": "0600",
+        "path": "wait-original.result.json",
+        "present": true,
+        "sha256": "9f14a1ab33ad1dda49e830d09b82d8a216087c1dfa02489515d8c091cc8558c7"
+      },
+      {
+        "bytes": 107,
+        "modeOctal": "0600",
+        "path": "wait-original.original-cli.json",
+        "present": true,
+        "sha256": "e8eef25468ed5bcbe8b3f381cfded8d1010d6e43fed69b809bdef9394df5d755"
+      },
+      {
+        "bytes": 2,
+        "modeOctal": "0600",
+        "path": "wait-original.stdout",
+        "present": true,
+        "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+      },
+      {
+        "bytes": 0,
+        "modeOctal": "0600",
+        "path": "wait-original.stderr",
+        "present": true,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 457,
+        "modeOctal": "0600",
+        "path": "completed-original-inspect.intent.json",
+        "present": true,
+        "sha256": "c5cb8179c8734f6f84974bd48310ea8c3fa7d5dc8dd47fcc9fce419ad8a33f60"
+      },
+      {
+        "bytes": 605,
+        "modeOctal": "0600",
+        "path": "completed-original-inspect.result.json",
+        "present": true,
+        "sha256": "d98cff17a44df4e9e6f9325cc0551bfadb45847109663aa2140bf67d9072f7f6"
+      },
+      {
+        "bytes": 107,
+        "modeOctal": "0600",
+        "path": "completed-original-inspect.original-cli.json",
+        "present": true,
+        "sha256": "fbb9d16b4476f1ece2901f627e3dd79bc624e798da491abc978e6ddfb09de07d"
+      },
+      {
+        "bytes": 5606,
+        "modeOctal": "0600",
+        "path": "completed-original-inspect.stdout",
+        "present": true,
+        "sha256": "7f79118fadb2c797da0e1202fa60ff1bf92c935f1333db5d1c0861fedf6d9a2e"
+      },
+      {
+        "bytes": 0,
+        "modeOctal": "0600",
+        "path": "completed-original-inspect.stderr",
+        "present": true,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 485,
+        "modeOctal": "0600",
+        "path": "cleanup-label-before.intent.json",
+        "present": true,
+        "sha256": "8799ca4d87f91ee69fcd17fe0c7a258954ee6aec140979cbf6cae914de2d89f1"
+      },
+      {
+        "bytes": 601,
+        "modeOctal": "0600",
+        "path": "cleanup-label-before.result.json",
+        "present": true,
+        "sha256": "721f4d0fcb6141a6b1b4abf2fae9e99bc9f333ef5adb95e8069be01eb600a521"
+      },
+      {
+        "bytes": 107,
+        "modeOctal": "0600",
+        "path": "cleanup-label-before.original-cli.json",
+        "present": true,
+        "sha256": "e1593d670cd50717b9946111f3b40f5fa919683a9139fa7ad8dfaab178d54e57"
+      },
+      {
+        "bytes": 65,
+        "modeOctal": "0600",
+        "path": "cleanup-label-before.stdout",
+        "present": true,
+        "sha256": "7752723df556fb05f302b7ef3756db888c10ca892c6028f8579c7dc4a7d7cfcf"
+      },
+      {
+        "bytes": 0,
+        "modeOctal": "0600",
+        "path": "cleanup-label-before.stderr",
+        "present": true,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 457,
+        "modeOctal": "0600",
+        "path": "cleanup-original-before.intent.json",
+        "present": true,
+        "sha256": "2a60e69c4ba3a87d2969d59fa30fd1a552aa4fe685558043c24880833aa4364c"
+      },
+      {
+        "bytes": 605,
+        "modeOctal": "0600",
+        "path": "cleanup-original-before.result.json",
+        "present": true,
+        "sha256": "fc8f7937f42ae55c7c23622020c08176b3026229ac24a94e28dce67f9b5c36f4"
+      },
+      {
+        "bytes": 107,
+        "modeOctal": "0600",
+        "path": "cleanup-original-before.original-cli.json",
+        "present": true,
+        "sha256": "f6e6be369d610fcc7d0b5240401bde3dd1704d95eb2fe543faaa4392d463dc6e"
+      },
+      {
+        "bytes": 5606,
+        "modeOctal": "0600",
+        "path": "cleanup-original-before.stdout",
+        "present": true,
+        "sha256": "7f79118fadb2c797da0e1202fa60ff1bf92c935f1333db5d1c0861fedf6d9a2e"
+      },
+      {
+        "bytes": 0,
+        "modeOctal": "0600",
+        "path": "cleanup-original-before.stderr",
+        "present": true,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 416,
+        "modeOctal": "0600",
+        "path": "cleanup-original-remove.intent.json",
+        "present": true,
+        "sha256": "bb9723b44d615526c2d58fb16300e80a39b50ba76b718baff33a557c956894b9"
+      },
+      {
+        "bytes": 601,
+        "modeOctal": "0600",
+        "path": "cleanup-original-remove.result.json",
+        "present": true,
+        "sha256": "12ecf7ee10e57ee2d64a2637356be3ad6785df5a5719ada30763242addcca57e"
+      },
+      {
+        "bytes": 107,
+        "modeOctal": "0600",
+        "path": "cleanup-original-remove.original-cli.json",
+        "present": true,
+        "sha256": "466f4952081ed5d7abae20484073cd497bb80b145c3d73c7e091c14fc476dcea"
+      },
+      {
+        "bytes": 65,
+        "modeOctal": "0600",
+        "path": "cleanup-original-remove.stdout",
+        "present": true,
+        "sha256": "7752723df556fb05f302b7ef3756db888c10ca892c6028f8579c7dc4a7d7cfcf"
+      },
+      {
+        "bytes": 0,
+        "modeOctal": "0600",
+        "path": "cleanup-original-remove.stderr",
+        "present": true,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 457,
+        "modeOctal": "0600",
+        "path": "cleanup-original-after.intent.json",
+        "present": true,
+        "sha256": "df066566cca5f755a642c6abc545bb9efdcea1f8e0ccd0334af2f59f17ad1f39"
+      },
+      {
+        "bytes": 603,
+        "modeOctal": "0600",
+        "path": "cleanup-original-after.result.json",
+        "present": true,
+        "sha256": "dcf97402913996706f270719b9b0bc2690dbbfe3487f13f05fa552ed48c8a581"
+      },
+      {
+        "bytes": 107,
+        "modeOctal": "0600",
+        "path": "cleanup-original-after.original-cli.json",
+        "present": true,
+        "sha256": "bc1e5b1dd142ed48377d8252d5e2d2a58d29b94be01700236a1e2ac512b2702b"
+      },
+      {
+        "bytes": 1,
+        "modeOctal": "0600",
+        "path": "cleanup-original-after.stdout",
+        "present": true,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "bytes": 112,
+        "modeOctal": "0600",
+        "path": "cleanup-original-after.stderr",
+        "present": true,
+        "sha256": "7e8947c7273da487589e91d2782238fb9ef12134fbb7633584e3d67ec89201ea"
+      },
+      {
+        "bytes": 485,
+        "modeOctal": "0600",
+        "path": "cleanup-label-after.intent.json",
+        "present": true,
+        "sha256": "3f5372374a1c1071ac3992cf9a5372c45944d35228c6ec01efdbe6e9999444d8"
+      },
+      {
+        "bytes": 599,
+        "modeOctal": "0600",
+        "path": "cleanup-label-after.result.json",
+        "present": true,
+        "sha256": "9577de7d7c03cede46a185ca8d2323a71afddaaa92c3e0e24810d4c38d31b09b"
+      },
+      {
+        "bytes": 107,
+        "modeOctal": "0600",
+        "path": "cleanup-label-after.original-cli.json",
+        "present": true,
+        "sha256": "9bfb01b5c345ba040762a1573ade56246fbe804bd43cc683df658ef367b53686"
+      },
+      {
+        "bytes": 0,
+        "modeOctal": "0600",
+        "path": "cleanup-label-after.stdout",
+        "present": true,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 0,
+        "modeOctal": "0600",
+        "path": "cleanup-label-after.stderr",
+        "present": true,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 13,
+        "modeOctal": "0600",
+        "path": "empty-docker-config/config.json",
+        "present": true,
+        "sha256": "81bcbd3f950f2b31b87a64e8eca0de39db52feb0060d2bc631d7d794696604eb"
+      }
+    ],
+    "imageId": "sha256:a946b164d10d074fcc9859f6c54c3b65d1901b41696c5ee8d8e31e275ddd1593",
+    "independentDockerReads": [
+      {
+        "errorCode": null,
+        "exactOriginalNotFound": true,
+        "exitCode": 1,
+        "kind": "original-id",
+        "linuxStartTicks": "165470316",
+        "localStopErrors": [],
+        "pid": 3210712,
+        "reaped": true,
+        "remoteContainerStoppedByCliCleanupProved": false,
+        "streams": {
+          "stderr": {
+            "bytes": 112,
+            "sha256": "7e8947c7273da487589e91d2782238fb9ef12134fbb7633584e3d67ec89201ea"
+          },
+          "stdout": {
+            "bytes": 1,
+            "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+          }
+        }
+      },
+      {
+        "errorCode": null,
+        "exitCode": 0,
+        "kind": "original-label",
+        "linuxStartTicks": "165470319",
+        "localStopErrors": [],
+        "pid": 3210790,
+        "reaped": true,
+        "remoteContainerStoppedByCliCleanupProved": false,
+        "sameOperationAllListEmpty": true,
+        "streams": {
+          "stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "stdout": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        }
+      }
+    ],
+    "independentOriginalCleanupConfirmed": true,
+    "localEngineIdRole": "descriptor",
+    "newBuildCreateStartPullPushExportAuthOrCloudWrite": false,
+    "originalContainerId": "ed9ac44df539c4bb3e9e046d777c37c650baa0a467e0e13c3b788baffcaab131",
+    "parentRequestId": "a21af2c8-44ff-4f67-a07f-c364bcd6d295",
+    "probeReport": {
+      "activeAliasActuallyInspected": true,
+      "all15FrozenChecksTrue": true,
+      "checkedTargets": 12,
+      "credentialsReadByProbe": false,
+      "gid": 10002,
+      "imageTargets": [
+        {
+          "bytes": 2241,
+          "imagePath": "browser-preview/runtime/sha256.mjs",
+          "sha256": "85da435e9edaf4dca3411cf5f86fa45a95fe15c78060849d11f7eb0344b5bd24"
+        },
+        {
+          "bytes": 6700,
+          "imagePath": "project-resources/text.mjs",
+          "sha256": "9f7f3266549f04a0a8214e6e725ea9d85030532364f136487833e9cc45af303e"
+        },
+        {
+          "bytes": 23072,
+          "imagePath": "runtime/controlled-pi.mjs",
+          "sha256": "cf4143bff6cf049d2ab8247ef86ceb5f5391da67a86acb56ea901a119b2d6871"
+        },
+        {
+          "bytes": 27185,
+          "imagePath": "trusted-pi/release-candidate.mjs",
+          "sha256": "034cdc9df6c09e9cd7a32320e6bbfc2f9bbf5761151fe1d585d7fd64cdcd8d07"
+        },
+        {
+          "bytes": 1557,
+          "imagePath": "trusted-pi/research-context.mjs",
+          "sha256": "938e89155a5d5e0c405f51db5d973a4db264e63d96e308aff8da93caaaa05076"
+        },
+        {
+          "bytes": 27185,
+          "imagePath": "trusted-pi/trusted-pi-release.mjs",
+          "sha256": "034cdc9df6c09e9cd7a32320e6bbfc2f9bbf5761151fe1d585d7fd64cdcd8d07"
+        },
+        {
+          "bytes": 15937,
+          "imagePath": "trusted-pi/trusted-pi-turn-host.mjs",
+          "sha256": "9964e7ab863207ce9b9a911e03bfcb4f99afc61fb6508d2d6611b66931be516b"
+        },
+        {
+          "bytes": 7703,
+          "imagePath": "trusted-pi/product-model-transport.mjs",
+          "sha256": "c2bece021f34f0b929e796238d132a819281d172b5d8fd3a6f431ed9d46801c6"
+        },
+        {
+          "bytes": 11657,
+          "imagePath": "trusted-pi/product-tool-bridge.mjs",
+          "sha256": "e536e9231a7fa41be956e3066535a62b7de460b37a4e5a40937c67d9f5981e74"
+        },
+        {
+          "bytes": 16912,
+          "imagePath": "runtime_supervisor.py",
+          "sha256": "79e2bdedaedba063364513d853eb8325f229ba55b1e51df46cbcee359807e29c"
+        },
+        {
+          "bytes": 244,
+          "imagePath": "package.json",
+          "sha256": "0dde532fe23b810bd09b978f990d48342f7378429f2b2c48f30e055993fa6ebe"
+        },
+        {
+          "bytes": 150262,
+          "imagePath": "package-lock.json",
+          "sha256": "ad20b5c766c411c5ba42a4fc997890fe3494ab8adb96cf5d75031366b3d144fc"
+        }
+      ],
+      "manifestSha256": "f27b35dcbe84b58e3442018332374dbf20fa0d315528a322e56ea2a2bcfea5d4",
+      "mode": "image",
+      "overlayTargets": 6,
+      "present": true,
+      "realProviderRequests": 0,
+      "result": "passed",
+      "schema": "trusted-pi-offline-compatibility-probe/v1",
+      "sourceEquivalentActiveRelease": false,
+      "sourceMacEncodingNormalized": false,
+      "syntheticRequests": {
+        "ambientFetchCalls": 0,
+        "model": 3,
+        "projectToolExecutions": 0,
+        "research": 1
+      },
+      "uid": 10002
+    },
+    "rawEnvInspectStderrGrantOrBodyReturned": false,
+    "registryReadbackOrPublicationClaim": false,
+    "remoteWrites": 0,
+    "requestId": "b0933502-20df-480a-9a91-d833f5c4358c",
+    "runnerCleanup": {
+      "cleanupConfirmed": true,
+      "labelListEmpty": true,
+      "originalIdAbsent": true,
+      "removeAckUnknown": null
+    },
+    "runnerErrorCode": null,
+    "runnerStatus": "offline-image-compatibility-mock-passed",
+    "schema": "trusted-pi-probe-readable-independent-readback/v1",
+    "startedAt": "2026-10-17T14:39:37.885556+00:00",
+    "status": "original-records-and-cleanup-readback-completed"
+  },
+  "requestId": "b0933502-20df-480a-9a91-d833f5c4358c",
+  "status": "independent-original-cleanup-confirmed"
+}

@@ -1,0 +1,24 @@
+{
+  "actualArchiveReadVerifications": 1,
+  "actualExportAttempts": 0,
+  "actualPushAttempts": 1,
+  "cleanupErrors": [],
+  "config": {
+    "digest": "sha256:07c199e17490cc4fdf3e8027770f8a7413090d4e7c3a1f44aa9064e115641059",
+    "mediaType": "application/vnd.oci.image.config.v1+json",
+    "size": 18775
+  },
+  "credentialFilesAbsent": true,
+  "destination": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-issue165-trusted-pi:jhg46-pi-resource-compat-20261017-a946b164",
+  "endedAt": "2026-10-18T02:03:05.358823+00:00",
+  "noCloudApplicationGatewayPolicyOrProviderWrite": true,
+  "platformManifest": {
+    "digest": "sha256:f18a826d40b2fd60e2cf8c49d7f7b8f595fa609fe2be4c28593479ae846960ea",
+    "mediaType": "application/vnd.oci.image.manifest.v1+json",
+    "size": 9396
+  },
+  "requestId": "fb99c7e4-21a7-4215-8261-c17dd7c148aa",
+  "schema": "trusted-pi-image-publication-result/v1",
+  "sourceImageId": "sha256:a946b164d10d074fcc9859f6c54c3b65d1901b41696c5ee8d8e31e275ddd1593",
+  "status": "original-image-pushed-and-all-raw-registry-readback-verified"
+}

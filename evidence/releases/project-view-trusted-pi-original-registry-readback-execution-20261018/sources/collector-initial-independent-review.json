@@ -1,0 +1,40 @@
+{
+  "schema": "jhg46-safe-readback-collector-initial-static-review/v1",
+  "reviewedAt": "2026-10-18T13:19:31.117624Z",
+  "collector": {
+    "file": "collect-safe-readback-records-once.py",
+    "bytes": 23419,
+    "sha256": "9352fecf611b82c6d017adc2516f689f502d515659448b89bff3ded2371808f1"
+  },
+  "remoteTemplate": {
+    "bytes": 10817,
+    "sha256": "c10f03293152bcbcd39373d1cd15eebc39e585723576bb084416c92546145b2d"
+  },
+  "decision": "held-for-one-minimal-privacy-guard-fix",
+  "mustFix": [
+    {
+      "id": "terminal-optional-descriptor-pair",
+      "location": "REMOTE.validate terminal branch",
+      "problem": "optional config/readbackProofSha256 is validated only if platformManifest is present; a partial terminal with config alone can bypass fixed descriptor-only validation.",
+      "minimalFix": "If any of platformManifest/config/readbackProofSha256 is present, require all three keys and the existing fixed descriptor plus64hex checks; otherwise held.",
+      "scopeImpact": "No change to frozen reader or publisher; valid publisher emits all three fields together."
+    }
+  ],
+  "otherStaticFindings": {
+    "newLocalTerminalAndFrozenReaderObservationGate": true,
+    "sourceAd6GrantEb629Ops59fdBound": true,
+    "exactSafeFileReferenceNamesUniqueMaximum160": true,
+    "allRawFileByteHashesAgainstReaderReferences": true,
+    "perFile131072Total2097152": true,
+    "remoteReadOnlyNoAPIAuthDockerOrArchiveRead": true,
+    "noForwardAgentNoForwardsOrMultiplex": true,
+    "boundedNonblockingTransportAndOwnedProcessReaping": true,
+    "partialDiagnosticsDoNotRaisePublicationAuthority": true
+  },
+  "reviewerExecution": {
+    "collectorOrRemoteTemplateExecuted": false,
+    "testRerun": false,
+    "authSSHAPIRegistryDockerCalls": 0,
+    "sourceModified": false
+  }
+}

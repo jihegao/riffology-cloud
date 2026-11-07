@@ -1,0 +1,23 @@
+{
+  "originalFile": "parser-check-first.receipt.json",
+  "originalBytes": 694,
+  "originalSha256": "676ddaf5b10335c69bc1df78d4ecd91b08bb2152d246b7ace507065a762ecab9",
+  "commandProjectionIsDisplayOnly": true,
+  "receipt": {
+    "command": [
+      "node",
+      "parse-fixed-wrangler-argv.mjs"
+    ],
+    "startedAt": "2026-10-18T01:40:30.880025+00:00",
+    "endedAt": "2026-10-18T01:40:31.104035+00:00",
+    "exitCode": 0,
+    "scriptBytes": 5944,
+    "scriptSha256": "164062cd1f7e14f8ae89fc41290107e37c3cadc8e8f4ae4b4d93a6a61722b80c",
+    "stdoutBytes": 4547,
+    "stdoutSha256": "536d84bf40786023fd03e1f289f6190b22a9d9c8c4239fb163763d7c1b843c06",
+    "stderrBytes": 0,
+    "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "realCliExecution": false,
+    "authOrNetwork": false
+  }
+}

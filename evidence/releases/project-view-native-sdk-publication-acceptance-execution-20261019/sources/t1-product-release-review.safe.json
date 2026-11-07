@@ -1,0 +1,122 @@
+{
+  "schema": "jhg46-sdk-t1-product-release-independent-review/v1",
+  "reviewedAt": "2026-10-18T22:28:50.555429+00:00",
+  "mustFix": [],
+  "checks": {
+    "fiveOriginalReadBodiesBytesHash": true,
+    "fiveHttp200OriginalOrder": true,
+    "sameOriginalOwnerBracket": true,
+    "originalT1CompletedSavedCheckpointUnchanged": true,
+    "sameCanonicalSessionHeadAndSnapshotTurn": true,
+    "naturalProductReleaseHoldClearAndAvailable": true,
+    "afterInitialHeldReadAndInsideOriginalGrant": true,
+    "fourCurrentPhysicalGets200WithGuards": true,
+    "currentTenLogicalInactiveAndDashTenSameIdentity": true,
+    "priorNineLogicalPreserved": true,
+    "oneCurrentDeploymentExactMatchesList": true,
+    "currentOneIdleVmRunningContainerStopped": true,
+    "placementIdentityChangedAndOutsideOriginalAcceptedId": true,
+    "deploymentConfigurationUnchangedExceptPlacementState": true
+  },
+  "bindings": [
+    {
+      "file": "ordinary/turn-1-once/capacity-confirm-five-get-original.private.json",
+      "bytes": 21053,
+      "sha256": "6c478c4ae4eb7a283edca1e2151f2e3c6943eb975d44ef4738fafb55c51d2c01",
+      "privateBodyCopied": false
+    },
+    {
+      "file": "ordinary/turn-1-once/physical-product-released.tool-result.private.json",
+      "bytes": 16553,
+      "sha256": "981c3bc7d8cd1f4eddc899fd8fe75f1cbfe12417c8519c97c9ac571e3ffadb23",
+      "privateBodyCopied": false
+    },
+    {
+      "file": "preflight/physical-before-ordinary.tool-result.private.json",
+      "bytes": 15758,
+      "sha256": "7897d19b59c00da39cfb914f0b8f9320aa7bf15819ad15a1b93474ac7f7dd463",
+      "privateBodyCopied": false
+    },
+    {
+      "file": "authorization/batch-grant.private.json",
+      "bytes": 4254,
+      "sha256": "ef4365b39cfd0fdc2f5243e41c2908d726d0f4c899dec2d5e013a89fa839a244",
+      "privateBodyCopied": false
+    },
+    {
+      "file": "reviews/t1-dispatch-identity-review.safe.json",
+      "bytes": 8102,
+      "sha256": "4c2f832562a29073dd89e96baae9e724361fa6846e753fcb0a0d37f7992a2921",
+      "privateBodyCopied": false
+    },
+    {
+      "file": "reviews/t1-saved-effects-review.safe.json",
+      "bytes": 10813,
+      "sha256": "df3cd1e18a978cd10855d4f834af116b7b406098d1ff0597f497adac0b0a8a0e",
+      "privateBodyCopied": false
+    }
+  ],
+  "existingThresholdSource": {
+    "file": ".local/jhg46-native-resource-host-rollout-acceptance-execution-20261018/reviews/t1-product-authority-release-threshold-review.safe.json",
+    "bytes": 19516,
+    "sha256": "62f1638730384d6310a71f6400f99c1c65165f48d9172f426976e44b9778a70d"
+  },
+  "productRelease": {
+    "originalTurnId": "c0ebf414-3943-4ad1-8109-f355609b6d0a",
+    "revisionId": "768fc2ff2c44a5005cbaeae9b433f47f19c71bb0fb88cdaf70a1c11992d259fb",
+    "runtimeGeneration": 1,
+    "observedFrom": "2026-10-18T22:26:14.754Z",
+    "observedThrough": "2026-10-18T22:26:25.053Z",
+    "completedSavedUnchanged": true,
+    "canonicalSessionHeadUnchanged": true,
+    "allFourCurrentHoldsClear": true,
+    "capacity": "available",
+    "scopeQualifiedProductAuthorityReleaseObserved": true,
+    "rawInternalStopLeaseDirectlyExposed": false,
+    "noRawPublicFieldRequirementAdded": true
+  },
+  "physical": {
+    "listExactRepresentationBoundary": "List type=durable_object/deployment_type=default, exact type=default; created_at and placement event expansion also differ. Reviewed identity/appversion/image/currentplacement/status correspond, not whole response equality.",
+    "observedFrom": "2026-10-18T22:27:03.537Z",
+    "observedThrough": "2026-10-18T22:27:06.298Z",
+    "logicalCount": 10,
+    "inactiveLogicalCount": 10,
+    "dashInstanceCount": 0,
+    "dashDurableObjectCount": 10,
+    "unfilteredCurrentDeploymentCount": 1,
+    "sameDeploymentId": "d03b8c4d-8cc2-475e-ba96-6e46d062983c",
+    "applicationVersion": 13,
+    "imageDigest": "sha256:ec8dbe9efe229a1626ea3202b618653f82f8d29d9da8b19310c3b3838f2a2623",
+    "priorPlacementId": "8ef5d3a1-a30c-47c6-8608-b557b6bbc23a",
+    "currentPlacementId": "9f18c9ab-e7ea-47bc-8238-efce81feea0e",
+    "currentVmHealth": "running",
+    "currentContainerStatus": "stopped",
+    "terminate": false,
+    "placementChangedAt": "2026-10-18T22:17:58.540999936Z",
+    "mayIncurFees": true,
+    "noHistoricalZeroVmOrOldPlacementReleaseClaim": true
+  },
+  "scopeDecision": {
+    "newPlacementAutomaticallyCoveredByOriginal8f7Grant": false,
+    "originalAcceptedPlacementRetainedAsFrozenGrantFact": true,
+    "materialPlacementChoicePending": true,
+    "t2OverallAllowed": false,
+    "reason": "Existing product-authority save/effect/release conjunction is observed, with one current idle deployment. Current placement9f18 differs from explicitly accepted8ef5; original grant says unknown placement is not silently accepted. The product release conclusion does not waive this live scope difference."
+  },
+  "remainingUnverified": [
+    "User acceptance of current9f18 idle-placement identity under this same scope/window before T2.",
+    "Exact original bash script/timeout bytes, as separately disclosed in t1-saved-effects review; no new public GET was invented.",
+    "No claim of raw stop/lease readback, all historical placements stopped, zero fees or overall browser acceptance."
+  ],
+  "observationalLimits": [
+    "Original five-read wrapper contains no observerCount field; root reports observer remained3, but this review does not fabricate it inside that file.",
+    "Snapshot timing augmentation is retained; original-key receipt has no timing. Persistent public Turn fields and complete checkpoint/head match.",
+    "No force clear/retry or new request is evidenced by these reads; root remains sole live writer."
+  ],
+  "reviewerActions": {
+    "localFileOnly": true,
+    "networkAuthBrowserSqlModelGitOrFixtures": false,
+    "originalsEdited": false
+  },
+  "privateUserTenantEmailHostLocationRawConfigOrBodiesCopied": false
+}

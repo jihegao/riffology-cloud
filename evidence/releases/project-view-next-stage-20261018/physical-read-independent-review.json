@@ -1,0 +1,151 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-10-18T03:42:02.568685+00:00",
+  "scope": "offline source and supplied safe-receipt review only; no real account/API/auth/DO/container calls and no tests repeated",
+  "sourceHead": "c669921f4796c5b35c6f2e049c92876f4faf7c5b",
+  "applicationId": "a03628c4-f032-461f-a65b-612ccac11a06",
+  "conclusion": {
+    "currentEvidence": "The original app control plane reported zero placement instance records at the Dash observation, while preserving six logical DO history records. This is stronger than inactive labels alone.",
+    "statementAllowed": "2026-10-18T03:38:26.799Z–03:38:27.260Z: complete one-page app-scoped Dash read reports result.instances=[] and six DO history rows with deployment_id=null.",
+    "notEstablished": [
+      "OS-level absolute CPU/VM absence",
+      "global zero activity across apps/accounts",
+      "runtime/model/tool release from inactive alone",
+      "a current held preflight or permission to rollout/end maintenance"
+    ],
+    "futureContractCandidateSupported": true,
+    "rolloutAuthorizedByThisReview": false
+  },
+  "observations": {
+    "logicalReceipt": "/Users/jihegao/apps/riffology-cloud/.local/jhg46-next-stage-preparation-20261018/pi-rollout-preparation-v2/a036-instances-safe.json",
+    "logicalCheckedAt": [
+      "2026-10-18T03:31:50.233Z",
+      "2026-10-18T03:31:50.698Z"
+    ],
+    "logicalCount": 6,
+    "logicalStates": [
+      "inactive"
+    ],
+    "dashReceipt": "/Users/jihegao/apps/riffology-cloud/.local/jhg46-next-stage-preparation-20261018/pi-rollout-preparation-v2/dash-placement-safe.json",
+    "dashCheckedAt": [
+      "2026-10-18T03:38:26.799Z",
+      "2026-10-18T03:38:27.260Z"
+    ],
+    "dashPages": 1,
+    "dashReturnedPlacementCount": 0,
+    "dashDoHistoryCount": 6,
+    "allDeploymentIdsNull": true,
+    "sameOriginalApp": true,
+    "idSetsEqual": true,
+    "uniqueIds": 6,
+    "sortedIdSetSha256": "f2a85aeb1eb6e916b703cacc4927cc6fd2b4d9bcaa12d837408e5c68ec8df8a5",
+    "atomicity": "The two supplied observations occurred at different times and are not a transaction or a presently held baseline."
+  },
+  "sourceFindings": [
+    {
+      "source": "/Users/jihegao/apps/riffology-cloud/node_modules/wrangler/wrangler-dist/cli.js",
+      "version": "Wrangler 4.129.0",
+      "sha256": "0a7bc2107ca92b2cc6db58b6a36d38d44b549eebd7db7ec34c36db9da7a91264",
+      "lines": [
+        135255,
+        187109,
+        187131,
+        187167,
+        187182
+      ],
+      "finding": "ApplicationsService.listDashApplicationInstances uses GET /dash/applications/{application_id}/instances with per_page/page_token. fetchAllRows follows next_page_token and accumulates raw instances and durable_objects separately. buildInstanceRows joins durable_objects[].deployment_id to instances[].id; rowsToJsonOutput labels a DO without a joined instance inactive. With any DO rows, that display projection can omit orphan/unjoined instances; it cannot replace raw instances inspection."
+    },
+    {
+      "source": "/Users/jihegao/apps/riffology-cloud/node_modules/@cloudflare/containers/dist/lib/container.js",
+      "version": "@cloudflare/containers 0.3.7",
+      "sha256": "9dfc5feaa43b2bdec08863c85eb94731237aeb9f19c7b7e58ff426776ec8863c",
+      "lines": [
+        145,
+        170,
+        348,
+        359,
+        409
+      ],
+      "finding": "Container.getState returns SDK ContainerState. Missing persisted ContainerState creates/stores a default stopped state. Container construction also initializes schedules and schedules/renews alarms/activity. It is not a zero-write physical probe and must not be invoked on the six historical IDs."
+    },
+    {
+      "source": "services/turn-runtime/host.ts:69; services/turn-runtime/core.ts:304; services/turn-runtime/pi-native.ts:118",
+      "finding": "archiveRuntimeResources reads the identity-bound original stored runtime/isolation evidence without its release factory. Normal cold release uses destroyAndReleaseState, immediate running observation, 360000ms assignment guard and 30000ms quiet interval before immutable runtime-released/capacity confirmation. Those immutable receipts are distinct from fresh control-plane placement inventory."
+    },
+    {
+      "source": "services/workspace/runtime-handoff.ts:66; services/capacity/paired.ts:28; services/sandbox/classes.ts:50,81",
+      "finding": "Retained pair release requires both original domain proofs: never-started if unclaimed, otherwise running=false after the original destroy path plus assignment/quiet guards. Idle/handoff is retained occupancy. destroyAndReleaseState/destroyWorkspaceLease mutate/fence/stop; they are not read-only probes. Scope assertions can write native owner binding."
+    },
+    {
+      "source": "services/model-budget/private-beta-capacity.ts:190; services/capacity/durable.ts:20; services/gateway/app.ts:198",
+      "finding": "The #248 operator quiescence GET proves original Beta/cold/pair ledgers under the exact live barrier and returns actualContainerReleaseVerified=false. It does not call a runtime container. No existing reviewed operator GET was found that reads ctx.container.running for arbitrary raw history IDs without SDK construction. The Dash control-plane read avoids needing that new route or runtime RPC."
+    }
+  ],
+  "officialSources": [
+    {
+      "url": "https://developers.cloudflare.com/api/resources/containers/subresources/applications/subresources/instances/methods/get/",
+      "finding": "An instance ID is the 64-hex Durable Object actor ID. GET reports the last reported logical-instance state; inactive is a lifecycle enum, without an SDK-running=false or application-release guarantee."
+    },
+    {
+      "url": "https://developers.cloudflare.com/api/resources/containers/subresources/applications/subresources/instances/methods/list/",
+      "finding": "instances-v2 supports cursor pagination, state and name filters; omission of filters is needed for the whole app inventory. Historical inactive records need not disappear."
+    },
+    {
+      "url": "https://developers.cloudflare.com/api/resources/containers/subresources/applications/subresources/instances/methods/list_v1/",
+      "finding": "The deprecated /instances endpoint is replaced by instances-v2. Current documentation does not establish it as a separate physical-only placement authority. This review relies on the verified installed Dash raw shape instead."
+    },
+    {
+      "url": "https://developers.cloudflare.com/containers/api/durable-object-container/",
+      "finding": "ctx.container.running and inspect are separate platform observations; start/destroy are lifecycle actions. No real method is called by this review."
+    },
+    {
+      "url": "https://developers.cloudflare.com/containers/api/container-class/",
+      "finding": "SDK getState exposes running/healthy/stopping/stopped/stopped_with_code. It has different semantics and side-effect boundaries from the REST inactive enum."
+    }
+  ],
+  "fixedReadContract": {
+    "method": "GET",
+    "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/dash/applications/a03628c4-f032-461f-a65b-612ccac11a06/instances",
+    "firstQuery": {
+      "per_page": 1000
+    },
+    "nextQuery": "same original account/app/path/per_page plus exact next_page_token only",
+    "filters": "none; never state/name filtered",
+    "readRaw": "Require success=true, result.instances array and optional durable_objects array; keep both raw populations separate. Inspect every placement row, including unjoined/orphan rows. Do not use CLI row count or inactive display as the authority.",
+    "pagination": "The supplied reader uses result_info.next_page_token, rejects repeated/truthy malformed cursors and stops held at four pages. Never promote a page cap to completeness. No further page was requested for the supplied one-page result.",
+    "futureReceiptTightening": "Preserve result_info and explicit terminal cursor in the next held read receipt; reject non-string malformed cursors (including false/0) rather than treating falsy malformed data as end-of-list. This is a future reader hardening note, not evidence of a malformed current response."
+  },
+  "futurePreRolloutConjunction": [
+    "Separately authorized fixed source/deployment/app/account/image/configuration, unexpired human grant, existing Legacy/G5/M3/M4 gates and sole-writer boundaries must be verified.",
+    "Keep the same original #248 maintenance hold/request/operator/authVersion/revision/policy/control epoch valid throughout; use its fresh combined Beta/native quiescence GET and immutable original terminal validators. No end/begin cycle.",
+    "Perform fresh complete unfiltered instances-v2 and raw Dash reads after the hold and drain; original app/account identity and logical history must agree. Historical inactive DO rows may remain. Unknown, contradictory, paginated-incomplete or unjoined active placement evidence stops the action.",
+    "Require raw Dash placement population empty for this bounded rollout contract. This app-scoped control-plane observation, together with original terminal ledgers, avoids activating six Sandbox SDK objects or restoring archived projects. It is not OS/global absolute-zero proof."
+  ],
+  "futurePostRolloutConjunction": [
+    "Reconcile only the original accepted rollout identity: exact rollout GET must report completed and the expected target version. Do not infer terminal status from a limited history list; no new POST on unknown ACK.",
+    "Read the same app back: expected digest-pinned image from the frozen input, original application identity and all non-image configuration fields exactly preserved, including max1/default/basic.",
+    "While the same hold is still valid, repeat fresh combined original ledger proof and full raw placement/history inventory. Require placements0, preserve the original six history IDs, and reconcile any new history entry to the original authorized rollout identity.",
+    "Only after all conjuncts pass may the exact original maintenance end CAS be considered under its explicit grant. If any placement remains/new placement appears, controls drift, identity/terminal is unknown or readback is incomplete, keep the hold and stop. Do not start model acceptance, automatically stop/destroy containers, rollback or retry."
+  ],
+  "remainingGaps": [
+    "The reviewed receipts are point-in-time unheld observations; future held pre/post evidence is still required.",
+    "The six history IDs are matched across logical and Dash inventory, but no per-DO runtime/container release mapping was asserted or newly fetched. Empty complete raw app placements plus original terminal authority is the proposed aggregate control-plane criterion.",
+    "No direct ctx.container.running observation, OS VM/CPU attestation, multi-writer lock or deployment/config CAS is established by these APIs."
+  ],
+  "inputSha256": {
+    "a036-instances-safe.json": "8d3a5384238e311f62963b4fd8fdd8ce55c721229e5e8c6c2c2c73c2776753ee",
+    "dash-placement-safe.json": "2dcbd02f16eff558af1237d1f4fca5a1e182e59970a352fc88c3c09b43ef391c",
+    "dash-placement.request.txt": "f3afc7e9ef8f47c2e71ecd80a30b6969d3903cc15aac657c3db638682d6e5345"
+  },
+  "actionsPerformed": {
+    "cloudApi": 0,
+    "authCredentialReads": 0,
+    "runtimeRpc": 0,
+    "sdkConstruction": 0,
+    "containerStartStopExec": 0,
+    "modelCalls": 0,
+    "oldProjectRestore": 0,
+    "sourceChanges": 0,
+    "testsRepeated": 0
+  }
+}

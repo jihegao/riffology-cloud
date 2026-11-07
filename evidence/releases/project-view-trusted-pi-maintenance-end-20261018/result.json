@@ -1,0 +1,86 @@
+{
+  "schema": "jhg46-observed-state-original-maintenance-end-result/v1",
+  "recordedAt": "2026-10-18T09:57:55.788233+00:00",
+  "result": "two-differences-accepted-original-maintenance-end-confirmed",
+  "originalHoldRequestId": "6c6d9d94-be91-45e3-8044-bf1768308d7a",
+  "originalRolloutId": "f1a653cc-44c2-49b9-87f3-33bb8940a540",
+  "reviewedProposalPublicCommit": "f8b83410d73be9fddb45cac83a487e9de50a193a",
+  "proposalSha256": "b935f8781201072b61b5fbdbbc6d288eafd4c5d184df4180e61349b8140b834f",
+  "humanGrantHashReference": {
+    "originalFile": "observed-state-human-grant.json",
+    "bytes": 488,
+    "sha256": "60a403b62aed426d281f654a6942ea7f2906f888f658390f6af4ff1777c63046"
+  },
+  "acceptedOnlyTwoObservedDifferences": true,
+  "historicalF8bProposalAndRolloutResultsUnchanged": true,
+  "originalBatchEndsAt": "2026-10-18T12:42:46Z",
+  "deadlineExtended": false,
+  "freshPreEndResourceWitness": {
+    "startedAt": "2026-10-18T09:52:07.581Z",
+    "endedAt": "2026-10-18T09:52:10.331Z",
+    "getCount": 39,
+    "complete": true
+  },
+  "freshTargetAndFullResourceGuardsPassed": true,
+  "preEndJointQuiescent": true,
+  "originalEndSingleAttempt": true,
+  "endHttpStatus": 200,
+  "endObservedAt": "2026-10-18T09:54:42.795Z",
+  "endRevision": 2,
+  "independentOriginalRequestReadStatus": 200,
+  "independentOriginalRequestReadAt": "2026-10-18T09:55:12.560Z",
+  "currentHold": null,
+  "currentRevision": 2,
+  "controlRevision": 19,
+  "ledgerQuiescent": true,
+  "maintenanceNewAdmissionHoldRemoved": true,
+  "existingBetaPolicyAndHardLimitsRetained": true,
+  "acceptedIdleVmReleased": false,
+  "version10RetentionOrRollbackProved": false,
+  "ordinaryIdentityProjectOrTurnAcceptanceProved": false,
+  "sourceScope": "Only original accepted state, fresh pre-end checks, one end and original-ID read. This is not an ordinary-user/model/Turn execution result or global counter.",
+  "safeSources": [
+    {
+      "file": "maintenance-end-ack.safe.json",
+      "bytes": 560,
+      "sha256": "aa677fb81ef836b05f3386fd92ded162e2ed7975ffdf11e0437521844a088aaa"
+    },
+    {
+      "file": "maintenance-end-intent.json",
+      "bytes": 592,
+      "sha256": "6d34d4812965ddace559713d84dc21b592d96dc33e0a69075e59d9d5cfb8ca3a"
+    },
+    {
+      "file": "maintenance-end-original-read.safe.json",
+      "bytes": 851,
+      "sha256": "9a461c651290b342b64db7c5483f1e98110e9e46407bad3c5e1b90ccc73e8d6a"
+    },
+    {
+      "file": "observed-state-acceptance.safe.json",
+      "bytes": 952,
+      "sha256": "d88523179248ee391486ca86391471acb2677367a93955ea0dae2b5ddae28da4"
+    },
+    {
+      "file": "pre-end-preservation.actual.json",
+      "bytes": 15372,
+      "sha256": "4768d3e47fe57cdc9fa7c13fbaae00501e47a75322397adc5d0c0839da18af8d"
+    },
+    {
+      "file": "pre-end-quiescence.safe.json",
+      "bytes": 979,
+      "sha256": "70172f4db4d25fed861e53bd9c78875e9a13f448c1d1feb1e713197d844dca24"
+    },
+    {
+      "file": "pre-end-target.safe.json",
+      "bytes": 1371,
+      "sha256": "dde72979818a748c4354d5311a4b3c160ec3f785aecf7559c61ebe489d70bb43"
+    }
+  ],
+  "limits": [
+    "Original f8b proposal authorizedfalse and rollout frozenAcceptanceCompletefalse remain historical records. New human approval accepts only the two observed differences; it does not prove the old conditions were satisfied.",
+    "End removes the original maintenance admission hold, restoring eligibility for new Pi admissions under the unchanged policy/hard limits; it is not a project or Turn result.",
+    "The accepted exact idle VM remains running/container stopped; no cleanup/destroy/app PATCH/extra rollout is performed here and usage may continue.",
+    "Raw actor/user/email/human answer, private configuration, events/host/location and credentials are excluded.",
+    "The original four-hour deadline is not extended. Ordinary identity/new-project/twoSessions/threeTurns/browser gate and per-Turn original release require their own subsequent records."
+  ]
+}

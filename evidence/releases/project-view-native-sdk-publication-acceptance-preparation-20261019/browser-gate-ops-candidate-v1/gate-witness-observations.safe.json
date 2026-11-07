@@ -1,0 +1,41 @@
+{
+  "schema": "jhg46-sdk-gate-local-getter-transition-fixtures/v1",
+  "recordedAt": "2026-10-18T17:52:54.157Z",
+  "metrics": [
+    {
+      "phase": "published-closed",
+      "requestCount": 53,
+      "compactBytes": 11844,
+      "prettyBytes": 12091,
+      "complete": true,
+      "sourceSha256": "304373a50d7a9ca8a99cdfbda0dcae261aa34d53727b757dfeb099c88efb5e0b",
+      "syntheticOriginalTransitionProof": true,
+      "actualModuleAndDatedRawResourceFamilies": true,
+      "realNetworkCalls": 0
+    },
+    {
+      "phase": "open",
+      "requestCount": 53,
+      "compactBytes": 11911,
+      "prettyBytes": 12158,
+      "complete": true,
+      "sourceSha256": "304373a50d7a9ca8a99cdfbda0dcae261aa34d53727b757dfeb099c88efb5e0b",
+      "syntheticOriginalTransitionProof": true,
+      "actualModuleAndDatedRawResourceFamilies": true,
+      "realNetworkCalls": 0
+    },
+    {
+      "phase": "final-closed",
+      "requestCount": 53,
+      "compactBytes": 12287,
+      "prettyBytes": 12573,
+      "complete": true,
+      "sourceSha256": "304373a50d7a9ca8a99cdfbda0dcae261aa34d53727b757dfeb099c88efb5e0b",
+      "syntheticOriginalTransitionProof": true,
+      "actualModuleAndDatedRawResourceFamilies": true,
+      "realNetworkCalls": 0
+    }
+  ],
+  "realAuthOrNetwork": 0,
+  "cloudWrites": 0
+}

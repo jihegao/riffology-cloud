@@ -1,0 +1,77 @@
+{
+  "schema": "trusted-pi-native-host-offline-checks-public/v1",
+  "sourceEquivalence": {
+    "startedAt": "2026-10-18T10:42:28.267683+00:00",
+    "endedAt": "2026-10-18T10:42:28.686830+00:00",
+    "exitCode": 0,
+    "command": [
+      "node",
+      "probe/host-resource-snapshot-probe.mjs",
+      "--source-root",
+      "<reviewed-local-source-root>",
+      "--manifest",
+      "input-manifest.json",
+      "--manifest-sha256",
+      "7106ff37f714ec60135962a9f71e661d911ba5e0e4870178175a8b1bf5260d22"
+    ],
+    "probeSha256": "a17f987f6f97be8593c48d6709758521f2020fb636de2297806db2d1cbb7f1fd",
+    "manifestSha256": "7106ff37f714ec60135962a9f71e661d911ba5e0e4870178175a8b1bf5260d22",
+    "rawStdout": {
+      "bytes": 3081,
+      "sha256": "85a05ad22f007a8dbbdc243902ad02fd9247f35146f2c3d7359a5a2726d522e4"
+    },
+    "rawStderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "authorReceiptSha256": "f4db5272eb4a57552274562596551870af61b6e6de3013dab8a5e08a8a369157",
+    "mode": "source-equivalence",
+    "uid": 501,
+    "gid": 20,
+    "nodeVersion": "26.10.0",
+    "sourceMacEncodingNormalized": true,
+    "checkedTargets": 12,
+    "checks": {
+      "allTargetBytesAndPermissions": true,
+      "activeReleaseAlias": true,
+      "actualNativeHostAndControlledFacade": true,
+      "validResourceTerminalAndDigest": true,
+      "coldRestoreMetadataAndNoReplay": true,
+      "legacyFiveFieldInputAndOutput": true,
+      "unknownRootRejectedBeforeSession": true,
+      "invalidProvenanceRejectedBeforeSession": true,
+      "foreignScopeRejectedBeforeSession": true,
+      "allSessionsDisposed": true,
+      "temporaryDirectoriesRemoved": true,
+      "environmentOnlyPath": true,
+      "zeroAmbientFetch": true,
+      "zeroProjectToolExecutions": true
+    },
+    "syntheticRequests": {
+      "model": 3,
+      "research": 3,
+      "projectToolExecutions": 0,
+      "ambientFetch": 0,
+      "sessionCreations": 3,
+      "sessionDisposals": 3
+    }
+  },
+  "archiveStaticChecks": {
+    "all5MembersSafeAndByteExact": true,
+    "all12SourceGitBindingsMatched": true,
+    "onlyHostOverlay": true,
+    "archive": {
+      "path": "jhg46-pi-native-resource-snapshot-host-v1-20261018.tar.gz",
+      "bytes": 12364,
+      "sha256": "91b42a14a3c1c8caafb0b98230f156408bc39be065d408091055e91f7c724b81",
+      "uncompressedBytes": 51200,
+      "uncompressedSha256": "a4f3e479c70f168d485cf5f66e2a223b518d665e1f361c8ed0c57f9aa4b84901"
+    }
+  },
+  "limits": [
+    "Source mode on macOS UID501 is not an image run or image permission proof.",
+    "Three model/research requests are local in-memory fake calls; real provider/projectTool/global fetch all zero.",
+    "No AMD/SSH/Docker/build/container/pull/push/export/OAuth/cloud/real Turn executed in preparation.",
+    "Prior source fix CI/tests remain separately attributed; no full check rerun here."
+  ]
+}

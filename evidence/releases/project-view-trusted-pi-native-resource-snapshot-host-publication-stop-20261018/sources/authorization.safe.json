@@ -1,0 +1,31 @@
+{
+  "source": "direct-human-question-reply",
+  "answerUtf8Sha256": "c41bb2870a18c70b428bcb6626511601a1f01efb0720b00faf2d26c2fce5a9a7",
+  "humanGrantSha256": "52c85c3501a881891516f37384033d016fefc57b809ff4493896a57da835d048",
+  "receivedAndRecordedAt": "2026-10-18T12:19:47.976117+00:00",
+  "approvalTimeIsLocalObservationOfReply": true,
+  "publicationPacketCommit": "d948b08324d288c1c88d428d5331acfff2d03121",
+  "operationsManifestSha256": "6fd9aefcdb09cf0465b3062a0270e4ef3817f74d8829fa99cbfe1f3d031efd8c",
+  "completeSourceBindingSha256": "08466e9d852deaff0e9b6bf315253d259a29356a9cccb7f645a693a27905b7ae",
+  "oauthNotTransferred": true,
+  "scopeChangesOrNewConsentAllowed": false,
+  "conditionalRootNormalMerge": {
+    "approved": true,
+    "pr": 253,
+    "expectedHead": "0a10da572264470aaac111e6f5da2bd20b2f2c45",
+    "onlyAfterTrustedPublicationAndIndependentCleanup": true,
+    "normalCurrentProtectionReviewChecks": true,
+    "noAdminOrCheckBypass": true
+  },
+  "runtimeOriginalWindowExtended": false,
+  "newTurnAuthorized": false,
+  "costCap": null,
+  "arrearsNotify": true,
+  "schema": "trusted-pi-c263-authorization-safe/v1",
+  "originalReceipt": {
+    "bytes": 1183,
+    "sha256": "bc35e2f86a38cb07ceaf3f154bf38da93d2482934e2f53caf9e39787ea4e556a"
+  },
+  "rawHumanReplyPublished": false,
+  "rawGrantPublished": false
+}

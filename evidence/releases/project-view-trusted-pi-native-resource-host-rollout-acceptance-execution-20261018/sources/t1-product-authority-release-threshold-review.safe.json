@@ -1,0 +1,373 @@
+{
+  "schema": "jhg46-t1-product-authority-release-threshold-independent-review/v1",
+  "recordedAt": "2026-10-18T16:22:56.072069Z",
+  "batchRequestId": "d0b12dd5-c04e-41d9-9a05-c685431d6695",
+  "reviewMode": "Frozen wording plus immutable deployed-source lineage and existing local file review only; no actual after-guard outcome acceptance",
+  "bindings": [
+    {
+      "file": ".local/jhg46-native-resource-host-rollout-acceptance-preparation-20261018/ordinary-input.json",
+      "bytes": 4283,
+      "sha256": "199559eac9295536c42124c2b01aec7a35f1eca9a84a9b22cc35a7b12c0affcb",
+      "role": "Frozen per-step release conjunction and actual model/runtime flags",
+      "privateBodyCopied": false
+    },
+    {
+      "file": ".local/jhg46-native-resource-host-rollout-acceptance-preparation-20261018/operations.json",
+      "bytes": 8895,
+      "sha256": "2e6416cd2bd1f2ce55b551f674b638735412c9c230a550453eacab89fe3065ea",
+      "role": "Frozen T1/T2/T3 stage order and release guards",
+      "privateBodyCopied": false
+    },
+    {
+      "file": ".local/jhg46-native-resource-host-rollout-acceptance-preparation-20261018/publication-packet.draft.md",
+      "bytes": 7336,
+      "sha256": "78d417b43fa4e26ea4e538c6c654235e266a582aeeb62d3fd39d7b37d128af95",
+      "role": "Original approved package prose; no public-raw-field requirement added",
+      "privateBodyCopied": false
+    },
+    {
+      "file": ".local/jhg46-native-resource-host-rollout-acceptance-execution-20261018/grant.private.json",
+      "bytes": 5663,
+      "sha256": "ce6ef11632fc5c983cd0e35afbf8e38c90fa24f43db868c75556c4b12b840755",
+      "role": "Existing explicit approved batch/window; private body not copied",
+      "privateBodyCopied": false
+    },
+    {
+      "file": ".local/jhg46-native-resource-host-rollout-acceptance-execution-20261018/reviews/t1-release-evidence-route-review.safe.json",
+      "bytes": 14642,
+      "sha256": "0d82af6a828f7fdf975db366ff50f76a2a3a82cd2745fc215aa63716c272c764",
+      "role": "Earlier accurate public-route/raw-field capability inventory, narrower than the acceptance contract",
+      "privateBodyCopied": false
+    },
+    {
+      "file": ".local/jhg46-next-stage-preparation-20261018/gateway-ops-v3/metadata-without-jwt.private.json",
+      "bytes": 30452,
+      "sha256": "8058ff9de79cfb891882058c793ff839d0635aa48bd1586b8ea996243524d079",
+      "role": "Actual original Gateway metadata flags; no configuration body copied",
+      "privateBodyCopied": false
+    },
+    {
+      "file": ".local/jhg46-next-stage-preparation-20261018/gateway-publication-actual-v1/worker-multipart-review.json",
+      "bytes": 415,
+      "sha256": "9ff62b4c13dd55787aa968e4556a1b1346dc966d1219c71e06448a65172baad3",
+      "role": "Actual PUT multipart metadata/module digest binding",
+      "privateBodyCopied": false
+    },
+    {
+      "file": ".local/jhg46-next-stage-preparation-20261018/gateway-publication-actual-v1/safe-receipt.json",
+      "bytes": 5899,
+      "sha256": "a2381e33685ce020c3226b5ef17263c1750241d63996959c94fb5110505e714e",
+      "role": "Original acknowledged Gateway version/source",
+      "privateBodyCopied": false
+    },
+    {
+      "file": ".local/jhg46-next-stage-preparation-20261018/gateway-publication-actual-v1/after-witness.actual.json",
+      "bytes": 3564,
+      "sha256": "dbe18df9abb9da1761fc49257c9da840571a818b660fe84a4420491b7994511d",
+      "role": "Actual deployed settings canonical hash after Gateway publication",
+      "privateBodyCopied": false
+    },
+    {
+      "file": ".local/jhg46-native-resource-host-rollout-acceptance-execution-20261018/rollout/effective-target-readback-repair-v2/actual-reconciliation.tool-result.private.json",
+      "bytes": 16373,
+      "sha256": "4c6e0a1a55668c6b96806eece86ffd17e51e2d3af09e8ca639cc8514a0a4a16b",
+      "role": "Same current version/module/settings preserved through this runtime batch",
+      "privateBodyCopied": false
+    },
+    {
+      "file": ".local/jhg46-native-resource-host-rollout-acceptance-execution-20261018/reviews/t1-intent-independent-review.safe.json",
+      "bytes": 14199,
+      "sha256": "4ad37bc4027f8a3d53d6b1baa6f05b7cf39962dc00cbef26ad02db7ad8552268",
+      "role": "Independently reviewed fresh blank scope/pre-session and intended model/profile",
+      "privateBodyCopied": false
+    }
+  ],
+  "sourceBindings": [
+    {
+      "commit": "240378f65fee54d917b053f565087095a07244db",
+      "file": "services/turn-runtime/host.ts",
+      "bytes": 11605,
+      "sha256": "1bdbbdca438fa2f535458d39099ea8b98f53dd6e9996eb42465bdb38c1eb149b",
+      "lines": [
+        "42-52"
+      ],
+      "access": "immutable local Git object read; no checkout/index/ref mutation"
+    },
+    {
+      "commit": "240378f65fee54d917b053f565087095a07244db",
+      "file": "services/turn-runtime/core.ts",
+      "bytes": 71190,
+      "sha256": "4791345a0cab39fe4dd3e7e8e35266dd54cc1ac10588d7702538f14eb04d198b",
+      "lines": [
+        "54-59",
+        "201-209",
+        "288-327",
+        "336-346"
+      ],
+      "access": "immutable local Git object read; no checkout/index/ref mutation"
+    },
+    {
+      "commit": "240378f65fee54d917b053f565087095a07244db",
+      "file": "services/turn/dispatcher.ts",
+      "bytes": 37076,
+      "sha256": "e183f0f15fbf41c0d2e6bedbb2eefd431117e34095e601fb113460f858ac35fb",
+      "lines": [
+        "100-111",
+        "126-157",
+        "187-214",
+        "238-257"
+      ],
+      "access": "immutable local Git object read; no checkout/index/ref mutation"
+    },
+    {
+      "commit": "240378f65fee54d917b053f565087095a07244db",
+      "file": "services/turn/journal.ts",
+      "bytes": 55601,
+      "sha256": "2e8aed983da8fcc57b82a030c86b5ede56846d880a4abb5351d02ea6017e1c52",
+      "lines": [
+        "77-97",
+        "250-267",
+        "285-293"
+      ],
+      "access": "immutable local Git object read; no checkout/index/ref mutation"
+    },
+    {
+      "commit": "240378f65fee54d917b053f565087095a07244db",
+      "file": "services/workspace/durable.ts",
+      "bytes": 194560,
+      "sha256": "026c97de88ff636b05edae9a43b93bf5360f67f89b80306111f1686d0b96bead",
+      "lines": [
+        "606",
+        "1361-1377",
+        "1633-1638"
+      ],
+      "access": "immutable local Git object read; no checkout/index/ref mutation"
+    },
+    {
+      "commit": "240378f65fee54d917b053f565087095a07244db",
+      "file": "services/workspace/runtime-leases.ts",
+      "bytes": 16943,
+      "sha256": "132740d3c0826ce58d50914125d5fbf7d0017edf3c808ee5749e158bced6f60b",
+      "lines": [
+        "28-43",
+        "99-103"
+      ],
+      "access": "immutable local Git object read; no checkout/index/ref mutation"
+    },
+    {
+      "commit": "240378f65fee54d917b053f565087095a07244db",
+      "file": "services/workspace/tool-receipt.ts",
+      "bytes": 1604,
+      "sha256": "ad3fdef071faa03103a081df187b0b59da958f9991ca85da9aa8498aee1d6c24",
+      "lines": [
+        "5-11"
+      ],
+      "access": "immutable local Git object read; no checkout/index/ref mutation"
+    },
+    {
+      "commit": "240378f65fee54d917b053f565087095a07244db",
+      "file": "services/tools/durable.ts",
+      "bytes": 8554,
+      "sha256": "8f22ff13ee4baa7f54d96b16cbe43dd524ffe028920dfad896c0fccc8d08d790",
+      "lines": [
+        "56-69"
+      ],
+      "access": "immutable local Git object read; no checkout/index/ref mutation"
+    },
+    {
+      "commit": "240378f65fee54d917b053f565087095a07244db",
+      "file": "services/tools/receipt.ts",
+      "bytes": 4353,
+      "sha256": "f498656defd1f73287bfba7316aa7aedae68d56d79ff8e5e1f59cc1681133b2f",
+      "lines": [
+        "17-37"
+      ],
+      "access": "immutable local Git object read; no checkout/index/ref mutation"
+    },
+    {
+      "commit": "240378f65fee54d917b053f565087095a07244db",
+      "file": "services/model-budget/private-beta-release.ts",
+      "bytes": 844,
+      "sha256": "78d57dc765eb9578d750829e22fd121919ca5bdfb644d37e3f7f0e779f586226",
+      "lines": [
+        "1-9"
+      ],
+      "access": "immutable local Git object read; no checkout/index/ref mutation"
+    },
+    {
+      "commit": "240378f65fee54d917b053f565087095a07244db",
+      "file": "services/model-budget/private-beta-capacity.ts",
+      "bytes": 38886,
+      "sha256": "fc36f4de0ce6e79804b080e47a9b696c41c0627464bf4d373249ea7997bec74d",
+      "lines": [
+        "75-107",
+        "349-351",
+        "395-407"
+      ],
+      "access": "immutable local Git object read; no checkout/index/ref mutation"
+    },
+    {
+      "commit": "240378f65fee54d917b053f565087095a07244db",
+      "file": "services/turn-runtime/release-gated.ts",
+      "bytes": 3078,
+      "sha256": "60980acaf68850d01bddc8bfe07d4d6acaae113144525f26cfbc08fbd49463fd",
+      "lines": [
+        "39-54"
+      ],
+      "access": "immutable local Git object read; no checkout/index/ref mutation"
+    },
+    {
+      "commit": "240378f65fee54d917b053f565087095a07244db",
+      "file": "services/turn-runtime/release.ts",
+      "bytes": 10323,
+      "sha256": "5064e68abf44e5e2ab7857680a767e778cd8387a49891f81af5d856c00fd5e5b",
+      "lines": [
+        "26-28",
+        "60-67",
+        "79-93"
+      ],
+      "access": "immutable local Git object read; no checkout/index/ref mutation"
+    },
+    {
+      "commit": "240378f65fee54d917b053f565087095a07244db",
+      "file": "services/turn-runtime/release-warm.ts",
+      "bytes": 5634,
+      "sha256": "c67efc38daa6380535df77e55c6d6dba979c19fd78183319c342607019d32d62",
+      "lines": [
+        "18-40"
+      ],
+      "access": "immutable local Git object read; no checkout/index/ref mutation"
+    },
+    {
+      "commit": "240378f65fee54d917b053f565087095a07244db",
+      "file": "services/turn-runtime/pi-native.ts",
+      "bytes": 21912,
+      "sha256": "e11862434a1e52816efd26805c7bac4754c9100dc8567d1db05583fd5c3e8fe2",
+      "lines": [
+        "118-138"
+      ],
+      "access": "immutable local Git object read; no checkout/index/ref mutation"
+    },
+    {
+      "commit": "240378f65fee54d917b053f565087095a07244db",
+      "file": "services/turn-runtime/workspace.ts",
+      "bytes": 10515,
+      "sha256": "18d19211a2f1c2d412daee405ff507bbe323f62ef159c77989af8246115a0b4c",
+      "lines": [
+        "75-78",
+        "103-106"
+      ],
+      "access": "immutable local Git object read; no checkout/index/ref mutation"
+    }
+  ],
+  "frozenMeaning": {
+    "exactPerStepReleaseConjunctionThird": "original runtime/tool resource dispositions and capacity release product authority match same dispatch/generation/lease; no release/recovery/resourceWait",
+    "requiresSameOriginalDispatchGenerationLeaseAuthority": true,
+    "requiresRuntimeToolContainerAndCapacityReleaseBeforeNextStage": true,
+    "requiresPublishingOrReturningAllPrivateRawFields": false,
+    "publicRawRouteAbsenceIsNotByItselfAnAdditionalAcceptanceStopRule": true,
+    "previousRouteInventoryStillFactuallyValid": true,
+    "interpretation": "The contract requires the qualified original product authority, not a new public DTO exposing private stop/lease fields. Existing server-side identity validation may supply that authority when its narrowly defined conjunction is actually proven."
+  },
+  "validatedAuthorityChain": [
+    {
+      "source": "services/turn/dispatcher.ts:126-157,238-257",
+      "finding": "The original internal receipt must match scope/session/Turn/dispatch/generation and expected operation/lease. Pi terminal receipts require nativeRunning=false/fenced=true stop proof unless a separately specified retirement failure path. Release reconciliation observes exactly the durable hold identity/lease before journal.advanceRelease."
+    },
+    {
+      "source": "services/turn/journal.ts:77-97,285-293",
+      "finding": "Release disposition is checked against the original Turn resourceLease and generation. An existing releaseHold clears on released or a validated handed-off disposition; generic public null alone therefore does not distinguish these states."
+    },
+    {
+      "source": "services/turn-runtime/core.ts:304-327",
+      "finding": "In the cold/no-retention path, release requires the original execution.release running=false, elapsed assignment guard and absence quiet interval, then matching original capacity ticket confirmReleased status/released finishedAt; only then status released is durably written."
+    },
+    {
+      "source": "services/turn-runtime/workspace.ts:75-78,103-106; services/turn-runtime/pi-native.ts:118-120",
+      "finding": "Cold execution release also awaits original Project workspace abort; abort requires running=false and fenced=true. Unconfirmed project cleanup throws and remains held, and TrustedPi destroy/release errors do not become success."
+    },
+    {
+      "source": "services/workspace/tool-receipt.ts:5-11; services/workspace/durable.ts:1633-1638; services/tools/durable.ts:56-69",
+      "finding": "A public tool receipt is authorized by original actor/authVersion, saved original Turn and exact checkpoint revision, actual event toolCallId/name and internal dispatch/runtime identity. The bridge target/command ledger is checked against that private original identity even though the public binding omits dispatch/lease."
+    },
+    {
+      "source": "services/tools/receipt.ts:27-37",
+      "finding": "state terminal alone can represent failed/cancelled tools. For this recipe each original tool must be terminal with completed/success result; unknown/not-admitted/omitted or conflicting receipts cannot qualify. usage remains unknown."
+    },
+    {
+      "source": "services/model-budget/private-beta-capacity.ts:75-107,395-407",
+      "finding": "The original Beta slot release branch uses the original admission actor/session/requestKey and matching Turn; unresolved model calls retain exposure. For an admitted completed Turn, current available means no active slot for that ordinary user. Alone it neither supplies the native/raw proof nor identifies a historical dispatch."
+    }
+  ],
+  "handoffAnalysis": {
+    "actualOriginalPutMetadataSha256": "8058ff9de79cfb891882058c793ff839d0635aa48bd1586b8ea996243524d079",
+    "actualDeployedWorkerVersion": "5a840cbc-49c5-45cd-badc-b75553c78566",
+    "moduleSha256": "9c8e4b6b763e9887d1624f00ed3a8efb2a8a24d984d96bc68fdb289cb4d362c3",
+    "deployedAfterAndCurrentSettingsCanonicalSha256": "287e543a73d17c4003570a1bcf8715f3581271f19332166538f930bc976607b7",
+    "actualPreservedFlags": {
+      "M2_LAZY_PROJECT_ENABLED": "false",
+      "M2_WORKSPACE_RUNTIME_REUSE_ENABLED": "false"
+    },
+    "sameActualMetadataSettingsModuleVersionLineageMatched": true,
+    "newBlankNoPriorSelectionBoundByExistingIntentEvidence": true,
+    "sourceWarmSelectionRequiresBothFlagsTrue": true,
+    "newColdSelectionUsesCapacityPortAndNoWarmRetention": true,
+    "handedOffCannotBeTheNormalReleaseExplanationForThisNewColdT1UnderTheseUnchangedFlags": true,
+    "mustReassessIfActualFlagOrScopeLineageChanges": true,
+    "old0316SettingsNotUsedAsCurrentConfigurationAuthority": true
+  },
+  "timingMeaning": {
+    "assignmentGuardMs": 360000,
+    "quietIntervalMs": 30000,
+    "runtimeReleaseDeadlineMs": 600000,
+    "guardAndQuietAreConjunctiveNotAutomaticSuccess": true,
+    "quietMayOverlapAssignmentGuard": "Earliest eligible proof is max(release begunAt+360000, absentSince+30000), not necessarily an extra30s after six minutes. Native/capacity checks still must pass.",
+    "betaGuardExceptions": [
+      "trusted-pi-release-assignment-guard",
+      "trusted-pi-release-quiet-window"
+    ],
+    "betaGuardedDeadlineRule": "original slot.created_at + policy.maxTurnDurationMs (configured900000), not finishedAt+releaseTimeoutMs (120000)",
+    "betaDeadlineOrElapsedTimeIsNotReleaseProof": true,
+    "deadlineExpiryQuarantinesRatherThanFreesUnknownExposure": true,
+    "doesNotExtendOriginalHumanWindow": true
+  },
+  "permittedEvidenceConjunctionForLaterActualReview": [
+    "Same ordinary actor/authVersion and original scope/session/requestKey receipt identifies the one actual T1, original runtimeGeneration, completed execution/saved persistence and exact R1 checkpoint. Workspace canonical revision and Session head agree with R1.",
+    "Original R1-authorized tool receipts for the actual event toolCallIds/names show both expected commands terminal/completed: mkdir bash exit0 with bounded successful output and write2698B/f050 at the exact skill path. Unknown/failed/cancelled/omitted or foreign-revision results do not qualify.",
+    "Fresh normal original-owner snapshot and original-key receipt after the actual release guard show the same T1/R1 still terminal, activeTurn/releaseHold/recoveryHold/resourceWait all null, with no new scope or force-clear action.",
+    "Actual cold-mode configuration lineage remains unchanged; this excludes handed-off as the alternative way the public releaseHold can clear for this T1.",
+    "Fresh scoped original ordinary Beta capacity is available, and complete current logical/scheduler/exact/Dash physical evidence meets the already accepted at-most-one known basic/max1 running idle VM with container stopped and no extra/unknown active resources.",
+    "Combine these source-bound product-authority observations; state explicitly that internal original dispatch/generation/lease and stop proofs were validated by the server and were not publicly exposed or independently read as raw records. Preserve usage/fee uncertainty."
+  ],
+  "decision": {
+    "allowExistingSourceValidatedProductAuthorityConjunctionWithoutPublishingPrivateRawFields": true,
+    "rawStopLeasePublicDtoOrNewRouteRequiredByFrozenContract": false,
+    "newApprovalOrNewMaintenanceHoldRequiredJustToExposePrivateFields": false,
+    "canAdvanceFromSavedOrElapsedSixMinutesOrAvailableAlone": false,
+    "actualCurrentReleaseConjunctionProvenByThisStaticReview": false,
+    "t2ReleasedOrPermittedByThisReviewAlone": false,
+    "nextAction": "Root may collect only the already authorized fresh original product/physical observations and submit them for actual-result acceptance. If the conjunction fails, remains unknown or still held, do not start T2."
+  },
+  "limits": [
+    "This is the evidence threshold interpretation, not acceptance of actual later release or permission to send T2 now. It adds no public raw-field requirement and waives none of the original identity/release conditions.",
+    "A saved R1 proves persistence and a terminal fenced native outcome was accepted internally, but the separate assignment/quiet/capacity release is still pending until the original server authority transitions and the conjunction is actually observed.",
+    "No new RPC/SQL/log API/SDK observe/hold/force-stop/clear operation is proposed to manufacture missing public fields.",
+    "The old public-route inventory remains accurate about what is not exposed. Its raw-field gap cannot be promoted into an unstated requirement to publish private internals.",
+    "The product-authority conclusion must be labelled as source-validated inference from server projections plus command and physical authority, not a raw stop/ticket inspection, zero physical VMs, settled usage/cost or global activity proof."
+  ],
+  "privacy": {
+    "privateUserEmailActorScopeKeysStopLeaseConfigurationBodyOrCredentialCopied": false,
+    "onlySafeFlagValuesFrozenWordingSourceHashesAndAuthorityRules": true
+  },
+  "reviewerActions": {
+    "localFileAndImmutableGitObjectReadsOnly": true,
+    "networkCalls": 0,
+    "browserCalls": 0,
+    "authCalls": 0,
+    "modelCalls": 0,
+    "cloudWrites": 0,
+    "sourceEdits": 0,
+    "newTestsOrFixtures": 0
+  },
+  "mustFix": []
+}

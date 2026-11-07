@@ -1,0 +1,64 @@
+{
+  "schema": "trusted-pi-native-resource-snapshot-host-offline-preparation/v1",
+  "preparedAt": "2026-10-18T10:54:18.209721+00:00",
+  "requestId": "695e8875-459a-41b3-a148-2e228f2c3727",
+  "authorized": false,
+  "executed": false,
+  "result": "review-only-local-preparation",
+  "implementationCommit": "0a10da572264470aaac111e6f5da2bd20b2f2c45",
+  "sourcePullRequest": "https://github.com/jihegao/riffology-cloud/pull/253",
+  "sourceCi": {
+    "run": 39119659267,
+    "job": 117652481483,
+    "conclusion": "success",
+    "startedAt": "2026-10-18T10:32:31Z",
+    "completedAt": "2026-10-18T10:43:22Z",
+    "isNotImageOrUserAcceptance": true
+  },
+  "overlayFileCount": 1,
+  "checkedImageTargets": 12,
+  "archive": {
+    "path": "jhg46-pi-native-resource-snapshot-host-v1-20261018.tar.gz",
+    "bytes": 12364,
+    "sha256": "91b42a14a3c1c8caafb0b98230f156408bc39be065d408091055e91f7c724b81",
+    "uncompressedBytes": 51200,
+    "uncompressedSha256": "a4f3e479c70f168d485cf5f66e2a223b518d665e1f361c8ed0c57f9aa4b84901"
+  },
+  "inputManifestSha256": "7106ff37f714ec60135962a9f71e661d911ba5e0e4870178175a8b1bf5260d22",
+  "operationsManifestSha256": "fe1ab539e48c1a19d1b48e355b63c93a7c8c1c82bdcee319a385c7aac1ef78c5",
+  "sourceEquivalence": {
+    "passed": true,
+    "isImageRun": false,
+    "sourceUid": 501,
+    "imagePermissionChecksExecuted": false,
+    "syntheticModelRequests": 3,
+    "syntheticResearchRequests": 3,
+    "projectToolExecutions": 0,
+    "ambientFetch": 0
+  },
+  "operationPureFixtures": {
+    "passed": 23,
+    "failed": 0,
+    "operations": 17,
+    "independentReader": 6,
+    "actualDockerOrSshCommands": 0
+  },
+  "futureScope": [
+    "fixed-input-transfer-unpack-once",
+    "fixed-existing-cache-tag-identity-preflight",
+    "offline-build-once",
+    "network-none-uid10002-host-mock-once",
+    "original-cid-cleanup-and-independent-readback"
+  ],
+  "originalPaidAcceptanceDeadline": "2026-10-18T12:42:46Z",
+  "originalDeadlineExtended": false,
+  "newTurnAuthorized": false,
+  "limits": [
+    "No new image built, exported, published or rolled out in this preparation.",
+    "New derived image/CID identities remain unset until actual future evidence.",
+    "No actual cached-tag/config/API support read occurred in this preparation. Unknown values stop rather than selecting a fallback.",
+    "Source-mode success skips image owner/mode/caps and is not image or target/user acceptance.",
+    "Original T1 project_write cause/effects remain unknown; host compatibility does not create R1 or permit replay/new provider/Turn.",
+    "No credentials/proxy/pull/push/cloud/gate/model/Turn/Run/old-project action or paid-deadline extension is authorized."
+  ]
+}

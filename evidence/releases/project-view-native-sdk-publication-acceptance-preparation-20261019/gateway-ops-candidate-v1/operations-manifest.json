@@ -1,0 +1,109 @@
+{
+  "schema": "jhg46-sdk-offline-operation-candidate-manifest/v1",
+  "recordedAt": "2026-10-18T17:50:52.694528+00:00",
+  "authorPreparationNotIndependentReview": true,
+  "batchRequestId": "fb07e239-2cb4-4379-9581-5711d86a0f30",
+  "fixedImplementation": "fca66cb0e1024b4e86bbbeb9a6d955b137599efa",
+  "fixedBundleSha256": "304373a50d7a9ca8a99cdfbda0dcae261aa34d53727b757dfeb099c88efb5e0b",
+  "executionAuthorized": false,
+  "files": [
+    {
+      "file": "gateway-ops-candidate-v1/prepare-gateway-replacement.mjs",
+      "bytes": 11329,
+      "sha256": "7da498c0d050cb572e8ae301204b11b1df3fd8c85bc6a4faaa353fed4cd463c8"
+    },
+    {
+      "file": "gateway-ops-candidate-v1/publish-gateway-replacement.mjs",
+      "bytes": 39579,
+      "sha256": "8d6d554f7579d87d3f7edb5279353833aeeed0a9cd1799f2d83735ea9725a9ef"
+    },
+    {
+      "file": "gateway-ops-candidate-v1/reviewed-publication-primitives.mjs",
+      "bytes": 3711,
+      "sha256": "2c1e96b10dc38799a7115d071acaff576466c35bce7888db96b3c1f0e4ef9ea1"
+    },
+    {
+      "file": "gateway-ops-candidate-v1/dated-baseline.mjs",
+      "bytes": 5954,
+      "sha256": "8343bea6953e6854ed7145d41092cce1521315cf9d16d380405f941088a206da"
+    },
+    {
+      "file": "gateway-ops-candidate-v1/derive-dated-baseline.mjs",
+      "bytes": 4088,
+      "sha256": "ec889bf35a60aa2713b6dbc6df2489cc9359cd26e8d78a382e459a6a5ac2dd18"
+    },
+    {
+      "file": "gateway-ops-candidate-v1/make-preservation-request.mjs",
+      "bytes": 14872,
+      "sha256": "486707e3d453f61e11755200ce430f146da20750a94f2b7dcd741c0d4cd47db9"
+    },
+    {
+      "file": "gateway-ops-candidate-v1/scope.json",
+      "bytes": 1699,
+      "sha256": "0a31a922965730d44af75adb6c4a91a1b40612b14df3f279b84eb3e40007d813"
+    },
+    {
+      "file": "gateway-ops-candidate-v1/README.md",
+      "bytes": 5849,
+      "sha256": "8efae2c709864b1740f3d94d78e693cf5e7fb14d94d3a13ea1cc9ee7c8b8d7b9"
+    },
+    {
+      "file": "gateway-ops-candidate-v1/parent-source.safe.json",
+      "bytes": 703,
+      "sha256": "8761dfd510162671ca2730998289928f360d075f571fbca68d8bd175e74082da"
+    },
+    {
+      "file": "gateway-ops-candidate-v1/adaptation.test.mjs",
+      "bytes": 11539,
+      "sha256": "1700aa85cdc3882938800ae369d130354e3d87cb552596911232cd48269278c5"
+    },
+    {
+      "file": "gateway-ops-candidate-v1/checks.safe.json",
+      "bytes": 2994,
+      "sha256": "1990efea7f36f3fc387a9c37e44b2d10458f6720a40ef99d67e21c0bd89fc108"
+    },
+    {
+      "file": "gateway-ops-candidate-v1/baseline-expectation.safe.json",
+      "bytes": 6291,
+      "sha256": "909173b4f60e93ea956700822c56f886077a6cd4f66303f6ae1e1f1f01cc8702"
+    },
+    {
+      "file": "gateway-ops-candidate-v1/baseline-expectation.private.json",
+      "bytes": 128639,
+      "sha256": "24a04f3d44b01788dbb3157f07b83d2614f16dbee9622ed5ec5f7906d9a61f2a"
+    },
+    {
+      "file": "gateway-ops-candidate-v1/metadata-without-jwt.private.json",
+      "bytes": 30437,
+      "sha256": "deaebd8cb6eefe25098b7cb3e48223e760df9b6456b287b6a4c1bd988d68f636"
+    },
+    {
+      "file": "gateway-ops-candidate-v1/publication-attempts/1feadf24-3eb8-58be-abd7-872c68ab45e6/plan.json",
+      "bytes": 2158,
+      "sha256": "1b40da5395962b478d1312bcf29ccbb9468fdf39d3ff5aa30102dca31c2aa906"
+    },
+    {
+      "file": "gateway-ops-candidate-v1/getter-fixtures.test.mjs",
+      "bytes": 4707,
+      "sha256": "881132d8c4f9b33eed2934b92672e18e620e66406f044240d953ba098dc06ce5"
+    },
+    {
+      "file": "gateway-ops-candidate-v1/getter-fixture-observations.safe.json",
+      "bytes": 1004,
+      "sha256": "7b5bfc0a2ede4bdb3f0794cf5c02189de4c59922d7fe16fcb8af9c6ae4aefd47"
+    }
+  ],
+  "runtimeInputsStillRequired": [
+    "actual single257 normal merge/source proof",
+    "explicit root-reviewed new finite human grant",
+    "fresh same-request before/after Personal witnesses",
+    "original actual ACK/readback and new ordinary quartet before finite gate"
+  ],
+  "privateFilesMayNotBePublished": [
+    "baseline-expectation.private.json",
+    "metadata-without-jwt.private.json"
+  ],
+  "externalImports": [],
+  "newAuthenticationNetworkCloudWrites": 0,
+  "freezeNote": "Gateway author candidate frozen for independent source review; gate transition bridge has separate manifest and checks. Initial13 and final getter2 attribution is explicit in checks.safe.json."
+}

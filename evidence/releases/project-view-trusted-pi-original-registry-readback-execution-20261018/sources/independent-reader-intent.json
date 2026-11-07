@@ -1,0 +1,23 @@
+{
+  "at": "2026-10-18T13:25:58.627624+00:00",
+  "connectionReuse": false,
+  "deadlineSeconds": 90,
+  "dockerOrRegistryCalls": 0,
+  "forwardAgent": false,
+  "humanGrantSha256": "eb6294d0b9dd1344e8717f5a8dd6ac879e7a41ed9455c0c2cb703f0ffbb2f97f",
+  "ioDeadlineSeconds": 75,
+  "localIntentSha256": "dae0d6e244eafbd92992a66617b0377726a94b229cc317bba5ff2f7409fd630e",
+  "localTerminalSha256": "8c7b393ac20c98e00fea8c08100872fe213e4dc772fbc8de30635ab6bfb18b63",
+  "newForwardings": false,
+  "operationId": "registry-readback-recovery-v1",
+  "operationsManifestSha256": "59fd2dd0f464e38b50b56e7c1d65229b6d81d86b12c935a822d5eeefead74342",
+  "originalFinalReadbackAckVerified": false,
+  "originalSshExitCode": 1,
+  "originalSshRecordedReaped": true,
+  "partialDiagnosticGateAllowed": true,
+  "readerSourceBytes": 29295,
+  "readerSourceSha256": "ad6f018ff89af088a0a04d5748ca71bf056f6a8deb1b3beb2063a190b82dc1f3",
+  "remoteWrites": 0,
+  "requestId": "c263a2f3-f445-430e-b562-2e48f1eeb637",
+  "sourceSentThroughStdinUnchanged": true
+}

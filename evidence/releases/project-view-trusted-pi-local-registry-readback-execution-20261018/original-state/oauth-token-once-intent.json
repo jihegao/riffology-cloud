@@ -1,0 +1,18 @@
+{
+  "argv": [
+    "/opt/homebrew/bin/node",
+    "--no-warnings",
+    "/Users/jihegao/apps/riffology-cloud/node_modules/wrangler/wrangler-dist/cli.js",
+    "auth",
+    "token",
+    "--json",
+    "--profile",
+    "default",
+    "--env-file",
+    "/dev/null"
+  ],
+  "at": "2026-10-18T14:29:45.975563+00:00",
+  "diskLogs": false,
+  "stdoutAndStderr": "memory-only",
+  "timeoutSeconds": 30
+}

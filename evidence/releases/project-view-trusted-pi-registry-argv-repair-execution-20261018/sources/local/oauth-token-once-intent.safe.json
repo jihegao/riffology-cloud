@@ -1,0 +1,32 @@
+{
+  "schema": "jhg46-fb99-cli-intent-safe-projection/v1",
+  "requestId": "fb99c7e4-21a7-4215-8261-c17dd7c148aa",
+  "originalRecord": {
+    "file": "oauth-token-once-intent.json",
+    "bytes": 387,
+    "sha256": "b73dd7b0897645909946381b487f6c1293689fe51bdc4d8ee93142985c5b580f"
+  },
+  "projectionChanges": [
+    "argv[0] local executable path replaced by placeholder",
+    "argv[2] absolute repository prefix replaced by <repository>"
+  ],
+  "intent": {
+    "argv": [
+      "<local-node-executable>",
+      "--no-warnings",
+      "<repository>/node_modules/wrangler/wrangler-dist/cli.js",
+      "auth",
+      "token",
+      "--json",
+      "--profile",
+      "default",
+      "--env-file",
+      "/dev/null"
+    ],
+    "at": "2026-10-18T01:59:27.731456+00:00",
+    "diskLogs": false,
+    "stdoutAndStderr": "memory-only",
+    "timeoutSeconds": 30
+  },
+  "rawOutputIncluded": false
+}

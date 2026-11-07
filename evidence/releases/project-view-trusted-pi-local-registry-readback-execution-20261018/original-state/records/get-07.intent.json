@@ -1,0 +1,14 @@
+{
+  "at": "2026-10-18T14:30:16.756523+00:00",
+  "expectedDescriptor": {
+    "digest": "sha256:5f06475c22fdc31cfe5f04907f567ef4b821980741c9f3c3a46e9c2fe81fb2a1",
+    "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+    "size": 45212329
+  },
+  "operationId": "registry-local-readback-v1",
+  "path": "blobs/sha256:5f06475c22fdc31cfe5f04907f567ef4b821980741c9f3c3a46e9c2fe81fb2a1",
+  "requestId": "c263a2f3-f445-430e-b562-2e48f1eeb637",
+  "retryAllowed": false,
+  "schema": "trusted-pi-local-registry-get-intent/v1",
+  "slot": 7
+}

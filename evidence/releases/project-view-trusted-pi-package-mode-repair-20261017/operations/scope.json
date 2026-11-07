@@ -1,0 +1,88 @@
+{
+  "archive": {
+    "bytes": 61519,
+    "path": "jhg46-pi-package-mode-repair-v1-20261017.tar.gz",
+    "sha256": "4ae32cf711d7500d4b0cd893757ee5a625d9b275518b86e3680146c0b7f7dcd2",
+    "uncompressedBytes": 256000,
+    "uncompressedSha256": "4e3d89ab85b86d3554d71356e096061d43d645514b633f0aa8af802ff9ba32c3"
+  },
+  "baseImage": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-issue165-trusted-pi@sha256:9b76ab9ee7a4f31d250957fbbeefc62d71056e6bd1eb24686ebbeaff3d65873c",
+  "canonicalImplementationCommit": "0d23a12d869abccb9515a8e7f8196b0266258226",
+  "canonicalPullRequest": "https://github.com/jihegao/riffology-cloud/pull/239",
+  "excluded": [
+    "pull",
+    "OAuth-Registry-provider-credential-read-or-mint",
+    "ssh-forward",
+    "registry-push",
+    "Cloudflare-write",
+    "provider",
+    "project",
+    "Turn",
+    "Run"
+  ],
+  "operations": [
+    "ssh-fixed-repair-input-and-operations-transfer-once",
+    "cached-base-offline-build-once",
+    "sdk-mock-original-cid-once-and-cleanup"
+  ],
+  "originalDirectory": "/tmp/riffoid-jhg46-image-20261017.AU613w/pi-resource-compat-v1",
+  "parentRequestId": "57a70587-2b21-4a56-aed1-09c8a32d868a",
+  "payload": {
+    "EXECUTION-CONTRACT.md": {
+      "bytes": 4031,
+      "sha256": "96404a60a74eb0d5e1377b7513b046517bd8ade99bfed29c6ff514dfb76e6627"
+    },
+    "context/Dockerfile": {
+      "bytes": 1468,
+      "sha256": "3ef0b46a9388b9d78a1b82ceeb5c7c2ed821925982975d2a1e2f5a68411a9bb9"
+    },
+    "context/services/browser-preview/runtime/sha256.mjs": {
+      "bytes": 2241,
+      "sha256": "85da435e9edaf4dca3411cf5f86fa45a95fe15c78060849d11f7eb0344b5bd24"
+    },
+    "context/services/project-resources/text.mjs": {
+      "bytes": 6700,
+      "sha256": "9f7f3266549f04a0a8214e6e725ea9d85030532364f136487833e9cc45af303e"
+    },
+    "context/services/runtime/controlled-pi.mjs": {
+      "bytes": 23072,
+      "sha256": "cf4143bff6cf049d2ab8247ef86ceb5f5391da67a86acb56ea901a119b2d6871"
+    },
+    "context/services/trusted-pi/package-lock.json": {
+      "bytes": 150262,
+      "sha256": "ad20b5c766c411c5ba42a4fc997890fe3494ab8adb96cf5d75031366b3d144fc"
+    },
+    "context/services/trusted-pi/package.json": {
+      "bytes": 244,
+      "sha256": "0dde532fe23b810bd09b978f990d48342f7378429f2b2c48f30e055993fa6ebe"
+    },
+    "context/services/trusted-pi/release-candidate.mjs": {
+      "bytes": 27185,
+      "sha256": "034cdc9df6c09e9cd7a32320e6bbfc2f9bbf5761151fe1d585d7fd64cdcd8d07"
+    },
+    "context/services/trusted-pi/research-context.mjs": {
+      "bytes": 1557,
+      "sha256": "938e89155a5d5e0c405f51db5d973a4db264e63d96e308aff8da93caaaa05076"
+    },
+    "input-manifest.json": {
+      "bytes": 6884,
+      "sha256": "f27b35dcbe84b58e3442018332374dbf20fa0d315528a322e56ea2a2bcfea5d4"
+    },
+    "probe/compatibility-probe.mjs": {
+      "bytes": 12020,
+      "sha256": "bded581766c4656b05b72c6fce39fcb43461a44cbe407c0d1e9ab4a23edf2097"
+    },
+    "repair-manifest.json": {
+      "bytes": 3325,
+      "sha256": "e668f9080b5a906c1d74b84246aa865cb458c9c1257086b21e920b32d805a84e"
+    }
+  },
+  "permissionDestinations": 2,
+  "recipient": "AMD128",
+  "remoteDirectory": "/tmp/riffoid-jhg46-image-20261017.AU613w/pi-package-mode-repair-v1",
+  "requestId": "a21af2c8-44ff-4f67-a07f-c364bcd6d295",
+  "reviewOnly": true,
+  "runtimeDestinations": 6,
+  "schema": "trusted-pi-package-permissions-operations-scope/v1",
+  "totalCopyDestinations": 8
+}

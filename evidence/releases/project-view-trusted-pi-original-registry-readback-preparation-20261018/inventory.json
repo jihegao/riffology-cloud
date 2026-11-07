@@ -1,0 +1,99 @@
+{
+  "actualNewAuthSshRegistryDockerCalls": 0,
+  "completeSourceBindingSha256": "1dc5e1dbadd9c7496a2f6ac0ed609240df1f9fc48f486c2d4e43445eb76488ab",
+  "document": {
+    "bytes": 6657,
+    "path": "docs/project-view-trusted-pi-original-registry-readback-packet-20261018.md",
+    "sha256": "64132d9a67f96586ca70afe763ddbf133c50a67deaeda39a7dd0c45131e412c1"
+  },
+  "fileCountExcludingInventory": 19,
+  "files": {
+    "AUTHORIZATION.md": {
+      "bytes": 2318,
+      "sha256": "db3c76cf4959f42d1a5871f507bcc41962d4235f5d3240a415863f4b4de2f60d"
+    },
+    "EXECUTION.md": {
+      "bytes": 4398,
+      "sha256": "079eecb8c3a0b5a317472d42529fd595e86b7b4baa482275e484bf841d94c152"
+    },
+    "README.md": {
+      "bytes": 1587,
+      "sha256": "2b3767338445396ba714699e552da9e7f7b21892b94561796164edcead7fd31f"
+    },
+    "complete-source-binding.json": {
+      "bytes": 2685,
+      "sha256": "1dc5e1dbadd9c7496a2f6ac0ed609240df1f9fc48f486c2d4e43445eb76488ab"
+    },
+    "independent-readback-readonly.py": {
+      "bytes": 29295,
+      "sha256": "ad6f018ff89af088a0a04d5748ca71bf056f6a8deb1b3beb2063a190b82dc1f3"
+    },
+    "local-recovery.py": {
+      "bytes": 19254,
+      "sha256": "971c91d7ea182e8b6540cdf98b3303431e08b0ad0fc1103d48ff60247774b21b"
+    },
+    "oci_verify.py": {
+      "bytes": 5748,
+      "sha256": "0a23618e34b9a2acf608acc86d281ebd68f60a62ba2b102ecda92502c294acea"
+    },
+    "offline-checks.safe.json": {
+      "bytes": 2474,
+      "sha256": "6e821bde70d125fd25879bab67860358b70341bd6525bb85cf0e2c62f7412096"
+    },
+    "operations-manifest.json": {
+      "bytes": 2058,
+      "sha256": "59fd2dd0f464e38b50b56e7c1d65229b6d81d86b12c935a822d5eeefead74342"
+    },
+    "pub_common.py": {
+      "bytes": 5271,
+      "sha256": "17386129c3f25512f0d11f460232705de8076ed23858cf8cb76e57c78619cb07"
+    },
+    "reader-offline-checks.safe.json": {
+      "bytes": 1562,
+      "sha256": "96d841cb59b4ea79038b7c16b0eefecec491754e7541c716ce9230eca9f0186e"
+    },
+    "remote-recovery.py": {
+      "bytes": 14306,
+      "sha256": "1c35225815e0654a9699479148412d2daf9b21bedffabe1ce57c14b25e4c0fa6"
+    },
+    "renewal-source-contract.json": {
+      "bytes": 2497,
+      "sha256": "0593104af3bcc19871b2b55074d85aae105e2a04fef8f9041ab3e31887775f60"
+    },
+    "reviews/readback-only-independent-review.json": {
+      "bytes": 8416,
+      "sha256": "64df4cc5e56a3d2d02dc7ac22a03a65f1f5ea435250fb1cfe3553ad94ba72c61"
+    },
+    "scope.json": {
+      "bytes": 6416,
+      "sha256": "3afa843b35aca80bf6866518ec2b55fd77cd5a40533b0a9fe421031b2ccfb178"
+    },
+    "source-reuse-contract.json": {
+      "bytes": 2218,
+      "sha256": "599c9831ed0be613e5986c36ecf660151034d35ddd549a6ccd8dd5fdec020f0d"
+    },
+    "test_independent_readback.py": {
+      "bytes": 7652,
+      "sha256": "ca963023e4b7d1f263d3c4cf0baceb07d631dda741a899c0b550573a5bf4b7b5"
+    },
+    "test_recovery.py": {
+      "bytes": 11164,
+      "sha256": "c2f35fc4a1646d82bd32ad82ec2018e3ed8b2dca331015f32f1478ca37875d3f"
+    },
+    "verification-source.json": {
+      "bytes": 10398,
+      "sha256": "76a53be45c5cd33a5b322bd5dd3dabc6b49f64aa53b739b38a6331cbe998beca"
+    }
+  },
+  "independentReviewCompleted": true,
+  "independentReviewSha256": "64df4cc5e56a3d2d02dc7ac22a03a65f1f5ea435250fb1cfe3553ad94ba72c61",
+  "inventoryExcludesSelf": true,
+  "newHumanExecutionGrantPresent": false,
+  "operationId": "registry-readback-recovery-v1",
+  "operationsManifestSha256": "59fd2dd0f464e38b50b56e7c1d65229b6d81d86b12c935a822d5eeefead74342",
+  "privateGrantReplyCredentialConfigRawLogsIncluded": false,
+  "recordedAt": "2026-10-18T13:06:15.044398+00:00",
+  "requestId": "c263a2f3-f445-430e-b562-2e48f1eeb637",
+  "reviewOnly": true,
+  "schema": "jhg46-original-registry-readback-preparation-public-inventory/v1"
+}

@@ -1,0 +1,43 @@
+{
+  "schema": "jhg46-future-content-byte-framing-check/v1",
+  "recordedAt": "2026-10-18T17:15:53.710872+00:00",
+  "checks": {
+    "standaloneHelperOccursOnceVerbatimInSkill": true,
+    "turn1EmbedsExactNewSkillWithLfAndUnambiguousOuterFence": true,
+    "turn2OnlyAddsTheHelperReuseInstruction": true,
+    "turn2OriginalManifestSynthetic17408DataAndDynamicArtifactIdInstructionsPreserved": true,
+    "turn3ByteExactOriginalDocsOnlyV2Prompt": true,
+    "oldSkill2698F050Confirmed": true,
+    "jsonLinksAndTrailingWhitespaceChecked": true
+  },
+  "newSkill": {
+    "file": "SKILL.md",
+    "bytes": 6056,
+    "sha256": "8ef3375d58464b2a74cc57031771f5f7bad21b15f09991fb3838620e9f3ae6d7"
+  },
+  "helper": {
+    "file": "read-checked-artifact.mjs",
+    "bytes": 3228,
+    "sha256": "5a1811e1203d1bea93247ff8d238f5647b884b05aea7f5574ba5cf330fa27946"
+  },
+  "prompts": [
+    {
+      "file": "prompts/turn-1-create-skill.md",
+      "bytes": 7193,
+      "sha256": "13302684903565b94a3187043a489033e5c91e986da989f3feab097424bd5513"
+    },
+    {
+      "file": "prompts/turn-2-build-v1.md",
+      "bytes": 2287,
+      "sha256": "ada18925ea4504cf81d981eb332fef66483d513b5191945fe3809ab369c98364"
+    },
+    {
+      "file": "prompts/turn-3-cold-edit-v2.md",
+      "bytes": 962,
+      "sha256": "c8c858c602fbc2c923c4b9c2e400696fc45527faaa25b54287eaf59434cea149"
+    }
+  ],
+  "actualProjectModified": false,
+  "oldPModified": false,
+  "notRuntimeExecutionOrApproval": true
+}

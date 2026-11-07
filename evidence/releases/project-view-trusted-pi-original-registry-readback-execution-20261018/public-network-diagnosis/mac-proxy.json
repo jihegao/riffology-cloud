@@ -1,0 +1,15 @@
+{
+  "bytesPerSecond": 371344.0,
+  "capturedBytes": 1048576,
+  "endedAt": "2026-10-18T13:31:08.172001+00:00",
+  "exitCode": 0,
+  "httpStatus": 200,
+  "name": "mac-existing-loopback-proxy",
+  "redirectsFollowed": 0,
+  "seconds": 2.823732,
+  "startedAt": "2026-10-18T13:31:05.337597+00:00",
+  "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

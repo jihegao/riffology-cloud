@@ -1,0 +1,22 @@
+{
+  "argv": [
+    "gh",
+    "pr",
+    "merge",
+    "253",
+    "--repo",
+    "jihegao/riffology-cloud",
+    "--merge",
+    "--match-head-commit",
+    "0a10da572264470aaac111e6f5da2bd20b2f2c45"
+  ],
+  "at": "2026-10-18T14:34:58.238901+00:00",
+  "automaticRetry": false,
+  "expectedBase": "65df9b771a5d0497304a5955e33974e8ea9aa9ac",
+  "expectedHead": "0a10da572264470aaac111e6f5da2bd20b2f2c45",
+  "freshRuleAndReviewSource": "../github-final-premerge-readonly/",
+  "immediatePremergeReadbackSha256": "62dfada657ca65dfc64b93d6927455330aad1ad63ccd9455223a4a994cb680f9",
+  "normalMergeOnly": true,
+  "publicationCompositeSha256": "c3d87c56f53e3f8f22b2692f50a48645cf6f721e8d241fa5b7d4e4bafbab8c51",
+  "schema": "jhg46-fixed-pr253-normal-merge-once/v1"
+}

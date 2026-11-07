@@ -1,0 +1,370 @@
+{
+  "actionsPerformedOrClaimsMade": {
+    "authenticatedOrdinaryUserAcceptance": false,
+    "cloudflareOrGateWrite": false,
+    "globalZeroFeesOrExecution": false,
+    "jhg46OrJhg56Done": false,
+    "nativeRootSupervisorExecutionProof": false,
+    "newBuildPullPushOrImageExport": false,
+    "oauthRegistryOrProviderCredentialReadOrMint": false,
+    "pullRequestMerge": false,
+    "realProjectModelTurnRun": false,
+    "registryDigestOrPublication": false,
+    "sshAgentForwardOrNewProxyRoute": false
+  },
+  "authorization": {
+    "approvedAtMeaning": "local recording of actual human grant, not verbatim submission timestamp",
+    "archiveBytes": 6195,
+    "archiveSha256": "5817ecf49cf2e3128a9695c9fb6d75182d8cd6958b815e553f571a13167e89dc",
+    "grantBytes": 1503,
+    "grantSha256": "78c8c59e91a9313e0760ecb71466868fae28c44d2568703d6f8acc26850f947a",
+    "humanReplyEvidenceKind": "canonical-human-reply-projection/v1",
+    "noCredentialsReadOrGenerated": true,
+    "operationsManifestSha256": "ae0614dafe7067367703ad41a9e0ff19f25de3ab7c788b85f01c1ff5c6b4fffd",
+    "packetCommit": "7b8b15f1da4517c073566a017e6fc5aa4557a385",
+    "readerSha256": "bf86993670c344e264e2b3dff915051fee2ef2f0db5a54404aafcff8bc482a91",
+    "realTransferOrMockStarted": false,
+    "recordedAt": "2026-10-17T14:34:20.762795+00:00",
+    "remoteDirectory": "/tmp/riffoid-jhg46-image-20261017.AU613w/pi-probe-readable-v1",
+    "requestId": "b0933502-20df-480a-9a91-d833f5c4358c",
+    "schema": "trusted-pi-probe-readable-authorization-receipt/v1"
+  },
+  "date": "2026-10-17",
+  "fixedPacketCommit": "7b8b15f1da4517c073566a017e6fc5aa4557a385",
+  "frozenNamedChecksValidatedByIndependentReader": [
+    "allTargetBytes",
+    "activeReleaseAlias",
+    "actualControlledPiAndProductRelease",
+    "explicitSkillRevisionPathAndSha",
+    "unselectedBodyAbsent",
+    "noModelSpecFixedSimulationPrompt",
+    "coldRestoreNoReplay",
+    "sameSourceHistoricalProvenance",
+    "newSourceDoesNotInheritLoadedMarker",
+    "crossProjectRejected",
+    "synthetic503NoRetry",
+    "sdkCancelAbortedAndSettled",
+    "allSessionsDisposed",
+    "temporaryDirectoryRemoved",
+    "environmentOnlyPath"
+  ],
+  "imageIdentity": {
+    "descriptor": {
+      "digest": "sha256:a946b164d10d074fcc9859f6c54c3b65d1901b41696c5ee8d8e31e275ddd1593",
+      "mediaType": "application/vnd.oci.image.index.v1+json",
+      "size": 856
+    },
+    "engineId": "sha256:a946b164d10d074fcc9859f6c54c3b65d1901b41696c5ee8d8e31e275ddd1593",
+    "engineIdRole": "descriptor",
+    "launchConfigMatched": true,
+    "registryReadbackOrPublicationClaim": false,
+    "rootfsLayerCount": 48,
+    "rootfsMatched": true
+  },
+  "implementationCommit": "0d23a12d869abccb9515a8e7f8196b0266258226",
+  "implementationPullRequest": 239,
+  "independentReadback": {
+    "allOriginalCliReapedAndCurrentOriginalAbsent": true,
+    "dockerGets": 2,
+    "fixedRecordsCount": 77,
+    "originalCleanupConfirmed": true,
+    "originalCliCount": 14,
+    "reads": [
+      {
+        "errorCode": null,
+        "exactOriginalNotFound": true,
+        "exitCode": 1,
+        "kind": "original-id",
+        "linuxStartTicks": "165470316",
+        "localStopErrors": [],
+        "pid": 3210712,
+        "reaped": true,
+        "remoteContainerStoppedByCliCleanupProved": false,
+        "streams": {
+          "stderr": {
+            "bytes": 112,
+            "sha256": "7e8947c7273da487589e91d2782238fb9ef12134fbb7633584e3d67ec89201ea"
+          },
+          "stdout": {
+            "bytes": 1,
+            "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+          }
+        }
+      },
+      {
+        "errorCode": null,
+        "exitCode": 0,
+        "kind": "original-label",
+        "linuxStartTicks": "165470319",
+        "localStopErrors": [],
+        "pid": 3210790,
+        "reaped": true,
+        "remoteContainerStoppedByCliCleanupProved": false,
+        "sameOperationAllListEmpty": true,
+        "streams": {
+          "stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "stdout": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        }
+      }
+    ],
+    "startedAt": "2026-10-17T14:39:37.885556+00:00"
+  },
+  "localSsh": {
+    "independentReadback": {
+      "elapsedSeconds": 3.13,
+      "errorCode": null,
+      "exitCode": 0,
+      "localLogErrors": [],
+      "localStopErrors": [],
+      "originalSsh": {
+        "linuxStartTicks": null,
+        "pid": 8372,
+        "startedAt": "2026-10-17T14:39:38.888037+00:00"
+      },
+      "originalSshReaped": true,
+      "remoteStoppedByLocalCleanupProved": false,
+      "requestId": "b0933502-20df-480a-9a91-d833f5c4358c",
+      "streams": {
+        "stderr": {
+          "bytesRetained": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "stdout": {
+          "bytesRetained": 22916,
+          "sha256": "b765e00499933ab06e4273729066bc8df0b646ffc36668ae0b303fe20a802eca"
+        }
+      }
+    },
+    "mock": {
+      "elapsedSeconds": 4.112,
+      "errorCode": null,
+      "exitCode": 0,
+      "localLogErrors": [],
+      "localStopErrors": [],
+      "originalSsh": {
+        "linuxStartTicks": null,
+        "pid": 8319,
+        "startedAt": "2026-10-17T14:37:52.649867+00:00"
+      },
+      "originalSshReaped": true,
+      "remoteStoppedByLocalCleanupProved": false,
+      "requestId": "b0933502-20df-480a-9a91-d833f5c4358c",
+      "streams": {
+        "stderr": {
+          "bytesRetained": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "stdout": {
+          "bytesRetained": 1127,
+          "sha256": "bec3574248244579cc65b20b37737d536f0c7248a4c17f28236fa4fd184fd64e"
+        }
+      }
+    },
+    "transfer": {
+      "elapsedSeconds": 3.039,
+      "errorCode": null,
+      "exitCode": 0,
+      "localLogErrors": [],
+      "localStopErrors": [],
+      "originalSsh": {
+        "linuxStartTicks": null,
+        "pid": 8292,
+        "startedAt": "2026-10-17T14:34:54.751526+00:00"
+      },
+      "originalSshReaped": true,
+      "remoteStoppedByLocalCleanupProved": false,
+      "requestId": "b0933502-20df-480a-9a91-d833f5c4358c",
+      "streams": {
+        "stderr": {
+          "bytesRetained": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "stdout": {
+          "bytesRetained": 649,
+          "sha256": "471d67f2e0e9dc4da59e7b56b83f840d94bed7f1c3109029aa60629a7b37aa9e"
+        }
+      }
+    }
+  },
+  "mockEndedAtShanghai": "2026-10-17T22:37:52.803003+08:00",
+  "mockEndedAtUtc": "2026-10-17T14:37:52.803003+00:00",
+  "namedChecksProvenance": "The pinned bf869936 reader verified the exact actual report schema, original 15-name set and all true values before producing this projection; report raw hash is in the 77 fixed records.",
+  "originalContainerId": "ed9ac44df539c4bb3e9e046d777c37c650baa0a467e0e13c3b788baffcaab131",
+  "parentRequestId": "a21af2c8-44ff-4f67-a07f-c364bcd6d295",
+  "preservedHistory": {
+    "original57aFailedMockAndReadOnlyLayerLimitsUnchanged": true,
+    "original57aUnknownCredentialPostUnchanged": true,
+    "originalA21EaccesAndCleanupUnchanged": true,
+    "originalOnceLocksUnchanged": true
+  },
+  "probeReportValidatedProjection": {
+    "activeAliasActuallyInspected": true,
+    "all15FrozenChecksTrue": true,
+    "checkedTargets": 12,
+    "credentialsReadByProbe": false,
+    "gid": 10002,
+    "imageTargets": [
+      {
+        "bytes": 2241,
+        "imagePath": "browser-preview/runtime/sha256.mjs",
+        "sha256": "85da435e9edaf4dca3411cf5f86fa45a95fe15c78060849d11f7eb0344b5bd24"
+      },
+      {
+        "bytes": 6700,
+        "imagePath": "project-resources/text.mjs",
+        "sha256": "9f7f3266549f04a0a8214e6e725ea9d85030532364f136487833e9cc45af303e"
+      },
+      {
+        "bytes": 23072,
+        "imagePath": "runtime/controlled-pi.mjs",
+        "sha256": "cf4143bff6cf049d2ab8247ef86ceb5f5391da67a86acb56ea901a119b2d6871"
+      },
+      {
+        "bytes": 27185,
+        "imagePath": "trusted-pi/release-candidate.mjs",
+        "sha256": "034cdc9df6c09e9cd7a32320e6bbfc2f9bbf5761151fe1d585d7fd64cdcd8d07"
+      },
+      {
+        "bytes": 1557,
+        "imagePath": "trusted-pi/research-context.mjs",
+        "sha256": "938e89155a5d5e0c405f51db5d973a4db264e63d96e308aff8da93caaaa05076"
+      },
+      {
+        "bytes": 27185,
+        "imagePath": "trusted-pi/trusted-pi-release.mjs",
+        "sha256": "034cdc9df6c09e9cd7a32320e6bbfc2f9bbf5761151fe1d585d7fd64cdcd8d07"
+      },
+      {
+        "bytes": 15937,
+        "imagePath": "trusted-pi/trusted-pi-turn-host.mjs",
+        "sha256": "9964e7ab863207ce9b9a911e03bfcb4f99afc61fb6508d2d6611b66931be516b"
+      },
+      {
+        "bytes": 7703,
+        "imagePath": "trusted-pi/product-model-transport.mjs",
+        "sha256": "c2bece021f34f0b929e796238d132a819281d172b5d8fd3a6f431ed9d46801c6"
+      },
+      {
+        "bytes": 11657,
+        "imagePath": "trusted-pi/product-tool-bridge.mjs",
+        "sha256": "e536e9231a7fa41be956e3066535a62b7de460b37a4e5a40937c67d9f5981e74"
+      },
+      {
+        "bytes": 16912,
+        "imagePath": "runtime_supervisor.py",
+        "sha256": "79e2bdedaedba063364513d853eb8325f229ba55b1e51df46cbcee359807e29c"
+      },
+      {
+        "bytes": 244,
+        "imagePath": "package.json",
+        "sha256": "0dde532fe23b810bd09b978f990d48342f7378429f2b2c48f30e055993fa6ebe"
+      },
+      {
+        "bytes": 150262,
+        "imagePath": "package-lock.json",
+        "sha256": "ad20b5c766c411c5ba42a4fc997890fe3494ab8adb96cf5d75031366b3d144fc"
+      }
+    ],
+    "manifestSha256": "f27b35dcbe84b58e3442018332374dbf20fa0d315528a322e56ea2a2bcfea5d4",
+    "mode": "image",
+    "overlayTargets": 6,
+    "present": true,
+    "realProviderRequests": 0,
+    "result": "passed",
+    "schema": "trusted-pi-offline-compatibility-probe/v1",
+    "sourceEquivalentActiveRelease": false,
+    "sourceMacEncodingNormalized": false,
+    "syntheticRequests": {
+      "ambientFetchCalls": 0,
+      "model": 3,
+      "projectToolExecutions": 0,
+      "research": 1
+    },
+    "uid": 10002
+  },
+  "requestId": "b0933502-20df-480a-9a91-d833f5c4358c",
+  "schema": "trusted-pi-probe-readable-actual-execution/v1",
+  "scope": "one probe-only transfer and network-none cached-image strict SDK mock plus original-CID cleanup and independent readback",
+  "sourceArtifacts": {
+    "sources/authorization-receipt.json": {
+      "bytes": 970,
+      "sha256": "1f9f0efcfa526193a32623d5eb48ddf56b33c1d20be29c0f15234184f2b6b959"
+    },
+    "sources/independent-readback-once/intent.json": {
+      "bytes": 302,
+      "sha256": "ac60d5c8fec0d6c57e05d64f93643776caeb16e4d3c96a678ec4e6fe9f187f90"
+    },
+    "sources/independent-readback-once/original-ssh.json": {
+      "bytes": 96,
+      "sha256": "e72c89ea50b52a60d4200eb9780f3c80eea47b218cde1ea6c595f3448ed36dad"
+    },
+    "sources/independent-readback-once/result.json": {
+      "bytes": 30964,
+      "sha256": "e77565f415c62963bd6b86d4926ea2ed135764152a7ee4979d095bf247c432a7"
+    },
+    "sources/independent-readback-once/ssh-terminal.json": {
+      "bytes": 655,
+      "sha256": "bb0eafebc0ed9303e48f678711fc3d459808f15d7299743133702e0a4204109c"
+    },
+    "sources/operations/mock-launch-once/intent.json": {
+      "bytes": 693,
+      "sha256": "ff12af44edf445f4c51e5104558c30807d6de0866bfa76c2406f08996088582b"
+    },
+    "sources/operations/mock-launch-once/original-ssh.json": {
+      "bytes": 96,
+      "sha256": "5a6a2014169b9ff22d9cf742614a356165e6d01434c61bedccdb2dc85094b8db"
+    },
+    "sources/operations/mock-launch-once/result.json": {
+      "bytes": 1418,
+      "sha256": "7d28f747ba0ba86573516f3ed13f882d4a15d5ca5b7d1721d795fbb9654c0760"
+    },
+    "sources/operations/mock-launch-once/ssh-terminal.json": {
+      "bytes": 655,
+      "sha256": "586307d9162702a754210efad14b1f88f7429b216aaaa8caa9d3f77e6f9650fb"
+    },
+    "sources/operations/transfer-once/intent.json": {
+      "bytes": 621,
+      "sha256": "4170db97c56e7f67c49f1189a5e17cc998ad51778a4d839aa967d8506ba39806"
+    },
+    "sources/operations/transfer-once/original-ssh.json": {
+      "bytes": 96,
+      "sha256": "1fcd1d903e8afbb37eaf30b53b37871f67eefc448f1e14977ee91024afaa607c"
+    },
+    "sources/operations/transfer-once/result.json": {
+      "bytes": 823,
+      "sha256": "abf0d02db33aa764f98b76203a8dc567fab2e08345fb4fd6efbf4eb777fbfd09"
+    },
+    "sources/operations/transfer-once/ssh-terminal.json": {
+      "bytes": 654,
+      "sha256": "ef3738ecd3b340e60e08b601c589a82ce838e171e9faefd7bd1d1e9488f3d895"
+    },
+    "sources/run-independent-readback-once.py": {
+      "bytes": 2517,
+      "sha256": "1623358ad7e6e0c8e778f5146da21c2a6aea278f9c670c5f3272bcc389bb3feb"
+    }
+  },
+  "status": "offline-image-compatibility-mock-passed-with-independent-original-cleanup",
+  "timezone": "Asia/Shanghai",
+  "transfer": {
+    "archiveBytes": 6195,
+    "archiveSha256": "5817ecf49cf2e3128a9695c9fb6d75182d8cd6958b815e553f571a13167e89dc",
+    "cloudWrite": false,
+    "credentialReadOrTransferred": false,
+    "dockerOrContainerCommandExecuted": false,
+    "fileCount": 2,
+    "humanGrantSha256": "78c8c59e91a9313e0760ecb71466868fae28c44d2568703d6f8acc26850f947a",
+    "operationsManifestSha256": "ae0614dafe7067367703ad41a9e0ff19f25de3ab7c788b85f01c1ff5c6b4fffd",
+    "privateOperationsModes0600": true,
+    "publicInputModes0444": true,
+    "requestId": "b0933502-20df-480a-9a91-d833f5c4358c",
+    "schema": "trusted-pi-probe-readable-transfer-result/v1",
+    "status": "transferred-verified",
+    "unprefixedTarNames": true
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "command": [
+    "/usr/bin/python3",
+    "-B",
+    "test_independent_reader.py"
+  ],
+  "startedAt": "2026-10-18T01:42:05.172330+00:00",
+  "endedAt": "2026-10-18T01:42:05.403943+00:00",
+  "exitCode": 0,
+  "stdoutBytes": 0,
+  "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderrBytes": 215,
+  "stderrSha256": "d39789180b50e37364f6279ace2b0884825cb392af2977acedd445cc5b689036",
+  "readerSha256": "2207c49844d8bfa4777510d6c60d4333f509dd1d7ab42fabf71e6188c77d6266",
+  "testSha256": "1ccd6830166f0f2cc8447ad34b066659364c18a5d78e282b414777dfb4914eb4",
+  "realExecution": false,
+  "authNetworkSshDockerCalls": 0
+}

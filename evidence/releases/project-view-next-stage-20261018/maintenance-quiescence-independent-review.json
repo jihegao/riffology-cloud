@@ -1,0 +1,86 @@
+{
+  "schema": "jhg46-maintenance-quiescence-independent-review/v1",
+  "reviewedAt": "2026-10-18T03:17:28.138241+00:00",
+  "issue": 248,
+  "base": "638a366d31a37f7bc1d7dcd124e0b5ba753d6401",
+  "parent": "a610dee8e4acad24c7a39ca3faedda3c1211e842",
+  "head": "c669921f4796c5b35c6f2e049c92876f4faf7c5b",
+  "result": "no-must-fix",
+  "mustFix": [],
+  "sourceSnapshot": {
+    "file": "independent-source-review/quiescence-v2/source-sha256.json",
+    "bytes": 4127,
+    "sha256": "af1e8dcbdcdadf40f3358dbc1d87ba5420ba6c1b35f47606cd1f603a9686b509"
+  },
+  "authorReceipt": {
+    "file": "author-validation/quiescence-v2/receipt.json",
+    "bytes": 5143,
+    "sha256": "1f20850ae07c980a239a36fd4577d7e56542dd98bf3faa6c8df79aab8c792ac2"
+  },
+  "review": [
+    {
+      "paths": [
+        "services/model-budget/private-beta-maintenance.ts:46",
+        "services/model-budget/private-beta-capacity.ts:190"
+      ],
+      "finding": "New pure barrier validator requires the current original hold/request/operator/authVersion, enabled/unpaused policy/pin and stored pause/resume revision; it does not recover a historical ACK or mutate the hold."
+    },
+    {
+      "paths": [
+        "services/model-budget/private-beta-capacity.ts:188"
+      ],
+      "finding": "Quiescence uses the existing Beta serial queue, captures Beta ledger and barrier before the bounded original-native RPC, validates native actor/policy/boolean/nonnegative counts and physicalProof=false, then rechecks current controls/barrier and Beta ledger. True requires both Beta snapshots and native proof to be quiet. Malformed/missing/native unknown or pause/control drift cannot return positive."
+    },
+    {
+      "paths": [
+        "services/gateway/app.ts:198",
+        "services/gateway/index.ts:151"
+      ],
+      "finding": "Independent operator GET has exact original requestId, no other query/method; current principal determines actor. Valid false proof remains visible with409; true gets200; no begin/end/pause/start capability is added."
+    },
+    {
+      "paths": [
+        "tests/m2/private-beta-maintenance-workerd.test.mjs",
+        "tests/m1/private-beta-admin.test.ts"
+      ],
+      "finding": "Reviewed source cases cover real Workerd SQLite positive/negative/idle/partial/missing/unknown proof, foreign hold/actor/authVersion, pause during held native RPC, inert tables/KV/alarms, no native RPC from old receipt GET, strict current-operator HTTP boundary and409/200 preservation."
+    }
+  ],
+  "validation": {
+    "independentlyExecutedTests": false,
+    "authorOnly8Of8Related": {
+      "command": "/opt/homebrew/bin/node --test --test-concurrency=2 tests/m2/private-beta-maintenance-workerd.test.mjs tests/m1/private-beta-admin.test.ts",
+      "tests": 8,
+      "pass": 8,
+      "fail": 0,
+      "skipped": 0,
+      "exitCode": 0,
+      "output": "targeted-tests.log"
+    },
+    "authorTypecheckAndDiffcheck": [
+      {
+        "command": "npm run typecheck",
+        "exitCode": 0
+      },
+      {
+        "command": "git diff --cached --check",
+        "exitCode": 0
+      }
+    ],
+    "prior45_15_2NotRepeated": true,
+    "sourceAndAuthorHashComparison": true,
+    "newCodeOrTestsChangedByReviewer": false
+  },
+  "boundaries": [
+    "This is logical original-ledger quiet proof while a barrier remains held, not physical Cloudflare instance release or rollout proof.",
+    "Cross-DO read is not a global writer lock; caller must freeze/recheck deployments/config and all other writer gates.",
+    "Unknown retains original hold/request for read-only recovery. No timer or historic ACK can reopen or clear another hold.",
+    "The prior first review remains historical and this receipt binds the c669 increment explicitly."
+  ],
+  "actions": {
+    "apiAuthSshDockerProviderCloudWrites": false,
+    "gitCommitPushMergePr": false,
+    "build": false,
+    "sourceEdit": false
+  }
+}

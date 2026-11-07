@@ -1,0 +1,118 @@
+{
+  "schema": "jhg46-page-switch-offline-build-summary/v1",
+  "reviewOnly": true,
+  "deployable": false,
+  "sourceCommit": "bdee1975d1f8df20be5e9f83fd7b50d6885b27ad",
+  "sourceTree": "672a753740f1c0cdef58c991b59b4dfc7d606d54",
+  "authorSourceSha256": "c6c2de3b53250342498cbb424b720e990ed8b8c1a273157d4cad87d8fefae2a0",
+  "sourceInputInventory": {
+    "file": "source-input-inventory.json",
+    "bytes": 159656,
+    "sha256": "d1814ce30585a761b4a84a5cc1e81c7fefc0591276a421ab94c76b2a187b9061"
+  },
+  "sourceContentBinding": {
+    "file": "source-content-binding.json",
+    "bytes": 12179,
+    "sha256": "b846cdc45f9e936231f4caf3fbfc6d4ee10fc843fab9399424628dda319d1e8f"
+  },
+  "buildManifest": {
+    "file": "output/build-manifest.json",
+    "bytes": 5551,
+    "sha256": "e413bb0ce171c5682219c87f44ff42bd4ae692f37c1a59aabfd480eb7f597034"
+  },
+  "sourceCounts": {
+    "selectedTrackedFiles": 477,
+    "gitModuleInputs": 303,
+    "dependencyModuleInputs": 821,
+    "totalModuleInputs": 1124
+  },
+  "actualGateway": {
+    "file": "output/gateway.mjs",
+    "bytes": 5774988,
+    "sha256": "304373a50d7a9ca8a99cdfbda0dcae261aa34d53727b757dfeb099c88efb5e0b"
+  },
+  "gatewayByteIdenticalToPriorSdk3043": true,
+  "actualGraph": {
+    "file": "output/source-graph.json",
+    "bytes": 879161,
+    "sha256": "ee731e078e47ab8a6e67e316e3b66ee53828022267937214197a98c6a98d6fab"
+  },
+  "actualAssetInventory": {
+    "file": "output/assets-sha256.json",
+    "bytes": 20499,
+    "sha256": "c5390bcc77bf48a1c0f51698fab6cf9bafcd80b31e9131ab7de5d1181888312d"
+  },
+  "actualAssetManifest": {
+    "file": "output/assets-manifest.json",
+    "bytes": 15987,
+    "sha256": "e97e2ec563718ac6d1bd759af25a23e32fb65e8fccff3cdb665ee880ffbe7cde"
+  },
+  "assets": {
+    "paths": 96,
+    "web": 28,
+    "immutable": 68,
+    "changedPaths": [
+      "/project-views.js"
+    ],
+    "unchangedPaths": 95,
+    "allImmutableByteIdenticalToSdk3043": true,
+    "totalBytes": 53785385,
+    "noAssetSessionOrUpload": true,
+    "changed": [
+      {
+        "path": "/project-views.js",
+        "before": {
+          "path": "/project-views.js",
+          "bytes": 17054,
+          "sha256": "e420e10e0196a9b9ce5f8c6959f8c8551ee0eeae3a2f0a317d9eac8f986ea47c",
+          "assetHash": "c8fb54772ae5b503c0466ac51584e751"
+        },
+        "after": {
+          "path": "/project-views.js",
+          "bytes": 17684,
+          "sha256": "c6c2de3b53250342498cbb424b720e990ed8b8c1a273157d4cad87d8fefae2a0",
+          "assetHash": "4c665918794a03dbd35f5e83f58bbfc8"
+        }
+      }
+    ]
+  },
+  "frame": {
+    "path": "/project-views/63ebcd050b0ccf5019265070890bee69d99902120f2252c376678aff299d374b/frame.html",
+    "sha256": "63ebcd050b0ccf5019265070890bee69d99902120f2252c376678aff299d374b"
+  },
+  "tools": {
+    "Node": "v26.10.0",
+    "esbuild": "0.28.1",
+    "WranglerHashedOnly": "4.129.0"
+  },
+  "buildOnce": {
+    "attempts": 1,
+    "exitCode": 0,
+    "reaped": true,
+    "startedAt": "2026-10-19T01:05:04.800518+00:00",
+    "endedAt": "2026-10-19T01:05:05.612355+00:00",
+    "rawStdout": {
+      "file": "offline-build.stdout",
+      "bytes": 4553,
+      "sha256": "1f8b7a349234ec1d7046fce7ce4bb8cba7d93fba1065200ce80c9e40343719a5"
+    },
+    "rawStderr": {
+      "file": "offline-build.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "checks": {
+    "allSelectedSourcesMatchGitBlobsAfterBuild": true,
+    "bundleByteIdenticalToSdk3043": true,
+    "moduleGraphByteIdenticalToSdk3043": true,
+    "assetsSame96Paths": true,
+    "onlyProjectViewsJsChanged": true,
+    "all68ImmutableAndOther27WebBodiesUnchanged": true,
+    "originalFrozenBaselineUnchanged": true,
+    "noWranglerCliAuthNetworkOrDeployment": true,
+    "actualProcessExitZeroReaped": true
+  },
+  "livePublicationAndAcceptancePerformed": false,
+  "scope": "Fixed source offline handoff closure only. No live authorization is derived."
+}

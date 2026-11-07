@@ -1,0 +1,44 @@
+{
+  "schema": "trusted-pi-first-mock-original-cid-source-audit-observation/v1",
+  "localStartedAt": "2026-10-17T12:17:57.232493+00:00",
+  "localEndedAt": "2026-10-17T12:18:00.781839+00:00",
+  "sshExitCode": 0,
+  "safeReadCodeSha256": "a99a84e42cfe7e5d37d42f09ed7af1982a94bdcad9ade11e457ba964c858f61f",
+  "sshStdoutBytes": 1073,
+  "sshStdoutSha256": "9cdbd4174fbe6258b64c3fa5d54ae8a29077a3e68b113f9658fb5fa4c25a2f32",
+  "sshStderrBytes": 0,
+  "sshStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "observation": {
+    "cleanupConfirmed": true,
+    "dockerGetCommands": 2,
+    "firstMockConsumedAndNotReplayed": true,
+    "mutationCommands": 0,
+    "observations": [
+      {
+        "exitCode": 1,
+        "kind": "exact-original-container-get",
+        "originalId": "b088b79e10cea6ea12bd39995e5410e89e48994cf86fb6814879b2a829011da1",
+        "recognizedExactOriginalNotFound": true,
+        "stderrBytes": 112,
+        "stderrSha256": "a22d4cb9b47fb6716109e4b2ceca32fa178af73cd1167edf10c03cf7dfeab7dc",
+        "stdoutBytes": 1,
+        "stdoutSha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "empty": true,
+        "exitCode": 0,
+        "ids": [],
+        "kind": "original-label-all-list-get",
+        "stderrBytes": 0,
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdoutBytes": 0,
+        "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ],
+    "rawResponseBodiesReturned": false,
+    "remoteEndedAt": "2026-10-17T12:17:56.880357+00:00",
+    "remoteStartedAt": "2026-10-17T12:17:56.823867+00:00",
+    "requestId": "57a70587-2b21-4a56-aed1-09c8a32d868a",
+    "schema": "trusted-pi-first-mock-original-cid-cleanup-independent/v1"
+  }
+}

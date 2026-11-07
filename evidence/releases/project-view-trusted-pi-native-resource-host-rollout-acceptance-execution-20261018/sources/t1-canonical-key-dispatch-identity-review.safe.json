@@ -1,0 +1,113 @@
+{
+  "schema": "jhg46-t1-canonical-key-dispatch-identity-review/v1",
+  "recordedAt": "2026-10-18T16:24:54.574517Z",
+  "verdict": "Deterministic saved canonical-key dispatch recovery and exact TrustedPi logical-name match passed; no time-based inference required.",
+  "checks": {
+    "exactEightPathSegments": true,
+    "turnsNamespace": true,
+    "tenantPathEqualsScope": true,
+    "projectPathEqualsScope": true,
+    "workspacePathEqualsScope": true,
+    "canonicalGenerationPath": true,
+    "turnGenerationEqualsScope": true,
+    "turnScopeEqualsSnapshot": true,
+    "sessionPathEqualsTurn": true,
+    "turnPathEqualsActualTurn": true,
+    "dispatchSuffixShape": true,
+    "receiptCheckpointExactEqualsSnapshot": true,
+    "sessionHeadExactEqualsCheckpoint": true,
+    "completedAndSaved": true
+  },
+  "canonicalKeySource": {
+    "file": "services/turn-runtime/revision.ts:32",
+    "formula": "turns/{scope.tenantId}/{scope.projectId}/{scope.workspaceId}/{generation}/{sessionId}/{turnId}/{dispatchId}.json",
+    "validation": "Use actual saved-turn checkpoint; reject manual-save/source-other paths, unexpected segment count or suffix, any full scope/generation/session/turn mismatch. Final generic checkpointObjectKey validation alone does not certify this richer identity formula; explicit comparisons above are required."
+  },
+  "actualOriginalDerivedIdentity": {
+    "dispatchId": "e9083ad5-e606-449e-aae4-8fe5243f4563",
+    "scopeSessionTurnIdentitySha256": "13e11f0ecc4826623d0e180be1e0b772a1c96e02aab2188f52583ffea7ffdf64",
+    "privateScopeAndActorValuesCopied": false
+  },
+  "sandboxDerivation": {
+    "source": "services/sandbox/identity.ts:8-13; services/turn/protocol.ts:65-69,152-154",
+    "serialization": "JSON.stringify with fixed inserted keys schemaVersion,scope,turnId,dispatchId; scope normalized in tenantId/projectId/workspaceId/workspaceGeneration order; UTF8; SHA256; lowercase RFC4648 base32 with no padding. No sorted-key canonicalization replaces this product serialization.",
+    "materialBytes": 307,
+    "materialSha256": "b5212d9f4a43a4a59fc36ea63f666f16701648d33ef2bd4c96b151e61d008804",
+    "trustedPi": "m2-t-wuqs3h2kiosklh6dn2td6ztpczybmsgth3zl2tewwfi6mhiaraca",
+    "project": "m2-p-wuqs3h2kiosklh6dn2td6ztpczybmsgth3zl2tewwfi6mhiaraca",
+    "projectNameIsDerivedExpectationOnly": "The physical file queried the TrustedPi target family; absence of the project name in that one file is not proof of no ProjectTool resource."
+  },
+  "actualPhysicalAssociation": {
+    "authority": "Previously saved complete reads.logical response, not request source/trace label/time proximity",
+    "onlyGet": true,
+    "cloudWrites": 0,
+    "logicalStatus": 200,
+    "exactNameMatches": 1,
+    "logicalInstanceId": "a18e86aa4e90e83742bf5889d22a1814ac472ccdd6a77929e4c14634f14d755a",
+    "logicalStatusState": "inactive",
+    "logicalStatusUpdatedAt": "2026-10-18T16:15:27Z",
+    "interpretation": "This exact logical object is deterministically the TrustedPi Sandbox actor for original T1 scope/turn/dispatch. Inactive is platform logical-object state, not raw native stopped/capacity proof or whole physical VM release."
+  },
+  "remainingUnknownOrSeparate": [
+    "Original runtime resourceLease.operationId and leaseId are not encoded in this key and remain unproven by this derivation.",
+    "No private ProductTurnRuntime RPC or raw persisted stopped/release proof was read.",
+    "No capacity ticket proof/finishedAt or full runtime stopped.confirmationId was manufactured.",
+    "Physical deployment/placement state and permitted idle VM exception still require actual complete original family reads."
+  ],
+  "correctionToPriorReports": {
+    "issue": "Prior statements that public DTO stripping prevents any recovery of dispatch were too broad: saved checkpoint.objectKey is public and encodes dispatch. Public TurnId alone remains insufficient, but this actual saved checkpoint closes that identity gap.",
+    "preservedFiles": [
+      "reviews/per-turn-public-read-reference.safe.json",
+      "reviews/t1-release-evidence-route-review.safe.json",
+      "reviews/t1-assignment-release-guard-source-diagnosis.safe.json"
+    ],
+    "oldFilesNotModified": true,
+    "unchangedValidBoundary": "No public route returning full raw stop/operation/lease proof was found; this identity derivation does not itself close that separate release-evidence gap."
+  },
+  "actualSources": [
+    {
+      "file": "first-read-1-response-original.raw.private.json",
+      "bytes": 6677,
+      "sha256": "d0692a849b297fe823a91fd53de2f5e379388bd366553da740724193ef0d9335"
+    },
+    {
+      "file": "first-read-2-response-original.raw.private.json",
+      "bytes": 5068,
+      "sha256": "4e36a562592eb8ca233255772eaab06833d28b8a0a8dae2838bc600c1e55be82"
+    },
+    {
+      "file": "physical-reconciliation-preserve-each-read.tool-result.private.json",
+      "bytes": 15616,
+      "sha256": "53a316c0ed4a290fc28d147a5bd112d7110e17022747ed7583476f99e03dfdc8"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "file": "services/turn-runtime/revision.ts",
+      "bytes": 22801,
+      "sha256": "ed0b9347a0b54e8bc0aeb74ca5c9e8d689cd3091d6513807608c90214b2524e5"
+    },
+    {
+      "file": "services/sandbox/identity.ts",
+      "bytes": 1099,
+      "sha256": "0f32eed1a4803a1ad414c532d534350ac601a70100a4f10147d6e59e1877a6e4"
+    },
+    {
+      "file": "services/turn/protocol.ts",
+      "bytes": 16671,
+      "sha256": "c7baf98da32177386b631fe387fab32a2c347560f1ad4af9154203d00182311d"
+    },
+    {
+      "file": "services/turn-runtime/identity.ts",
+      "bytes": 1522,
+      "sha256": "05bd6df744683efa29f625e4e0fa93c90126907170cf34d5b1078a39592b0fd0"
+    }
+  ],
+  "performed": {
+    "localFileReadsAndHashDerivation": true,
+    "liveCalls": 0,
+    "testsRun": 0,
+    "sourceChanges": 0,
+    "nativeOrCapacityMutation": 0
+  }
+}

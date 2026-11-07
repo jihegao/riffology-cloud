@@ -1,0 +1,30 @@
+{
+  "schema": "jhg46-gateway-metadata-offline-preparation/v3",
+  "requestId": "f953bc1e-3ea1-4786-821c-26ecf68916a0",
+  "preparedAt": "2026-10-18T03:33:22.825Z",
+  "metadata": {
+    "file": "metadata-without-jwt.private.json",
+    "bytes": 30452,
+    "sha256": "8058ff9de79cfb891882058c793ff839d0635aa48bd1586b8ea996243524d079"
+  },
+  "bundleSha256": "9c8e4b6b763e9887d1624f00ed3a8efb2a8a24d984d96bc68fdb289cb4d362c3",
+  "sourceFiles": 477,
+  "moduleInputs": 1124,
+  "assets": 96,
+  "wireBindings": 95,
+  "retainedSecretTypes": [
+    "secret_text",
+    "secret_key"
+  ],
+  "exports": 25,
+  "containerAssociations": 6,
+  "migrations": false,
+  "applicationConfigurationMutation": false,
+  "executionPolicyMutation": false,
+  "actualMergeProofPresent": false,
+  "humanGrantPresent": false,
+  "executionFinalized": false,
+  "credentialsRead": false,
+  "networkRequests": 0,
+  "cloudWrites": 0
+}

@@ -1,0 +1,108 @@
+{
+  "schema": "jhg46-future-new-project-artifact-content-reference-source-binding/v1",
+  "preparedAt": "2026-10-18T17:13:51.294372+00:00",
+  "originalInputs": [
+    {
+      "file": ".local/jhg46-native-resource-host-rollout-acceptance-preparation-20261018/preparation-manifest.json",
+      "bytes": 4792,
+      "sha256": "2937a30ee4f81458c48b40e31f77644435c323a86c33fa3695287be337c2b5b4"
+    },
+    {
+      "file": ".local/jhg46-native-resource-host-rollout-acceptance-preparation-20261018/prompts/turn-1-create-skill.md",
+      "bytes": 3833,
+      "sha256": "a179caed905f3f484a94fea0088de7ad92a72bb5b739e2fd2940bdfdd3c0dcf2"
+    },
+    {
+      "file": ".local/jhg46-native-resource-host-rollout-acceptance-preparation-20261018/prompts/turn-2-build-v1.md",
+      "bytes": 2101,
+      "sha256": "1e59966637fec33c3d2d5728ed1c4b9c8c00c30dee990fdeb2866ddf99afe6df"
+    },
+    {
+      "file": ".local/jhg46-native-resource-host-rollout-acceptance-preparation-20261018/prompts/turn-3-cold-edit-v2.md",
+      "bytes": 962,
+      "sha256": "c8c858c602fbc2c923c4b9c2e400696fc45527faaa25b54287eaf59434cea149"
+    }
+  ],
+  "originalSkill": {
+    "extractedFromOriginalTurn1": true,
+    "bytes": 2698,
+    "sha256": "f05062374fccbffa83a7e6da5505a3229bd975ff8d5aaf30e832c8f0a3c3d294"
+  },
+  "originalFailureEvidenceHashOnly": [
+    {
+      "file": ".local/jhg46-native-resource-host-rollout-acceptance-execution-20261018/ordinary/browser-v1/actual-main-from-package.private.mjs",
+      "bytes": 2542,
+      "sha256": "f35830bb9af40ff488ca423e5a376636ac981add643fc8a97a585acaa94559a2"
+    },
+    {
+      "file": ".local/jhg46-native-resource-host-rollout-acceptance-execution-20261018/ordinary/browser-v1/actual-package-validation.safe.json",
+      "bytes": 8619,
+      "sha256": "96d434772ed473e2720965602e63bb4dd52a1e69b7c1e1d9a1b880866114ba78"
+    }
+  ],
+  "protocolSources": [
+    {
+      "file": ".local/jhg46-next-stage-preparation-20261018/content-v2/services/artifacts/protocol.ts",
+      "bytes": 8494,
+      "sha256": "de7c3963e1fac695c42223be901462a37e80dbc8ae5e8b4c96e9e92012e58cd9",
+      "lines": [
+        4,
+        8,
+        43,
+        46
+      ]
+    },
+    {
+      "file": ".local/jhg46-next-stage-preparation-20261018/content-v2/services/workspace/durable.ts",
+      "bytes": 194560,
+      "sha256": "026c97de88ff636b05edae9a43b93bf5360f67f89b80306111f1686d0b96bead",
+      "lines": [
+        873,
+        882
+      ]
+    },
+    {
+      "file": ".local/jhg46-next-stage-preparation-20261018/content-v2/services/artifacts/durable.ts",
+      "bytes": 19284,
+      "sha256": "0db8dc1559b9f7aaf3dbd8e3333889bdd6558c7628b696a7eb619ea3a1a0898f",
+      "lines": [
+        41,
+        55
+      ]
+    },
+    {
+      "file": ".local/jhg46-next-stage-preparation-20261018/content-v2/services/project-tools/file_service.py",
+      "bytes": 21302,
+      "sha256": "16ba015d2b867a32e1af3681b5d1cbc079af72cf4a091c57aa2c73d9cc3c3a94",
+      "lines": [
+        246,
+        252
+      ]
+    },
+    {
+      "file": ".local/jhg46-next-stage-preparation-20261018/content-v2/services/project-views/frame-source.mjs",
+      "bytes": 7651,
+      "sha256": "c2b8ddbbf93553380fa1309741c5578618337016e692319711cda54caf23b2e3",
+      "lines": [
+        10,
+        11
+      ]
+    }
+  ],
+  "actualArtifactNotUsedByTests": true,
+  "oldPreparationSourceModification": false,
+  "newCandidateOnly": true,
+  "futureBindings": {
+    "freshProject": null,
+    "requestId": null,
+    "grant": null,
+    "window": null,
+    "sdkBundle": null,
+    "deployedVersion": null
+  },
+  "boundaries": [
+    "The old a25f project remains one Session/two Turns and its R2 plus browser failure history. Its window, locks and unexecuted T3 are not reused.",
+    "Future fresh-project shape is one blank project/two Sessions/three Turns only after a separately concrete authorization.",
+    "Existing SDK read-only methods/protocol are referenced; no new method, permission, provider/fetch/retry or product policy is introduced."
+  ]
+}

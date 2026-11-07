@@ -1,0 +1,32 @@
+{
+  "schema": "jhg46-original-maintenance-end-independent-read-safe-projection/v1",
+  "source": {
+    "originalFile": "maintenance-end-read.semantic.private.json",
+    "bytes": 912,
+    "sha256": "48c52ea0a5969d3d4fedf063d1d52eea5ca0cd689de54b891efc38641368c3b4"
+  },
+  "observedAt": "2026-10-18T09:55:12.560Z",
+  "status": 200,
+  "requestId": "6c6d9d94-be91-45e3-8044-bf1768308d7a",
+  "currentRevision": 2,
+  "currentHold": null,
+  "endReceipt": {
+    "action": "end",
+    "requestId": "6c6d9d94-be91-45e3-8044-bf1768308d7a",
+    "revision": 2,
+    "at": 1792317282579
+  },
+  "control": {
+    "enabled": true,
+    "paused": false,
+    "revision": 19
+  },
+  "ledger": {
+    "activeSlots": 0,
+    "quarantinedSlots": 0,
+    "unresolvedCalls": 0,
+    "quiescent": true
+  },
+  "actualContainerReleaseVerified": false,
+  "actorUserEmailIncluded": false
+}

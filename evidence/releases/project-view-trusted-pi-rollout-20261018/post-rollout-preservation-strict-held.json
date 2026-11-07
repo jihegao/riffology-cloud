@@ -1,0 +1,296 @@
+{
+  "schema": "jhg46-gateway-hash-only-witness-held/v1",
+  "accountId": "8b0d70250211aa10d89e20605a1c7e5e",
+  "worker": "riffology-m1-gateway-staging",
+  "requestId": "f953bc1e-3ea1-4786-821c-26ecf68916a0",
+  "phase": "after-worker-put",
+  "startedAt": "2026-10-18T09:30:08.476Z",
+  "endedAt": "2026-10-18T09:30:12.920Z",
+  "onlyGet": true,
+  "cloudWrites": 0,
+  "complete": false,
+  "held": true,
+  "code": "LIST_ARRAY_OR_EXACT_COUNT",
+  "trace": [
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/domains?service=riffology-m1-gateway-staging",
+      "s": 200,
+      "ok": true,
+      "t": 1792315808476,
+      "ms": 182,
+      "pg": {
+        "k": "full",
+        "n": 3,
+        "p": 1,
+        "pp": 3,
+        "tc": 3
+      }
+    },
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/scripts/riffology-m1-gateway-staging/deployments?page=1&per_page=1",
+      "s": 200,
+      "ok": true,
+      "t": 1792315808476,
+      "ms": 230,
+      "pg": {
+        "k": "latest1",
+        "n": 1,
+        "p": 1,
+        "pp": 1,
+        "tc": 230,
+        "tp": 230
+      }
+    },
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/scripts/riffology-m1-gateway-staging/schedules",
+      "s": 200,
+      "ok": true,
+      "t": 1792315808476,
+      "ms": 258,
+      "pg": {
+        "k": "full",
+        "n": 1
+      }
+    },
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/registries",
+      "s": 200,
+      "ok": true,
+      "t": 1792315808476,
+      "ms": 314,
+      "pg": {
+        "k": "full",
+        "n": 1
+      }
+    },
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/scripts/riffology-m1-gateway-staging/settings",
+      "s": 200,
+      "ok": true,
+      "t": 1792315808476,
+      "ms": 408,
+      "pg": null
+    },
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/durable_objects/namespaces?page=1&per_page=1000",
+      "s": 200,
+      "ok": true,
+      "t": 1792315808476,
+      "ms": 513,
+      "pg": {
+        "k": "full",
+        "n": 50,
+        "p": 1,
+        "pp": 1000,
+        "tc": 50
+      }
+    },
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications?per_page=500",
+      "s": 200,
+      "ok": true,
+      "t": 1792315808476,
+      "ms": 553,
+      "pg": {
+        "k": "full",
+        "n": 16,
+        "pp": 500
+      }
+    },
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/scripts/riffology-m1-gateway-staging/subdomain",
+      "s": 200,
+      "ok": true,
+      "t": 1792315808476,
+      "ms": 1059,
+      "pg": null
+    },
+    {
+      "p": "/zones/c97b548800561fada1a912c234696db1/workers/routes",
+      "s": 200,
+      "ok": true,
+      "t": 1792315808476,
+      "ms": 1480,
+      "pg": {
+        "k": "full",
+        "n": 5
+      }
+    },
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/scripts/riffology-m1-gateway-staging/content/v2",
+      "s": 200,
+      "ok": true,
+      "t": 1792315808476,
+      "ms": 1584,
+      "pg": null
+    },
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a031ae38-f967-483f-ae2e-3dbed3d35268/instances-v2?per_page=1000",
+      "s": 200,
+      "ok": true,
+      "t": 1792315808476,
+      "ms": 2437,
+      "pg": {
+        "k": "full",
+        "n": 0,
+        "pp": 1000
+      }
+    },
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a03c0a4c-7533-4190-ba2b-ff4fecaabb48/versions",
+      "s": 200,
+      "ok": true,
+      "t": 1792315810913,
+      "ms": 230,
+      "pg": {
+        "k": "full",
+        "n": 1
+      }
+    },
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a031ae38-f967-483f-ae2e-3dbed3d35268/versions",
+      "s": 200,
+      "ok": true,
+      "t": 1792315810913,
+      "ms": 311,
+      "pg": {
+        "k": "full",
+        "n": 1
+      }
+    },
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a03156a6-9bf5-43fb-8b7f-a1f5b8d1a650/versions",
+      "s": 200,
+      "ok": true,
+      "t": 1792315810913,
+      "ms": 313,
+      "pg": null
+    },
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a035c941-2207-406e-97aa-a42ab6e9d249/versions",
+      "s": 200,
+      "ok": true,
+      "t": 1792315810913,
+      "ms": 399,
+      "pg": null
+    },
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a03836ca-d275-4f7d-898f-bc16d0875089/versions",
+      "s": 200,
+      "ok": true,
+      "t": 1792315810913,
+      "ms": 470,
+      "pg": {
+        "k": "full",
+        "n": 2
+      }
+    },
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a03a6e91-25cb-4a8d-89a8-be522368dde4/versions",
+      "s": 200,
+      "ok": true,
+      "t": 1792315810913,
+      "ms": 585,
+      "pg": null
+    },
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a03628c4-f032-461f-a65b-612ccac11a06/versions",
+      "s": 200,
+      "ok": true,
+      "t": 1792315810913,
+      "ms": 588,
+      "pg": null
+    },
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a03ddc7e-1c6e-4cea-93ec-ac03d7b0073a/versions",
+      "s": 200,
+      "ok": true,
+      "t": 1792315810913,
+      "ms": 708,
+      "pg": null
+    },
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a03693b8-f5be-4247-9280-f0c38435d911/versions",
+      "s": 200,
+      "ok": true,
+      "t": 1792315810913,
+      "ms": 785,
+      "pg": null
+    },
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a0321718-f17e-4ccf-974a-fd447dde5920/versions",
+      "s": 200,
+      "ok": true,
+      "t": 1792315810913,
+      "ms": 786,
+      "pg": null
+    },
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a039ed42-159d-43db-be13-69315bce5189/versions",
+      "s": 200,
+      "ok": true,
+      "t": 1792315810913,
+      "ms": 807,
+      "pg": null
+    },
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a036b418-dcce-4d2f-bd3d-6debf982ea6f/versions",
+      "s": 200,
+      "ok": true,
+      "t": 1792315810913,
+      "ms": 885,
+      "pg": null
+    },
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a03313e4-fa9d-4de2-ac2c-d2cc69efd875/versions",
+      "s": 200,
+      "ok": true,
+      "t": 1792315810913,
+      "ms": 957,
+      "pg": null
+    },
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a03ea65b-b039-4f56-8422-36c719b87b72/versions",
+      "s": 200,
+      "ok": true,
+      "t": 1792315810913,
+      "ms": 1051,
+      "pg": null
+    },
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/scripts/riffology-m1-gateway-staging/versions/5a840cbc-49c5-45cd-badc-b75553c78566",
+      "s": 200,
+      "ok": true,
+      "t": 1792315810913,
+      "ms": 1534,
+      "pg": null
+    },
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a0332851-f795-46df-9f8e-ee0ddc220095/versions",
+      "s": 200,
+      "ok": true,
+      "t": 1792315810913,
+      "ms": 1543,
+      "pg": null
+    },
+    {
+      "p": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/applications/a03c0d4b-d529-4d81-a2b6-bfb901222a18/versions",
+      "s": 200,
+      "ok": true,
+      "t": 1792315810913,
+      "ms": 2007,
+      "pg": null
+    }
+  ],
+  "noRawConfigurationReturned": true,
+  "noBaselineExport": true,
+  "configurationHashesReturned": false,
+  "traceFormat": {
+    "p": "fixed request path with encoded query",
+    "s": "HTTP status",
+    "ok": "API success",
+    "t": "request started Unix milliseconds",
+    "ms": "request elapsed milliseconds",
+    "pg": "pagination: k=full/latest1,n=count,p=page,pp=per_page,tc=total_count,tp=total_pages,w/wi=wrapper metadata"
+  }
+}

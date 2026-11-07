@@ -1,0 +1,35 @@
+{
+  "schema": "jhg46-future-content-independent-local-review/v1",
+  "recordedAt": "2026-10-18T17:27:15.341036+00:00",
+  "manifestSha256": "0eebd2f2bd57d0ad54ba47ffec164521ea680d07fef1ea0c7a6a2127658e4ad8",
+  "checks": {
+    "manifestPin": true,
+    "all18BytesHashes": true,
+    "allReferencedSourcesExact": true,
+    "old26StillExact": true,
+    "helperVerbatimInSkill": true,
+    "skillVerbatimInTurn1": true,
+    "turn3ExactOriginal": true,
+    "eightSyntheticTestsAndAuthorPass": true,
+    "hashBeforeParseContent": true,
+    "boundedPageSizeOffset": true,
+    "noNetworkOrRetryCode": true,
+    "futureScopeUnbound": true
+  },
+  "mustFix": [],
+  "findings": [
+    "Helper binds stable receipt identity and contiguous original chunks, hashes complete Uint8Array before fatal UTF8 decode/JSON parse, then checks envelope.content prefix and17408 source length; body SHA is distinct from source SHA.",
+    "Eight source assertions cover success opaque cursor/two offsets/SHA/prefix; bad SHA; missing; bad offset; valid-hash wrong prefix; receipt drift; cursor cycle; oversized chunk. Original8pass receipt/log bound; not rerun.",
+    "Static bounds8pages/1114112bytes/16384chunk/atmost68reads and exact nextOffset/null; thrown SDK/parse errors stop without retry.",
+    "Helper exact in skill; skill exact in T1. T2 fixed manifest/real artifact id retained; T3 byteexact original. Original26 inputs verified unchanged.",
+    "Candidate does not reuse old project/request/window/T3; no new SDK/fetch/provider/egress route or live execution."
+  ],
+  "limitations": [
+    "Content-only reference does not fix SDK timeout, prove actual artifact bytes, deployment or future authorisation."
+  ],
+  "reviewerActions": {
+    "network": 0,
+    "testsRepeated": 0,
+    "authorInputEdits": 0
+  }
+}

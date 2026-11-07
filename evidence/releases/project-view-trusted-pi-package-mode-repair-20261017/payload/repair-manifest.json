@@ -1,0 +1,81 @@
+{
+  "schema": "trusted-pi-package-mode-repair-input/v1",
+  "reviewOnly": true,
+  "preparedAt": "2026-10-17T12:41:09.763907+00:00",
+  "parentRequestId": "57a70587-2b21-4a56-aed1-09c8a32d868a",
+  "originalInputArchiveSha256": "c92e672ca39d10d61467801f457147e3ee9cf2cfbbbe8b96d00a618a6a208bae",
+  "originalExecutedInspectorSha256": "98dc761c4dd09271793cf06c5ccf25e7dd27798453bd1dd4690a6759992cdc5e",
+  "failedDerivedImageId": "sha256:b2c2f93eff23011fe7863545e2b62b3b3d0d6fd4da161371afae399c0ce59c27",
+  "baseImage": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-issue165-trusted-pi@sha256:9b76ab9ee7a4f31d250957fbbeefc62d71056e6bd1eb24686ebbeaff3d65873c",
+  "baseSourceCommit": "481306ef53998dd1220cbca79dd3e97c1a2fe939",
+  "runtimeOverlayUniqueSources": 5,
+  "runtimeOverlayDestinations": 6,
+  "permissionRepairUniqueSources": 2,
+  "permissionRepairDestinations": 2,
+  "totalUniqueCopySources": 7,
+  "totalCopyDestinations": 8,
+  "compatibilityManifest": {
+    "path": "input-manifest.json",
+    "bytes": 6884,
+    "sha256": "f27b35dcbe84b58e3442018332374dbf20fa0d315528a322e56ea2a2bcfea5d4",
+    "unchanged": true,
+    "countsMeaning": "Original runtime compatibility overlay only; two package permission copies are declared separately here."
+  },
+  "probe": {
+    "path": "probe/compatibility-probe.mjs",
+    "bytes": 12020,
+    "sha256": "bded581766c4656b05b72c6fce39fcb43461a44cbe407c0d1e9ab4a23edf2097",
+    "unchanged": true,
+    "ownershipGuardUnchanged": true
+  },
+  "permissionRepairFiles": [
+    {
+      "sourcePath": "services/trusted-pi/package.json",
+      "imagePath": "/opt/riffology/package.json",
+      "bytes": 244,
+      "sha256": "0dde532fe23b810bd09b978f990d48342f7378429f2b2c48f30e055993fa6ebe",
+      "owner": "root:root",
+      "mode": "0444"
+    },
+    {
+      "sourcePath": "services/trusted-pi/package-lock.json",
+      "imagePath": "/opt/riffology/package-lock.json",
+      "bytes": 150262,
+      "sha256": "ad20b5c766c411c5ba42a4fc997890fe3494ab8adb96cf5d75031366b3d144fc",
+      "owner": "root:root",
+      "mode": "0444"
+    }
+  ],
+  "observedEvidence": {
+    "kind": "Bound direct layer-entry metadata and exact file bytes; not runtime stat/full alias proof",
+    "packageMode": "0664",
+    "packageUid": 0,
+    "packageGid": 0,
+    "layerIndex": 22,
+    "priorProbe": "failed ownership assertion before product imports",
+    "furtherImageSavePlanned": false
+  },
+  "preserved": [
+    "fixed base 9b76",
+    "original five runtime sources and six destinations",
+    "package and lock exact bytes",
+    "installed dependencies/no npm",
+    "root supervisor and uid10002 child contract",
+    "original sandbox entrypoint/configuration",
+    "strict 12-target image-mode probe"
+  ],
+  "newImageDigest": null,
+  "actualNewBuildOrMockPerformed": false,
+  "futureAuthorizationRequired": [
+    "exact new archive transfer to a new independent AMD child directory",
+    "one fresh network-none build with iid/metadata/Engine identity binding",
+    "one fresh original-ID mock create/start/cleanup with strict unchanged probe"
+  ],
+  "excluded": [
+    "new pull/mint/route unless separately necessary and explicitly authorized",
+    "registry push",
+    "Cloudflare application update",
+    "real provider/ordinary user/Turn/Run",
+    "second image save or alias-proof claim"
+  ]
+}

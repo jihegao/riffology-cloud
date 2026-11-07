@@ -1,0 +1,66 @@
+{
+  "schema": "jhg46-original-a036-instance-list-safe/v1",
+  "applicationId": "a03628c4-f032-461f-a65b-612ccac11a06",
+  "startedAt": "2026-10-18T03:31:50.233Z",
+  "endedAt": "2026-10-18T03:31:50.698Z",
+  "status": 200,
+  "onlyGet": true,
+  "cloudWrites": 0,
+  "unfiltered": true,
+  "complete": true,
+  "count": 6,
+  "pagination": {
+    "per_page": 1000
+  },
+  "instances": [
+    {
+      "id": "530aa3d4600b573fa77f7e158d5c7a1d7c23dc1f52a111ce9b81fbf7fdec6455",
+      "state": {
+        "state": "inactive",
+        "updated_at": "2026-10-12T15:56:59Z"
+      },
+      "version": null
+    },
+    {
+      "id": "6c4a88eefa189d779c8f7f99ccb0901f269d95641fbcef813536bbbcb43749f4",
+      "state": {
+        "state": "inactive",
+        "updated_at": "2026-10-12T07:15:29Z"
+      },
+      "version": null
+    },
+    {
+      "id": "7cf3903091b50513c5b951ad0d95df1e72a58316f439472244ed8fbd92e47488",
+      "state": {
+        "state": "inactive",
+        "updated_at": "2026-10-14T07:04:47Z"
+      },
+      "version": null
+    },
+    {
+      "id": "8c7f1550268543cb24cf59b079f413ac68a48a6b976bdf8032b8b9bb19225184",
+      "state": {
+        "state": "inactive",
+        "updated_at": "2026-10-14T05:34:17Z"
+      },
+      "version": null
+    },
+    {
+      "id": "e31ba9a00782777799a5db4b766f5dfc7a2c4880762cb931953004486c4a1933",
+      "state": {
+        "state": "inactive",
+        "updated_at": "2026-10-14T05:17:10Z"
+      },
+      "version": null
+    },
+    {
+      "id": "f1bcf4c6a28938fc8615505019129bacab72b18273de32e126b46624fb611b79",
+      "state": {
+        "state": "inactive",
+        "updated_at": "2026-10-14T05:25:52Z"
+      },
+      "version": null
+    }
+  ],
+  "scope": "only this current app instance-list observation; not logical release or global inactivity; fresh held preflight required before rollout"
+}

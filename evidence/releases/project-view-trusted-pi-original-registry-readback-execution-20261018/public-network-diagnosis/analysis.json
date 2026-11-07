@@ -1,0 +1,71 @@
+{
+  "actualRegistryResultUnchanged": {
+    "attempts": 4,
+    "mergeAllowed": false,
+    "proofs": 3,
+    "publicationVerified": false,
+    "requiredProofs": 52
+  },
+  "amdDirect1MiBFull": false,
+  "at": "2026-10-18T13:34:46.599886+00:00",
+  "automaticRetries": 0,
+  "files": [
+    {
+      "bytes": 5249,
+      "path": "probe-public-paths-once.py",
+      "sha256": "86ebe37845147e6e6af3f247beba4024c4102927849c886a48e277dc891dcf7a"
+    },
+    {
+      "bytes": 2058,
+      "path": "probe-public-large-local-once.py",
+      "sha256": "dd2a3a3ed5e122fecfb2f1b4adc241acf1470576b719a217cd40a7c3a023dbf5"
+    },
+    {
+      "bytes": 584,
+      "path": "intent.json",
+      "sha256": "02a6de9511537927ebf0ae9dab533ac9170de2f96c963a2a682f0818a0568f4a"
+    },
+    {
+      "bytes": 405,
+      "path": "mac-proxy.json",
+      "sha256": "2b99bd462a16415d6356a01f2ecf7a5f4780fb9b5ffac78ee1a0475a4392ea88"
+    },
+    {
+      "bytes": 584,
+      "path": "amd-direct.json",
+      "sha256": "b628ce79e9048ea78447b303ba5e56f79f37485f2f5a253226091480bbd9f7e4"
+    },
+    {
+      "bytes": 874,
+      "path": "large-local.json",
+      "sha256": "8d15f34ad439e17759a51e78a8af757f715b3e9db5ecc65c7fad5e05184d82ef"
+    },
+    {
+      "bytes": 2850,
+      "path": "probe-fixed-public-asset-once.py",
+      "sha256": "e1b05ebd90e45b821d92b9a9c4ead10e2938dd3bdd1a33d108bb97fc5bbebbf2"
+    },
+    {
+      "bytes": 1090,
+      "path": "fixed-asset.json",
+      "sha256": "a10662014a04bf50b35242353513e42984913ae7b5e900d8a52f263690765702"
+    }
+  ],
+  "limits": [
+    "Public speedtest paths are not authenticated Registry paths.",
+    "The 1 MiB success includes connection overhead; it is not sustained throughput evidence.",
+    "The larger public download HTTP403 is not arrears evidence.",
+    "No new Registry GET, token, credential or SSH route was used by these diagnostics.",
+    "Different host clocks must not be used for precise cross-host ordering.",
+    "The fixed public asset GET returned HTTP403 and provides no sustained-throughput or Registry conclusion; no error body was retained."
+  ],
+  "macExistingProxy16MiBFull": false,
+  "macExistingProxy1MiBFull": true,
+  "macFixedAssetBytesAndHashMatched": false,
+  "newSshForwardingRoutes": 0,
+  "oauthOrRegistryCredentialReadsOrPosts": 0,
+  "publicGetAttempts": 4,
+  "registryBandwidthOrCauseProved": false,
+  "registryGetAttempts": 0,
+  "schema": "jhg46-public-path-diagnosis-summary/v1"
+}

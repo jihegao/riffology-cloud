@@ -1,0 +1,192 @@
+{
+  "schema": "jhg46-original-registry-readback-independent-static-review/v1",
+  "reviewedAt": "2026-10-18T13:04:59.178396Z",
+  "reviewOnly": true,
+  "requestId": "c263a2f3-f445-430e-b562-2e48f1eeb637",
+  "operationId": "registry-readback-recovery-v1",
+  "decision": "no-must-fix-in-frozen-preparation",
+  "mustFix": [],
+  "binding": {
+    "operationsManifest": {
+      "bytes": 2058,
+      "sha256": "59fd2dd0f464e38b50b56e7c1d65229b6d81d86b12c935a822d5eeefead74342"
+    },
+    "completeSourceBinding": {
+      "bytes": 2685,
+      "sha256": "1dc5e1dbadd9c7496a2f6ac0ed609240df1f9fc48f486c2d4e43445eb76488ab"
+    },
+    "coreFiles": 8,
+    "additionalFiles": 4,
+    "completeFiles": 16,
+    "allBoundBytesAndSHA256Matched": true,
+    "scopeSHA256": "3afa843b35aca80bf6866518ec2b55fd77cd5a40533b0a9fe421031b2ccfb178",
+    "readerSHA256": "ad6f018ff89af088a0a04d5748ca71bf056f6a8deb1b3beb2063a190b82dc1f3",
+    "verificationSource": {
+      "bytes": 10398,
+      "sha256": "76a53be45c5cd33a5b322bd5dd3dabc6b49f64aa53b739b38a6331cbe998beca",
+      "byteEqualActualOriginalRecord": true
+    },
+    "originalRecordBindings": {
+      "export-once.terminal.json": {
+        "bytes": 483,
+        "sha256": "f6efd3183d1ab6f12a69770c6c637ba0f7077546faf525aa48e1e286c6adb73d"
+      },
+      "intent.json": {
+        "bytes": 608,
+        "sha256": "e88f19dbef175057711eeb65a9f47bce5592b18eace8260d448e277d2a016d24"
+      },
+      "push-once-intent.json": {
+        "bytes": 351,
+        "sha256": "7aa3a54f21cc145db8125b7a12aa8687d2994fa266d056876c2913ca422ff243"
+      },
+      "push-once.terminal.json": {
+        "bytes": 479,
+        "sha256": "4f18626eabc4cd3fc94f41bc9cffb8e29a3a2b7a775a030046ec2eff12c0af8d"
+      },
+      "raw-verification.json": {
+        "bytes": 10398,
+        "sha256": "76a53be45c5cd33a5b322bd5dd3dabc6b49f64aa53b739b38a6331cbe998beca"
+      },
+      "source-after.terminal.json": {
+        "bytes": 478,
+        "sha256": "78cdb2cb51818f6f85008edeaacee7c7816aae9ec8a6465e89ad6d896f71aed4"
+      },
+      "source-before.terminal.json": {
+        "bytes": 478,
+        "sha256": "90bd9ca65bf0c0df53151221c58d4a7ec9116cb14de5c02e536ca49d1a5cc6be"
+      },
+      "terminal.json": {
+        "bytes": 689,
+        "sha256": "e6c592fa8d9bccc4dea9ac102fd8c21bdfb0aa4f8e70e97ba3e4848d562d3110"
+      }
+    },
+    "originalEightActualRecordHashesMatched": true
+  },
+  "staticReview": {
+    "grant": {
+      "newSpecificGrantRequired": true,
+      "exactOneTerminalLFNoCRProducerConsumerByteBinding": true,
+      "wireSourceAndWindowCheckedBeforeStateOAuthOrProcess": true,
+      "maximumGrantSeconds": 3600,
+      "noNewHumanGrantOrExecutionObserved": true
+    },
+    "authentication": {
+      "existingSameSixScopeNormalTokenOnly": true,
+      "noLoginConsentScopeExpansionOrFallback": true,
+      "normalAuthFunctionsByteEqualExecutedRepairSource": [
+        "NoRedirect",
+        "api",
+        "http_metadata",
+        "normal_wrangler_memory",
+        "oauth_after_new_grant",
+        "oauth_metadata_after_new_grant",
+        "ssh_config_no_inherited_forwards",
+        "stop_owned"
+      ],
+      "sourceSegmentConvention": "Python AST source segment; excludes trailing newline",
+      "emptyDotenvAndInheritedCredentialEnvIsolationRetained": true,
+      "OAuthRemainsLocal": true,
+      "identityAccountAndInstalledCLISourcePinsRetained": true,
+      "newRegistryCredential": {
+        "permissions": [
+          "pull"
+        ],
+        "expirationMinutes": 15,
+        "accountScopedNotRepositoryScoped": true,
+        "filesWritten": 0,
+        "mintOnlyAfterOriginalArchiveRevalidationReady": true,
+        "onePostNoRetry": true,
+        "successStatuses": [
+          200,
+          201
+        ]
+      },
+      "credentialCleanupIsNotServerRevocationOrOAuthDowngrade": true
+    },
+    "originalSourceAndArchive": {
+      "sameOriginalRootReadOnly": true,
+      "newChildAuditOnceDirectoryOnly": true,
+      "originalEightRecordsExactSHAAndSemantics": true,
+      "originalInspectStreamsVerifiedByOriginalSafeMetadataWithoutReturningConfigEnv": true,
+      "originalIndexBytes": 856,
+      "derivedRunnableBytes": 9585,
+      "derivedConfigBytes": 19067,
+      "archiveBytes": 407961600,
+      "all53BlobReachabilityHashesAnd49DiffIDsRevalidatedBeforeReady": true,
+      "OCIverifierByteEqualPreviouslyReviewedSource": true,
+      "archiveDeadlineSeconds": 600,
+      "noExportDockerTagOrPush": true
+    },
+    "registry": {
+      "fixedSlotCount": 52,
+      "slotIdentityCheckedByLiteralASTWithoutExecutingCandidate": true,
+      "slotOrder": "tag manifest; same runnable digest manifest; config;49 original layer slots, including duplicate digests",
+      "layerSlots": 49,
+      "uniqueLayerDigests": 47,
+      "expectedRawResponseBodyBytesIncludingRepeatedSlots": 407919377,
+      "allURLsFixedRegistryRepositoryAndApprovedPath": true,
+      "GETOnlyNoRedirectRetryOrFallback": true,
+      "totalGetDeadlineSeconds": 720,
+      "perSlotIntentBeforeGET": true,
+      "perSlotSafeTerminalAndImmediateSuccessProof": true,
+      "bodiesStreamHashedAndByteCounted": true,
+      "twoManifestDigestHeadersRequiredAndSmallRawBodiesEqualArchive": true,
+      "layerHeaderAbsentOrMatchingDigestAllowed": true,
+      "errorBodyOnlyBoundedLengthHashCompletenessAndSafeExceptionClass": true,
+      "partialFailureOrMissingProofCannotCreateComplete52Record": true
+    },
+    "completion": {
+      "exactUniqueReadyPlusFinalACKNoTrailingFragment": true,
+      "destinationSourcePlatformConfigCountsCleanupAllBound": true,
+      "originalSSHExitZeroAndReapedRequiredForLocalSuccess": true,
+      "remoteUnknownOrLocalSSHFailureCannotBePublicationSuccess": true,
+      "readerChecksEverySlotIntentTerminalProofByteHashAndFullRecordChain": true,
+      "readerRequiresFixedRequestOperationAndNewGrantOpsSHA": true,
+      "readerChecksOriginalSupervisorTicksAuthPathsAndFreshRouteAbsence": true,
+      "readerHasNoRegistryDockerArchiveCredentialOrConfigReads": true,
+      "readerPublicationVerifiedAlwaysFalse": true,
+      "readerLocalOriginalAckStillRequiredAlwaysTrue": true,
+      "rootMustCombineUniqueOriginalLocalACKFull52ProofAndIndependentCleanup": true,
+      "conditionalFixedPR253MergeOutsideDriverAndStillRequiresFreshHeadCIReview": true
+    },
+    "historyAndExclusions": {
+      "noOriginalSourceLocksRecordsArchiveOrTagWriter": true,
+      "oldStoppedPublicationNotOverwrittenOrPromoted": true,
+      "noApplicationGatewayPolicyRolloutContainerProviderModelTurnRunOrPaymentChange": true,
+      "noOldRuntimeWindowExtension": true,
+      "noPublicationOrOrdinaryAcceptanceClaimFromFixtures": true
+    }
+  },
+  "existingOfflineEvidence": {
+    "reviewerRepeatedTests": false,
+    "authorNewSuite": {
+      "passed": 11,
+      "receiptSHA256": "a57c32426eb34da012ce13c04954f566d56185df6bd66272063e4b4b1900399f",
+      "safeReceiptSHA256": "6e821bde70d125fd25879bab67860358b70341bd6525bb85cf0e2c62f7412096",
+      "sourceFilesAndRawStreamsByteHashesVerified": true,
+      "firstTwoFixtureErrorsAndPriorPassingRunReceiptsPreserved": true,
+      "finalRunAfterACKDestinationStrengthening": true
+    },
+    "readerAuthorSuite": {
+      "passed": 11,
+      "safeReceiptSHA256": "96d841cb59b4ea79038b7c16b0eefecec491754e7541c716ce9230eca9f0186e",
+      "sourceAndTestByteHashesVerified": true,
+      "rawFixtureLogOnlyHashReferencedInSafeReceipt": true
+    },
+    "old17And11SuitesNotRepeated": true
+  },
+  "limitations": [
+    "Static preparation review only; no new human grant, normal OAuth/token read, CLI, SSH, Registry GET or credential POST was executed by this reviewer.",
+    "The existing fixture receipts describe synthetic response/files/process/socket authorities. They do not prove current Registry contents, live cleanup, actual account permissions, credential expiry, paid acceptance or fee settlement.",
+    "A future result must independently bind original local success ACK and remote record hashes, and confirm original local process termination in addition to the fixed remote reader.",
+    "No merge, deployment, additional Turn or execution window extension follows from this review."
+  ],
+  "reviewerActualActions": {
+    "candidateSourceExecution": false,
+    "testOrCIRerun": false,
+    "authCredentialFileRead": false,
+    "OAuthCLIOrSSHOrRegistryOrDockerOrCloudflareCalls": 0,
+    "frozenInputModification": false,
+    "localReadHashASTAndReviewOutputOnly": true
+  }
+}

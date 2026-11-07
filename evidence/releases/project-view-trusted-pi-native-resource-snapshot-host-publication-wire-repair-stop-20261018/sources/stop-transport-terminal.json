@@ -1,0 +1,19 @@
+{
+  "endedAt": "2026-10-18T12:52:27.841394+00:00",
+  "errorCode": null,
+  "exitCode": 0,
+  "originalSshPid": 64949,
+  "originalSshReaped": true,
+  "requestId": "c263a2f3-f445-430e-b562-2e48f1eeb637",
+  "stopErrors": [],
+  "streams": {
+    "stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stdout": {
+      "bytes": 27683,
+      "sha256": "441986863329254ae83e504e8b33e49a9bc6558742414d2af6d461120753cd91"
+    }
+  }
+}

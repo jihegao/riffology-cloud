@@ -1,0 +1,99 @@
+{
+  "schema": "jhg46-future-content-reference-local-checks/v1",
+  "startedAt": "2026-10-18T17:15:06.507827+00:00",
+  "endedAt": "2026-10-18T17:15:06.665556+00:00",
+  "runtime": {
+    "version": "v26.10.0",
+    "platform": "darwin",
+    "arch": "arm64"
+  },
+  "command": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "read-checked-artifact.test.mjs"
+  ],
+  "exitCode": 0,
+  "summary": {
+    "tests": 8,
+    "pass": 8,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0
+  },
+  "stdout": {
+    "file": "checks/reference-check.stdout",
+    "bytes": 1723,
+    "sha256": "7f7b07bdbd4fba6edc22948ed650179809e8a4af22f2ce1ef953d2d21ec052c3"
+  },
+  "stderr": {
+    "file": "checks/reference-check.stderr",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "inputsBefore": [
+    {
+      "file": "README.md",
+      "bytes": 2467,
+      "sha256": "33b053dc778c25fbb0daff4e16b91d55debcc4b1e5d2d81bf191aad5ac0a678a"
+    },
+    {
+      "file": "SKILL.md",
+      "bytes": 6056,
+      "sha256": "8ef3375d58464b2a74cc57031771f5f7bad21b15f09991fb3838620e9f3ae6d7"
+    },
+    {
+      "file": "prompts/turn-1-create-skill.md",
+      "bytes": 7193,
+      "sha256": "13302684903565b94a3187043a489033e5c91e986da989f3feab097424bd5513"
+    },
+    {
+      "file": "prompts/turn-2-build-v1.md",
+      "bytes": 2287,
+      "sha256": "ada18925ea4504cf81d981eb332fef66483d513b5191945fe3809ab369c98364"
+    },
+    {
+      "file": "prompts/turn-3-cold-edit-v2.md",
+      "bytes": 962,
+      "sha256": "c8c858c602fbc2c923c4b9c2e400696fc45527faaa25b54287eaf59434cea149"
+    },
+    {
+      "file": "read-checked-artifact.mjs",
+      "bytes": 3228,
+      "sha256": "5a1811e1203d1bea93247ff8d238f5647b884b05aea7f5574ba5cf330fa27946"
+    },
+    {
+      "file": "read-checked-artifact.test.mjs",
+      "bytes": 4679,
+      "sha256": "76e744f81ed9b51837bd5415b5fce9daf7d07c191baea05ff8b619c83ce89c21"
+    },
+    {
+      "file": "source-bindings.safe.json",
+      "bytes": 3992,
+      "sha256": "d06ab0f696335165ed84d462d72e35d169bcf6fa115b5c73aff931e58bcf3b3b"
+    }
+  ],
+  "allEightAuthoredInputsByteExactAfter": true,
+  "originalPreparation26FilesStillExact": true,
+  "originalPreparationManifestSha256": "2937a30ee4f81458c48b40e31f77644435c323a86c33fa3695287be337c2b5b4",
+  "fixtureMeaning": "Eight purely synthetic fake-SDK cases exercise reference helper only: opaque cursor/two chunks/original byte SHA/parsed prefix; wrong SHA; missing artifact; offset; wrong content prefix; receipt drift; cursor cycle; oversized chunk.",
+  "runHistory": {
+    "uniqueTestCases": 8,
+    "firstEightCaseStdoutPass": true,
+    "sameEightCasesRepeatedOnceForDurableExitAndExplicitTapReceipt": true,
+    "firstHistory": {
+      "file": "checks/first-spec-output-history/orchestration-history.safe.json",
+      "bytes": 1107,
+      "sha256": "f0a8eddafbcf0ebf547bb396ad71071d12c0e9b98cd64080878feb114f30df8b"
+    },
+    "beforeFirstFixturePrecheckShapeFailure": {
+      "file": "checks/precheck-shape-history.safe.json",
+      "bytes": 526,
+      "sha256": "c970991173d0f5f756c17a71238172999949a4d2d9fe6b6d20e80f7319333402"
+    }
+  },
+  "notActualArtifactSdkTimeoutBrowserProviderOrAcceptanceProof": true,
+  "liveApiAuthNetworkBrowserCloudflareModelCalls": 0,
+  "productOrActualProjectSourceEdits": false,
+  "oldA25fGrantWindowLocksOrT3Reused": false
+}

@@ -1,0 +1,25 @@
+{
+  "actualRemoteOrAuthExecution": false,
+  "command": "python3 -m unittest discover -s /private/tmp/jhg46-repair-ops-prep -p test_repair_operations.py -v",
+  "earlierDraftRun": {
+    "exitCode": 1,
+    "reason": "macOS temporary path alias in fake ROOT fixture; corrected fixture with resolve(), production fixed-owned-parent guard unchanged"
+  },
+  "endedAt": "2026-10-17T13:00:40.724798+00:00",
+  "exitCode": 0,
+  "newGrantFileCreated": false,
+  "operationsManifestSha256": "bc8e45a8783748be4db9fc8040745aa239a2a4473b89740dbc09f290add82383",
+  "schema": "trusted-pi-package-permissions-operations-offline-checks/v1",
+  "scopeWordingRefinement": "Excluded credential class explicitly OAuth/Registry/provider; existing SSH identity remains permitted only for this one AMD authentication, ForwardAgent=no.",
+  "startedAt": "2026-10-17T13:00:40.655109+00:00",
+  "stderr": {
+    "bytes": 1310,
+    "sha256": "ca98fef9481c5b139faf152098c1e237e4385614daeeb4e818b27c7a752c235b"
+  },
+  "stdout": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "testMode": "pure local synthetic/injected subprocesses only",
+  "tests": 13
+}

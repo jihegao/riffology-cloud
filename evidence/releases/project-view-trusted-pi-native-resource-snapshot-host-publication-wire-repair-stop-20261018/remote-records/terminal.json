@@ -1,0 +1,15 @@
+{
+  "actualArchiveReadVerifications": 1,
+  "actualExportAttempts": 1,
+  "actualPushAttempts": 1,
+  "cleanupErrors": [],
+  "credentialFilesAbsent": true,
+  "destination": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-issue165-trusted-pi:jhg46-native-resource-host-20261018-0bb9af7a",
+  "endedAt": "2026-10-18T12:45:16.036354+00:00",
+  "errorCode": "publication-local-error",
+  "noCloudApplicationGatewayPolicyOrProviderWrite": true,
+  "requestId": "c263a2f3-f445-430e-b562-2e48f1eeb637",
+  "schema": "trusted-pi-image-publication-result/v1",
+  "sourceImageId": "sha256:0bb9af7a5909c41187cf56402a21420100c72a8de0025b0a7152f8804e85d191",
+  "status": "unknown-stopped"
+}

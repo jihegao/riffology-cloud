@@ -1,0 +1,23 @@
+{
+  "schema": "jhg46-new-sdk-contract-local-mechanical-check/v1",
+  "recordedAt": "2026-10-18T17:35:29.490007+00:00",
+  "checks": {
+    "originalP26ByteExact": true,
+    "content18ByteExactAndIndependentReviewBound": true,
+    "fixed257LocalGitObjectOnlyRead": true,
+    "operationSequenceCount": 15,
+    "removedRegistryAmdMaintenanceRolloutWrites": true,
+    "executionUnsealedAndNotAuthorized": true,
+    "sourceFrameBudgetNotDeploymentClaim": true,
+    "oldA25fTrustedExecutionVsFailedV1Preserved": true,
+    "relativeMarkdownLinksPresentExceptSelfManifestCreatedNext": 20,
+    "jsonParseTrailingWhitespaceAndPrivatePathEmailBearerScan": true,
+    "actualBodiesGrantWindowAndAcksNull": true,
+    "fixedBundleAssetGraphBytesShaBound": true,
+    "buildSourceBindingIndependentReviewMergeProofAndPublisherSealStillPending": true
+  },
+  "testsOrFixturesRun": 0,
+  "networkAuthBrowserCloudflareModelOrTurnCalls": 0,
+  "worktreeIndexRefsOrProductChanged": false,
+  "history": "Unbound-build contract e8970e2a preserved byte-exact in sibling history directory; only local build facts added."
+}

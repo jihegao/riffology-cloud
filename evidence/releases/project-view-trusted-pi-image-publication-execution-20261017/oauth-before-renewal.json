@@ -1,0 +1,16 @@
+{
+  "expiresAt": "2026-10-17T12:03:24.244Z",
+  "grantValidatedBeforeCredentialMetadataRead": true,
+  "observedAt": "2026-10-17T15:28:16.264361+00:00",
+  "operationsManifestSha256": "986c2d6e12e72785978e0bdfcf6e6357ba82e59cb16c40dc5c1cf8c7530ac4d1",
+  "schema": "trusted-pi-publication-oauth-before-renewal/v1",
+  "scopes": [
+    "user:read",
+    "offline_access",
+    "account:read",
+    "workers:write",
+    "workers_scripts:write"
+  ],
+  "secretValuesReturned": false,
+  "validForMoreThan120Seconds": false
+}

@@ -1,0 +1,45 @@
+{
+  "actions": {
+    "api": 0,
+    "docker": 0,
+    "oauthReadOrCli": 0,
+    "provider": 0,
+    "ssh": 0
+  },
+  "command": [
+    "python3",
+    "-m",
+    "unittest",
+    "-v",
+    "test_recovery.GrantWireTests"
+  ],
+  "endedAt": "2026-10-18T12:24:42.459706+00:00",
+  "exitCode": 0,
+  "files": {
+    "local-recovery.py": {
+      "bytes": 18065,
+      "sha256": "add3c4e22595a75a736bd717a08f01dec862eaa1f0f889fbb7c0798f2c054a84"
+    },
+    "operations-manifest.json": {
+      "bytes": 1795,
+      "sha256": "76dfb4606c75424c01a00220805f6efb5b32afbf474fd003fe540641bb97c309"
+    },
+    "test_recovery.py": {
+      "bytes": 20861,
+      "sha256": "5ba1efd0f5bd80ba4125e451c4bf8b3e1a2937d4c841d6c77ea20b71b1b964c9"
+    }
+  },
+  "schema": "trusted-pi-grant-wire-repair-offline-checks/v1",
+  "scope": "Three new pure local producer/consumer/before-auth tests; previous17 publication and11 reader fixtures not rerun.",
+  "startedAt": "2026-10-18T12:24:42.391747+00:00",
+  "streams": {
+    "stderr": {
+      "bytes": 431,
+      "sha256": "d596cfee0cc3c9aa9216cbdbaa59af4fc27da9aad3c1785781651e3f14dfc049"
+    },
+    "stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

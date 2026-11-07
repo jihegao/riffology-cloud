@@ -1,0 +1,105 @@
+{
+  "schema": "jhg46-owned-gate-close-and-failed-acceptance-independent-closure/v1",
+  "recordedAt": "2026-10-18T17:05:39.625213+00:00",
+  "checks": {
+    "ownedRequestSame": true,
+    "open201Close200": true,
+    "originalWire519Hash": true,
+    "afterClose54All200": true,
+    "actualNewClosedVersion": true,
+    "gateAbsent10611": true,
+    "sameSourceControl": true,
+    "userRawExactHash": true,
+    "allFourUserBodiesRehash": true,
+    "oneSessionTwoCompletedSaved": true,
+    "holdsClearCapacityAvailable": true,
+    "gateRouteDeniedAfterClose": true,
+    "framesRemovedNonGetUnchanged": true,
+    "observer71NoOverflow": true,
+    "physicalFour200": true,
+    "nineLogicalInactive": true,
+    "dashZeroNineDO": true,
+    "knownIdleTarget": true
+  },
+  "sources": [
+    {
+      "file": "browser-gate/open-once/original-ack.tool-result.private.json",
+      "bytes": 706,
+      "sha256": "4d50e41186f5ee17528a134143d67a45f7c85ff7d71aa398594b0edcf071a188",
+      "privateBodyCopied": false
+    },
+    {
+      "file": "browser-gate/close-once/original-ack.tool-result.private.json",
+      "bytes": 662,
+      "sha256": "9ef95ec9f2b62eb70ad6d26dd69226fe411c6a9d032fdc403081694fef8c898b",
+      "privateBodyCopied": false
+    },
+    {
+      "file": "browser-gate/after-close-witness-original.tool-result.private.json",
+      "bytes": 14819,
+      "sha256": "c31a2eb61bf41eecebbf950bd42045ab380dcb8870df6fad219ca14e3d202891",
+      "privateBodyCopied": false
+    },
+    {
+      "file": "reviews/browser-gate-exact-annotation-bridge-review.safe.json",
+      "bytes": 5530,
+      "sha256": "c36b1d952f03b80f567c818a6fdf5a9e582f469c32116405f515b2225624fbe8",
+      "privateBodyCopied": false
+    },
+    {
+      "file": "ordinary/browser-v1/after-owned-delete-original.raw.private.json",
+      "bytes": 37794,
+      "sha256": "dd53a23b19eaf5b856ead9ed4727a7f8b0ee0a02970e43e48aa964e463f766d8",
+      "privateBodyCopied": false
+    },
+    {
+      "file": "ordinary/browser-v1/final-physical-readback-original.tool-result.private.json",
+      "bytes": 15770,
+      "sha256": "cffa90941de33dade70a460326b95bd43e84b21ebce8d4dce797bc6b867adf4d",
+      "privateBodyCopied": false
+    },
+    {
+      "file": "ordinary/browser-v1/first-page-failure-original.raw.private.json",
+      "bytes": 26069,
+      "sha256": "00c0179cee87672d84f7c0b58c49038b4ecdbc69c15818fa9e420c26fe71bf54",
+      "privateBodyCopied": false
+    },
+    {
+      "file": "ordinary/browser-v1/actual-package-validation.safe.json",
+      "bytes": 8619,
+      "sha256": "96d434772ed473e2720965602e63bb4dd52a1e69b7c1e1d9a1b880866114ba78",
+      "privateBodyCopied": false
+    }
+  ],
+  "mustFix": [],
+  "result": {
+    "scopedProductReleaseAndOwnedGateCleanupPassed": true,
+    "ordinaryAcceptancePassed": false,
+    "stage": "V1 first-page page request timeout; acceptance stopped pending diagnosis",
+    "t1T2CompletedSavedAndProductHoldsCleared": true,
+    "session2T3V2Executed": false,
+    "overallDone": false
+  },
+  "rawMetadataPreservation": {
+    "afterCloseStableMetadataSha256": "64d4d58d0822536915b6f8efab957059fcff0a4b315b4e7edc96e394b5277c19",
+    "originalClosedStableSha256": "2b8867424e00a39e61fe237fe9790462275f0598e5613f0852ca38709d4ebf44",
+    "rawDifferenceRetained": true,
+    "bridgeOnly": "Exact c36 documented original metadata annotation mapping, not raw hash equality"
+  },
+  "limits": [
+    "Observer installed after initial SDK requests; poll200 does not establish page/API functionality or absent initial requests.",
+    "Report/factor20and50/pause/subscription/artifact bodychunks/reassembled SHA/Session2/T3/V2 not accepted.",
+    "Physical readback has known idle VM running/container stopped, not all historical disposal or zero cost.",
+    "No model/Turn replay inferred from scoped unchanged oneSession/twoTurn and nonGET4; no global zero claim.",
+    "No live execution, new tests, source or public draft changes by reviewer."
+  ],
+  "reviewerActions": {
+    "network": 0,
+    "browser": 0,
+    "cloudWrites": 0,
+    "tests": 0
+  },
+  "privacy": {
+    "rawActorEmailHostLocationCredentialBodiesCopied": false
+  }
+}

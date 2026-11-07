@@ -1,0 +1,195 @@
+{
+  "actualAuthApiSshCloudDockerModelOrBrowserCallsByPreparation": 0,
+  "allJsonParsed": true,
+  "allRelativeLinksResolved": true,
+  "authenticationContractChecked": {
+    "bytes": 3332,
+    "file": "authentication-contract.json",
+    "noCurrentOAuthReadOrAuthCall": true,
+    "sha256": "d0c8a4545955fdfd0534eb469b5a266fc59882c866c526f3e0542ddec520ad77"
+  },
+  "finalStructuralCheckedAt": "2026-10-18T14:56:47.237055+00:00",
+  "grantCreated": false,
+  "maintenanceFourKeyTemplateExactAndUnresolvedNotSent": true,
+  "modelAndHardLimitsUnchanged": true,
+  "newFreshSourceGeneratedAndSyntaxCompiledNotInvoked": true,
+  "noEmailOrJwtShapedValuesInCandidate": true,
+  "noFixtureMatrixOrOldSuiteRerun": true,
+  "noTrailingWhitespace": true,
+  "oldB62_047_RequestPinsAbsentFromNewSource": true,
+  "postNullAckRejectedDuringOfflineGeneration": true,
+  "postSyntheticSourceSyntaxOnly": {
+    "actualFutureAckNotFilled": true,
+    "bytes": 604,
+    "file": "post-source-syntax-check.safe.json",
+    "notSourceAuthorityOrNetworkExecution": true,
+    "sha256": "42391152cb018755e3b92812b0805f430add4e9e52e6c6e6460ad030a2ec5d04"
+  },
+  "privateOwnerIdsAndRawProjectionNotCopied": true,
+  "promptCopiesByteExact": true,
+  "recordedAt": "2026-10-18T14:55:36.711838+00:00",
+  "relativeLinks": [
+    {
+      "file": "README.md",
+      "target": "preparation.json"
+    },
+    {
+      "file": "README.md",
+      "target": "operations.json"
+    },
+    {
+      "file": "README.md",
+      "target": "window-and-choices.pending.json"
+    },
+    {
+      "file": "README.md",
+      "target": "fresh-read-contract.json"
+    },
+    {
+      "file": "README.md",
+      "target": "source-bindings.json"
+    },
+    {
+      "file": "README.md",
+      "target": "rollout/body.canonical.json"
+    },
+    {
+      "file": "README.md",
+      "target": "rollout/body.wire.json"
+    },
+    {
+      "file": "README.md",
+      "target": "prompts/turn-1-create-skill.md"
+    },
+    {
+      "file": "README.md",
+      "target": "skill/SKILL.md"
+    },
+    {
+      "file": "README.md",
+      "target": "prompts/turn-2-build-v1.md"
+    },
+    {
+      "file": "README.md",
+      "target": "prompts/turn-3-cold-edit-v2.md"
+    },
+    {
+      "file": "README.md",
+      "target": "ordinary-input.json"
+    },
+    {
+      "file": "README.md",
+      "target": "browser-gate/plan.pending.json"
+    },
+    {
+      "file": "README.md",
+      "target": "prior-owner/fresh-owner-summary.safe.json"
+    },
+    {
+      "file": "README.md",
+      "target": "prior-owner/independent-fresh-owner-review.safe.json"
+    },
+    {
+      "file": "README.md",
+      "target": "window-and-choices.pending.json"
+    },
+    {
+      "file": "README.md",
+      "target": "fresh-preservation/make-preservation-request.mjs"
+    },
+    {
+      "file": "README.md",
+      "target": "fresh-preservation/before-runtime-rollout.request.txt"
+    },
+    {
+      "file": "README.md",
+      "target": "fresh-preservation/derivation.pending.json"
+    },
+    {
+      "file": "publication-packet.draft.md",
+      "target": "preparation.json"
+    },
+    {
+      "file": "publication-packet.draft.md",
+      "target": "operations.json"
+    },
+    {
+      "file": "publication-packet.draft.md",
+      "target": "window-and-choices.pending.json"
+    },
+    {
+      "file": "publication-packet.draft.md",
+      "target": "fresh-read-contract.json"
+    },
+    {
+      "file": "publication-packet.draft.md",
+      "target": "source-bindings.json"
+    },
+    {
+      "file": "publication-packet.draft.md",
+      "target": "rollout/body.canonical.json"
+    },
+    {
+      "file": "publication-packet.draft.md",
+      "target": "rollout/body.wire.json"
+    },
+    {
+      "file": "publication-packet.draft.md",
+      "target": "prompts/turn-1-create-skill.md"
+    },
+    {
+      "file": "publication-packet.draft.md",
+      "target": "skill/SKILL.md"
+    },
+    {
+      "file": "publication-packet.draft.md",
+      "target": "prompts/turn-2-build-v1.md"
+    },
+    {
+      "file": "publication-packet.draft.md",
+      "target": "prompts/turn-3-cold-edit-v2.md"
+    },
+    {
+      "file": "publication-packet.draft.md",
+      "target": "ordinary-input.json"
+    },
+    {
+      "file": "publication-packet.draft.md",
+      "target": "browser-gate/plan.pending.json"
+    },
+    {
+      "file": "publication-packet.draft.md",
+      "target": "prior-owner/fresh-owner-summary.safe.json"
+    },
+    {
+      "file": "publication-packet.draft.md",
+      "target": "prior-owner/independent-fresh-owner-review.safe.json"
+    },
+    {
+      "file": "publication-packet.draft.md",
+      "target": "window-and-choices.pending.json"
+    },
+    {
+      "file": "publication-packet.draft.md",
+      "target": "fresh-preservation/make-preservation-request.mjs"
+    },
+    {
+      "file": "publication-packet.draft.md",
+      "target": "fresh-preservation/before-runtime-rollout.request.txt"
+    },
+    {
+      "file": "publication-packet.draft.md",
+      "target": "fresh-preservation/derivation.pending.json"
+    }
+  ],
+  "rolloutBodyBytes": 455,
+  "rolloutOnlyOldDescriptionAndImageDelta": [
+    "/description",
+    "/target_configuration/image"
+  ],
+  "rolloutPlannedCanonicalWireSame": true,
+  "runtimeLocksCreated": false,
+  "schema": "jhg46-next-runtime-existing-schema-byte-link-checks/v1",
+  "skillBytes": 2698,
+  "trueLocalMergeObjectTreeBound": true
+}

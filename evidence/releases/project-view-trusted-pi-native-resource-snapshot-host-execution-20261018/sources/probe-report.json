@@ -1,0 +1,108 @@
+{
+  "checkedTargets": 12,
+  "checks": {
+    "activeReleaseAlias": true,
+    "actualNativeHostAndControlledFacade": true,
+    "allSessionsDisposed": true,
+    "allTargetBytesAndPermissions": true,
+    "coldRestoreMetadataAndNoReplay": true,
+    "environmentOnlyPath": true,
+    "foreignScopeRejectedBeforeSession": true,
+    "invalidProvenanceRejectedBeforeSession": true,
+    "legacyFiveFieldInputAndOutput": true,
+    "temporaryDirectoriesRemoved": true,
+    "unknownRootRejectedBeforeSession": true,
+    "validResourceTerminalAndDigest": true,
+    "zeroAmbientFetch": true,
+    "zeroProjectToolExecutions": true
+  },
+  "credentialsReadByProbe": false,
+  "endedAt": "2026-10-18T11:47:10.673Z",
+  "gid": 10002,
+  "imageTargets": [
+    {
+      "bytes": 2241,
+      "imagePath": "browser-preview/runtime/sha256.mjs",
+      "sha256": "85da435e9edaf4dca3411cf5f86fa45a95fe15c78060849d11f7eb0344b5bd24"
+    },
+    {
+      "bytes": 6700,
+      "imagePath": "project-resources/text.mjs",
+      "sha256": "9f7f3266549f04a0a8214e6e725ea9d85030532364f136487833e9cc45af303e"
+    },
+    {
+      "bytes": 23072,
+      "imagePath": "runtime/controlled-pi.mjs",
+      "sha256": "cf4143bff6cf049d2ab8247ef86ceb5f5391da67a86acb56ea901a119b2d6871"
+    },
+    {
+      "bytes": 27185,
+      "imagePath": "trusted-pi/release-candidate.mjs",
+      "sha256": "034cdc9df6c09e9cd7a32320e6bbfc2f9bbf5761151fe1d585d7fd64cdcd8d07"
+    },
+    {
+      "bytes": 1557,
+      "imagePath": "trusted-pi/research-context.mjs",
+      "sha256": "938e89155a5d5e0c405f51db5d973a4db264e63d96e308aff8da93caaaa05076"
+    },
+    {
+      "bytes": 27185,
+      "imagePath": "trusted-pi/trusted-pi-release.mjs",
+      "sha256": "034cdc9df6c09e9cd7a32320e6bbfc2f9bbf5761151fe1d585d7fd64cdcd8d07"
+    },
+    {
+      "bytes": 16239,
+      "imagePath": "trusted-pi/trusted-pi-turn-host.mjs",
+      "sha256": "942333ecc87eb6c7545e0494fed501d9ffa5418468039845484e223b6dfa81d6"
+    },
+    {
+      "bytes": 7703,
+      "imagePath": "trusted-pi/product-model-transport.mjs",
+      "sha256": "c2bece021f34f0b929e796238d132a819281d172b5d8fd3a6f431ed9d46801c6"
+    },
+    {
+      "bytes": 11657,
+      "imagePath": "trusted-pi/product-tool-bridge.mjs",
+      "sha256": "e536e9231a7fa41be956e3066535a62b7de460b37a4e5a40937c67d9f5981e74"
+    },
+    {
+      "bytes": 16912,
+      "imagePath": "runtime_supervisor.py",
+      "sha256": "79e2bdedaedba063364513d853eb8325f229ba55b1e51df46cbcee359807e29c"
+    },
+    {
+      "bytes": 244,
+      "imagePath": "package.json",
+      "sha256": "0dde532fe23b810bd09b978f990d48342f7378429f2b2c48f30e055993fa6ebe"
+    },
+    {
+      "bytes": 150262,
+      "imagePath": "package-lock.json",
+      "sha256": "ad20b5c766c411c5ba42a4fc997890fe3494ab8adb96cf5d75031366b3d144fc"
+    }
+  ],
+  "limitations": [
+    "Source equivalence is not image or target acceptance.",
+    "Synthetic host/model transports do not prove native supervisor/capacity release or actual project_write behavior.",
+    "One future network-none container mock does not authorize Cloudflare rollout, a real Turn or reuse of original acceptance requests."
+  ],
+  "manifestSha256": "7106ff37f714ec60135962a9f71e661d911ba5e0e4870178175a8b1bf5260d22",
+  "mode": "image",
+  "nodeVersion": "22.23.2",
+  "overlayTargets": 1,
+  "realProviderRequests": 0,
+  "requestId": "695e8875-459a-41b3-a148-2e228f2c3727",
+  "result": "passed",
+  "schema": "trusted-pi-native-resource-snapshot-host-probe/v1",
+  "sourceMacEncodingNormalized": false,
+  "startedAt": "2026-10-18T11:47:08.690Z",
+  "syntheticRequests": {
+    "ambientFetch": 0,
+    "model": 3,
+    "projectToolExecutions": 0,
+    "research": 3,
+    "sessionCreations": 3,
+    "sessionDisposals": 3
+  },
+  "uid": 10002
+}

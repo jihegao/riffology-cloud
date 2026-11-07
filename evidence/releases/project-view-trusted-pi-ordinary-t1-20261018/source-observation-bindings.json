@@ -1,0 +1,109 @@
+{
+  "schema": "jhg46-ordinary-t1-private-observation-bindings/v1",
+  "source": "Root local original browser-observed semantic records; private originals retained, never copied into public evidence.",
+  "bindings": [
+    {
+      "file": "ordinary-identity-bracket.private.json",
+      "bytes": 1051,
+      "sha256": "cb5cd18bbd517065be48e0bb9842318bb00fbf33ebf394449ec6d72c1ed9f635",
+      "privateOriginalNotCopied": true
+    },
+    {
+      "file": "ordinary-project-original-send.private.json",
+      "bytes": 401,
+      "sha256": "6059e9b17a0bda457daa3eb1e705c19288149bc71c70f726b23c5a135985d868",
+      "privateOriginalNotCopied": true
+    },
+    {
+      "file": "ordinary-project-original-ack.semantic.private.json",
+      "bytes": 827,
+      "sha256": "df2f4a0b01da83e1924b8667f5068d707a046d9df8fa337e933f9a56073137d1",
+      "privateOriginalNotCopied": true
+    },
+    {
+      "file": "ordinary-project-prepared-intent.json",
+      "bytes": 366,
+      "sha256": "74705325fcd72dbb191c86ba30eb365346f131cff644dac426cad9acceac3385",
+      "privateOriginalNotCopied": true
+    },
+    {
+      "file": "ordinary-project-ready.semantic.private.json",
+      "bytes": 508,
+      "sha256": "1f6898abd84f32a4bd81a6c522f56b032b4a6236e16cb2b10888bd7d0d9e6f70",
+      "privateOriginalNotCopied": true
+    },
+    {
+      "file": "ordinary-initial-snapshot.semantic.private.json",
+      "bytes": 528,
+      "sha256": "b4c42d1a1672c286b2b854acab2769850b7140ff15760ee5f518c0a4411392c6",
+      "privateOriginalNotCopied": true
+    },
+    {
+      "file": "t1-prepared-intent.json",
+      "bytes": 579,
+      "sha256": "263a2e7cf416c46e217d2c57d44a39ade7258bac96494fabf80b2ed194415ef7",
+      "privateOriginalNotCopied": true
+    },
+    {
+      "file": "t1-original-send.private.json",
+      "bytes": 585,
+      "sha256": "f87a93a109fc2bc5b46d0e55993fa08ca1d116f7868b7b512868f46180f17997",
+      "privateOriginalNotCopied": true
+    },
+    {
+      "file": "t1-original-ack.semantic.private.json",
+      "bytes": 4517,
+      "sha256": "b7de2d5544b8932f32940a3404bb0583c756fc3f82201022638e2ff72fda0797",
+      "privateOriginalNotCopied": true
+    },
+    {
+      "file": "t1-failed-release-pending-snapshot.semantic.private.json",
+      "bytes": 5340,
+      "sha256": "6b94220b35546a9d2ef56ebd35bd9b44e5ddadadcb66385e6fa836a2fe52b223",
+      "privateOriginalNotCopied": true
+    },
+    {
+      "file": "t1-failed-release-cleared-snapshot.semantic.private.json",
+      "bytes": 5213,
+      "sha256": "25af38c388539edc2c842c3f698ae8f2670c328a552269c7e0412aa36de5ad18",
+      "privateOriginalNotCopied": true
+    },
+    {
+      "file": "t1-selected-failure-events.semantic.private.json",
+      "bytes": 2996,
+      "sha256": "e12ca78e388366ca3fd67db28ec9ea085ced29fc921e831235c9c1de1953b392",
+      "privateOriginalNotCopied": true
+    },
+    {
+      "file": "t1-canonical-files-head-null.semantic.json",
+      "bytes": 440,
+      "sha256": "ad30888e861f5f8786623111086066a47d996c9e1f5be8fe77cc92bd556776cd",
+      "privateOriginalNotCopied": true
+    },
+    {
+      "file": "t1-tool-receipt-missing-query-400.semantic.private.json",
+      "bytes": 284,
+      "sha256": "996f0a050deed2e55d86187bf8f2e793869d5923fe4c934f28d28914ec3b28f1",
+      "privateOriginalNotCopied": true
+    },
+    {
+      "file": "t1-beta-available.semantic.json",
+      "bytes": 75,
+      "sha256": "5e76e20164bf1dcea672e2bd3537cc189cefbb0c8bfd0aff299accc6ba1aa029",
+      "privateOriginalNotCopied": true
+    }
+  ],
+  "rootAttestation": "Root reports all listed browser semantic reconstructions were checked against their browser full-body SHA before this authoring task. Reviewer independently checked the fixed local bytes and full pending/cleared data comparison; no browser was read during authoring.",
+  "whitelist": "State, counters, timestamps, approved random project/workspace/session/turn IDs, scope hash, original request-body digest and status-only provider/tool facts.",
+  "excluded": [
+    "user or tenant identifiers",
+    "email",
+    "actor object",
+    "host/location",
+    "provider request IDs",
+    "tool call IDs",
+    "prompt/body/transcript",
+    "credentials",
+    "private observation bodies"
+  ]
+}

@@ -1,0 +1,88 @@
+{
+  "actions": {
+    "apiRequests": 0,
+    "authActions": 0,
+    "buildsOrTests": 0,
+    "cloudWrites": 0,
+    "localStaticReadsOnly": true,
+    "paidExecutions": 0
+  },
+  "executed": false,
+  "findings": {
+    "actualBaselineAppVersion": 11,
+    "baselineLegacyInstancesIsNotPhysicalCount": true,
+    "bodyCanonicalSha256Verified": "a970c950385fa8f332e439753af463549f6487ff43f38e1548b7ef2d96ea8d8a",
+    "cas": "No examined server expected-version/If-Match CAS. Named single-writer agreement plus fresh original-state checks is still necessary and cannot imply atomicity.",
+    "copiedCommandEntrypointObservabilityExact": true,
+    "effectiveBasicProfile": {
+      "diskMB": 4000,
+      "literalInstanceTypePresentInBaseline": false,
+      "mappingNotLiteralConfigurationClone": true,
+      "memoryMiB": 1024,
+      "vcpu": 0.25
+    },
+    "instanceObservation": {
+      "allObservedInactive": true,
+      "observedRows": 6,
+      "scope": "One original-app observation; rows retained, not an empty list or proof of native/Beta release."
+    },
+    "nonImageConfigurationReadbackRule": "Strict fresh canonical equality after removing image; any normalized field difference retains hold and stops, no patch/retry/rollback.",
+    "officialWritableTargetFieldCount": 7,
+    "rolloutGetSurface": {
+      "historicalExactGetStatus": 200,
+      "historicalIdNotAssignedToFuturePost": true,
+      "historicalTargetVersion": 11,
+      "observedListLimitedToOne": true
+    },
+    "sourceAppAndConfigurationCanonicalHashesVerified": true,
+    "transmittedTargetFields": [
+      "command",
+      "entrypoint",
+      "image",
+      "instance_type",
+      "observability"
+    ],
+    "unsupportedNormalizedFieldsTransmitted": false
+  },
+  "mustFix": [],
+  "outcome": "passed-no-must-fix-not-ready-for-execution",
+  "pendingBeforeExecution": [
+    "New explicit grant for one source publication, exact original-owner maintenance begin/end, and this one container-affecting rollout; Registry grant alone is insufficient.",
+    "Final source/bundle/sender/private baseline assembly review and fixed preserving multipart before Gateway publication.",
+    "Fresh original hold/owner/control and combined logical quiescence proof, original native/tool/resource release, complete unfiltered physical instances and config immediately before write.",
+    "Named single-writer owner/window, lock/grant/source/body bindings and exact persisted original ACK.",
+    "Concrete post-rollout physical-state/health/distribution criterion and complete original-ID configuration/versions/other-app/resource preservation reads.",
+    "Target version and rollout ID only from trusted future original ACK; both remain null now."
+  ],
+  "readyForExecution": false,
+  "reviewScope": "Static review of frozen local source evidence and exact proposed request; no fresh service observation or execution.",
+  "reviewedAt": "2026-10-18T03:33:11.342648+00:00",
+  "reviewedFiles": [
+    {
+      "bytes": 9416,
+      "file": "official-api-schema.json",
+      "sha256": "76f29327cd5542b3f074be303aefe2d2a1e4e35f13e52a626b4966056c95bfbf"
+    },
+    {
+      "bytes": 4244,
+      "file": "rollout-input.json",
+      "sha256": "d7956988abe42af2089f4ab886530481e0cadeb7a6b1d5868fd1ac262971ec86"
+    },
+    {
+      "bytes": 1820,
+      "file": "a036-instances-safe.json",
+      "sha256": "8d3a5384238e311f62963b4fd8fdd8ce55c721229e5e8c6c2c2c73c2776753ee"
+    },
+    {
+      "bytes": 1542,
+      "file": "rollout-get-surface-v2-safe.json",
+      "sha256": "05eb7cb8c854df3c855c3d631548aa3d32975dabba17c3f304be2ff88dd1451d"
+    }
+  ],
+  "schema": "jhg46-independent-rollout-input-review/v1",
+  "sourceBinding": {
+    "actualApplicationsSectionBytes": 16946,
+    "actualApplicationsSectionSha256": "6183844cf15701d3c0174e6c3594f96e656b67e5b544eb0c831c053b60dc5e27",
+    "privateSectionBodyExported": false
+  }
+}

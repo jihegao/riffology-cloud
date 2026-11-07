@@ -1,0 +1,11 @@
+{
+  "humanGrantSha256": "78c8c59e91a9313e0760ecb71466868fae28c44d2568703d6f8acc26850f947a",
+  "humanReplySha256": "b2daef9bea7a2659ae26be05c81a1534dc14c1b33e6b911d66544659fece205e",
+  "imageId": "sha256:a946b164d10d074fcc9859f6c54c3b65d1901b41696c5ee8d8e31e275ddd1593",
+  "operationsManifestSha256": "ae0614dafe7067367703ad41a9e0ff19f25de3ab7c788b85f01c1ff5c6b4fffd",
+  "remoteDirectory": "/tmp/riffoid-jhg46-image-20261017.AU613w/pi-probe-readable-v1",
+  "requestId": "b0933502-20df-480a-9a91-d833f5c4358c",
+  "schema": "trusted-pi-probe-readable-launch-intent/v1",
+  "transferResultSha256": "abf0d02db33aa764f98b76203a8dc567fab2e08345fb4fd6efbf4eb777fbfd09",
+  "transferredVerified": true
+}

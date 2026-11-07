@@ -1,0 +1,89 @@
+{
+  "schema": "jhg46-fb07-idle-placement-difference-proposal/v1",
+  "batchRequestId": "fb07e239-2cb4-4379-9581-5711d86a0f30",
+  "proposalOnly": true,
+  "accepted": false,
+  "window": {
+    "startsAt": "2026-10-18T21:59:00Z",
+    "endsAt": "2026-10-19T01:59:00Z",
+    "extended": false
+  },
+  "observedCheckpoint": "2026-10-18T22:27:06.298Z",
+  "deploymentId": "d03b8c4d-8cc2-475e-ba96-6e46d062983c",
+  "applicationVersion": 13,
+  "image": "sha256:ec8dbe9efe229a1626ea3202b618653f82f8d29d9da8b19310c3b3838f2a2623",
+  "oldAllowedPlacement": "8ef5d3a1-a30c-47c6-8608-b557b6bbc23a",
+  "proposedReplacementPlacement": "9f18c9ab-e7ea-47bc-8238-efce81feea0e",
+  "knownVmCount": 1,
+  "vmHealth": "running",
+  "containerStatus": "stopped",
+  "profile": "default/basic",
+  "maxInstances": 1,
+  "logicalCount": 10,
+  "logicalAllInactive": true,
+  "dashInstances": 0,
+  "t1": {
+    "status": "completed",
+    "persistenceOutcome": "saved",
+    "revisionId": "768fc2ff2c44a5005cbaeae9b433f47f19c71bb0fb88cdaf70a1c11992d259fb",
+    "skillBytes": 6056,
+    "skillSha256": "8ef3375d58464b2a74cc57031771f5f7bad21b15f09991fb3838620e9f3ae6d7",
+    "bashExitCode": 0,
+    "exactScriptAndTimeoutBytesVerified": false,
+    "productReleaseConfirmed": true,
+    "capacityAtLatestRead": "available"
+  },
+  "continuation": "T1 joint release confirmed; only if proposed narrow known-idle replacement rule explicitly accepted and fresh same-original recheck passes, continue original remaining T2/R2 then finite gate; V1 must pass before original Session2/T3. No extra attempts or extended window.",
+  "exclusions": [
+    "No unknown, multiple-running, running-container or other-deployment/version/image/profile/config state",
+    "No additional operator/API VM create/delete/restart, rollout or hold; platform natural replacement under the exact approved condition is the proposed observed scope. No extra project, Turn, retry or window.",
+    "No claim T1 caused replacement, old placement disposed, all VM released, zero fee or overall acceptance"
+  ],
+  "sources": [
+    {
+      "file": "ordinary/turn-1-once/finalguard-five-get-original.private.json",
+      "bytes": 21059,
+      "sha256": "693c1942b6c746f1b32df67eeb6c10b62dea0dc1108b9d4b2e31a4a40f2671aa",
+      "bodyCopied": false
+    },
+    {
+      "file": "ordinary/turn-1-once/physical-finalguard.tool-result.private.json",
+      "bytes": 16552,
+      "sha256": "e1debea330d8dacdfd4f225bb2cdfdcd147312bdbdc11ff70e301f848269fbfe",
+      "bodyCopied": false
+    },
+    {
+      "file": "preflight/frame-observation-order-correction.safe.json",
+      "bytes": 2499,
+      "sha256": "cc64d98be6cfe175527314a20df7477b37cfb07e4556f5fc6ace52bc458ea8c6",
+      "bodyCopied": false
+    },
+    {
+      "file": "ordinary/turn-1-once/capacity-confirm-five-get-original.private.json",
+      "bytes": 21053,
+      "sha256": "6c478c4ae4eb7a283edca1e2151f2e3c6943eb975d44ef4738fafb55c51d2c01",
+      "bodyCopied": false
+    },
+    {
+      "file": "ordinary/turn-1-once/physical-product-released.tool-result.private.json",
+      "bytes": 16553,
+      "sha256": "981c3bc7d8cd1f4eddc899fd8fe75f1cbfe12417c8519c97c9ac571e3ffadb23",
+      "bodyCopied": false
+    }
+  ],
+  "proposedRule": {
+    "targetApplicationId": "a03628c4-f032-461f-a65b-612ccac11a06",
+    "deploymentId": "d03b8c4d-8cc2-475e-ba96-6e46d062983c",
+    "version": 13,
+    "image": "sha256:ec8dbe9efe229a1626ea3202b618653f82f8d29d9da8b19310c3b3838f2a2623",
+    "profile": "default/basic",
+    "maxInstances": 1,
+    "maxKnownRunningIdleVmAcrossEntireTarget": 1,
+    "containerStatus": "stopped",
+    "currentPlacement": "9f18c9ab-e7ea-47bc-8238-efce81feea0e",
+    "subsequentReplacements": "Only original T2/T3 natural release followed by complete unfiltered logical/scheduler/exact/Dash identification under identical deployment/version/image/profile/config",
+    "unknownMultipleOrOtherConfigAccepted": false,
+    "perTurnOriginalRuntimeToolCapacityJointReleaseStillRequired": true,
+    "currentExposureScope": "Same original application current complete unfiltered exposed scope only; no historical disposal or global VM-count inference"
+  }
+}

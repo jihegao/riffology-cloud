@@ -1,0 +1,23 @@
+# ec8 rollout 与 T1/T2 保存释放通过；V1 首次页面超时失败，原有限门禁已关闭
+
+本次运行截至2026-10-18T17:04:31.276Z，后附17:07退出观察。a25f固定批次已完成既有目标应用13/ec8唯一rollout、原维护begin/end，以及新普通项目Session1的T1/R1、T2/R2保存与产品级释放；V1首次Dashboard显示 `Load error: page request timeout` 后立即停止。没有页面重试、Session2、T3或V2/R3；不能把本批写成整体通过、父#214完成或JHG-46 Done。
+
+本批 `d0b12dd5-c04e-41d9-9a05-c685431d6695` 唯一rollout为 `fda3b905-7c35-4c3b-aa56-2256ed031992`，POST201后精确读取completed，实际目标版本13、镜像 `sha256:ec8dbe9efe229a1626ea3202b618653f82f8d29d9da8b19310c3b3838f2a2623`。原39GET after-witness因列表表示差异held，原件未改；同资源只读42GET对账完成Worker/source/control、其它15应用及版本、目标非image配置和13/12链保全，没有追加rollout。原维护请求 `c1f9e955-96a6-56dc-acd2-4a0e84410442` 单次end200、state3→4/holdnull并独立GET闭合。既有9c8 bundle没有再次PUT；后续仅有限secret开关生成两个Worker版本，bundle/source保持9c8。
+
+普通本人fresh me/SELECT原权威核对为authVersion2、accepted invitation、active personal owner、非operator，数据库changes=0/rows_written=0。唯一新blank项目generation1 ready后只使用一个Session提交两次显式Turn。T1的17条完整事件含3次provider200、2个普通工具completed：mkdir exit0、skill2698B/SHA `f05062374fccbffa83a7e6da5505a3229bd975ff8d5aaf30e832c8f0a3c3d294`；R1 Diff仅新增三个目录和skill。首次assignment-guard pending及物理held历史保留，16:21:43–54原身份五GET、原工具和当前物理证据闭合产品级保存/释放；没有把六分钟、saved或available任一单项当释放，也没假称读取私有raw stop/lease/operation字段。
+
+T2仍在原Session1，由普通UI单次提交，原202 ACK无replay。R2 `f53f1165ed49240ac45896f27f33739f9e573efd7d9bef8c0e4f0424ee0b7bfa` 与checkpoint/Session head相同，T1未变；235条分页事件连续，含6次provider200、9份remote ledger成功回执和一次原生load_resource成功。实际从R1读取同一2698B/f050 skill，6份普通写入生成manifest、两页、共享module、CSS、V1 series=[2,3,5]。manifest/series完整expected byte candidate与原写回执bytes/SHA相同，不冒充独立canonical下载。16:38:44.717–53.935Z原身份五GET全200，active/release/recovery/resourceWait均null、Beta available；16:39:42–45物理四GET支持原产品级释放closure。原checkpoint确定性dispatch派生与新增logical/Dash匹配，不靠出现时间归因。
+
+有限browser gate沿原owned请求 `db65c5b8-799b-5dc7-ab0a-6eb56b7927ae` 只PUT一次，16:51:27.113Z发送、16:51:28.060Z返回201，实际open Worker `ba8d19c9-3a87-49f5-bccb-a97f2d5955ee`。实际Model/Dashboard首次页面显示超时后停止，Report、factor20/50、Pause/Resume、订阅、刷新/离开重入、artifact按钮和完整chunks/body SHA均未验收。初始SDK请求在observer安装前，后续7次包poll200不是“SDK没有请求”的证据。性能resource buffer不完整且未绑定原identity，不能证明唯一线上原因。原39GET held、后续兼容读取与所有capture过程仍保留。
+
+该失败时实际包7597B/SHA `058b0d095d0722f1caa5f8ce7507a65656a795e9c1d1a4a63e6646c667ba9b98` 已保存，独立重算packageIdentity，scope/R2/manifest及5资产bytes/SHA/sourceSha均与T2原写入一致。实际main.mjs2542B/SHA `f35830bb9af40ff488ca423e5a376636ac981add643fc8a97a585acaa94559a2` 已取得，不能因此宣称页面通过。静态源码表明统一start().catch可由readFile或subscribe超时显示同一错误；5000ms SDK时限与串行host授权读取预算不一致是已定位的源码问题，尚非唯一线上因果证明。生成app按钮直接对JSON envelope做源文本prefix检查、未独立bodySHA的静态缺陷另记，按钮未点击，不能用它解释当前timeout。实际artifact回执为17567B/1f1934…，17408B是源文本；body重组仍未做。AX partial及一次本地Blob导出/bytes-SHA核对只恢复原缓存，没有HTTP或Turn重放。
+
+原owned DELETE于16:59:50.923Z发送、16:59:51.494Z返回200，实际closed Worker `4f887d24-7874-4fb3-b3ac-caf6d74ab461`，latest sole100%。54GET完整after-close witness确认gate absent，source9c8与106bindings、11secret条目、25exports、6容器关联、96asset配置、16apps、50namespaces等保全。raw stable metadata `64d4d58d0822536915b6f8efab957059fcff0a4b315b4e7edc96e394b5277c19` 与原 `2b8867424e00a39e61fe237fe9790462275f0598e5613f0852ca38709d4ebf44` 确实不同；精确annotation/upload→secret桥接完整重建原hash，没有伪称raw相等或secret明文读取。原96资产保全配置和此前静态96/96字节验证保留，本阶段没有fresh96 body下载。
+
+17:04:08–10Z最后普通GET确认原me、一Session两completed/saved、四active/holds均null、Beta available，project-views503且frame已0，原UI nonGET4不变。17:04:28–31Z当前完整物理四GET显示logical9均inactive、Dash instances0/DO9、唯一d03b13/ec8、placement8ef5的已知basic/max1 VM running/container stopped。logical9不是VM9；这不等于全部历史placement释放或全局零执行，空闲VM仍可能计费，usage/费用unknown不记零。原历史失败、unknown、锁、归档和费用不清除，窗口仍截至19:07:16Z且未延长。
+
+本次[#252](https://github.com/jihegao/riffology-cloud/issues/252)自身host scope已验收，父[#214](https://github.com/jihegao/riffology-cloud/issues/214)仍pending，保持Acceptance/P1/blocked；#104保持Acceptance/P0。Project变更以原API读回为准，本稿不提前声称#252已Done或已移除blocked，Issue保持OPEN。新[#255](https://github.com/jihegao/riffology-cloud/issues/255)承接最小SDK预算修复，离线推进，未部署；本结果没有批准或执行新页面重试、额外Turn或再次门禁开关。
+
+[阶段安全证据](../evidence/releases/project-view-trusted-pi-native-resource-host-rollout-acceptance-execution-20261018/README.md)保留已有独立审阅原件、实际包投影、失败与原owned清理闭环；[inventory](../evidence/releases/project-view-trusted-pi-native-resource-host-rollout-acceptance-execution-20261018/inventory.json)绑定全部公开allowlist。原private body/prompt/UID/email/tenant/精确host/location/credentials及实际project script正文不公开。本结果及下附作者阶段原件已通过独立公开包审阅（SHA `9920045eaad730ab84653376880ccdd9261156dd44718b07b055512f9e6c6c33`）；作者阶段文件中的待审标签按原时点保留。16:44前稿与全部原始历史完整保留。
+
+17:07:10Z 后续Safari AX观察：原页完整导航回项目列表，旧context instrumentation随document消失，清空Console并关闭Inspector，未打开/恢复旧项目或点Retry。这不替代HTTP/物理证据。#255原API已为In progress/P0、owner jihegao/M1，尚未部署。

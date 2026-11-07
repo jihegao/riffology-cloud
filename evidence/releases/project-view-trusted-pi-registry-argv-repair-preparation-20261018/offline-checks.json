@@ -1,0 +1,53 @@
+{
+  "schema": "trusted-pi-registry-argv-order-repair-offline-checks/v1",
+  "recordedAt": "2026-10-18T01:43:12.859102+00:00",
+  "requestId": "fb99c7e4-21a7-4215-8261-c17dd7c148aa",
+  "operationsManifest": {
+    "file": "operations-manifest.json",
+    "bytes": 1313,
+    "sha256": "89f2f285f5f732a6f3c9b8705a47fde4b5f073970e585e779371fb20ac2680fa"
+  },
+  "sourceDelta": {
+    "file": "source-delta.patch",
+    "bytes": 15095,
+    "sha256": "a777107a3b8e7b201020707602d527cc4b11192d1350433019b84b5a9a8e37ba"
+  },
+  "parser": {
+    "pass": 1,
+    "cases": 6,
+    "file": "parser-check-first.receipt.json",
+    "bytes": 694,
+    "sha256": "676ddaf5b10335c69bc1df78d4ecd91b08bb2152d246b7ace507065a762ecab9"
+  },
+  "recoveryFakes": {
+    "pass": 16,
+    "fail": 0,
+    "file": "recovery-fake-checks.json",
+    "bytes": 569,
+    "sha256": "75b9e80c1755ea8fe9dd0cae6e30553de03d2989051cf88494bc12adbca47499"
+  },
+  "readerFakes": {
+    "pass": 7,
+    "fail": 0,
+    "file": "independent-reader-checks.json",
+    "bytes": 651,
+    "sha256": "f0f498ed22ca86071b1f46fa67bb0eeec23c5e09d035350416ead5a1375ce799"
+  },
+  "readOnlyReader": {
+    "file": "independent-cleanup-readonly.py",
+    "bytes": 9065,
+    "sha256": "2207c49844d8bfa4777510d6c60d4333f509dd1d7ab42fabf71e6188c77d6266"
+  },
+  "readOnlyReaderTest": {
+    "file": "test_independent_reader.py",
+    "bytes": 6568,
+    "sha256": "1ccd6830166f0f2cc8447ad34b066659364c18a5d78e282b414777dfb4914eb4"
+  },
+  "syntaxCompile": "all candidate Python files compiled in memory; parser fixture node --check passed",
+  "sourcePinChecks": true,
+  "oldEightSourceManifestStillExact": true,
+  "remoteAndOciVerifierBytesUnchanged": true,
+  "readerChangedOnlyFixedRequestAndRoot": true,
+  "noGrantOrRealExecution": true,
+  "actualAuthNetworkSshDockerCalls": 0
+}

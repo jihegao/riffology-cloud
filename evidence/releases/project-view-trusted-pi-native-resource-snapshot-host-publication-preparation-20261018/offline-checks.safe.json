@@ -1,0 +1,47 @@
+{
+  "actualOAuthFilesRead": false,
+  "actualOAuthSshDockerRegistryApiProviderOrGitHubActions": 0,
+  "coreFakeSuite": {
+    "actualReceiptSha256": "98537534bf129f1d55558481ac797a52e7e11dd12a347ac4c43025d3c88913c2",
+    "command": [
+      "python3",
+      "-m",
+      "unittest",
+      "-v",
+      "test_recovery.py"
+    ],
+    "endedAt": "2026-10-18T12:01:18.780323+00:00",
+    "failed": 0,
+    "passed": 17,
+    "prior17PassBeforeAdditionalSourceGuardKeptAsHistory": true,
+    "sourceReceiptFile": "publication-fakes-final.json",
+    "startedAt": "2026-10-18T12:01:18.705100+00:00",
+    "streamHashes": {
+      "stderr": {
+        "bytes": 1623,
+        "sha256": "fd52cb2916265c023b6cfdf178ef834ae78f8a2b5cf273900220a1e8b6c65358"
+      },
+      "stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  },
+  "fullCliOrHelpExecuted": false,
+  "independentReaderFixtures": {
+    "authorReceiptFile": "reader-offline-checks.safe.json",
+    "authorReceiptSha256": "c75315cb7b1f2b12c1c627f38f8482989dc337f73a799f53a586ca31fb1a3fed",
+    "failed": 0,
+    "independentlyRerunByPackageAuthor": false,
+    "passed": 11
+  },
+  "limits": [
+    "Only local synthetic fixture operations were executed.",
+    "No actual archive/runnable/config/Registry result is available for the new candidate.",
+    "Fixed installed CLI function bytes were read/hashed only; no full CLI or authentication handler ran."
+  ],
+  "manifestHas8CoreAnd3AdditionalSourcePins": true,
+  "pythonAstFiles": 7,
+  "recordedAt": "2026-10-18T12:02:38.394808+00:00",
+  "schema": "trusted-pi-native-host-publication-offline-checks/v1"
+}

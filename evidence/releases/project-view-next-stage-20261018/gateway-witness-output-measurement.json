@@ -1,0 +1,35 @@
+{
+  "schema": "jhg46-witness-normal-size-measurement-receipt/v1",
+  "purpose": "Only two normal VM scenarios extracted; no complete test suite registered or rerun",
+  "finalManifestSha256": "b774dc1d6b34729c6b45022bd76ee4c5e54f219da0120a2381c9f253b8f11041",
+  "sourceFixture": {
+    "file": "../gateway-preservation-witness-v2/witness-fixtures.test.mjs",
+    "bytes": 10749,
+    "sha256": "6a46e4272a3b96da06814223bd83329a044c55a334af7f2490acde7325e25c14"
+  },
+  "measurementSource": {
+    "file": "measure-normal-phases-once.mjs",
+    "bytes": 5454,
+    "sha256": "f9cf7345adb1316ed0147c5a4772ba3dc66d0aad8a82ce95777f9ce0db531bb0"
+  },
+  "originalPid": 47183,
+  "startedAt": "2026-10-18T04:03:47.030021+00:00",
+  "endedAt": "2026-10-18T04:03:47.176545+00:00",
+  "exitCode": 0,
+  "reaped": true,
+  "streams": {
+    "stdout": {
+      "file": "measurement.stdout",
+      "bytes": 490,
+      "sha256": "f690b0cdfad8f8e982bf9eac07c00dc475c3cc287e76b804a8e57fcdae60a5c6"
+    },
+    "stderr": {
+      "file": "measurement.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "actualAccountOrAuthCalls": 0,
+  "paidOrProviderCalls": 0,
+  "authorFilesModified": false
+}

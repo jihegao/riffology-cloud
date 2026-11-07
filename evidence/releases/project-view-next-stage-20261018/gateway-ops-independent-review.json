@@ -1,0 +1,169 @@
+{
+  "schema": "jhg46-gateway-v3-independent-source-review/v1",
+  "recordedAt": "2026-10-18T03:39:26.051199+00:00",
+  "result": "no-must-fix-for-unsealed-offline-preparation",
+  "mustFix": [],
+  "reviewerAuthoredVersion": "gateway-ops-v2 only; gateway-ops-v3 integration changes authored by source_audit",
+  "boundManifest": {
+    "file": "gateway-ops-v3/operations-manifest.json",
+    "bytes": 5896,
+    "sha256": "77899ca757e87fe737c7db91e054158202a045204d5db235e129484ba5981ed0"
+  },
+  "boundReceipt": {
+    "file": "gateway-ops-v3/offline-integration-checks/receipt.json",
+    "bytes": 3751,
+    "sha256": "e83f570519323da961a0c732a876ac0159809b89be30f30a5713dd4140b934b9"
+  },
+  "boundKeyInputs": [
+    {
+      "file": "gateway-ops-v3/prepare-gateway-replacement.mjs",
+      "bytes": 11605,
+      "sha256": "517fa836a471a92e6eb6d7df36c2135e1e40985698b32fb22c7215420d7723bb"
+    },
+    {
+      "file": "gateway-ops-v3/publish-gateway-replacement.mjs",
+      "bytes": 38114,
+      "sha256": "f2c4895ec4f269aeb8ef58b87b5635a93ca5bf4695c05223b7ee808b56e15d7b"
+    },
+    {
+      "file": "gateway-ops-v3/source-delta.patch",
+      "bytes": 28196,
+      "sha256": "d728d60637b70069f55c0c4dc9686cf7be6dbe52333416cdd31de448a7e3c135"
+    },
+    {
+      "file": "gateway-ops-v3/README.md",
+      "bytes": 8034,
+      "sha256": "feaa8c5fa7d0723a8d6a708bf3b2aeda497be77aefbc909ad6196dd81df24c85"
+    },
+    {
+      "file": "gateway-ops-v3/metadata-preparation-safe.json",
+      "bytes": 892,
+      "sha256": "dd5894817e13e86185ceefada71b6822cf3f6daa6f7322c672a139c42fdb6a66"
+    },
+    {
+      "file": "gateway-ops-v3/baseline-complete.private.json",
+      "bytes": 143922,
+      "sha256": "4386ea1a12dc21191bb382cfb3728c2ad3390a4fff4ca5dcae7b466040729e1e"
+    },
+    {
+      "file": "gateway-ops-v3/baseline-complete-safe.json",
+      "bytes": 20917,
+      "sha256": "f75e008fd81ef68164a8d03d598d7de29aa20cd75535d3a8cff02212e8a7a39e"
+    },
+    {
+      "file": "gateway-ops-v3/metadata-without-jwt.private.json",
+      "bytes": 30452,
+      "sha256": "8058ff9de79cfb891882058c793ff839d0635aa48bd1586b8ea996243524d079"
+    },
+    {
+      "file": "gateway-ops-v3/publication-attempts/f953bc1e-3ea1-4786-821c-26ecf68916a0/plan.json",
+      "bytes": 2347,
+      "sha256": "b0cdb7ff1a785a1b8a15c3cd52e1e31910c866e329d221d28953bcd13f311db2"
+    }
+  ],
+  "all20ManifestBindingsMatch": true,
+  "externalFrozenInputs": [
+    {
+      "role": "bundle",
+      "file": "gateway-ops-v3/../gateway-build-v2/gateway.mjs",
+      "bytes": 5771650,
+      "sha256": "9c8e4b6b763e9887d1624f00ed3a8efb2a8a24d984d96bc68fdb289cb4d362c3"
+    },
+    {
+      "role": "sourceBinding",
+      "file": "gateway-ops-v3/../combined-v2/source-content-binding.json",
+      "bytes": 10978,
+      "sha256": "786cdb428a40e1d996539b8d6157d8705bf73eade02ca6d8ba4bddc7a1fcfeaf"
+    },
+    {
+      "role": "sourceInventory",
+      "file": "gateway-ops-v3/../combined-v2/source-input-inventory.json",
+      "bytes": 160700,
+      "sha256": "a00991d336d395b2923d1b98e6f8228d1562655b7670207dcf51ca2ea2777d7e"
+    },
+    {
+      "role": "moduleGraph",
+      "file": "gateway-ops-v3/../gateway-build-v2/source-graph.json",
+      "bytes": 879161,
+      "sha256": "f8a9c6bdc9a5a4adc1ea51fcbc9c1c24a8219d421b86ffe29a371a50ac4591bf"
+    },
+    {
+      "role": "assetsInventory",
+      "file": "gateway-ops-v3/../gateway-build-v2/assets-sha256.json",
+      "bytes": 20499,
+      "sha256": "b1fd4e1fe0b538af20cfb090242fa996f75bf26f8076e259a774ee2d5338b39a"
+    },
+    {
+      "role": "assetsManifest",
+      "file": "gateway-ops-v3/../gateway-build-v2/assets-manifest.json",
+      "bytes": 15987,
+      "sha256": "b24e87bf762801056e447c106600e1fcee9f23e43c01830436006b5dca8ce1ad"
+    }
+  ],
+  "actual96AssetBodiesMatch": true,
+  "metadataPrivateValuesPrinted": false,
+  "privateDataChecks": {
+    "metadata95BindingsPreserved": true,
+    "metadataKeepsSecretTypes": true,
+    "all25ExportsPreserved": true,
+    "all6ContainerAssociationsPreserved": true,
+    "allOtherSettingsPreserved": true,
+    "allOtherAnnotationsPreserved": true,
+    "metadataOnlyExpectedKeys": true,
+    "noMigrationOrAssetJwt": true,
+    "privateBaselineExactCopyFromV2": true,
+    "safeBaselineExactCopyFromV2": true,
+    "allPrivateFilesMode0600": true
+  },
+  "unchangedProtocolRanges": [
+    {
+      "start": "async function protocol(",
+      "end": "export async function execute(",
+      "bytes": 5069,
+      "sha256": "0f60aea7c01f997c9ea4caf893108a1a8b944f2158f929686a7fe1235205ad24",
+      "byteIdenticalToV2": true
+    },
+    {
+      "start": "export function assertReadOnlyRequest(",
+      "end": "// Closed dummy transport:",
+      "bytes": 4744,
+      "sha256": "4a2c7fc8866f726d34bb3eaad678a4bb1dd884b00f9ae1e4d01246c63c884920",
+      "byteIdenticalToV2": true
+    }
+  ],
+  "staticFindings": [
+    "The new source loader pins the actual9c8e bundle,477 source inventory,1124 module graph,96 asset bodies and explicit before/after auxiliary witnesses. tsconfig is itself in the477 selected source files and is separately pinned to the auxiliary build witness.",
+    "The future actual source gate requires exactly239/246/250 fixed heads, genuine normal merge parents and ancestry, fresh actual origin/main, exact selected source set/blobs/bodies/current checkout and module bytes. It additionally verifies explicit build tools and dependency package-metadata presence/content. No actual future merge IDs or main identity are fabricated.",
+    "The grant and plan gain source-content binding, module graph and build-manifest SHA links. Existing fixed request/publisher/metadata/baseline/source/merge/window/closed-admission boundaries remain required.",
+    "The actual section-derived private/safe baseline remains byte-identical to reviewedv2, including its original stage-specific pending flag. Current integration records sourceGraphPending=false separately without rewriting historical actual bytes.",
+    "Prepared metadata changes only request-linked release annotations and retains original settings,95 ordinary bindings,keep-by-type11secret markers,25exports and6container associations. No JWT,migration or application/policy mutation is introduced.",
+    "Once-PUT/lost-ACK and known-ACK read-only reconciliation source ranges remain byte-identical to v2. Existing original locks/intents and no automatic retry/rollback behavior remain.",
+    "PINS.finalized and sender finalCandidate remain false; execute and reconcile check those before reading grant/credential files. The offline plan is immutable, authorizationPresent=false,executionSealed=false,mergeProof=null. A later reviewed source seal changes publisher identity and requires a new bound plan revision."
+  ],
+  "existingChecksObserved": {
+    "source": "original author receipt and hash-verified streams; not rerun",
+    "syntaxCommands": 2,
+    "targetedTests": 8,
+    "pass": 8,
+    "fail": 0,
+    "skip": 0,
+    "offlinePlanPreparations": 1,
+    "all4ExitZeroAndReaped": true,
+    "oldFiveOrSixteenTestsRerunByReviewer": false,
+    "buildRerunByReviewer": false
+  },
+  "auxiliaryWitnessScope": {
+    "toolFiles": 207,
+    "dependencyPackageMetadataEntries": 186,
+    "beforeAfterWitnessByteIdentical": true,
+    "isNotAllFilesystemReadTrace": true
+  },
+  "limitations": [
+    "This is review of an unsealed local preparation, not permission to publish. Actual normal merge/source proof, fixed future execution-witness source, explicit finite human grant and final execution seal/plan revision remain pending.",
+    "No candidate function or candidate CLI, test, build, auth, account API, SSH, Docker, Registry, provider, cloud write or GitHub mutation was executed by this reviewer. Only local byte/hash/structure inspection and this review receipt write were performed.",
+    "Existing checks load real received private data locally and use synthetic negative merge/grant inputs. They do not prove actual future merges or human authorization.",
+    "Source module/asset/metadata closure does not prove deployment, application rollout, gate opening, authenticated ordinary-user acceptance, paid execution, fees or global zero execution.",
+    "Actual baseline timestamps and future fresh pre-PUT/after-PUT witnesses are separate; no global clock/lock or continuous state guarantee is asserted."
+  ],
+  "privateDataIncluded": false
+}

@@ -1,0 +1,82 @@
+{
+  "baseConfigUser": "root",
+  "buildIdentityBinding": {
+    "baseRootfsDiffIdPrefixMatched": true,
+    "baseRootfsLayerCount": 48,
+    "configDigest": null,
+    "derivedRootfsLayerCount": 49,
+    "descriptorCoreMatched": true,
+    "descriptorDigest": "sha256:0bb9af7a5909c41187cf56402a21420100c72a8de0025b0a7152f8804e85d191",
+    "engineIdRole": "descriptor",
+    "iidRole": "descriptor"
+  },
+  "configUser": "root",
+  "descriptor": {
+    "digest": "sha256:0bb9af7a5909c41187cf56402a21420100c72a8de0025b0a7152f8804e85d191",
+    "mediaType": "application/vnd.oci.image.index.v1+json",
+    "size": 856
+  },
+  "identityNote": "Local Engine Id, build iid/config and registry manifest are retained separately; no push occurred.",
+  "iidFile": "sha256:0bb9af7a5909c41187cf56402a21420100c72a8de0025b0a7152f8804e85d191",
+  "imageId": "sha256:0bb9af7a5909c41187cf56402a21420100c72a8de0025b0a7152f8804e85d191",
+  "localOnlyTag": "riffology-jhg46-native-resource-snapshot-host:695e8875-459a-41b3-a148-2e228f2c3727",
+  "metadata": {
+    "buildx.build.provenance": {
+      "buildType": "https://mobyproject.org/buildkit@v1",
+      "builder": {
+        "id": ""
+      },
+      "invocation": {
+        "configSource": {
+          "entryPoint": "Dockerfile"
+        },
+        "environment": {
+          "dockerfileVersion": "1.27.0",
+          "platform": "linux/amd64"
+        },
+        "parameters": {
+          "args": {
+            "force-network-mode": "none"
+          },
+          "compatibilityVersion": 30,
+          "frontend": "dockerfile.v0",
+          "locals": [
+            {
+              "name": "context"
+            },
+            {
+              "name": "dockerfile"
+            }
+          ],
+          "root": {
+            "configSource": {
+              "path": "Dockerfile"
+            },
+            "request": {
+              "args": {
+                "force-network-mode": "none"
+              }
+            }
+          }
+        }
+      },
+      "materials": [
+        {
+          "digest": {
+            "sha256": "a946b164d10d074fcc9859f6c54c3b65d1901b41696c5ee8d8e31e275ddd1593"
+          },
+          "uri": "pkg:docker/riffology-jhg46-pi-package-permissions@a21af2c8-44ff-4f67-a07f-c364bcd6d295?platform=linux%2Famd64"
+        }
+      ]
+    },
+    "buildx.build.ref": "default/default/nl6azk2mb9kvtaw4fynt07yu6",
+    "containerimage.descriptor": {
+      "digest": "sha256:0bb9af7a5909c41187cf56402a21420100c72a8de0025b0a7152f8804e85d191",
+      "mediaType": "application/vnd.oci.image.index.v1+json",
+      "size": 856
+    },
+    "containerimage.digest": "sha256:0bb9af7a5909c41187cf56402a21420100c72a8de0025b0a7152f8804e85d191",
+    "image.name": "docker.io/library/riffology-jhg46-native-resource-snapshot-host:695e8875-459a-41b3-a148-2e228f2c3727"
+  },
+  "repoDigestPresenceNotClaimed": true
+}

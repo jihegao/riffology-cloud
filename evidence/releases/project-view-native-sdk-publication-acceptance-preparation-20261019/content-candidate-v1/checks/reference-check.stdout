@@ -1,0 +1,58 @@
+TAP version 13
+# Subtest: synthetic JSON envelope: exact cursor, two offsets, original byte SHA, parsed content prefix
+ok 1 - synthetic JSON envelope: exact cursor, two offsets, original byte SHA, parsed content prefix
+  ---
+  duration_ms: 2.723959
+  type: 'test'
+  ...
+# Subtest: wrong body SHA fails after exactly the original two chunks
+ok 2 - wrong body SHA fails after exactly the original two chunks
+  ---
+  duration_ms: 1.132209
+  type: 'test'
+  ...
+# Subtest: missing actual artifact terminates at null cursor without chunk reads
+ok 3 - missing actual artifact terminates at null cursor without chunk reads
+  ---
+  duration_ms: 0.127334
+  type: 'test'
+  ...
+# Subtest: wrong original offset fails without retry
+ok 4 - wrong original offset fails without retry
+  ---
+  duration_ms: 0.10475
+  type: 'test'
+  ...
+# Subtest: valid hashed JSON with wrong envelope.content prefix fails content check
+ok 5 - valid hashed JSON with wrong envelope.content prefix fails content check
+  ---
+  duration_ms: 0.921834
+  type: 'test'
+  ...
+# Subtest: changed receipt on the second original chunk fails binding
+ok 6 - changed receipt on the second original chunk fails binding
+  ---
+  duration_ms: 0.563375
+  type: 'test'
+  ...
+# Subtest: opaque cursor cycle is bounded and no artifact read is attempted
+ok 7 - opaque cursor cycle is bounded and no artifact read is attempted
+  ---
+  duration_ms: 0.078459
+  type: 'test'
+  ...
+# Subtest: oversized chunk fails contiguous pinned chunk bound without retry
+ok 8 - oversized chunk fails contiguous pinned chunk bound without retry
+  ---
+  duration_ms: 0.555125
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 87.220166

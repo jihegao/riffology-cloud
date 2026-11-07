@@ -1,0 +1,25 @@
+{
+  "schema": "jhg46-target-app-version-safe-projection/v1",
+  "source": {
+    "originalFile": "rollout-target-version12.private.json",
+    "bytes": 3297,
+    "sha256": "740db51e77fada489b6ded1172e478d1e87132ac513c79f7bb145621415ba658"
+  },
+  "observedAt": "2026-10-18T09:30:26.106Z",
+  "appStatus": 200,
+  "applicationId": "a03628c4-f032-461f-a65b-612ccac11a06",
+  "actualVersion": 12,
+  "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-issue165-trusted-pi@sha256:f18a826d40b2fd60e2cf8c49d7f7b8f595fa609fe2be4c28593479ae846960ea",
+  "schedulingPolicy": "default",
+  "maxInstances": 1,
+  "legacyInstancesField": 1,
+  "legacyInstancesFieldIsNotPhysicalCount": true,
+  "versionsListStatus": 200,
+  "currentListedVersions": [
+    12,
+    11
+  ],
+  "listedVersion10": false,
+  "version10ObjectAvailabilityOrRollbackProved": false,
+  "configurationOrActorOrCredentialBodiesIncluded": false
+}

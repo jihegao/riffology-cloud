@@ -1,0 +1,145 @@
+{
+  "schema": "jhg46-future-fresh-project-native-sdk-content-candidate/v1",
+  "preparedAt": "2026-10-18T17:15:53.711650+00:00",
+  "reviewOnly": true,
+  "executionAuthorized": false,
+  "publiclyPublished": false,
+  "files": [
+    {
+      "file": "README.md",
+      "bytes": 2467,
+      "sha256": "33b053dc778c25fbb0daff4e16b91d55debcc4b1e5d2d81bf191aad5ac0a678a"
+    },
+    {
+      "file": "SKILL.md",
+      "bytes": 6056,
+      "sha256": "8ef3375d58464b2a74cc57031771f5f7bad21b15f09991fb3838620e9f3ae6d7"
+    },
+    {
+      "file": "checks/content-framing.safe.json",
+      "bytes": 1456,
+      "sha256": "afc3b7f46a85e8679b97a0687b2c963c4a55b6a581a092a2236ee68633d8fb5c"
+    },
+    {
+      "file": "checks/final-run-intent.safe.json",
+      "bytes": 1718,
+      "sha256": "50fbed05adcc3b48a0bfb5b403ee9a4a5df04749cf91eaa3f3c2578a49ab15ea"
+    },
+    {
+      "file": "checks/final-run-terminal.safe.json",
+      "bytes": 505,
+      "sha256": "865a5e2804e6d09c65e21bcba6b3b4b4d07d5a213acdbf6ef1c252601ab07a79"
+    },
+    {
+      "file": "checks/first-spec-output-history/orchestration-history.safe.json",
+      "bytes": 1107,
+      "sha256": "f0a8eddafbcf0ebf547bb396ad71071d12c0e9b98cd64080878feb114f30df8b"
+    },
+    {
+      "file": "checks/first-spec-output-history/reference-check.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "checks/first-spec-output-history/reference-check.stdout",
+      "bytes": 777,
+      "sha256": "2670d8cbf294cdf3d61f3f5fead7b1f2132a6c7d2d4251c1f02535adf3ced795"
+    },
+    {
+      "file": "checks/precheck-shape-history.safe.json",
+      "bytes": 526,
+      "sha256": "c970991173d0f5f756c17a71238172999949a4d2d9fe6b6d20e80f7319333402"
+    },
+    {
+      "file": "checks/reference-check.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "checks/reference-check.stdout",
+      "bytes": 1723,
+      "sha256": "7f7b07bdbd4fba6edc22948ed650179809e8a4af22f2ce1ef953d2d21ec052c3"
+    },
+    {
+      "file": "checks/reference-checks.safe.json",
+      "bytes": 3366,
+      "sha256": "0aacd130e99080eec9ef2763a73287bf0ea8434bc308d73d412b385e5ea1f552"
+    },
+    {
+      "file": "prompts/turn-1-create-skill.md",
+      "bytes": 7193,
+      "sha256": "13302684903565b94a3187043a489033e5c91e986da989f3feab097424bd5513"
+    },
+    {
+      "file": "prompts/turn-2-build-v1.md",
+      "bytes": 2287,
+      "sha256": "ada18925ea4504cf81d981eb332fef66483d513b5191945fe3809ab369c98364"
+    },
+    {
+      "file": "prompts/turn-3-cold-edit-v2.md",
+      "bytes": 962,
+      "sha256": "c8c858c602fbc2c923c4b9c2e400696fc45527faaa25b54287eaf59434cea149"
+    },
+    {
+      "file": "read-checked-artifact.mjs",
+      "bytes": 3228,
+      "sha256": "5a1811e1203d1bea93247ff8d238f5647b884b05aea7f5574ba5cf330fa27946"
+    },
+    {
+      "file": "read-checked-artifact.test.mjs",
+      "bytes": 4679,
+      "sha256": "76e744f81ed9b51837bd5415b5fce9daf7d07c191baea05ff8b619c83ce89c21"
+    },
+    {
+      "file": "source-bindings.safe.json",
+      "bytes": 3992,
+      "sha256": "d06ab0f696335165ed84d462d72e35d169bcf6fa115b5c73aff931e58bcf3b3b"
+    }
+  ],
+  "boundFileCount": 18,
+  "authoringScope": "Content-only reference helper/skill and minimally changed future three-Turn prompts; no SDK product fix, deployment or actual project edit.",
+  "oldA25fActualScopePreserved": {
+    "projectCount": 1,
+    "sessionCount": 1,
+    "turnCount": 2,
+    "R2AndFailedFirstV1HistoryRetained": true,
+    "oldLocksRequestWindowOrUnexecutedT3Reused": false
+  },
+  "futureScope": {
+    "freshBlankProjects": 1,
+    "sessions": 2,
+    "turns": 3,
+    "extraRepairTurn": false,
+    "requestId": null,
+    "window": null,
+    "grant": null,
+    "sdkBundle": null,
+    "deployedVersion": null
+  },
+  "helperBounds": {
+    "listPages": 8,
+    "artifactBytes": 1114112,
+    "chunkBytes": 16384,
+    "maximumChunkReads": 68,
+    "retry": false,
+    "fetch": false,
+    "newSdkMethodsOrApiPermissions": false,
+    "boundsAreLocalReferenceTerminationNotProductPolicy": true
+  },
+  "localValidation": {
+    "finalReceipt": {
+      "file": "checks/reference-checks.safe.json",
+      "bytes": 3366,
+      "sha256": "0aacd130e99080eec9ef2763a73287bf0ea8434bc308d73d412b385e5ea1f552"
+    },
+    "uniqueCases": 8,
+    "firstSpecOutputAlso8PassButReceiptParserFailedAfterRun": true,
+    "sameEightCasesRepeatedOnceWithDurableExitAndTap": true,
+    "finalPass": 8,
+    "finalFail": 0,
+    "readerOrOldProductSuitesRepeated": false,
+    "notActualArtifactOrSdkTimeoutRepairProof": true
+  },
+  "independentReviewPending": true,
+  "liveAuthNetworkBrowserCloudflareModelOrTurnCalls": 0
+}

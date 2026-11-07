@@ -1,0 +1,25 @@
+{
+  "elapsedSeconds": 4.112,
+  "errorCode": null,
+  "exitCode": 0,
+  "localLogErrors": [],
+  "localStopErrors": [],
+  "originalSsh": {
+    "linuxStartTicks": null,
+    "pid": 8319,
+    "startedAt": "2026-10-17T14:37:52.649867+00:00"
+  },
+  "originalSshReaped": true,
+  "remoteStoppedByLocalCleanupProved": false,
+  "requestId": "b0933502-20df-480a-9a91-d833f5c4358c",
+  "streams": {
+    "stderr": {
+      "bytesRetained": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stdout": {
+      "bytesRetained": 1127,
+      "sha256": "bec3574248244579cc65b20b37737d536f0c7248a4c17f28236fa4fd184fd64e"
+    }
+  }
+}

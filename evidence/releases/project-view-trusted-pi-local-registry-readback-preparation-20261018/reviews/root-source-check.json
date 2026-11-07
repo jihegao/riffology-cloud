@@ -1,0 +1,19 @@
+{
+  "all16BindingsMatched": true,
+  "allPythonAstValid": true,
+  "at": "2026-10-18T13:54:57.979507+00:00",
+  "authSshRegistryCalls": 0,
+  "completeSourceBindingSha256": "919648f9e77ea0a77033e9aaa1fd3aefda24510ae5dd7a55ba19ba2723571572",
+  "finalDriverSha256": "2565c433a9c2d5364a3a77aad3aa8ef14254a234f7a74d6df6c930f0d2d4ce8c",
+  "formattingOnlyDriverAstEquivalent": true,
+  "operationsManifestSha256": "16313c7193782acce5cd88de7c0e2caf97c76e59c807b581b8b58ef54642eafa",
+  "prior14OriginalReaderBytehashBindingsMatched": true,
+  "priorOriginalPushSourceBindingsMatched": true,
+  "priorSourceCheckRetained": true,
+  "readerLiteral52SlotsAndVerificationMatched": true,
+  "readerLiteralScopeSubsetMatched": true,
+  "schema": "jhg46-root-local-readback-final-source-check/v1",
+  "testsRepeated": 0,
+  "unchangedFilesCompared": 3,
+  "unchangedFunctionsCompared": 12
+}

@@ -1,0 +1,35 @@
+{
+  "schema": "jhg46-original57a-audit-v2-safe-read/v1",
+  "originalRequestId": "57a70587-2b21-4a56-aed1-09c8a32d868a",
+  "recordedAt": "2026-10-17T12:00:06Z",
+  "recordedAtMeaning": "Safe projection saved after the tool returned; request start/end timestamps were not captured.",
+  "query": {
+    "method": "GET",
+    "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/logs/audit",
+    "since": "2026-10-17T11:49:00Z",
+    "before": "2026-10-17T11:51:00Z",
+    "raw_method": "POST",
+    "limit": 100,
+    "direction": "asc"
+  },
+  "observations": [
+    {
+      "scope": "original57a-credential-post-readonly-reconciliation",
+      "onlyGet": true,
+      "cloudWrites": 0,
+      "status": 200,
+      "success": true,
+      "resultType": "array",
+      "resultKeys": null,
+      "resultInfo": {
+        "count": 0
+      },
+      "rows": 0,
+      "matches": [],
+      "errorCodes": [],
+      "credentialValuesReturned": false,
+      "emptyResultWouldNotProveNoCredentialMint": true
+    }
+  ],
+  "limitation": "No matching audit rows is not evidence that the original credential POST failed or that no credential was minted."
+}

@@ -1,0 +1,53 @@
+{
+  "readAt": "2026-10-18T14:33:55.959043+00:00",
+  "result": {
+    "data": {
+      "repository": {
+        "pullRequest": {
+          "headRefOid": "0a10da572264470aaac111e6f5da2bd20b2f2c45",
+          "baseRefOid": "65df9b771a5d0497304a5955e33974e8ea9aa9ac",
+          "state": "OPEN",
+          "isDraft": false,
+          "mergeable": "MERGEABLE",
+          "mergeStateStatus": "CLEAN",
+          "reviewDecision": null,
+          "commits": {
+            "nodes": [
+              {
+                "commit": {
+                  "statusCheckRollup": {
+                    "state": "SUCCESS",
+                    "contexts": {
+                      "nodes": [
+                        {
+                          "__typename": "CheckRun",
+                          "name": "check",
+                          "status": "COMPLETED",
+                          "conclusion": "SUCCESS",
+                          "detailsUrl": "https://github.com/jihegao/riffology-cloud/actions/runs/39119659267/job/117652481483"
+                        }
+                      ],
+                      "pageInfo": {
+                        "hasNextPage": false
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "reviewThreads": {
+            "nodes": [],
+            "pageInfo": {
+              "hasNextPage": false
+            }
+          },
+          "baseRef": {
+            "branchProtectionRule": null
+          }
+        }
+      }
+    }
+  },
+  "mutation": false
+}

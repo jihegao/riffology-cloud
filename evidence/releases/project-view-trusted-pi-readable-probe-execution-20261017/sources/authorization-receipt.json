@@ -1,0 +1,17 @@
+{
+  "approvedAtMeaning": "local recording of actual human grant, not verbatim submission timestamp",
+  "archiveBytes": 6195,
+  "archiveSha256": "5817ecf49cf2e3128a9695c9fb6d75182d8cd6958b815e553f571a13167e89dc",
+  "grantBytes": 1503,
+  "grantSha256": "78c8c59e91a9313e0760ecb71466868fae28c44d2568703d6f8acc26850f947a",
+  "humanReplyEvidenceKind": "canonical-human-reply-projection/v1",
+  "noCredentialsReadOrGenerated": true,
+  "operationsManifestSha256": "ae0614dafe7067367703ad41a9e0ff19f25de3ab7c788b85f01c1ff5c6b4fffd",
+  "packetCommit": "7b8b15f1da4517c073566a017e6fc5aa4557a385",
+  "readerSha256": "bf86993670c344e264e2b3dff915051fee2ef2f0db5a54404aafcff8bc482a91",
+  "realTransferOrMockStarted": false,
+  "recordedAt": "2026-10-17T14:34:20.762795+00:00",
+  "remoteDirectory": "/tmp/riffoid-jhg46-image-20261017.AU613w/pi-probe-readable-v1",
+  "requestId": "b0933502-20df-480a-9a91-d833f5c4358c",
+  "schema": "trusted-pi-probe-readable-authorization-receipt/v1"
+}

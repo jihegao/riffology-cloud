@@ -1,0 +1,22 @@
+{
+  "elapsedSeconds": 22.833,
+  "errorCode": null,
+  "exitCode": 0,
+  "originalSsh": {
+    "linuxStartTicks": null,
+    "pid": 96996,
+    "startedAt": "2026-10-17T13:19:39.893559+00:00"
+  },
+  "originalSshReaped": true,
+  "requestId": "a21af2c8-44ff-4f67-a07f-c364bcd6d295",
+  "streams": {
+    "stderr": {
+      "bytesRetained": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stdout": {
+      "bytesRetained": 590,
+      "sha256": "ca01137264e7dab9d6cc9f030a3fcc0467b650076b1ccce54dd8ae75154b02fc"
+    }
+  }
+}

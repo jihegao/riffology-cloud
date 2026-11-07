@@ -1,0 +1,319 @@
+{
+  "at": "2026-10-17T15:34:50.183876+00:00",
+  "currentBaseAtPreflight": "29da0349719dba23d5c9ce95b4b83b97ebf7091a",
+  "failedStep": {
+    "command": "node --test --test-concurrency=2 tests/m3/*.test.ts tests/m3/*.test.mjs",
+    "name": "Existing local checks, archived experiment and quality regression",
+    "nodeVersion": "25.3.0",
+    "number": 9,
+    "primaryM3Summary": {
+      "cancelled": 0,
+      "fail": 3,
+      "pass": 1188,
+      "skipped": 12,
+      "tests": 1203
+    }
+  },
+  "failures": [
+    {
+      "actual": false,
+      "assertion": "assert.ok(fn())",
+      "condition": "f.executions.length===1",
+      "errorCode": "ERR_ASSERTION",
+      "expected": true,
+      "failedCallLine": 44,
+      "helperLine": 20,
+      "logLines": [
+        4264,
+        4265,
+        4266,
+        4268,
+        4270,
+        4271,
+        4276,
+        4277
+      ],
+      "observedDurationMs": 13.314589,
+      "sourcePath": "tests/m3/project-view-runtime-native-gate.test.mjs",
+      "sourceUrl": "https://github.com/jihegao/riffology-cloud/blob/0d23a12d869abccb9515a8e7f8196b0266258226/tests/m3/project-view-runtime-native-gate.test.mjs#L43",
+      "testDeclarationLine": 43,
+      "testName": "actual Runtime waits for bounded preflight EOF and exit before any browser exec or private init",
+      "waiter": "at most40 setImmediate turns, then assertion"
+    },
+    {
+      "actual": false,
+      "assertion": "assert.ok(fn())",
+      "condition": "f.executions.length===1",
+      "errorCode": "ERR_ASSERTION",
+      "expected": true,
+      "failedCallLine": 57,
+      "helperLine": 20,
+      "logLines": [
+        4282,
+        4283,
+        4284,
+        4286,
+        4288,
+        4289,
+        4294,
+        4295
+      ],
+      "observedDurationMs": 6.037449,
+      "sourcePath": "tests/m3/project-view-runtime-native-gate.test.mjs",
+      "sourceUrl": "https://github.com/jihegao/riffology-cloud/blob/0d23a12d869abccb9515a8e7f8196b0266258226/tests/m3/project-view-runtime-native-gate.test.mjs#L56",
+      "testDeclarationLine": 56,
+      "testName": "closing the original actor while preflight is pending blocks every later browser exec and init",
+      "waiter": "at most40 setImmediate turns, then assertion"
+    },
+    {
+      "actual": false,
+      "assertion": "assert.ok(condition(),'expected asynchronous boundary was reached')",
+      "condition": "f.starts===1",
+      "errorCode": "ERR_ASSERTION",
+      "expected": true,
+      "failedCallLine": 79,
+      "helperLine": 18,
+      "logLines": [
+        4300,
+        4301,
+        4302,
+        4303,
+        4304,
+        4309,
+        4310
+      ],
+      "observedDurationMs": 3.534609,
+      "sourcePath": "tests/m3/project-view-runtime.test.ts",
+      "sourceUrl": "https://github.com/jihegao/riffology-cloud/blob/0d23a12d869abccb9515a8e7f8196b0266258226/tests/m3/project-view-runtime.test.ts#L77",
+      "testDeclarationLine": 77,
+      "testName": "close during native preparation blocks late output and destroys the same late original start",
+      "waiter": "at most30 setImmediate turns, then assertion"
+    }
+  ],
+  "fixedHead": "0d23a12d869abccb9515a8e7f8196b0266258226",
+  "initialReadMethodCorrection": "First gh GET was locally blocked by terminal escape sequence output protection, not denied/missing. Same fixed GET corrected once with explicit allow-escape-sequences directed only to private0600 fd. Both receipts are retained.",
+  "jobId": 117400649151,
+  "jobUrl": "https://github.com/jihegao/riffology-cloud/actions/runs/39034206923/job/117400649151",
+  "limits": [
+    "No CI rerun, local test execution, code edit, new issue or remote state mutation was performed.",
+    "No control run on the current base was fetched or started.",
+    "The underlying reason the synthetic counters did not arrive within30/40 turns remains undetermined by this bounded log/source inspection.",
+    "Publication success and independent cleanup cannot replace the current technical-CI guard; root must decide next safe scoped action and re-read GitHub before any merge."
+  ],
+  "logReadStatus": "success-private-only",
+  "mergeAllowed": false,
+  "pr": 239,
+  "quotaAssessment": {
+    "evidence": "The runner installed dependencies/assets, executed the M3 primary suite and reported three concrete ERR_ASSERTION failures. Generic billing/quota words elsewhere in fixture/test names are not evidence of account nonexecution.",
+    "isActualAssertionFailure": true,
+    "knownQuotaPaymentNonexecution": false,
+    "userQuotaExemptionApplicable": false
+  },
+  "rawLog": {
+    "bytes": 528170,
+    "directoryMode": "0700",
+    "fileMode": "0600",
+    "path": "job117400649151-private/job.raw-ansi.log",
+    "publishRawLog": false,
+    "sha256": "9680c5f490e09a9d11c6241d4de307ec4ea51246b1ee8585b5fe9b74adcf882b"
+  },
+  "relationToPrDiff": {
+    "actualDiff": "Only one COPY --chmod=0444 addition in each canonical Dockerfile.trusted-pi.cloud and Dockerfile.trusted-pi.vertical, verified by current PR/compare receipts.",
+    "directDockerfileCausationObserved": false,
+    "independenceOrFlakinessProved": false,
+    "sourceEvidence": [
+      {
+        "base": {
+          "bytes": 7633,
+          "sha256": "de40a5e4fdfef107e6f2601a10aa3e62cb8425ca662ed9adc57bb8fb64334b3d"
+        },
+        "head": {
+          "bytes": 7633,
+          "sha256": "de40a5e4fdfef107e6f2601a10aa3e62cb8425ca662ed9adc57bb8fb64334b3d"
+        },
+        "path": "tests/m3/project-view-runtime-native-gate.test.mjs",
+        "unchangedFromCurrentBase": true
+      },
+      {
+        "base": {
+          "bytes": 13973,
+          "sha256": "515e9882002fedd9dad1cc022402883e99ca38088b12a67100e90106fce27c6f"
+        },
+        "head": {
+          "bytes": 13973,
+          "sha256": "515e9882002fedd9dad1cc022402883e99ca38088b12a67100e90106fce27c6f"
+        },
+        "path": "tests/m3/project-view-runtime.test.ts",
+        "unchangedFromCurrentBase": true
+      },
+      {
+        "base": {
+          "bytes": 7536,
+          "sha256": "6ac072f791c6182a2c293f1a2c4d18dfaf4c8b08ba0dcdffde1b87383af9758f"
+        },
+        "head": {
+          "bytes": 7536,
+          "sha256": "6ac072f791c6182a2c293f1a2c4d18dfaf4c8b08ba0dcdffde1b87383af9758f"
+        },
+        "path": "services/project-views/runtime-durable.ts",
+        "unchangedFromCurrentBase": true
+      },
+      {
+        "base": {
+          "bytes": 15921,
+          "sha256": "23ff34ddd2a77f249fe0f56a038242a77c0a09ff0a163ebc4d79c3f5bf913f40"
+        },
+        "head": {
+          "bytes": 15921,
+          "sha256": "23ff34ddd2a77f249fe0f56a038242a77c0a09ff0a163ebc4d79c3f5bf913f40"
+        },
+        "path": "services/project-views/runtime-core.ts",
+        "unchangedFromCurrentBase": true
+      },
+      {
+        "base": {
+          "bytes": 7890,
+          "sha256": "43f01652d4b29939e1149dffaac82e54df532f0b23658221b8b7f7f193f7239a"
+        },
+        "head": {
+          "bytes": 7890,
+          "sha256": "43f01652d4b29939e1149dffaac82e54df532f0b23658221b8b7f7f193f7239a"
+        },
+        "path": "services/project-views/runtime-protocol.ts",
+        "unchangedFromCurrentBase": true
+      },
+      {
+        "base": {
+          "bytes": 2038,
+          "sha256": "af3fe79a89b985ef22cf2a47a9e9a9a903ae5285a8b7dfca13144d0261e9f5b1"
+        },
+        "head": {
+          "bytes": 2038,
+          "sha256": "af3fe79a89b985ef22cf2a47a9e9a9a903ae5285a8b7dfca13144d0261e9f5b1"
+        },
+        "path": ".github/workflows/check.yml",
+        "unchangedFromCurrentBase": true
+      },
+      {
+        "base": {
+          "bytes": 5371,
+          "sha256": "00fc21c4c9afe9874a3d4c3ef80ea4e2ec441a718397ac573873b6a04d1161ec"
+        },
+        "head": {
+          "bytes": 5371,
+          "sha256": "00fc21c4c9afe9874a3d4c3ef80ea4e2ec441a718397ac573873b6a04d1161ec"
+        },
+        "path": "package.json",
+        "unchangedFromCurrentBase": true
+      }
+    ],
+    "supportedConclusion": "The concrete CI failure is exhaustion of existing asynchronous-boundary waiters before the expected synthetic execution/start counter. This log alone does not establish a defect caused by the two Dockerfile permission lines, a product lifecycle defect, or a harmless timing flake.",
+    "testFixtureEvidence": [
+      "native-gate.test.mjs bundles actual runtime-durable source with synthetic Cloudflare DurableObject base and synthetic container.start/inspect/exec; its source explicitly says no native/container executes.",
+      "runtime.test.ts constructs ProjectViewRuntimeCore with synthetic native/capacity ports; failed condition is a synthetic native.start counter.",
+      "The CI workflow executes Node local suites and contains no Docker build or image execution step.",
+      "All directly implicated tests/runtime sources, workflow and package scripts are byte-identical between fixed PRhead and current base."
+    ]
+  },
+  "runId": 39034206923,
+  "safeLogExcerpts": [
+    {
+      "line": 131,
+      "text": "2026-10-17T12:51:47.9522878Z   node-version: 25.3.0"
+    },
+    {
+      "line": 2888,
+      "text": "2026-10-17T12:58:10.9171678Z > node --test --test-concurrency=2 tests/m3/*.test.ts tests/m3/*.test.mjs && node --test --test-concurrency=2 services/browser-preview/runtime/*.test.mjs services/browser-preview/execution/*.test.ts && node --test --test-concurrency=2 scripts/m3/phase1-*.test.mjs && node --test --test-concurrency=2 scripts/model/*.test.mjs"
+    },
+    {
+      "line": 4253,
+      "text": "2026-10-17T13:02:41.2151450Z \u2139 tests 1203"
+    },
+    {
+      "line": 4255,
+      "text": "2026-10-17T13:02:41.2151926Z \u2139 pass 1188"
+    },
+    {
+      "line": 4256,
+      "text": "2026-10-17T13:02:41.2152121Z \u2139 fail 3"
+    },
+    {
+      "line": 4257,
+      "text": "2026-10-17T13:02:41.2152303Z \u2139 cancelled 0"
+    },
+    {
+      "line": 4258,
+      "text": "2026-10-17T13:02:41.2152507Z \u2139 skipped 12"
+    },
+    {
+      "line": 4264,
+      "text": "2026-10-17T13:02:41.2153541Z test at tests/m3/project-view-runtime-native-gate.test.mjs:43:1"
+    },
+    {
+      "line": 4265,
+      "text": "2026-10-17T13:02:41.2154222Z \u2716 actual Runtime waits for bounded preflight EOF and exit before any browser exec or private init (13.314589ms)"
+    },
+    {
+      "line": 4268,
+      "text": "2026-10-17T13:02:41.2155100Z     assert.ok(fn())"
+    },
+    {
+      "line": 4276,
+      "text": "2026-10-17T13:02:41.2158368Z     actual: false,"
+    },
+    {
+      "line": 4277,
+      "text": "2026-10-17T13:02:41.2158524Z     expected: true,"
+    },
+    {
+      "line": 4282,
+      "text": "2026-10-17T13:02:41.2159248Z test at tests/m3/project-view-runtime-native-gate.test.mjs:56:1"
+    },
+    {
+      "line": 4283,
+      "text": "2026-10-17T13:02:41.2159833Z \u2716 closing the original actor while preflight is pending blocks every later browser exec and init (6.037449ms)"
+    },
+    {
+      "line": 4286,
+      "text": "2026-10-17T13:02:41.2160893Z     assert.ok(fn())"
+    },
+    {
+      "line": 4294,
+      "text": "2026-10-17T13:02:41.2164477Z     actual: false,"
+    },
+    {
+      "line": 4295,
+      "text": "2026-10-17T13:02:41.2164703Z     expected: true,"
+    },
+    {
+      "line": 4300,
+      "text": "2026-10-17T13:02:41.2165675Z test at tests/m3/project-view-runtime.test.ts:77:1"
+    },
+    {
+      "line": 4301,
+      "text": "2026-10-17T13:02:41.2166297Z \u2716 close during native preparation blocks late output and destroys the same late original start (3.534609ms)"
+    },
+    {
+      "line": 4302,
+      "text": "2026-10-17T13:02:41.2166949Z   AssertionError [ERR_ASSERTION]: expected asynchronous boundary was reached"
+    },
+    {
+      "line": 4309,
+      "text": "2026-10-17T13:02:41.2169998Z     actual: false,"
+    },
+    {
+      "line": 4310,
+      "text": "2026-10-17T13:02:41.2170248Z     expected: true,"
+    }
+  ],
+  "schema": "jhg46-pr239-existing-ci-log-diagnosis/v1",
+  "sideEffects": {
+    "ciReruns": 0,
+    "cloudflareCalls": 0,
+    "credentialFilesReadByTask": 0,
+    "dockerCommands": 0,
+    "githubMutations": 0,
+    "sshCommands": 0
+  },
+  "status": "merge-held-pending-scoped-technical-diagnosis-or-fix"
+}

@@ -1,0 +1,26 @@
+{
+  "schema": "jhg46-native-sdk-public-staging-pending-additions/v1",
+  "recordedAt": "2026-10-18T17:44:28.061190+00:00",
+  "ready": false,
+  "executionAuthorized": false,
+  "finalOverallInventoryFrozen": false,
+  "copiedOriginalFileCount": 41,
+  "datedAuthorSnapshotsUnmodified": true,
+  "remainingBeforeConcreteApprovalPacket": [
+    "Guarded publication/gate operation sources, exact source manifests, plans, source/build/baseline bindings and independent reviews; root/plan_review is preparing them.",
+    "A complete fresh preservation witness/source suitable for this SDK source and sole closed Worker; the copied three-family receipt is not that witness.",
+    "Final public packet/inventory and independent public-copy/privacy/link review after all operations are supplied."
+  ],
+  "futureExecutionOnlyAfterNewExplicitGrant": [
+    "Normal fixed PR257 merge and actual merge/parents/source equality proof under existing protections.",
+    "New actual <=4h window ending no later than2026-10-20T15:59:59.999Z; actual grant and sendable original request bodies/seals.",
+    "Original publication ACK/full preservation; new project scope/keys/revisions, finite owned gate and staged paid/browser results."
+  ],
+  "notRequiredOrAuthorizedByThisStaging": [
+    "Registry credential issuance; AMD/SSH/Docker/proxy creation; maintenance hold/image rollout",
+    "Old a25f T3/request/lock/window replay or fourth repair Turn"
+  ],
+  "privateBodiesAndCredentialsCopied": false,
+  "newExternalActionsByStagingAuthor": 0,
+  "assetSessionJwtDistinction": "Existing asset-session JWT may be used only temporarily on the local approved asset-upload path in the future authorized publication; it is not a Registry credential and is not public or sent to AMD."
+}

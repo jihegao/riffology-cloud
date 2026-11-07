@@ -1,0 +1,28 @@
+{
+  "archiveExists": false,
+  "credentialContentsRead": false,
+  "dockerOrRegistryCalls": 0,
+  "observedAt": "2026-10-18T12:21:53.621814+00:00",
+  "remoteRecordsExist": false,
+  "remoteRootExists": false,
+  "remoteRootIsSymlink": false,
+  "remoteWrites": 0,
+  "requestId": "c263a2f3-f445-430e-b562-2e48f1eeb637",
+  "route7897Listeners": 0,
+  "routeConnectErrno": 111,
+  "schema": "c263-stopped-original-readonly-observation/v1",
+  "temporaryAuthDirectoryExists": false,
+  "localOriginalProcesses": [
+    {
+      "sourceRecord": "original-ssh.json",
+      "originalPid": 96233,
+      "pidAbsent": true
+    },
+    {
+      "sourceRecord": "oauth-token-once-original-cli.json",
+      "originalPid": 95869,
+      "pidAbsent": true
+    }
+  ],
+  "originalReadonlySshExitCode": 0
+}

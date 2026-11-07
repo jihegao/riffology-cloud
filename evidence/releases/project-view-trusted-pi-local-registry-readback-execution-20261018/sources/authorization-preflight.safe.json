@@ -1,0 +1,29 @@
+{
+  "allInputsOwnedRegular0600SingleLink": true,
+  "approvedPacketPath": "docs/project-view-trusted-pi-local-registry-readback-packet-20261018.md",
+  "approvedPublicationCommit": "4783fd50b90181ee1e9a1c8224e63e9c57cf1e37",
+  "authSshApiRegistryOrDriverExecuted": false,
+  "authorizationObservedAt": "2026-10-18T14:25:37Z",
+  "checkedAt": "2026-10-18T14:28:10.090142+00:00",
+  "completeSourceBindingSha256": "919648f9e77ea0a77033e9aaa1fd3aefda24510ae5dd7a55ba19ba2723571572",
+  "expiresAt": "2026-10-18T15:25:37Z",
+  "grant": {
+    "bytes": 5150,
+    "sha256": "d80be132a0cba57abba491965451b0988d59e052d5f9cf16be6a5d725473a904"
+  },
+  "grantSingleJsonLineExactlyOneFinalLF": true,
+  "grantValidatedByFixedCommon": true,
+  "humanReply": {
+    "byteFraming": "exact answer UTF-8, no terminal newline",
+    "bytes": 51,
+    "sha256": "cf7ad4aabdc284f9b4292d216e591f3a953a959991ac8c055f2082368722aa79"
+  },
+  "observationIsExactMessageTimestamp": false,
+  "onceStateAbsent": true,
+  "operationId": "registry-local-readback-v1",
+  "operationsManifestSha256": "16313c7193782acce5cd88de7c0e2caf97c76e59c807b581b8b58ef54642eafa",
+  "questionCallId": "call_7f5d5e9871f84d9da0fc78ecc89c7714",
+  "requestId": "c263a2f3-f445-430e-b562-2e48f1eeb637",
+  "schema": "jhg46-approved-local-registry-readback-grant-preflight/v1",
+  "verifiedSourceCount": 16
+}

@@ -1,0 +1,93 @@
+{
+  "authority": "local Python3.9.6 unittest, fake inputs and mocked transport only",
+  "gitDiffCheck": {
+    "exitCode": 0
+  },
+  "notProved": [
+    "real existing OAuth validity",
+    "future upstream Registry connectivity",
+    "future SSH binding/cleanup",
+    "actual base pull/cache/resolver",
+    "image/container compatibility",
+    "Cloudflare app update",
+    "real paid user acceptance"
+  ],
+  "operationsManifest": {
+    "bytes": 921,
+    "path": "operations-manifest.json",
+    "sha256": "7e3922cb0bc4ae0175d23804f6f455f164844924fc6aa2218bed3a3702e144fa"
+  },
+  "originalArchive": {
+    "bytes": 30515,
+    "localReadOnlyVerification": true,
+    "sha256": "c92e672ca39d10d61467801f457147e3ee9cf2cfbbbe8b96d00a618a6a208bae",
+    "unchanged": true
+  },
+  "payload": {
+    "allNinePublicCopiesMatchScope": true,
+    "contentBytes": 90549,
+    "files": 9
+  },
+  "postTestDocumentationLinkCorrection": {
+    "change": "Primary Cloudflare API documentation URL create→generate; no executable code, scope, test or payload change.",
+    "finalExecutionDocSha256": "c3868f7008fae91b49d17f7e24fcb3124c6d473d849d81ce35c12b129b4db52a",
+    "finalManifestEntriesRehashed": true,
+    "finalOperationsManifestSha256": "05100f4a7c8aa2448b289d1525498dbd10542612873630e6b1cfd980dbb87512",
+    "oldExecutionDocSha256": "213b5dd39c73be4f2942671edff984bd303b2f1f80e2919c0c6c7a88c39d4297",
+    "oldOperationsManifestSha256": "7e3922cb0bc4ae0175d23804f6f455f164844924fc6aa2218bed3a3702e144fa",
+    "originalArtifactsRetainedPrivately": ".local/jhg46-native-user-acceptance-20261017/operations-before-api-link-correction",
+    "originalOfflineReceiptSha256": "4fc7a73ef6f453b8668179d77f1e167dbb36ac016c3c060ae2e871f258eb6422",
+    "originalTestsAndSourceSnapshotAbovePreserved": true,
+    "recordedAt": "2026-10-17T11:38:58.928746+00:00",
+    "testsRepeated": false
+  },
+  "proxyReadonlyReceipt": {
+    "bytes": 2162,
+    "path": "../proxy-readonly.json",
+    "sha256": "2e09cf2060fc7dbcc8addc9a4771162cded285770ef658d6d880ea2d898ef22b"
+  },
+  "recordedAt": "2026-10-17T11:34:06Z",
+  "schema": "trusted-pi-route-pull-offline-checks/v1",
+  "sourceFiles": {
+    "EXECUTION.md": {
+      "bytes": 7760,
+      "sha256": "213b5dd39c73be4f2942671edff984bd303b2f1f80e2919c0c6c7a88c39d4297"
+    },
+    "pull-operator.py": {
+      "bytes": 18907,
+      "sha256": "4ef6352c4a48e52c8b1cd6ca1c0120d2b296c71851380b92d06ec8748fe934e7"
+    },
+    "pull-receiver.py": {
+      "bytes": 13527,
+      "sha256": "caab07b759505ad31a9340201c803c03057a9e62537150a4d367b5f5bc73cc3b"
+    },
+    "scope.json": {
+      "bytes": 1788,
+      "sha256": "b414eb83deed1aabc2010c4ff3e0a641320b20a60409d343a357cbdbc974ad48"
+    },
+    "test_operations.py": {
+      "bytes": 15066,
+      "sha256": "1ca033a7d2285dc74b4cce60843063f6d337b947743527f53c429b2db54d3c0a"
+    }
+  },
+  "tests": {
+    "command": "PYTHONPYCACHEPREFIX=<private-temporary-cache> python3 -m unittest discover -s evidence/releases/project-view-trusted-pi-offline-build-20261017/operations -p test_operations.py -v",
+    "exitCode": 0,
+    "failed": 0,
+    "passed": 18,
+    "reportedSeconds": 0.008,
+    "scope": "inert import; missing grant before credentials/client; wrong scope/hash/expiry; original exclusive lock; mock OAuth; exact fake201 request; unknown no retry; stdin schema; fixed pull/config permissions/deletion; lost ACK; finally after stop error; actual loopback projection; original PID/listener unknown; exact SSH argv",
+    "skipped": 0,
+    "tests": 18
+  },
+  "thisPreparation": {
+    "actualCredentialPost": false,
+    "actualOAuthRead": false,
+    "cloudWrite": false,
+    "dockerPullBuildOrContainerExecuted": false,
+    "humanGrantCreated": false,
+    "realCredentialGeneratedOrTransferred": false,
+    "sshOrRelayExecuted": false
+  },
+  "timeBoundary": "Receipt recorded after completed fake unittest/tool results; exact suite start/end UTC were not separately captured."
+}

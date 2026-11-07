@@ -1,0 +1,16 @@
+✔ synthetic JSON envelope: exact cursor, two offsets, original byte SHA, parsed content prefix (3.034334ms)
+✔ wrong body SHA fails after exactly the original two chunks (1.350958ms)
+✔ missing actual artifact terminates at null cursor without chunk reads (0.168458ms)
+✔ wrong original offset fails without retry (0.114709ms)
+✔ valid hashed JSON with wrong envelope.content prefix fails content check (1.013917ms)
+✔ changed receipt on the second original chunk fails binding (0.824375ms)
+✔ opaque cursor cycle is bounded and no artifact read is attempted (0.140042ms)
+✔ oversized chunk fails contiguous pinned chunk bound without retry (0.594042ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 85.759584

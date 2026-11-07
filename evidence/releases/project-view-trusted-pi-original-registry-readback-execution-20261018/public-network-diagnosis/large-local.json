@@ -1,0 +1,26 @@
+{
+  "automaticRetries": 0,
+  "bodyStored": false,
+  "bytesPerSecond": 0.0,
+  "capturedBytes": 1,
+  "credentialsReadOrSent": false,
+  "endedAt": "2026-10-18T13:32:12.669282+00:00",
+  "exitCode": 0,
+  "httpStatus": 403,
+  "maxSeconds": 45,
+  "name": "mac-existing-loopback-proxy-large",
+  "officialEndpointSource": "https://github.com/cloudflare/speedtest",
+  "publicUrl": "https://speed.cloudflare.com/__down?bytes=16777216",
+  "redirectsFollowed": 0,
+  "registryBandwidthProved": false,
+  "registryCalls": 0,
+  "requestedBytes": 16777216,
+  "schema": "jhg46-public-large-local-path-diagnosis/v1",
+  "seconds": 1.988431,
+  "sourceSha256": "dd2a3a3ed5e122fecfb2f1b4adc241acf1470576b719a217cd40a7c3a023dbf5",
+  "startedAt": "2026-10-18T13:32:10.673020+00:00",
+  "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

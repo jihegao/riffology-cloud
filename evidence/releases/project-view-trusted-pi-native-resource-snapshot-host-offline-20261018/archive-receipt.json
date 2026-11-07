@@ -1,0 +1,41 @@
+{
+  "schema": "trusted-pi-native-resource-snapshot-host-input-archive/v1",
+  "preparedAt": "2026-10-18T10:43:28.536210+00:00",
+  "requestId": "695e8875-459a-41b3-a148-2e228f2c3727",
+  "archive": {
+    "path": "jhg46-pi-native-resource-snapshot-host-v1-20261018.tar.gz",
+    "bytes": 12364,
+    "sha256": "91b42a14a3c1c8caafb0b98230f156408bc39be065d408091055e91f7c724b81",
+    "uncompressedBytes": 51200,
+    "uncompressedSha256": "a4f3e479c70f168d485cf5f66e2a223b518d665e1f361c8ed0c57f9aa4b84901"
+  },
+  "payload": {
+    "EXECUTION-CONTRACT.md": {
+      "bytes": 3592,
+      "sha256": "3bd28295017b0eb94802040247a7baa1c47511d64f5fdcdb6e6e721a947b6ed3"
+    },
+    "context/Dockerfile": {
+      "bytes": 187,
+      "sha256": "ba7c1304146693aca473bdba987240bcb8b4a650598e27f3eb950fabaab154ad"
+    },
+    "context/trusted-pi-turn-host.mjs": {
+      "bytes": 16239,
+      "sha256": "942333ecc87eb6c7545e0494fed501d9ffa5418468039845484e223b6dfa81d6"
+    },
+    "input-manifest.json": {
+      "bytes": 5559,
+      "sha256": "7106ff37f714ec60135962a9f71e661d911ba5e0e4870178175a8b1bf5260d22"
+    },
+    "probe/host-resource-snapshot-probe.mjs": {
+      "bytes": 13094,
+      "sha256": "a17f987f6f97be8593c48d6709758521f2020fb636de2297806db2d1cbb7f1fd"
+    }
+  },
+  "memberCount": 5,
+  "memberNamesUnprefixed": true,
+  "regularOnly": true,
+  "canonicalUidGidMtimeZero": true,
+  "noPrivateHistoryConfigCredentialsOrGrant": true,
+  "reviewOnly": true,
+  "executed": false
+}

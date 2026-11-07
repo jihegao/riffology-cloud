@@ -1,0 +1,14 @@
+{
+  "startedAt": "2026-10-17T11:45:05.974567+00:00",
+  "endedAt": "2026-10-17T11:45:11.132052+00:00",
+  "exitCode": 1,
+  "requestId": "57a70587-2b21-4a56-aed1-09c8a32d868a",
+  "fileCount": null,
+  "archiveBytes": null,
+  "archiveSha256": null,
+  "remoteDirectory": null,
+  "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderrSha256": "477c64da6bde4970ed3043e10e3ad65edb1d8026f5f9016424a78016065d2ca8",
+  "credentialsReadOrTransferred": false,
+  "pullBuildOrContainerStarted": false
+}

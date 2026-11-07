@@ -1,0 +1,104 @@
+{
+  "actualOAuthSshRegistryDockerCalls": 0,
+  "historicalScopeNotReusedAsNewExecutionAuthorization": true,
+  "intentionalChanges": [
+    "Normal source SSH is read-only/no-forwarding/in-memory before all auth; original archive and newest stopped14 fullbyte hashes plus original supervisor absence are mandatory",
+    "JWT remains exclusively Mac memory; same52 sequential GET slots through existing Mac7892; no newroute",
+    "Manifest/config content identity is exact original SHA256+size, directSmallRawByteObjectComparisonPerformed=false",
+    "SIGALRM deadline distinct from external interrupts; same720 bound and failclosed semantics",
+    "New local once/threehash finalACK/independent local PID and stream verification; samec263/source/index/tag/parent",
+    "GET phase deadline is min(original720seconds, current grant remainder), fractional and never upward-rounded; grant fresh checked after last proof and before ACK"
+  ],
+  "preparationOnly": true,
+  "schema": "trusted-pi-local-registry-readback-source-reuse/v1",
+  "sourceExecutedOperation": "registry-readback-recovery-v1",
+  "sourceExecutedOperationsManifestSha256": "59fd2dd0f464e38b50b56e7c1d65229b6d81d86b12c935a822d5eeefead74342",
+  "unchangedFiles": {
+    "oci_verify.py": {
+      "bytes": 5748,
+      "sha256": "0a23618e34b9a2acf608acc86d281ebd68f60a62ba2b102ecda92502c294acea"
+    },
+    "renewal-source-contract.json": {
+      "bytes": 2497,
+      "sha256": "0593104af3bcc19871b2b55074d85aae105e2a04fef8f9041ab3e31887775f60"
+    },
+    "verification-source.json": {
+      "bytes": 10398,
+      "sha256": "76a53be45c5cd33a5b322bd5dd3dabc6b49f64aa53b739b38a6331cbe998beca"
+    }
+  },
+  "unchangedFunctions": {
+    "local-recovery.py:NoRedirect": {
+      "functionSourceSha256": "7a8c2d043445d17654e955db97749a5374ccff227f03bfb583d561d0105744ef",
+      "originalFileSha256": "971c91d7ea182e8b6540cdf98b3303431e08b0ad0fc1103d48ff60247774b21b",
+      "originalSource": "local-recovery.py",
+      "unchangedFunctionBytes": true
+    },
+    "local-recovery.py:api": {
+      "functionSourceSha256": "e1912c42aabf5b7b93e2cc9db76baaef11b6008828e291fe7d88ac865517cffc",
+      "originalFileSha256": "971c91d7ea182e8b6540cdf98b3303431e08b0ad0fc1103d48ff60247774b21b",
+      "originalSource": "local-recovery.py",
+      "unchangedFunctionBytes": true
+    },
+    "local-recovery.py:http_metadata": {
+      "functionSourceSha256": "c8c7bafbf1ad5e8dad57d32de046563ce33882aa2f7eba7caea4110c934e3457",
+      "originalFileSha256": "971c91d7ea182e8b6540cdf98b3303431e08b0ad0fc1103d48ff60247774b21b",
+      "originalSource": "local-recovery.py",
+      "unchangedFunctionBytes": true
+    },
+    "local-recovery.py:normal_wrangler_memory": {
+      "functionSourceSha256": "cda316f757274baed400c91f3de4b8e5f7c7fde6b845137635b5bd4551bc2dff",
+      "originalFileSha256": "971c91d7ea182e8b6540cdf98b3303431e08b0ad0fc1103d48ff60247774b21b",
+      "originalSource": "local-recovery.py",
+      "unchangedFunctionBytes": true
+    },
+    "local-recovery.py:oauth_after_new_grant": {
+      "functionSourceSha256": "b1d5c1c814d549bea67f9314caa7a74a35ab4dbb4f8e2022517fafac2439da88",
+      "originalFileSha256": "971c91d7ea182e8b6540cdf98b3303431e08b0ad0fc1103d48ff60247774b21b",
+      "originalSource": "local-recovery.py",
+      "unchangedFunctionBytes": true
+    },
+    "local-recovery.py:oauth_metadata_after_new_grant": {
+      "functionSourceSha256": "9ac27e6390fcd9830970cef76464a3c804e4b78249e3eaca42ce6c1a04da9645",
+      "originalFileSha256": "971c91d7ea182e8b6540cdf98b3303431e08b0ad0fc1103d48ff60247774b21b",
+      "originalSource": "local-recovery.py",
+      "unchangedFunctionBytes": true
+    },
+    "local-recovery.py:stop_owned": {
+      "functionSourceSha256": "0b8180ca87f1077c002ca86a500c8cc97bbdc2ec5a159d202cbc8240a058ef2c",
+      "originalFileSha256": "971c91d7ea182e8b6540cdf98b3303431e08b0ad0fc1103d48ff60247774b21b",
+      "originalSource": "local-recovery.py",
+      "unchangedFunctionBytes": true
+    },
+    "source-verify.py:original_absent": {
+      "functionSourceSha256": "70c2c4de581710c923fa3637a8457bfe409f55709ddc8f4fb295b56cf48fd784",
+      "originalFileSha256": "1c35225815e0654a9699479148412d2daf9b21bedffabe1ce57c14b25e4c0fa6",
+      "originalSource": "remote-recovery.py",
+      "unchangedFunctionBytes": true
+    },
+    "source-verify.py:original_bytes": {
+      "functionSourceSha256": "e0963b2d07d0c24c2a716d4b937211d2fc677ef94bfc7a6db06feec7311809c5",
+      "originalFileSha256": "1c35225815e0654a9699479148412d2daf9b21bedffabe1ce57c14b25e4c0fa6",
+      "originalSource": "remote-recovery.py",
+      "unchangedFunctionBytes": true
+    },
+    "source-verify.py:owned_dir": {
+      "functionSourceSha256": "4e4e5ddaa1ee4a34b8325f4785d895c99fc4146a939a28eda769bd45c3ce1eab",
+      "originalFileSha256": "1c35225815e0654a9699479148412d2daf9b21bedffabe1ce57c14b25e4c0fa6",
+      "originalSource": "remote-recovery.py",
+      "unchangedFunctionBytes": true
+    },
+    "source-verify.py:ticks": {
+      "functionSourceSha256": "0b16567813ff4813f01e3da1ad20245c9b0a7a2abaadf9b90757eb4b3d0c04ef",
+      "originalFileSha256": "1c35225815e0654a9699479148412d2daf9b21bedffabe1ce57c14b25e4c0fa6",
+      "originalSource": "remote-recovery.py",
+      "unchangedFunctionBytes": true
+    },
+    "source-verify.py:verify_original": {
+      "functionSourceSha256": "ef5deef078d56b9594726f85a533a8a82865d8e8e80f51e92c9fe70854139ee1",
+      "originalFileSha256": "1c35225815e0654a9699479148412d2daf9b21bedffabe1ce57c14b25e4c0fa6",
+      "originalSource": "remote-recovery.py",
+      "unchangedFunctionBytes": true
+    }
+  }
+}

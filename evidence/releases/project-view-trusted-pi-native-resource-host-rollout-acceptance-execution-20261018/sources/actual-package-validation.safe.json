@@ -1,0 +1,203 @@
+{
+  "schema": "jhg46-first-v1-page-failure-actual-package-validation/v1",
+  "recordedAt": "2026-10-18T16:59:00.925496+00:00",
+  "authorRole": "Local actual-package validation/projection; not an independent review of an authored product fix.",
+  "bindings": [
+    {
+      "file": "ordinary/browser-v1/first-page-failure-original.raw.private.json",
+      "bytes": 26069,
+      "sha256": "00c0179cee87672d84f7c0b58c49038b4ecdbc69c15818fa9e420c26fe71bf54"
+    },
+    {
+      "file": "reviews/t2-save-release-closure.safe.json",
+      "bytes": 6183,
+      "sha256": "708a6203bf1e8a9808f981abd3ee85f00fba2ff0ae74160125cc81fccc6c4bcc"
+    },
+    {
+      "file": "reviews/t2-product-resource-tools-stage-review.safe.json",
+      "bytes": 11584,
+      "sha256": "948200ca00d658117b2f001716c97c83ad88477d3ea4a6f7a68a90f00b19fb90"
+    },
+    {
+      "file": "ordinary/turn-2-once/post-guard-2-response-original.raw.private.json",
+      "bytes": 3372,
+      "sha256": "ef44339cd5899a745cd8cf1ac7b2793ace0b30a8cd1a4700a8685a8e611a40b0"
+    },
+    {
+      "file": "ordinary/turn-2-once/expected-matched-app_views.json.private",
+      "bytes": 261,
+      "sha256": "1f1c572845d420efb5dd0d5e275eb2584b53f543904c5703c51de5d32c3f6882"
+    },
+    {
+      "file": "ordinary/turn-2-once/expected-matched-docs_series.json.private",
+      "bytes": 119,
+      "sha256": "da95afe93d010519d1a4ba35ac10fce6c052369ce85d15bc091f70987f7df687"
+    }
+  ],
+  "actualPackage": {
+    "originalHttpResponseBytes": 7597,
+    "originalHttpResponseSha256": "058b0d095d0722f1caa5f8ce7507a65656a795e9c1d1a4a63e6646c667ba9b98",
+    "schema": "project.view-package/v1",
+    "exactSameOriginalT2Scope": true,
+    "scopeValueSha256": "ea96c24423ff2a60b7edbc389efa45e6c51ae9dea6dda11bd538506949bb3916",
+    "revisionId": "f53f1165ed49240ac45896f27f33739f9e573efd7d9bef8c0e4f0424ee0b7bfa",
+    "filesSha256": "8f8e54bc82c48d0fe3065d96993e16bfece3a735f49feccec50e84f517660fc6",
+    "packageIdentity": "728ab245dbf1efd62b67904ff34c7314239cfc4702c45f8dd2cdd019eec86683",
+    "packageIdentityIndependentlyRecomputed": true,
+    "manifestEqualsOriginalT2ExpectedBytesCandidateParsed": true,
+    "manifestWriteReceiptBytes": 261,
+    "manifestWriteReceiptSha256": "1f1c572845d420efb5dd0d5e275eb2584b53f543904c5703c51de5d32c3f6882",
+    "manifestViews": [
+      "home",
+      "report"
+    ],
+    "declaredAssetCount": 5,
+    "decodedTotalAssetBytes": 4043,
+    "assets": [
+      {
+        "path": "app/home.html",
+        "mediaType": "text/html",
+        "bytes": 457,
+        "sha256": "2574b8908fb22efe47bc197fea78f0c81010b9bd65a4f40c3b91bac2ce77f36b",
+        "sourceSha256": "2574b8908fb22efe47bc197fea78f0c81010b9bd65a4f40c3b91bac2ce77f36b",
+        "matchesOriginalT2WriteReceipt": true,
+        "sourceAndDeliveredBytesIdenticalInThisActualPackage": true
+      },
+      {
+        "path": "app/report.html",
+        "mediaType": "text/html",
+        "bytes": 451,
+        "sha256": "38bc4a25f6ab2b41c8484b8d4fbdaffec57799f6890d85c9278109aae352719e",
+        "sourceSha256": "38bc4a25f6ab2b41c8484b8d4fbdaffec57799f6890d85c9278109aae352719e",
+        "matchesOriginalT2WriteReceipt": true,
+        "sourceAndDeliveredBytesIdenticalInThisActualPackage": true
+      },
+      {
+        "path": "app/main.mjs",
+        "mediaType": "text/javascript",
+        "bytes": 2542,
+        "sha256": "f35830bb9af40ff488ca423e5a376636ac981add643fc8a97a585acaa94559a2",
+        "sourceSha256": "f35830bb9af40ff488ca423e5a376636ac981add643fc8a97a585acaa94559a2",
+        "matchesOriginalT2WriteReceipt": true,
+        "sourceAndDeliveredBytesIdenticalInThisActualPackage": true
+      },
+      {
+        "path": "app/style.css",
+        "mediaType": "text/css",
+        "bytes": 474,
+        "sha256": "761cbfe6621a8e44d35f63edc9596d36efb1c014e8e30bc635f3ff814d6f7aa9",
+        "sourceSha256": "761cbfe6621a8e44d35f63edc9596d36efb1c014e8e30bc635f3ff814d6f7aa9",
+        "matchesOriginalT2WriteReceipt": true,
+        "sourceAndDeliveredBytesIdenticalInThisActualPackage": true
+      },
+      {
+        "path": "docs/series.json",
+        "mediaType": "application/json",
+        "bytes": 119,
+        "sha256": "da95afe93d010519d1a4ba35ac10fce6c052369ce85d15bc091f70987f7df687",
+        "sourceSha256": "da95afe93d010519d1a4ba35ac10fce6c052369ce85d15bc091f70987f7df687",
+        "matchesOriginalT2WriteReceipt": true,
+        "sourceAndDeliveredBytesIdenticalInThisActualPackage": true
+      }
+    ],
+    "savedData": {
+      "version": "V1",
+      "series": [
+        2,
+        3,
+        5
+      ],
+      "originalArtifactIdExact": true
+    },
+    "delivery": {
+      "execution": "browser-local",
+      "transport": "native-dom/v1",
+      "frameSha256": "4bd78b2cf7c06051af24d97c2fd7665eea3b96ddbffe6b23daec485ee1e3eff2"
+    },
+    "actualResponseExtract": {
+      "file": "ordinary/browser-v1/actual-project-view-response.original.private.json",
+      "bytes": 7597,
+      "sha256": "058b0d095d0722f1caa5f8ce7507a65656a795e9c1d1a4a63e6646c667ba9b98"
+    },
+    "actualMainExtract": {
+      "file": "ordinary/browser-v1/actual-main-from-package.private.mjs",
+      "bytes": 2542,
+      "sha256": "f35830bb9af40ff488ca423e5a376636ac981add643fc8a97a585acaa94559a2"
+    }
+  },
+  "observedFailure": {
+    "captureAt": "2026-10-18T16:56:51.655000+00:00",
+    "recordedFailure": "Dashboard browser-local / unverified Load error: page request timeout",
+    "hostStatusStillReadyDoesNotProveAsyncPageInitializationSucceeded": true,
+    "stageStopped": true,
+    "noSecondSessionOrThirdTurn": true,
+    "actualMainLineReferences": {
+      "startFunction": 31,
+      "initialSdkFileRead": 32,
+      "parseSavedData": 33,
+      "awaitSubscription": 35,
+      "catchLoadError": 38,
+      "artifactDecode": 25,
+      "artifactPrefix": 26
+    },
+    "actualErrorFlow": "start() awaits readFile, parses data and renders, then awaits subscribe. Its single .catch overwrites the page root with Load error plus e.message. This record alone does not distinguish which initial SDK await timed out.",
+    "sdkTimeoutSource": "The frozen frame SDK rejects each pending MessagePort request after5000ms with page request timeout. The actual project main catches and displays that error string; its own source does not create that timeout.",
+    "rootCauseEstablishedByThisPackageValidation": false
+  },
+  "observerCoverage": {
+    "installedAt": "2026-10-18T16:55:55.595000+00:00",
+    "completedLaterPackagePolls": 7,
+    "allCompletedLaterPackagePollsHttp200AndSameResponse": true,
+    "oneAdditionalRequestPendingAtCapture": true,
+    "overflow": false,
+    "initialPageSdkRequestsPredateObserverInstallationPerOriginalCaptureContext": true,
+    "notProofInitialSdkHttpRequestsWereAbsent": true,
+    "noApiReplayedByReviewer": true
+  },
+  "separateStaticArtifactButtonBoundary": {
+    "actuallyClickedOrValidatedHere": false,
+    "mainDecodesWholeArtifactEnvelopeThenTestsWholeStringPrefix": true,
+    "doesNotParseEnvelopeContentForThatPrefix": true,
+    "noIndependentBodyShaInActualMain": true,
+    "notExplainedAsCauseOfCurrentSdkTimeout": true,
+    "fullArtifactChunksStillPending": true
+  },
+  "acceptance": {
+    "packageAndActualFiveAssetBytesObtainedAndValidated": true,
+    "actualCanonicalJsObtained": true,
+    "v1PageFunctionalAcceptancePassed": false,
+    "factor20And50Observed": false,
+    "pauseResumeOrSubscriptionPassed": false,
+    "reportPageOrArtifactButtonPassed": false,
+    "artifactFullBodyReassembledOrShaVerified": false,
+    "t3OrV2Executed": false,
+    "ownedGateCleanupStatusNotDeterminedByThisReview": true
+  },
+  "sourceBindings": [
+    {
+      "file": ".local/jhg46-next-stage-preparation-20261018/content-v2/services/project-views/frame-source.mjs",
+      "bytes": 7651,
+      "sha256": "c2b8ddbbf93553380fa1309741c5578618337016e692319711cda54caf23b2e3"
+    },
+    {
+      "file": ".local/jhg46-next-stage-preparation-20261018/content-v2/services/web/project-views.js",
+      "bytes": 14900,
+      "sha256": "9da41ade420c660a61f0ad4fc46408b728e81248bdeb30bdc419e63bdc61f1c9"
+    },
+    {
+      "file": ".local/jhg46-next-stage-preparation-20261018/content-v2/services/project-views/frame.mjs",
+      "bytes": 1050,
+      "sha256": "a2354dac782288f090280f7eba7edab6f2f8fb0644bb80966f2c59cc0bef4089"
+    }
+  ],
+  "performed": {
+    "localFileReadDecodeHashExtractOnly": true,
+    "apiBrowserCloudflareAuthModelCalls": 0,
+    "testsOrFixturesRun": false,
+    "productSourceOrOriginalCaptureEdits": false
+  },
+  "privacy": {
+    "originalBodiesOrPromptUserTenantEmailHostLocationCredentialsCopiedIntoSafeProjection": false
+  },
+  "mustFixToAcceptPackageIdentity": []
+}

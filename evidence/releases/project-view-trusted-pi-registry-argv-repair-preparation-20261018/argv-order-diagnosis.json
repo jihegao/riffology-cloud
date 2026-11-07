@@ -1,0 +1,201 @@
+{
+  "schema": "trusted-pi-wrangler-argv-order-diagnosis/v1",
+  "recordedAt": "2026-10-18T01:43:12.858790+00:00",
+  "oldRequestId": "9ec39434-0856-4ee7-af30-adf3dd5b5df4",
+  "newRequestId": "fb99c7e4-21a7-4215-8261-c17dd7c148aa",
+  "parentRequestId": "9ec39434-0856-4ee7-af30-adf3dd5b5df4",
+  "sourceArchiveOriginalRequestId": "c3e04c41-72da-409b-a2b1-f924e6cc67fa",
+  "sourceArchiveUnchanged": true,
+  "pinnedCli": {
+    "file": "/Users/jihegao/apps/riffology-cloud/node_modules/wrangler/wrangler-dist/cli.js",
+    "bytes": 14390953,
+    "sha256": "0a7bc2107ca92b2cc6db58b6a36d38d44b549eebd7db7ec34c36db9da7a91264"
+  },
+  "oldObservedCliTerminal": {
+    "pid": 27665,
+    "errorCode": "normal-oauth-cli-failed-no-retry",
+    "exitCode": 1,
+    "originalReaped": true,
+    "outputPersisted": false,
+    "stderrBytes": 354,
+    "stdoutBytes": 4345,
+    "stopErrors": []
+  },
+  "originalPublicationRecordRefs": [
+    {
+      "file": "intent.json",
+      "bytes": 290,
+      "sha256": "04f0e2ff603e6115a89bdc32c822ebb8a8fcba2ae6391e567c6c10296bfe8393"
+    },
+    {
+      "file": "oauth-consent-once-intent.json",
+      "bytes": 549,
+      "sha256": "baef84b33daf857a9c603402550ce31b3d68408401ad90fbec679a2813b4f162"
+    },
+    {
+      "file": "oauth-consent-once-original-cli.json",
+      "bytes": 70,
+      "sha256": "8178c766c322b59cc06dfdfaf7b984dc42f75af541b95bb9b0e221ed224f0314"
+    },
+    {
+      "file": "oauth-consent-once-terminal.json",
+      "bytes": 190,
+      "sha256": "4d1b7850eb7343487085eb8dfa613e72a85a05005e7bd94ab15c0bff2286f28d"
+    },
+    {
+      "file": "terminal.json",
+      "bytes": 836,
+      "sha256": "1e3b5f3bc9bd08b4669b5a620a156bf0361e8f26f97275f40cd6d788f8d2e6c6"
+    }
+  ],
+  "oldOutputTextAvailable": false,
+  "actualOldOAuthOrNetworkOutcomeClaimed": false,
+  "finding": {
+    "code": "greedy-global-array-consumes-command",
+    "sourceDefinitions": [
+      "cli.js:351199",
+      "cli.js:59232",
+      "cli.js:59555",
+      "cli.js:194986",
+      "cli.js:342005"
+    ],
+    "before": "--env-file /dev/null precedes login or auth token; array greedily consumes command words.",
+    "repair": "Complete command arguments first, append the same --env-file /dev/null pair last.",
+    "equalsOnlyRepairRejectedByParser": true,
+    "browserBooleanFlagSupported": true,
+    "allScopeCallbackAndProfileArgumentsUnchanged": true
+  },
+  "actualParserComparison": {
+    "receipt": {
+      "file": "parser-check-first.receipt.json",
+      "bytes": 694,
+      "sha256": "676ddaf5b10335c69bc1df78d4ecd91b08bb2152d246b7ace507065a762ecab9"
+    },
+    "fixture": {
+      "file": "parse-fixed-wrangler-argv.mjs",
+      "bytes": 5944,
+      "sha256": "164062cd1f7e14f8ae89fc41290107e37c3cadc8e8f4ae4b4d93a6a61722b80c"
+    },
+    "stdout": {
+      "file": "parser-check-first.stdout",
+      "bytes": 4547,
+      "sha256": "536d84bf40786023fd03e1f289f6190b22a9d9c8c4239fb163763d7c1b843c06"
+    },
+    "cases": {
+      "oldLoginRoot": {
+        "commands": [
+          "account:read",
+          "workers:write",
+          "workers_scripts:write",
+          "containers:write"
+        ],
+        "envFiles": [
+          "/dev/null",
+          "login"
+        ],
+        "scopes": "user:read",
+        "browser": true,
+        "callbackHost": "localhost",
+        "callbackPort": 8976
+      },
+      "newLoginRoot": {
+        "commands": [
+          "login",
+          "account:read",
+          "workers:write",
+          "workers_scripts:write",
+          "containers:write"
+        ],
+        "envFiles": [
+          "/dev/null"
+        ],
+        "scopes": "user:read",
+        "browser": true,
+        "callbackHost": "localhost",
+        "callbackPort": 8976
+      },
+      "newLoginCommand": {
+        "commands": [
+          "login"
+        ],
+        "envFiles": [
+          "/dev/null"
+        ],
+        "scopes": [
+          "user:read",
+          "account:read",
+          "workers:write",
+          "workers_scripts:write",
+          "containers:write"
+        ],
+        "browser": true,
+        "callbackHost": "localhost",
+        "callbackPort": 8976
+      },
+      "oldAuthRoot": {
+        "commands": [],
+        "envFiles": [
+          "/dev/null",
+          "auth",
+          "token"
+        ],
+        "json": true,
+        "profile": "default"
+      },
+      "newAuthRoot": {
+        "commands": [
+          "auth",
+          "token"
+        ],
+        "envFiles": [
+          "/dev/null"
+        ],
+        "json": true,
+        "profile": "default"
+      },
+      "equalsStillGreedy": {
+        "commands": [
+          "account:read",
+          "workers:write",
+          "workers_scripts:write",
+          "containers:write"
+        ],
+        "envFiles": [
+          "/dev/null",
+          "login"
+        ],
+        "scopes": "user:read",
+        "browser": true,
+        "callbackHost": "localhost",
+        "callbackPort": 8976
+      }
+    },
+    "safety": {
+      "fullCliImported": false,
+      "fullCliExecuted": false,
+      "oauthHandlersIncluded": false,
+      "vmHasProcess": false,
+      "vmHasRequire": false,
+      "vmHasFetch": false,
+      "vmDynamicCodeGeneration": false,
+      "configEnvironmentAndCredentialFilesRead": 0,
+      "networkCalls": 0,
+      "forbiddenCapabilityCalls": 0
+    }
+  },
+  "newCandidateManifest": {
+    "file": "operations-manifest.json",
+    "bytes": 1313,
+    "sha256": "89f2f285f5f732a6f3c9b8705a47fde4b5f073970e585e779371fb20ac2680fa"
+  },
+  "scope": {
+    "file": "scope.json",
+    "bytes": 5086,
+    "sha256": "33cc5a4e5124f36eef9656073404e9b8e779233c859867ae8d985edf46cc9e51"
+  },
+  "newGrantCreated": false,
+  "authorizationRequiredBeforeRealExecution": true,
+  "realCliOrHelpInvocations": 0,
+  "oauthOrTokenOperations": 0,
+  "sshDockerOrCloudCalls": 0
+}

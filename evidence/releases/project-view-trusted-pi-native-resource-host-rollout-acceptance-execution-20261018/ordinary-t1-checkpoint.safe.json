@@ -1,0 +1,195 @@
+{
+  "schema": "jhg46-ordinary-t1-author-safe-checkpoint/v2",
+  "checkpointScope": "T1 completed/saved R1 and original product-authority release passed; the later V1 browser stage failed and stopped this batch",
+  "projectId": "c09f052b-9300-487e-b34a-49a8316bc633",
+  "workspaceId": "f6591b33-804e-4f79-8bd5-91f65e213f9b",
+  "generation": 1,
+  "sessionId": "f01a2ec1-489e-4e85-808b-83ebd85069a6",
+  "turnId": "bcc23749-3700-4429-b46e-d619edb0ed12",
+  "originalUiAcks": [
+    {
+      "method": "POST",
+      "requestKey": "f5e41448-8485-484e-a24e-8c49f8553e1d",
+      "status": 201,
+      "sentAt": "2026-10-18T16:14:30.435Z",
+      "responseAt": "2026-10-18T16:14:33.206Z",
+      "bodyBytes": 21,
+      "bodySha256": "c7f53b8b1b7d701bb2a81b971ff3618432526dd0cd46ab46716ac58ae0f012e4"
+    },
+    {
+      "method": "POST",
+      "requestKey": "542d98a0-826b-4a96-9239-0520cb6eda9c",
+      "status": 202,
+      "sentAt": "2026-10-18T16:14:33.207Z",
+      "responseAt": "2026-10-18T16:14:38.290Z",
+      "bodyBytes": 3863,
+      "bodySha256": "9aab557bfc6529ca4aef4d990f5e65351e2af0c883f65df41a2928a024d0492b"
+    }
+  ],
+  "terminal": {
+    "status": "completed",
+    "executionOutcome": "completed",
+    "persistenceOutcome": "saved",
+    "errorCode": null,
+    "persistenceErrorCode": null,
+    "startedAt": 1792340081835,
+    "finishedAt": 1792340126982
+  },
+  "checkpoint": {
+    "revisionId": "1d18f32bdad776c4cf173e54c9b27ca79c7656a7f766c07bdf13cee983ea97b6",
+    "filesSha256": "48b08d9fa93f5cb00c8e52f9bad0d076f54586040979a227e7e044b913b76dba",
+    "sessionSha256": "cd4526493cf6f41e0a3ad2aea7777b980f1571e5d4f0fed60ece0e380afc1764",
+    "committedAt": 1792340124824
+  },
+  "events": {
+    "count": 17,
+    "hasMore": false,
+    "providerHttp200": 3,
+    "toolCompleted": 2
+  },
+  "tools": [
+    {
+      "name": "project_bash",
+      "status": "completed",
+      "result": {
+        "kind": "bash",
+        "exitCode": 0,
+        "stdout": "",
+        "stderr": "",
+        "stdoutTruncated": false,
+        "stderrTruncated": false
+      },
+      "usage": "unknown"
+    },
+    {
+      "name": "project_write",
+      "status": "completed",
+      "result": {
+        "kind": "write",
+        "path": ".pi/skills/native-pages-check/SKILL.md",
+        "bytes": 2698,
+        "sha256": "f05062374fccbffa83a7e6da5505a3229bd975ff8d5aaf30e832c8f0a3c3d294"
+      },
+      "usage": "unknown"
+    }
+  ],
+  "diff": {
+    "schemaVersion": 1,
+    "revision": {
+      "revisionId": "1d18f32bdad776c4cf173e54c9b27ca79c7656a7f766c07bdf13cee983ea97b6",
+      "filesSha256": "48b08d9fa93f5cb00c8e52f9bad0d076f54586040979a227e7e044b913b76dba",
+      "committedAt": 1792340124824
+    },
+    "summary": {
+      "added": 4,
+      "modified": 0,
+      "deleted": 0
+    },
+    "changes": [
+      {
+        "path": ".pi",
+        "change": "added",
+        "type": "directory",
+        "size": 0,
+        "mode": 448
+      },
+      {
+        "path": ".pi/skills",
+        "change": "added",
+        "type": "directory",
+        "size": 0,
+        "mode": 448
+      },
+      {
+        "path": ".pi/skills/native-pages-check",
+        "change": "added",
+        "type": "directory",
+        "size": 0,
+        "mode": 448
+      },
+      {
+        "path": ".pi/skills/native-pages-check/SKILL.md",
+        "change": "added",
+        "type": "file",
+        "size": 2698,
+        "mode": 384
+      }
+    ]
+  },
+  "release": {
+    "productAuthorityConjunctionPassed": true,
+    "releaseHold": null,
+    "activeTurnId": null,
+    "resourceWait": null,
+    "recoveryHold": null,
+    "capacity": "available",
+    "postGuardObservedFrom": "2026-10-18T16:21:43.435Z",
+    "postGuardObservedThrough": "2026-10-18T16:21:54.054Z",
+    "rawPrivateStopLeaseReceiptRead": false,
+    "sourceThresholdAndActualClosure": "sources/t1-product-authority-release-threshold-review.safe.json and sources/t1-save-release-closure.safe.json",
+    "notElapsedTimeOrAvailableAlone": true
+  },
+  "physical": {
+    "window": [
+      "2026-10-18T16:22:47.645Z",
+      "2026-10-18T16:22:50.331Z"
+    ],
+    "logicalInactive": 8,
+    "dashDo": 8,
+    "knownCurrentIdleVm": 1,
+    "deploymentId": "d03b8c4d-8cc2-475e-ba96-6e46d062983c",
+    "placementId": "09fbeb65-1e0b-42fc-9183-e96baa75db1f",
+    "version": 13,
+    "imageDigest": "sha256:ec8dbe9efe229a1626ea3202b618653f82f8d29d9da8b19310c3b3838f2a2623",
+    "vmHealth": "running",
+    "containerStatus": "stopped",
+    "historicalOldPlacementDisposalNotProven": true
+  },
+  "readme": {
+    "earlierReadStatus": 503,
+    "laterCapabilityCanRead": false,
+    "baselineRetainedByActualDiff": true,
+    "actualReadmeContentHashVerified": false
+  },
+  "limits": [
+    "T1 and T2 save/release stages passed; later V1 first-page initialization failed.",
+    "No Session2/T3/V2 or Report/artifact bodychunks acceptance occurred.",
+    "No global zero execution, all historical disposal, zero fees or automatic retry claimed.",
+    "Source expected hashes are not actual README content evidence."
+  ],
+  "windowEndsAt": "2026-10-18T19:07:16Z",
+  "authorFactsNotIndependentClosure": true,
+  "firstReadReleaseHistory": {
+    "releaseHold": {
+      "status": "release-pending",
+      "reasonCode": "trusted-pi-release-assignment-guard",
+      "since": 1792340126372,
+      "nextAttemptAt": 1792340136980
+    },
+    "releaseConfirmed": false,
+    "earliestAssignmentGuardRecheck": "2026-10-18T16:21:26Z",
+    "postGuardQuietAndCapacityStillRequired": true
+  },
+  "earlierPhysicalReadHistory": {
+    "observedAt": "2026-10-18T16:17:48Z",
+    "fourSuccessfulReadsPreserved": true,
+    "deploymentId": "d03b8c4d-8cc2-475e-ba96-6e46d062983c",
+    "version": 13,
+    "placementId": "09fbeb65-1e0b-42fc-9183-e96baa75db1f",
+    "vmHealth": "running",
+    "containerStatus": "stopped",
+    "logicalInstances": 8,
+    "logicalAllInactive": true,
+    "dashInstances": 0,
+    "dashDurableObjects": 8,
+    "oldExactReadError": "guard fingerprint notFoundPhrase only; exact HTTP status not established",
+    "oldHistoricalReleaseProven": false,
+    "firstCatchDiscardedSuccessfulResponsesRetainedAsHeldHistory": true
+  },
+  "canonicalDispatchAssociation": {
+    "independentReview": "sources/t1-canonical-key-dispatch-identity-review.safe.json",
+    "checkpointPathExactOriginalScopeGenerationSessionTurn": true,
+    "trustedPiLogicalNameDeterministicallyDerivedAndMatched": true,
+    "inactiveLogicalStateIsNotPhysicalVmRelease": true
+  }
+}

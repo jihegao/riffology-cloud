@@ -1,0 +1,72 @@
+{
+  "at": "2026-10-17T15:30:42.522510+00:00",
+  "canonicalPr": 239,
+  "currentCi": {
+    "annotationsTotal": 3,
+    "classification": "actual-validation-step-ran-and-failed; detailed-cause-not-established-by-annotations",
+    "completedAt": "2026-10-17T13:02:44Z",
+    "conclusion": "failure",
+    "failedStep": {
+      "completed_at": "2026-10-17T13:02:41Z",
+      "conclusion": "failure",
+      "name": "Existing local checks, archived experiment and quality regression",
+      "number": 9,
+      "started_at": "2026-10-17T12:52:35Z",
+      "status": "completed"
+    },
+    "failureAnnotation": "Process completed with exit code 1.",
+    "head": "0d23a12d869abccb9515a8e7f8196b0266258226",
+    "jobId": 117400649151,
+    "jobUrl": "https://github.com/jihegao/riffology-cloud/actions/runs/39034206923/job/117400649151",
+    "quotaOrPaymentNonexecutionEstablished": false,
+    "runId": 39034206923,
+    "startedAt": "2026-10-17T12:51:43Z",
+    "userQuotaExemptionApplicable": false
+  },
+  "evidence": [
+    {
+      "bytes": 59041,
+      "path": "initial-readonly-witness.json",
+      "sha256": "3dbcdea5fdf3ab3c4a694df543a7df57189534831615c87248c88ca7b1fdc236"
+    },
+    {
+      "bytes": 9985,
+      "path": "ci-annotations-readonly-witness.json",
+      "sha256": "2e8f2494e5b1cac47dac4eb35f3028bf24ec3435b658802e0968456c36786e80"
+    }
+  ],
+  "fixedHead": "0d23a12d869abccb9515a8e7f8196b0266258226",
+  "fixedPublicationPacketCommit": "fc807579e44745119014048d152fafccd6c946f5",
+  "gates": {
+    "aheadOneBehindZero": true,
+    "canonicalTwoLineDiffExact": true,
+    "currentCiAcceptable": false,
+    "headExact": true,
+    "mainBaseAndMergeBaseConsistent": true,
+    "mainCurrentlyNotProtectedAndNoActiveRules": true,
+    "mergeable": true,
+    "noFormalReviewsOrReviewThreads": true,
+    "openNonDraftUnmerged": true,
+    "publicationAndIndependentCleanupComplete": null
+  },
+  "limits": [
+    "Preflight only, not a final merge decision or current publication result.",
+    "No job log was read, so exact failing test/tool cause remains unknown.",
+    "No branch protection at this observation is not permission to bypass the approved technical-CI guard.",
+    "Earlier sandbox proxy connection denial is separately retained and does not represent a GitHub state."
+  ],
+  "mergeAllowed": false,
+  "nextSafeAction": "Keep #239 unmerged. Root may authorize scoped read-only failure diagnosis; do not rerun CI, change protected checks, waive technical failure or treat generic exit1 as quota. Final merge still requires fresh current GitHub state plus actual publication and independent cleanup proof.",
+  "observedMainAndBase": "29da0349719dba23d5c9ce95b4b83b97ebf7091a",
+  "operationsManifestSha256": "986c2d6e12e72785978e0bdfcf6e6357ba82e59cb16c40dc5c1cf8c7530ac4d1",
+  "reviewObservation": "No formal reviews and no review threads; Codex summary comment for fixed head reports completed/no findings, which is not an approval submission.",
+  "schema": "jhg46-pr239-merge-gate-preflight/v1",
+  "sideEffects": {
+    "ciReruns": 0,
+    "cloudflareCalls": 0,
+    "credentialFilesReadByTask": 0,
+    "githubMutations": 0,
+    "sshCommands": 0
+  },
+  "status": "merge-blocked-current-ci-actual-failure"
+}

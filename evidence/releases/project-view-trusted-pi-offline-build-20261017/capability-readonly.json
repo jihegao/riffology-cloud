@@ -1,0 +1,66 @@
+{
+  "schema": "jhg46-trusted-pi-offline-build-capability-readonly/v1",
+  "recordedAt": "2026-10-17T11:15:13.568Z",
+  "timeBoundary": "Recorded after the successful tool result; exact command start/end UTC were not separately captured.",
+  "authority": "root SSH read-only commands on existing AMD128",
+  "recording": "safe projection from completed tool output; no raw daemon configuration",
+  "host": "AMD128",
+  "commands": [
+    [
+      "/usr/bin/docker",
+      "version",
+      "--format",
+      "{{json .}}"
+    ],
+    [
+      "/usr/bin/docker",
+      "buildx",
+      "version"
+    ],
+    [
+      "/usr/bin/docker",
+      "buildx",
+      "build",
+      "--help"
+    ],
+    [
+      "/usr/bin/docker",
+      "build",
+      "--help"
+    ],
+    [
+      "/usr/bin/docker",
+      "buildx",
+      "inspect",
+      "default"
+    ]
+  ],
+  "allExitCodesZero": true,
+  "clientVersion": "29.8.1",
+  "serverVersion": "29.8.1",
+  "serverOs": "linux",
+  "serverArch": "amd64",
+  "buildxVersion": "v0.37.1",
+  "buildxCommit": "0b265a9f62db554fa9aba6dd19e1bd5704bc7d8a",
+  "buildxFlags": {
+    "--builder": true,
+    "--load": true,
+    "--metadata-file": true,
+    "--iidfile": true,
+    "--network": true,
+    "--platform": true,
+    "--pull": true
+  },
+  "dockerBuildMetadataFileSupported": true,
+  "defaultBuilder": {
+    "name": "default",
+    "driver": "docker"
+  },
+  "newBuilderBootstrapOrContainerStart": false,
+  "projectPackageOrCredentialTransfer": false,
+  "pullOrBuildOrRegistryWrite": false,
+  "daemonProxyOrRouteMutation": false,
+  "baseCacheOrOfflineResolverSuccessClaimed": false,
+  "nextExecutionStillRequiresExactOfflineGrant": true,
+  "preparedArchiveSha256Unchanged": "c92e672ca39d10d61467801f457147e3ee9cf2cfbbbe8b96d00a618a6a208bae"
+}

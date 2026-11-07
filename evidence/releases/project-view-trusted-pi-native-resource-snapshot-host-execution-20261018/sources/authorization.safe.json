@@ -1,0 +1,19 @@
+{
+  "source": "direct-human-question-reply",
+  "answerUtf8Sha256": "eb5651218116542d0646169c31ac52d0f5cd1d0e152653260fcb895c6fd850d8",
+  "humanGrantSha256": "62c6202a1290703326591dcc2519964b782510f75483062b4113f770d58d4196",
+  "receivedAndRecordedAt": "2026-10-18T11:46:27.805511+00:00",
+  "approvalTimeIsLocalObservationOfReply": true,
+  "publicationPacketCommit": "0900f19147cdea6c790260955bef5fa7a2f41af8",
+  "runtimeOriginalWindowExtended": false,
+  "newTurnAuthorized": false,
+  "costCap": null,
+  "arrearsNotify": true,
+  "schema": "trusted-pi-native-host-execution-authorization-safe/v1",
+  "originalReceipt": {
+    "bytes": 660,
+    "sha256": "76717a9935e136a2b14ac6ece938ec92958f4fb0365f907513b5d2c36c699e08"
+  },
+  "rawHumanReplyPublished": false,
+  "rawGrantPublished": false
+}

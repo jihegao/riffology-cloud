@@ -1,0 +1,42 @@
+{
+  "schema": "jhg46-fb07-difference-public-inventory/v1",
+  "proposalOnly": true,
+  "files": [
+    {
+      "file": "actual-sdk-publication-review.safe.json",
+      "bytes": 3047,
+      "sha256": "342b8218231e91cbd7d74a19e28fa72de423a3c0cc0f279cec29b048a96f851c"
+    },
+    {
+      "file": "difference-proposal.safe.json",
+      "bytes": 4126,
+      "sha256": "8712ce617bb7af6740c93265328196c7230d7d502fe3fcd16a897eed9cf1014f"
+    },
+    {
+      "file": "idle-replacement-proposal-review-final-addendum.safe.json",
+      "bytes": 1941,
+      "sha256": "d6381407a95828ecb0074020c733f851e0af54f55fb5ca02fa6bc0ce84950f8e"
+    },
+    {
+      "file": "idle-replacement-proposal-review.safe.json",
+      "bytes": 9081,
+      "sha256": "ba88161735efc364fd03b70cd1610d6035363e496e55bdbb6ad848c3b7ab4df0"
+    },
+    {
+      "file": "t1-physical-release-contract-review.safe.json",
+      "bytes": 12341,
+      "sha256": "f24884cec994c2ce015cc2fa8124f0aa15fb0d0932d60f8663332dec94fe01b6"
+    },
+    {
+      "file": "t1-product-release-review.safe.json",
+      "bytes": 5827,
+      "sha256": "9e27798af6df5930dd7790d2c13c2a8e57634ef79c52bc92d448f9112044c95c"
+    },
+    {
+      "file": "t1-saved-effects-review.safe.json",
+      "bytes": 10813,
+      "sha256": "df3cd1e18a978cd10855d4f834af116b7b406098d1ff0597f497adac0b0a8a0e"
+    }
+  ],
+  "privateBodiesCopied": false
+}

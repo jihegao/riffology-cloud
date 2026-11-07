@@ -1,0 +1,121 @@
+{
+  "schema": "trusted-pi-registry-argv-order-repair-public-preparation/v1",
+  "recordedAt": "2026-10-18T01:44:53.580093+00:00",
+  "requestId": "fb99c7e4-21a7-4215-8261-c17dd7c148aa",
+  "parentRequestId": "9ec39434-0856-4ee7-af30-adf3dd5b5df4",
+  "sourceArchiveOriginalRequestId": "c3e04c41-72da-409b-a2b1-f924e6cc67fa",
+  "candidateReviewOnly": true,
+  "operationsManifest": {
+    "file": "operations-manifest.json",
+    "bytes": 1313,
+    "sha256": "89f2f285f5f732a6f3c9b8705a47fde4b5f073970e585e779371fb20ac2680fa"
+  },
+  "executedDriver": false,
+  "humanGrantPresent": false,
+  "sourceArchiveUnchanged": true,
+  "retainedOldRequestState": true,
+  "checks": [
+    {
+      "kind": "isolated-pinned-parser",
+      "pass": 1,
+      "fail": 0,
+      "originalReceipt": {
+        "file": "parser-check-first.receipt.json",
+        "bytes": 694,
+        "sha256": "676ddaf5b10335c69bc1df78d4ecd91b08bb2152d246b7ace507065a762ecab9"
+      },
+      "originalCommandRetainedPrivately": true,
+      "commandProjection": [
+        "node",
+        "parse-fixed-wrangler-argv.mjs"
+      ],
+      "commandProjectionIsDisplayOnly": true,
+      "startedAt": "2026-10-18T01:40:30.880025+00:00",
+      "endedAt": "2026-10-18T01:40:31.104035+00:00",
+      "exitCode": 0,
+      "stdoutBytes": 4547,
+      "stdoutSha256": "536d84bf40786023fd03e1f289f6190b22a9d9c8c4239fb163763d7c1b843c06",
+      "stderrBytes": 0,
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "kind": "recovery-fakes",
+      "pass": 16,
+      "fail": 0,
+      "originalReceipt": {
+        "file": "recovery-fake-checks.json",
+        "bytes": 569,
+        "sha256": "75b9e80c1755ea8fe9dd0cae6e30553de03d2989051cf88494bc12adbca47499"
+      },
+      "originalCommandRetainedPrivately": true,
+      "commandProjection": [
+        "python3",
+        "-B",
+        "test_recovery.py"
+      ],
+      "commandProjectionIsDisplayOnly": true,
+      "startedAt": "2026-10-18T01:42:05.170145+00:00",
+      "endedAt": "2026-10-18T01:42:05.450395+00:00",
+      "exitCode": 0,
+      "stdoutBytes": 0,
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrBytes": 225,
+      "stderrSha256": "0eaa3e5019cd0249f8c95ea01071159d17460da14bd884b3a4f06b1d2b4936e0"
+    },
+    {
+      "kind": "independent-reader-fakes",
+      "pass": 7,
+      "fail": 0,
+      "originalReceipt": {
+        "file": "independent-reader-checks.json",
+        "bytes": 651,
+        "sha256": "f0f498ed22ca86071b1f46fa67bb0eeec23c5e09d035350416ead5a1375ce799"
+      },
+      "originalCommandRetainedPrivately": true,
+      "commandProjection": [
+        "python3",
+        "-B",
+        "test_independent_reader.py"
+      ],
+      "commandProjectionIsDisplayOnly": true,
+      "startedAt": "2026-10-18T01:42:05.172330+00:00",
+      "endedAt": "2026-10-18T01:42:05.403943+00:00",
+      "exitCode": 0,
+      "stdoutBytes": 0,
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrBytes": 215,
+      "stderrSha256": "d39789180b50e37364f6279ace2b0884825cb392af2977acedd445cc5b689036"
+    }
+  ],
+  "diagnosis": {
+    "file": "argv-order-diagnosis.json",
+    "bytes": 5741,
+    "sha256": "d9c60e3d6cdeb4d22a609c3b075122780b7b24c3f4f4bc1adf9981bb0a5483b2"
+  },
+  "offlineChecks": {
+    "file": "offline-checks.json",
+    "bytes": 1793,
+    "sha256": "e6723e9b0029e2d92fefcfac5cfcc8cbdca9d18d6dae9eaf4320c2b7ee906020"
+  },
+  "independentReader": {
+    "file": "independent-cleanup-readonly.py",
+    "bytes": 9065,
+    "sha256": "2207c49844d8bfa4777510d6c60d4333f509dd1d7ab42fabf71e6188c77d6266"
+  },
+  "parserFixture": {
+    "file": "parse-fixed-wrangler-argv.mjs",
+    "bytes": 5944,
+    "sha256": "164062cd1f7e14f8ae89fc41290107e37c3cadc8e8f4ae4b4d93a6a61722b80c"
+  },
+  "safety": {
+    "realWranglerCliOrHelpCalls": 0,
+    "oauthOrTokenCalls": 0,
+    "sshDockerOrCloudCalls": 0,
+    "credentialFilesRead": 0,
+    "pinnedPublicCliSourceReadOnly": true,
+    "parserCapabilityCalls": 0,
+    "oldActualErrorTextRecovered": false,
+    "oldOAuthNetworkOutcomeProven": false
+  },
+  "authorizationBoundary": "No execution grant supplied or implied by this local preparation. Original consumed request and records remain unchanged; exact repaired candidate requires a new explicit human response."
+}

@@ -1,0 +1,153 @@
+{
+  "schema": "jhg46-fb07-t2-joint-release-independent-review/v1",
+  "reviewedAt": "2026-10-19T00:30:15.276976Z",
+  "batchRequestId": "fb07e239-2cb4-4379-9581-5711d86a0f30",
+  "verdict": "PASS: original T2 saved/effects plus same-original latest product release and complete current physical scope close under accepted idle-replacement amendment. This review performs no gate or next Turn.",
+  "mustFix": [],
+  "checks": {
+    "fiveOriginalHttpBodiesBytesSha": true,
+    "sameOriginalT2ScopeSessionActor": true,
+    "sameCompletedSavedR2": true,
+    "allPersistentReceiptAndSnapshotFieldsMatch": true,
+    "originalSessionHeadEqualsR2": true,
+    "allFourActiveHoldFieldsClear": true,
+    "originalUserBetaAvailable": true,
+    "currentMeSameOwnerAndTenant": true,
+    "sqlOrdinaryActiveOwnerAuth2AndZeroWrites": true,
+    "savedEffectsIndependentReviewPassAndEightSupportedTools": true,
+    "physicalFourUnfiltered200": true,
+    "elevenCurrentLogicalInactiveDash0": true,
+    "oneCurrentJoinedSameDeployment": true,
+    "sameApprovedAppVersionImageProfile": true,
+    "currentIdleVmRunningContainerStopped": true,
+    "replacementWithinAcceptedHumanRule": true,
+    "originalWindowUnchangedAndObservationsInside": true
+  },
+  "productRelease": {
+    "observedFrom": "2026-10-19T00:28:06.717Z",
+    "observedThrough": "2026-10-19T00:28:16.669Z",
+    "revisionId": "0f8b8226017fa1100a73762a1f85fb50d6d7ac49eba40fff9eab9b3551eaa6ac",
+    "runtimeGeneration": 1,
+    "savedR2AndSessionHeadUnchanged": true,
+    "activeTurnReleaseRecoveryResourceWaitAllNull": true,
+    "capacity": "available",
+    "sourceValidatedOriginalProductAuthority": true,
+    "rawInternalStopLeaseCapacityAckIndependentlyRead": false
+  },
+  "physical": {
+    "observedFrom": "2026-10-19T00:28:21.470Z",
+    "observedThrough": "2026-10-19T00:28:23.419Z",
+    "currentExposedScopeOnly": true,
+    "logicalCount": 11,
+    "allInactive": true,
+    "dashInstanceCount": 0,
+    "currentDeploymentCount": 1,
+    "deploymentId": "d03b8c4d-8cc2-475e-ba96-6e46d062983c",
+    "version": 13,
+    "currentPlacementId": "2d986b84-9cbb-45e0-afc6-f05e7746ed3b",
+    "vmHealth": "running",
+    "containerStatus": "stopped",
+    "replacementFromPrior9f18WithinAccepted9c43HumanRule": true,
+    "oldPlacementDisposalOrAllHistoryZeroVmClaim": false,
+    "mayIncurFees": true
+  },
+  "bindings": [
+    {
+      "path": ".local/jhg46-native-sdk-publication-acceptance-execution-20261019/ordinary/turn-2-once/release-five-get-original.private.json",
+      "bytes": 20222,
+      "sha256": "f5ca79b0cba1febeb27752bef0f5aa0283a8eef06517ccf096450aefee8952ab",
+      "purpose": "Original five GET release authority",
+      "rawBodyCopied": false
+    },
+    {
+      "path": ".local/jhg46-native-sdk-publication-acceptance-execution-20261019/ordinary/turn-2-once/physical-product-released.tool-result.private.json",
+      "bytes": 17457,
+      "sha256": "47bee1b0d77a08bdb3597d11a8294362d41210f07a6d8d82ec5da15814f0642c",
+      "purpose": "Original four physical GETs",
+      "rawBodyCopied": false
+    },
+    {
+      "path": ".local/jhg46-native-sdk-publication-acceptance-execution-20261019/reviews/t2-saved-effects-review.safe.json",
+      "bytes": 13601,
+      "sha256": "61b11a359b4b5a28bb01e9dda518ed5996bea3c288451b57ec4d430b197a936a",
+      "purpose": "Existing actual save/effect review, earlier pending timestamp preserved",
+      "rawBodyCopied": false
+    },
+    {
+      "path": ".local/jhg46-native-sdk-publication-acceptance-execution-20261019/authorization/idle-placement-amendment-human-grant.private.json",
+      "bytes": 1237,
+      "sha256": "16b252bd1a399bac807e236365c16ce2789275622b188ebfabdbefbf46e0f1e7",
+      "purpose": "Accepted idle amendment; no human reply copied",
+      "rawBodyCopied": false
+    },
+    {
+      "path": ".local/jhg46-native-sdk-publication-acceptance-execution-20261019/authorization/batch-grant.private.json",
+      "bytes": 4254,
+      "sha256": "ef4365b39cfd0fdc2f5243e41c2908d726d0f4c899dec2d5e013a89fa839a244",
+      "purpose": "Unchanged original window/count authority",
+      "rawBodyCopied": false
+    }
+  ],
+  "candidateBinding": {
+    "file": ".local/jhg46-native-sdk-publication-acceptance-execution-20261019/gate/binding-input.candidate.private.json",
+    "bytes": 2084,
+    "sha256": "77de55e804ed72eb0f201aef2baefda1eae55e559eb07adfaa6523341a8a3be0",
+    "isPrivateCandidateNotGateOrNewGrant": true,
+    "fourReceiptSources": [
+      {
+        "path": ".local/jhg46-native-sdk-publication-acceptance-execution-20261019/ordinary/project-create.original-capture.private.json",
+        "bytes": 2114,
+        "sha256": "c13e1a0487e6cb526a4b378c7ae3faa4daa72c0318afa8cf86504f7e979a4889",
+        "purpose": "create: original UI create capture with actual response and identity bracket",
+        "rawBodyCopied": false
+      },
+      {
+        "path": ".local/jhg46-native-sdk-publication-acceptance-execution-20261019/ordinary/turn-2-once/release-2-response-original.raw.private.json",
+        "bytes": 3558,
+        "sha256": "9efc5f6cd530aa7dbf551f9117198af46d47ae93ceb8c445f8927dc33543375f",
+        "purpose": "r2: exact original release receipt body",
+        "rawBodyCopied": false
+      },
+      {
+        "path": ".local/jhg46-native-sdk-publication-acceptance-execution-20261019/ordinary/turn-2-once/release-4-response-original.raw.private.json",
+        "bytes": 188,
+        "sha256": "aa8d093481241466c0c657acd20cd892eef45ff9414689e7dc2a9681ea5d4c01",
+        "purpose": "me: exact original latest /api/me body",
+        "rawBodyCopied": false
+      },
+      {
+        "path": ".local/jhg46-native-sdk-publication-acceptance-execution-20261019/ordinary/turn-2-once/identity-select-reauth.tool-result.private.json",
+        "bytes": 1794,
+        "sha256": "1e9c30b580bd4959acde3078717801ff838c14a674f2404897a5dee6f418e9bf",
+        "purpose": "sql: original accepted ordinary owner SELECT result envelope",
+        "rawBodyCopied": false
+      }
+    ],
+    "scopeProvenance": "createScope from actual create.response.project tenant_id/id/workspace_id/generation; r2Scope from actual R2 receipt. sqlScope is an explicit join of the SQL-proven tenant/owner to this create+R2 scope; SQL itself has no project/workspace fields.",
+    "actorProvenance": "meActor.userId from actual me. authVersion2 from original SELECT corroborated by original authenticated source lineage; me and public R2 actor do not carry authVersion. No such fields are added to their raw records.",
+    "rawSqlProjectWorkspaceFieldsPresent": false,
+    "rawMeAuthVersionPresent": false,
+    "policyStartFromActualLocalPreparationClock": 1792369815276,
+    "policyEndOriginal": "2026-10-19T01:59:00Z",
+    "deriveGatePlanStatus": "Pending separate pure function invocation; not equivalent to fresh closed-witness openRequest validation."
+  },
+  "limits": [
+    "Latest release evidence supersedes the initial assignment-guard pending observation only for current status; both originals remain.",
+    "No time elapsed/available/empty Dash alone is treated as release. Existing source-validated same-original runtime/tool/capacity conjunction and accepted current physical scope are combined.",
+    "No all-history disposal, zero VM, zero fees, browser/V1/artifact body success or wholeGoal completion claimed.",
+    "Actual fresh closed53GET factory validation and root-owned original onePUT/DELETE remain separate; no witness invented."
+  ],
+  "actions": {
+    "localEvidenceReadAndNewPrivateCandidateSafeReviewWriteOnly": true,
+    "network": 0,
+    "api": 0,
+    "ui": 0,
+    "credentialReads": 0,
+    "cloudWrites": 0,
+    "sourceChanges": 0,
+    "newTests": 0
+  },
+  "privacy": {
+    "safeReviewCopiesRawActorTenantEmailPromptOrConfig": false
+  }
+}

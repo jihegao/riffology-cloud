@@ -1,0 +1,22 @@
+{
+  "observation": {
+    "bytesPerSecond": 0.0,
+    "capturedBytes": 0,
+    "endedAt": "2026-10-18T13:31:05.732801+00:00",
+    "exitCode": 6,
+    "httpStatus": 0,
+    "name": "amd-direct-no-proxy",
+    "redirectsFollowed": 0,
+    "seconds": 0.08887,
+    "startedAt": "2026-10-18T13:31:05.629643+00:00",
+    "stderr": {
+      "bytes": 55,
+      "sha256": "4f69ef66161b66f24cd8056d016dc1896d6d8d1947fc3f5ad4bdc9de25fab928"
+    }
+  },
+  "transportExitCode": 0,
+  "transportStderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

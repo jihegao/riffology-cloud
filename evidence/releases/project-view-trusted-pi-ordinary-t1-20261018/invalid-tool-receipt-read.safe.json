@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "projectId": "e7044b0b-839a-4e44-9636-ab0c3b77b7ae",
+  "workspaceId": "3e1e0106-503e-42e1-89ce-35a26612935e",
+  "workspaceGeneration": 1,
+  "scopeSha256": "9949802a2876284ffa2b604411b9283de83fa45c806c24bd7ab2981ff5059286",
+  "schema": "jhg46-ordinary-t1-invalid-receipt-read-safe/v1",
+  "httpStatus": 400,
+  "observedAt": "2026-10-18T10:18:15.480Z",
+  "error": "invalid_input",
+  "classification": "Read request omitted required name/revision query inputs; invalid observation, not a tool execution result or pipe failure cause.",
+  "canonicalRevision": null,
+  "canonicalReceiptAuthorityAvailableForR1": false,
+  "limit": "No R1 exists. Do not invent a revisionId, create a new Turn, or use this HTTP 400 as proof of the original project_write failure cause."
+}

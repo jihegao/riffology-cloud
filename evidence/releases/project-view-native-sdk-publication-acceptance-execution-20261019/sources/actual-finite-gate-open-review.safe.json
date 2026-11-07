@@ -1,0 +1,234 @@
+{
+  "schema": "jhg46-sdk-actual-finite-gate-open-independent-review/v1",
+  "reviewedAt": "2026-10-19T00:39:10.453971+00:00",
+  "mustFix": [],
+  "checks": {
+    "originalPublicationFile_safe-receipt.json": true,
+    "originalPublicationFile_worker-put-ack.private.json": true,
+    "originalPublicationFile_after.private.json": true,
+    "actualPublishedBaseOriginalAckAndFullAfterBindings": true,
+    "wholePublishedProjectionAndExactSecretPredictionRecomputed": true,
+    "gatePlanOnlyActualIdentityInputAndSamePublishedBase": true,
+    "onePolicySameOriginalR2ScopeActorAndFiniteGrant": true,
+    "actualCreateR2MeSqlReceiptQuartetSha": true,
+    "r2ReceiptSameSnapshotTurn": true,
+    "actualR2AndPriorProductReleaseQualified": true,
+    "requestAnd519BytesCanonicalBodyExact": true,
+    "durableOriginalIntentOneSendAndKnown201Ack": true,
+    "knownAckThenActualNewVersionAndSole100Deployment": true,
+    "closedActual53GetFullWitness": true,
+    "openActual53GetFullWitness": true,
+    "closedWitnessBeforePutAndOpenWitnessAfterActualVersion": true,
+    "normalizedOnlyExactComparisonHashPreservesAllOtherFields": true,
+    "originalOwnOpenNonceBodyAckHashClosure": true,
+    "pauseResumeFrozenWordingOnlyInputDrivenUpdates": true,
+    "closedOriginalWitnessEqualsOriginalToolResult": true,
+    "openOriginalWitnessEqualsOriginalToolResult": true
+  },
+  "bindings": [
+    {
+      "file": "gate/open-once/actual-version-original.tool-result.private.json",
+      "bytes": 2361,
+      "sha256": "ca5fe5d6aabd35e89d6e0d067ba238185465777b277450e5517255c94721fd84",
+      "privateBodyCopied": false
+    },
+    {
+      "file": "gate/open-once/binding-input.actual.private.json",
+      "bytes": 2084,
+      "sha256": "77de55e804ed72eb0f201aef2baefda1eae55e559eb07adfaa6523341a8a3be0",
+      "privateBodyCopied": false
+    },
+    {
+      "file": "gate/open-once/body-wire.private.json",
+      "bytes": 519,
+      "sha256": "f31736f67192cad12e0d47b2cae388533cc8fdc52b56d46042869c22730dbcb4",
+      "privateBodyCopied": false
+    },
+    {
+      "file": "gate/open-once/execution-start.private.json",
+      "bytes": 185,
+      "sha256": "dfbd2beb609a72d70bf2303df8425dacff3eb328304d5bd1868e54397f64413a",
+      "privateBodyCopied": false
+    },
+    {
+      "file": "gate/open-once/intent.private.json",
+      "bytes": 579,
+      "sha256": "751623baca52a367eb0fc7a42ef024feb6515ded7e47fc0bc2178bf46dea6452",
+      "privateBodyCopied": false
+    },
+    {
+      "file": "gate/open-once/original-ack.tool-result.private.json",
+      "bytes": 706,
+      "sha256": "5b5d062d65a8dfa6c3397fb87532ae6681af3213d841a8e490407dc216429a93",
+      "privateBodyCopied": false
+    },
+    {
+      "file": "gate/open-once/own-open.actual.private.json",
+      "bytes": 314,
+      "sha256": "03c299793f03eb0ac4c1bb888b49a6869f7cda081a29a49f5165eaab2ba4071e",
+      "privateBodyCopied": false
+    },
+    {
+      "file": "gate/open-once/plan.actual.private.json",
+      "bytes": 2569,
+      "sha256": "78ebcccb8221b2ed350f51bc9c42d4bab414d080a0470526b4941b6692d4e4e6",
+      "privateBodyCopied": false
+    },
+    {
+      "file": "gate/open-once/request.actual.private.json",
+      "bytes": 742,
+      "sha256": "9d2d0fae398765d6b0e6489e25f86eef55dd9d23483867e2ccd3dbba29ccc904",
+      "privateBodyCopied": false
+    },
+    {
+      "file": "gate/open-once/send-once.request.cf.private.txt",
+      "bytes": 1686,
+      "sha256": "d2e8a4e4a629037cacf02a77f1f9ac2917bdab71e741b5694d65185e40015098",
+      "privateBodyCopied": false
+    },
+    {
+      "file": "gate/closed-witness.original.private.json",
+      "bytes": 12304,
+      "sha256": "1509451bf6d1238d546dae3b6bbf67e2d4032293cee9bcea2dc9cbd3d42166af",
+      "privateBodyCopied": false
+    },
+    {
+      "file": "gate/closed-witness.tool-result.private.json",
+      "bytes": 14722,
+      "sha256": "4a9d9fa0e48e120763b9053625b3b3575bb0eff028ae75fd2178aea8018b5172",
+      "privateBodyCopied": false
+    },
+    {
+      "file": "gate/open-witness.original.private.json",
+      "bytes": 12370,
+      "sha256": "c7d7ea928109cbfd0b53073657a996fa084dc382df1f412413ec71cad1196512",
+      "privateBodyCopied": false
+    },
+    {
+      "file": "gate/open-witness.tool-result.private.json",
+      "bytes": 14790,
+      "sha256": "bafa2c4d2a9ed1ce8e9d4f0c66a5e20d6b166bfcb4d96a3a8a9cb81b2d700bf8",
+      "privateBodyCopied": false
+    },
+    {
+      "file": "gate/open-normalized.actual.private.json",
+      "bytes": 2295,
+      "sha256": "228e7fcd5f04d04805300769eafc6097e04f640b76eeb655c2c6125a73245234",
+      "privateBodyCopied": false
+    },
+    {
+      "file": "gate/published-base.safe.json",
+      "bytes": 1905,
+      "sha256": "c283a255f968ff3b848a34732be11ba092584bf6e11faee6b8aedb4d60d8cef3",
+      "privateBodyCopied": false
+    },
+    {
+      "file": "reviews/t2-joint-release-review.safe.json",
+      "bytes": 7734,
+      "sha256": "618759bd5cda0e08c23a7c338b0a275ea188613ca2ac2f1999aaf4fe02071e07",
+      "privateBodyCopied": false
+    },
+    {
+      "file": "ordinary/turn-2-once/release-1-response-original.raw.private.json",
+      "bytes": 13643,
+      "sha256": "aaf25870c8bb5ce3618188c458f293b39f136f5da68e51e7fe13d1ebaea80a78",
+      "privateBodyCopied": false
+    },
+    {
+      "file": "ordinary/turn-2-once/release-2-response-original.raw.private.json",
+      "bytes": 3558,
+      "sha256": "9efc5f6cd530aa7dbf551f9117198af46d47ae93ceb8c445f8927dc33543375f",
+      "privateBodyCopied": false
+    }
+  ],
+  "publicationProofOriginalHashOnly": [
+    {
+      "file": ".local/jhg46-native-sdk-acceptance-preparation-20261019/gateway-ops-candidate-v1/publication-attempts/1feadf24-3eb8-58be-abd7-872c68ab45e6/safe-receipt.json",
+      "bytes": 6009,
+      "sha256": "9ff958941bc40df82f849940703db0902792cd5a9164af2294cb87af7b3b778b",
+      "privateBodyCopied": false
+    },
+    {
+      "file": ".local/jhg46-native-sdk-acceptance-preparation-20261019/gateway-ops-candidate-v1/publication-attempts/1feadf24-3eb8-58be-abd7-872c68ab45e6/worker-put-ack.private.json",
+      "bytes": 6644,
+      "sha256": "8c2a8f05c7c947e6d1556ea8f943fa91ad5dc4148ff6431712dbc2e9ef59efdd",
+      "privateBodyCopied": false
+    },
+    {
+      "file": ".local/jhg46-native-sdk-acceptance-preparation-20261019/gateway-ops-candidate-v1/publication-attempts/1feadf24-3eb8-58be-abd7-872c68ab45e6/after.private.json",
+      "bytes": 83505,
+      "sha256": "1f30ee013a9107babbb1aec62d80b1dd730a9a57ed67c34af05e64023159b19b",
+      "privateBodyCopied": false
+    }
+  ],
+  "actualOpen": {
+    "requestId": "95b9b8c6-8d52-566d-8476-dfa3e02f6b79",
+    "originalIntentSha256": "751623baca52a367eb0fc7a42ef024feb6515ded7e47fc0bc2178bf46dea6452",
+    "originalBodyBytes": 519,
+    "originalBodySha256": "f31736f67192cad12e0d47b2cae388533cc8fdc52b56d46042869c22730dbcb4",
+    "originalAckSha256": "5b5d062d65a8dfa6c3397fb87532ae6681af3213d841a8e490407dc216429a93",
+    "sentAtUnixMs": 1792369940931,
+    "receivedAtUnixMs": 1792369941659,
+    "status": 201,
+    "newVersionId": "05d93023-ca6a-4a5e-ba7b-32811b48e167",
+    "newVersionNumber": 235,
+    "soleLatestDeployment100": true,
+    "originalPublishedClosedVersion": "d2660428-5ccb-4fb9-b1bd-d6b8ba26959f",
+    "policyEndsAt": "2026-10-19T01:59:00Z",
+    "oneActualOriginalPutSource": true,
+    "sameOriginalProjectR2ActorScopeQuartet": true,
+    "policyPlaintextNotCopied": true
+  },
+  "witnessClosure": {
+    "closedGetCount": 53,
+    "openGetCount": 53,
+    "sourceSha256": "304373a50d7a9ca8a99cdfbda0dcae261aa34d53727b757dfeb099c88efb5e0b",
+    "rawOpenStableSha256": "81f81a6c990e7ce6ebe187378e18034f10b05c80cba3ff96a8e3afe2bddd8779",
+    "normalizedPublishedStableSha256": "d7d0a8db0e14c2f11cc9f8e3d06050bc6887a10d123f4bf86888b7192eb2ab24",
+    "completePredictionRecomputedFromOriginalPublishedAfter": true,
+    "onlyExactSettingsAndVersionSecretAnnotationsPredicted": true,
+    "otherProjectionFieldsRetained": true,
+    "rawOriginalOpenWitnessUnmodified": true,
+    "configuredAssetCount96NotFreshBodyReads": true
+  },
+  "resumeInterpretation": {
+    "sources": [
+      {
+        "file": ".local/jhg46-native-sdk-acceptance-preparation-20261019/content-candidate-v1/SKILL.md",
+        "bytes": 6056,
+        "sha256": "8ef3375d58464b2a74cc57031771f5f7bad21b15f09991fb3838620e9f3ae6d7"
+      },
+      {
+        "file": ".local/jhg46-native-sdk-acceptance-preparation-20261019/content-candidate-v1/prompts/turn-2-build-v1.md",
+        "bytes": 2287,
+        "sha256": "ada18925ea4504cf81d981eb332fef66483d513b5191945fe3809ab369c98364"
+      },
+      {
+        "file": ".local/jhg46-native-sdk-acceptance-preparation-20261019/contract-candidate-v1/operations.json",
+        "bytes": 7396,
+        "sha256": "648a930aba6558ceec13a1c724dbb6eb28c2b1ac150b2b98c37f592bb237f654"
+      }
+    ],
+    "exactSkillWording": "Include Pause/Resume for input-driven updates",
+    "rootReportedObservation": "Pause holds result; after Resume the next input updates again.",
+    "doesThisBehaviorAloneViolateExplicitFrozenCriterion": false,
+    "reason": "Frozen skill/T2/operations require Pause/Resume for input-driven updates and functional factor results; no requirement states immediate flush/recompute on clicking Resume. Re-enabling the next input is consistent with that narrow criterion.",
+    "uiBehaviorIndependentlyObservedByThisReviewer": false,
+    "noNewImmediateFlushRuleAdded": true,
+    "notOverallV1Acceptance": true
+  },
+  "limits": [
+    "This review accepts only original finite open-chain and actual closed/open resource witness. It does not mark V1, artifact chunks/body, Report, refresh/reentry or Session2/T3/V2 passed.",
+    "Open witness source53GET is independent read-only metadata/resource preservation with asset count/config authority; it is not new96 full asset downloads or VM release proof.",
+    "Original body policy/actor/tenant values and private full published after configuration were read only in memory for identity/projection comparison, never copied into this safe review.",
+    "Known trusted original ACK/intent/version chain is required for any eventual owned DELETE; this review supplies no blind delete, retry, rollback or foreign-owner authority.",
+    "Actual observations are dated. Original01:59 deadline and phase-failure stop rules remain; user idle amendment is separate existing authority."
+  ],
+  "reviewerActions": {
+    "localActualFileHashSemanticProjectionReview": true,
+    "candidateFunctionsImportedOrRun": false,
+    "networkUiAuthSqlModelGitFixturesOrCloudWrite": false,
+    "frozenSourceOrOriginalsEdited": false
+  },
+  "privateIdentityEmailTenantHostLocationCredentialsPolicyOrConfigurationBodiesCopied": false
+}

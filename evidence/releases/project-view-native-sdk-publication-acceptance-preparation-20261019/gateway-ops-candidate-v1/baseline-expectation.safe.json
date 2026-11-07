@@ -1,0 +1,98 @@
+{
+  "schema": "jhg46-sdk-dated-family-baseline-safe/v1",
+  "notFresh": true,
+  "notExecutionWitness": true,
+  "notOriginalCompleteSnapshot": true,
+  "accountId": "8b0d70250211aa10d89e20605a1c7e5e",
+  "worker": "riffology-m1-gateway-staging",
+  "counts": {
+    "bindings": 106,
+    "exports": 25,
+    "containerAssociations": 6,
+    "namespaces": 50,
+    "apps": 16,
+    "appVersionLists": 16
+  },
+  "controlCanonicalSha256": {
+    "settings": "3926e958af229da1e20ca35a0532147b520e7aded2a4251c8d665200735ca5f3",
+    "deployments": "d035c91e06dd4cf3d95bf582099e9558b9fa59dc47bb4a4e5fbc6fd45d07b21d",
+    "schedules": "391d627b3aa458fc3da2e7010304314516240dcaa82473a4639853058a8ea876",
+    "subdomain": "30e312825bb06c36721a0f40088937653e78764ef3e27582bc25848ef0cd5d3c",
+    "domains": "17519fa58b6cfbd401f7415fcd3d0c7deb08433f648d54d8abeab27d5e157475",
+    "routes": "b92bf62b3267304dfecb00a6c074ce9b3a1372ecfd1f8e02bee22e59daeaddf2",
+    "registries": "cd620e3f5495c79d1b15047de25e2ddbd6944fac285d6ba6856608e8d5056d8d",
+    "namespaces": "1260b695fc9ec54c8abd8cdeffc6c201544e16e67a05cbf91633c1f7de67f417"
+  },
+  "appsCanonicalSha256": "1f1a8ee41f0d3cbc6d3f44480693639119678a03f3b8c1741ee7bbd0288d7984",
+  "appVersionsCanonicalSha256ById": {
+    "a03156a6-9bf5-43fb-8b7f-a1f5b8d1a650": "7b595660b679b24cebc54a4f7ae511d78ec723a0e9e33c7cacdb011cbce8b4ae",
+    "a031ae38-f967-483f-ae2e-3dbed3d35268": "0df8df4030dc63c29c334d87ed39e6d751415e230a892cd6d0a06811655a57f1",
+    "a0321718-f17e-4ccf-974a-fd447dde5920": "adec504a97205a5b1b9ec42cc733634d1b5f799d1a724e642dee325898b7aab1",
+    "a03313e4-fa9d-4de2-ac2c-d2cc69efd875": "f195ca2f59f445d3e0b8ac77cb59d74fa251e26b5085e4c2a7cc20f6e8c0c9c3",
+    "a0332851-f795-46df-9f8e-ee0ddc220095": "f6c4da8b12dedf6d5a9037b299e767fee61b0de8167aad9fa242da50b802676b",
+    "a035c941-2207-406e-97aa-a42ab6e9d249": "7feb85f1cdf520ace62c4f1b7c2e763509d01f35b4224f52cec6af9f33e67298",
+    "a03628c4-f032-461f-a65b-612ccac11a06": "302eaf4984784f387b7cca5d2b2d6185237d722889b735e167ce0898ae8a42f3",
+    "a03693b8-f5be-4247-9280-f0c38435d911": "adec504a97205a5b1b9ec42cc733634d1b5f799d1a724e642dee325898b7aab1",
+    "a036b418-dcce-4d2f-bd3d-6debf982ea6f": "adec504a97205a5b1b9ec42cc733634d1b5f799d1a724e642dee325898b7aab1",
+    "a03836ca-d275-4f7d-898f-bc16d0875089": "5d061bc5a0b0a841114ee6414ca224bafd1050b3258974e38a2349dbd7933324",
+    "a039ed42-159d-43db-be13-69315bce5189": "f195ca2f59f445d3e0b8ac77cb59d74fa251e26b5085e4c2a7cc20f6e8c0c9c3",
+    "a03a6e91-25cb-4a8d-89a8-be522368dde4": "c0b24bc013795ad6f6aa8575041b23c423a35d8d1a569b49d37f501fe537f6cf",
+    "a03c0a4c-7533-4190-ba2b-ff4fecaabb48": "04fa8bf7dab41ffdaa548f0ecdcf08948c9204ae876f4c2a2bc63b4ef99e8748",
+    "a03c0d4b-d529-4d81-a2b6-bfb901222a18": "f195ca2f59f445d3e0b8ac77cb59d74fa251e26b5085e4c2a7cc20f6e8c0c9c3",
+    "a03ddc7e-1c6e-4cea-93ec-ac03d7b0073a": "adec504a97205a5b1b9ec42cc733634d1b5f799d1a724e642dee325898b7aab1",
+    "a03ea65b-b039-4f56-8422-36c719b87b72": "adec504a97205a5b1b9ec42cc733634d1b5f799d1a724e642dee325898b7aab1"
+  },
+  "workerVersionCanonicalSha256": "875f3dec426ba461369af3bbdaf51405f793d94a6448939ab822c421d0be2b2a",
+  "workerVersionId": "4f887d24-7874-4fb3-b3ac-caf6d74ab461",
+  "actualServingModule": {
+    "mainModule": "index.js",
+    "bytes": 5771650,
+    "sha256": "9c8e4b6b763e9887d1624f00ed3a8efb2a8a24d984d96bc68fdb289cb4d362c3"
+  },
+  "rawStableMetadataSha256": "64d4d58d0822536915b6f8efab957059fcff0a4b315b4e7edc96e394b5277c19",
+  "controlPlaneSha256": "47cffd4f19c05708438ad9824d69d38801cf48001d7da8b64e32cd03d89a6c68",
+  "familyProvenance": [
+    {
+      "file": "/Users/jihegao/.codex/worktrees/jhg46-pi-maintenance-admission/riffology-cloud/.local/jhg46-next-stage-preparation-20261018/gateway-ops-execution-v1/baseline-complete.private.json",
+      "bytes": 143922,
+      "sha256": "4386ea1a12dc21191bb382cfb3728c2ad3390a4fff4ca5dcae7b466040729e1e",
+      "method": "original section-derived full family records retained; dated expectation only"
+    },
+    {
+      "file": "/Users/jihegao/.codex/worktrees/jhg46-pi-maintenance-admission/riffology-cloud/.local/jhg46-next-stage-preparation-20261018/gateway-ops-execution-v1/publication-attempts/f953bc1e-3ea1-4786-821c-26ecf68916a0/after.private.json",
+      "bytes": 83535,
+      "sha256": "9a74070de069a05efb24dd641ceec1750d01b3f27000a5a7d6cd1722be2ee631",
+      "method": "actual known original5a840 sender after snapshot; module identity only"
+    },
+    {
+      "file": "/Users/jihegao/apps/riffology-cloud/.local/jhg46-native-resource-host-rollout-acceptance-execution-20261018/browser-gate/listed-target-current-reconciliation.tool-result.private.json",
+      "bytes": 9570,
+      "sha256": "14607e9f04ebe1073363ed9d4a7e4e6558a9a59965fe9da61657ee7f829b0e63",
+      "method": "actual complete original current ec8/v13 target+two versions result"
+    },
+    {
+      "file": "/Users/jihegao/apps/riffology-cloud/.local/jhg46-native-sdk-acceptance-preparation-20261019/baseline-current-reads-v1/settings.private.json",
+      "bytes": 27882,
+      "sha256": "2989f5427bd7571d64a53f2bb8a7d8c098eefb536688db3464319a8d5323d04c",
+      "method": "root actual29GET segmented current settings result; deployment bracketed"
+    },
+    {
+      "file": "/Users/jihegao/apps/riffology-cloud/.local/jhg46-native-sdk-acceptance-preparation-20261019/baseline-current-reads-v1/version.private.json",
+      "bytes": 36469,
+      "sha256": "d28e9bed33904c90b300b9cff3cdc5ab6c756be318ff12a6bbfabb7f35deb765",
+      "method": "root actual29GET segmented current version4f887 result; deployment bracketed"
+    },
+    {
+      "file": "/Users/jihegao/apps/riffology-cloud/.local/jhg46-native-sdk-acceptance-preparation-20261019/baseline-current-reads-v1/deployments.private.json",
+      "bytes": 454,
+      "sha256": "ba809b05bfa01cf30149f18a9162a4ac7c79b284b75620f92a9ff0c74b548d89",
+      "method": "root actual29GET current sole100percent deployment result"
+    },
+    {
+      "file": "/Users/jihegao/apps/riffology-cloud/.local/jhg46-native-sdk-acceptance-preparation-20261019/baseline-current-reads-v1/safe-receipt.json",
+      "bytes": 5063,
+      "sha256": "b5444106522453ac32daa498125352568b3d1f62975dcd9dafc798413cfe8368",
+      "method": "actual GET trace/fragment reassembly/credential guard receipt"
+    }
+  ]
+}

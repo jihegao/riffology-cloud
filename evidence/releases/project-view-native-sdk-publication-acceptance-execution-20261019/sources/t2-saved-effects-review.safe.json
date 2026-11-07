@@ -1,0 +1,359 @@
+{
+  "schema": "jhg46-sdk-t2-saved-effects-independent-review/v1",
+  "reviewedAt": "2026-10-19T00:26:17.710039+00:00",
+  "mustFix": [],
+  "checks": {
+    "firstBody0": true,
+    "firstBody1": true,
+    "firstBody2": true,
+    "firstBody3": true,
+    "firstBody4": true,
+    "eventBody0": true,
+    "eventBody1": true,
+    "toolsBody0": true,
+    "toolsBody1": true,
+    "toolsBody2": true,
+    "toolsBody3": true,
+    "toolsBody4": true,
+    "toolsBody5": true,
+    "toolsBody6": true,
+    "toolsBody7": true,
+    "toolsBody8": true,
+    "toolsBody9": true,
+    "sameOriginalOrdinarySessionScopeAndSavedR2": true,
+    "sessionHeadAndCanonicalSnapshotMatch": true,
+    "originalSingleT2UiNewKeyAndSegment": true,
+    "newFrozenT2MessageAndActualWireExact": true,
+    "completeTwoPage305OriginalEvents": true,
+    "nineOriginalToolsAllNonerror": true,
+    "eightSupportedToolLedgersExactOriginalBindings": true,
+    "nativeLoadNotFakedAsPublicToolReceipt": true,
+    "originalBashExit0": true,
+    "actualReadArtifactReceipt17567Identity": true,
+    "exactManifestAndDynamicActualArtifactDataWrite": true,
+    "sixExpectedProjectWritePaths": true,
+    "canonicalR2RevisionAndFileDigest": true,
+    "exactSevenAddedNoModifiedDeleted": true,
+    "R1FilesMetadataPreservedIncludingOnlySkill6056": true,
+    "originalR1UniqueCanonicalProjectResource": true,
+    "fourActualProviderResponses200": true,
+    "initialT2ReleaseStillAssignmentGuard": true
+  },
+  "bindings": [
+    {
+      "file": "ordinary/turn-2-once/intent.private.json",
+      "bytes": 1249,
+      "sha256": "7b0247a5d7cc92d1d3f4ec51b65d6e49e923ca56500b8d49057d50eb43132890",
+      "privateBodyCopied": false
+    },
+    {
+      "file": "ordinary/turn-2-once/original-ui-wire-capture.private.json",
+      "bytes": 7778,
+      "sha256": "ae1eca33d91228e4f6ee6265bc4f37357b420db2a4163b3aacf42ecc4c2d3673",
+      "privateBodyCopied": false
+    },
+    {
+      "file": "ordinary/turn-2-once/first-read-and-events.original.private.json",
+      "bytes": 87088,
+      "sha256": "d64188c6534a9d9b7995f771dc9c0471c2eed1a5a92698c2885f5f8e1349e4d0",
+      "privateBodyCopied": false
+    },
+    {
+      "file": "ordinary/turn-2-once/event-tail.original.private.json",
+      "bytes": 34928,
+      "sha256": "bfd5966bd42c5d3e11abb200df6662819e4333013ae5e914d4740fa0e4a5aa89",
+      "privateBodyCopied": false
+    },
+    {
+      "file": "ordinary/turn-2-once/tools-canonical-original.private.json",
+      "bytes": 14785,
+      "sha256": "6d41df04f1916f7a66d2742482f3fabd8c29769ffbaea88792793beb3c1d26e0",
+      "privateBodyCopied": false
+    },
+    {
+      "file": "reviews/t2-preflight-after-normal-reauth-review.safe.json",
+      "bytes": 7593,
+      "sha256": "39780b91a0c6e00c2fc122b1a7b798d4bb628c53f1512ccdbec6221610a69a65",
+      "privateBodyCopied": false
+    }
+  ],
+  "originalResponseBodyBindings": [
+    {
+      "file": "first-read-0-response-original.raw.private.json",
+      "bytes": 188,
+      "sha256": "aa8d093481241466c0c657acd20cd892eef45ff9414689e7dc2a9681ea5d4c01"
+    },
+    {
+      "file": "first-read-1-response-original.raw.private.json",
+      "bytes": 13770,
+      "sha256": "87c3893b60fdd88b5cb0b9ee6427aa0dc336efc4bd6324372118fcd9e7db2273"
+    },
+    {
+      "file": "first-read-2-response-original.raw.private.json",
+      "bytes": 3558,
+      "sha256": "9efc5f6cd530aa7dbf551f9117198af46d47ae93ceb8c445f8927dc33543375f"
+    },
+    {
+      "file": "first-read-3-response-original.raw.private.json",
+      "bytes": 27,
+      "sha256": "d6099cf2c1e401aea789a64b1fcebe79bc235e978d652c88241bf73b40e60caa"
+    },
+    {
+      "file": "first-read-4-response-original.raw.private.json",
+      "bytes": 188,
+      "sha256": "aa8d093481241466c0c657acd20cd892eef45ff9414689e7dc2a9681ea5d4c01"
+    },
+    {
+      "file": "first-events-response-original.raw.private.json",
+      "bytes": 60736,
+      "sha256": "c9c043e70479ab2bc65888bc45b73d89a650cef81812772af3afbdd848ea5b33"
+    },
+    {
+      "file": "event-tail-0-response-original.raw.private.json",
+      "bytes": 31357,
+      "sha256": "e199146d1ccbf5b47a7591f21053442e04b6b5ee202cabb026d216a63830327d"
+    },
+    {
+      "file": "tools-canonical-0-response-original.raw.private.json",
+      "bytes": 720,
+      "sha256": "1eed1f446b2150dd381b28af6f0facf8ab042707549b97bb78701238e1e86f6e"
+    },
+    {
+      "file": "tools-canonical-1-response-original.raw.private.json",
+      "bytes": 921,
+      "sha256": "df47863c04b3c83c501758462c6cabbdef90facf717603f018dcab933832ab69"
+    },
+    {
+      "file": "tools-canonical-2-response-original.raw.private.json",
+      "bytes": 750,
+      "sha256": "033e65156a9f4874332bb0a3f8f2964642acc9e128d42d69be3f5bbd7226aa4f"
+    },
+    {
+      "file": "tools-canonical-3-response-original.raw.private.json",
+      "bytes": 752,
+      "sha256": "b75e231c46d5e187b52885c7e2c9da1e917a5de404876beffffda8fad5e4c2e0"
+    },
+    {
+      "file": "tools-canonical-4-response-original.raw.private.json",
+      "bytes": 749,
+      "sha256": "3d250b12f344805a9164a17e6e5ecdf9f8d4a898a17c4f90e591e627cfd92aa8"
+    },
+    {
+      "file": "tools-canonical-5-response-original.raw.private.json",
+      "bytes": 751,
+      "sha256": "c749325eadb5df41f80185094b475d67d0494b868667d041a1d2f4d18fd7654e"
+    },
+    {
+      "file": "tools-canonical-6-response-original.raw.private.json",
+      "bytes": 749,
+      "sha256": "ca183338a508265d7c7c899970efa691e99e199c7301c82aab84b7dd507f4765"
+    },
+    {
+      "file": "tools-canonical-7-response-original.raw.private.json",
+      "bytes": 749,
+      "sha256": "a5c913bc82928a87d97566a8ce5e5a3f8a5e44cbd2817694df8400e1e928373a"
+    },
+    {
+      "file": "tools-canonical-8-response-original.raw.private.json",
+      "bytes": 851,
+      "sha256": "7276b3cab669a34579b10678511232bcb3a6c5acebcd4e8b7fd70a1656670766"
+    },
+    {
+      "file": "tools-canonical-9-response-original.raw.private.json",
+      "bytes": 1306,
+      "sha256": "df5c7375f6c1bb9bd62ab3a33c3059901ca61434e175c25f541bf5176f07e2e1"
+    }
+  ],
+  "result": {
+    "turnId": "f9a40c3b-5f3f-4fda-9e31-181598368cb5",
+    "sessionId": "64d60f40-ab45-48e0-9b8f-40ebcb2374e0",
+    "runtimeGeneration": 1,
+    "revisionId": "0f8b8226017fa1100a73762a1f85fb50d6d7ac49eba40fff9eab9b3551eaa6ac",
+    "checkpointFilesSha256": "3a9e687b445876bde56424e204410a9f30e4f79ec518d3ee0e743547d67bdd2e",
+    "checkpointSessionSha256": "1feac9d9b693d7ea81dd83c50eb7119de625d890dc43288c1fdbbf9f6b485564",
+    "completedSaved": true,
+    "sessionHeadEqualsCheckpoint": true,
+    "currentSessions": 1,
+    "currentTurns": 2,
+    "eventSequences": "50..354",
+    "events": 305,
+    "eventPages": [
+      200,
+      105
+    ],
+    "hasMore": false,
+    "tools": {
+      "project_load_resource": 1,
+      "project_bash": 1,
+      "project_read": 1,
+      "project_write": 6
+    },
+    "supportedPersistedToolReceipts": 8,
+    "nativeLoadResourceEvents": 1,
+    "actualProviderResponses200": 4,
+    "bashExitCode": 0,
+    "writes": [
+      {
+        "kind": "write",
+        "path": "app/views.json",
+        "bytes": 261,
+        "sha256": "1f1c572845d420efb5dd0d5e275eb2584b53f543904c5703c51de5d32c3f6882"
+      },
+      {
+        "kind": "write",
+        "path": "docs/series.json",
+        "bytes": 119,
+        "sha256": "8d4782409be1eb0233f8b0ed6a430b0267d93ac06e12adae2476ec6adf598c89"
+      },
+      {
+        "kind": "write",
+        "path": "app/home.html",
+        "bytes": 400,
+        "sha256": "3c95c291062f7a1cbfb3b4932a06fd89875f3d78a784d678c5358400fb04b452"
+      },
+      {
+        "kind": "write",
+        "path": "app/report.html",
+        "bytes": 394,
+        "sha256": "efc5141a2d4175dc77119ea2e7b8a9347a526e345cb1d40065f557f3eb87ea13"
+      },
+      {
+        "kind": "write",
+        "path": "app/style.css",
+        "bytes": 513,
+        "sha256": "cf48af4346dd100fbb36c93f05827d9fe643decc1633ae7437aa18e54daed78f"
+      },
+      {
+        "kind": "write",
+        "path": "app/main.mjs",
+        "bytes": 4951,
+        "sha256": "27e1559e3f913100d2bf8b5ae65d8575f49b872a1f42678af4e3584338b70a7f"
+      }
+    ],
+    "artifactReceipt": {
+      "schemaVersion": 1,
+      "artifactId": "artifact-9b81b5b01b1e416f75b718dc8890d00213d01cd9203820d744c5604bcee1",
+      "operation": "read",
+      "mediaType": "application/json",
+      "bytes": 17567,
+      "sha256": "1f1934a77952256ed99aa9cedcd923bea033cfb6239d81aa141d677faa4ab35a",
+      "createdAt": 1792369087439
+    },
+    "manifestExpectedBytes": 261,
+    "manifestExpectedSha256": "1f1c572845d420efb5dd0d5e275eb2584b53f543904c5703c51de5d32c3f6882",
+    "dataExpectedBytes": 119,
+    "dataExpectedSha256": "8d4782409be1eb0233f8b0ed6a430b0267d93ac06e12adae2476ec6adf598c89",
+    "diff": {
+      "added": 7,
+      "modified": 0,
+      "deleted": 0
+    },
+    "R1SkillMetadataPreserved6056": true,
+    "syntheticSourceFileMetadataBytes": 17408,
+    "firstRelease": "pending trusted-pi-release-assignment-guard",
+    "usage": "unknown"
+  },
+  "dispatch": {
+    "uiKey": "1a229108-4001-4ce9-8819-b8d8a2eb21eb",
+    "sentAt": "2026-10-19T00:17:19.386Z",
+    "ackAt": "2026-10-19T00:17:25.002Z",
+    "status": 202,
+    "wireBytes": 2353,
+    "wireSha256": "d73093de3b1b9f4a80fa8a1c56a84e10c47bf7413afedfb7c1a4699ba38e0466",
+    "newSegmentWrites": 1,
+    "priorSegmentWrites": 3,
+    "cumulativeObservedUiWrites": 4,
+    "originalJsonSemanticCloneNotRawHttpAckBytes": true
+  },
+  "R1SkillLoadAssessment": {
+    "kind": "source-validated actual load inference",
+    "facts": [
+      "Original sameSession1 prior checkpoint R1 and only saved canonical project skill6056 are preserved; the new original UI message invokes /skill:native-pages-check.",
+      "Frozen ControlledResourceLoader expands the matching named project skill from this Turn frozen resource catalog before session.prompt; successful project_load_resource loads only a matching frozen path.",
+      "Actual native project_load_resource completion isError=false with only one valid canonical R1 project resource. It is not a remote ToolBridge receipt NAMES operation; no unsupported receipt GET was attempted."
+    ],
+    "notClaimed": [
+      "Independent returned loader text bytes/hash or raw native tool input path; actual event DTO omits those.",
+      "That an independently repeated skill read or actual helper/button/browser flow has passed."
+    ],
+    "sourceBindings": [
+      {
+        "file": ".local/jhg46-native-sdk-acceptance-preparation-20261019/build-candidate-v2/source/services/runtime/controlled-pi.mjs",
+        "bytes": 23072,
+        "sha256": "cf4143bff6cf049d2ab8247ef86ceb5f5391da67a86acb56ea901a119b2d6871",
+        "lines": [
+          [
+            76,
+            95
+          ],
+          [
+            271,
+            290
+          ],
+          [
+            310,
+            321
+          ],
+          [
+            370,
+            374
+          ]
+        ]
+      },
+      {
+        "file": ".local/jhg46-native-sdk-acceptance-preparation-20261019/build-candidate-v2/source/services/tools/receipt.ts",
+        "bytes": 4353,
+        "sha256": "f498656defd1f73287bfba7316aa7aedae68d56d79ff8e5e1f59cc1681133b2f",
+        "lines": [
+          [
+            5,
+            7
+          ],
+          [
+            27,
+            37
+          ]
+        ]
+      },
+      {
+        "file": ".local/jhg46-native-sdk-acceptance-preparation-20261019/build-candidate-v2/source/services/workspace/tool-receipt.ts",
+        "bytes": 1604,
+        "sha256": "ad3fdef071faa03103a081df187b0b59da958f9991ca85da9aa8498aee1d6c24",
+        "lines": [
+          [
+            5,
+            11
+          ]
+        ]
+      }
+    ]
+  },
+  "artifactBoundary": {
+    "newArtifactIdFromThisOriginalRead": true,
+    "jsonEnvelopeBytes": 17567,
+    "sourceTextFileBytes": 17408,
+    "jsonBodyShaIsNotSourceFileSha": true,
+    "actualArtifactBodyOrChunksFetchedByThisStage": false,
+    "sameBodyShaAsPriorSyntheticContentNotReuseOfOldArtifactIdentity": true,
+    "futureActualReadRequiresOriginalNewReceiptIdOffsetChunksAndFullBodyHash": true
+  },
+  "notVerified": [
+    "T2 original post-assignment/quiet product+capacity and full physical release; initial state remains held.",
+    "Actual delivered package/module/CSS bytes and native DOM/20/50/Pause/Resume/subscription/V1; effect hashes alone do not execute JavaScript.",
+    "Artifact list/chunk/fullbody reads, JSON envelope/content verification and button behavior.",
+    "Original T2 bash exact script/arguments beyond successful effect, source maximum and saved synthetic-file metadata.",
+    "Finite browser gate/frame static GET, Session2/T3/V2, usage/cost settlement or wholeGoal completion."
+  ],
+  "nextGateOrT3AllowedByThisReview": false,
+  "limits": [
+    "Manifest/data hashes above are independently computed from frozen exact manifest and this actual new artifactId with compact JSON+LF; four other generated files are validated only as successful recorded writes plus canonical sizes/diff, not actual browser content or functionality.",
+    "All305 events belong to same original Turn/runtimeGeneration and original two-page cursor coverage. T1 events1..49 are prior history, not counted as new T2 execution.",
+    "Snapshot timing augmentation is retained separately from original-key receipt; saved persistent fields/checkpoint match. No private internal raw stop/lease requirement is added.",
+    "No provider request IDs/toolCall IDs, raw prompts/identity/config/HTTP bodies are copied into this safe review."
+  ],
+  "actions": {
+    "localFilesOnly": true,
+    "networkBrowserAuthSqlModelGitNewTestsOrCloudWrite": false,
+    "originalsOrFrozenSourceEdited": false
+  }
+}

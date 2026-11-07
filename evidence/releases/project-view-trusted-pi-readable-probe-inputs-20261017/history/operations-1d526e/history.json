@@ -1,0 +1,9 @@
+{
+  "copiedAt": "2026-10-17T14:02:08.852145+00:00",
+  "operationsManifestSha256": "1d526ed79464cbc172cbb0f1bfa0af06d449e055fd2b005cd3a105ac47a7f5c8",
+  "priorFakePassed": 12,
+  "priorFakeTests": 12,
+  "realTransportOrMockExecuted": false,
+  "reason": "independent review requires only transfer ACK gate, terminal persistence on local stop/poll errors, safe fd bootstrap grant/manifest reads",
+  "schema": "trusted-pi-probe-readable-review-revision-history/v1"
+}

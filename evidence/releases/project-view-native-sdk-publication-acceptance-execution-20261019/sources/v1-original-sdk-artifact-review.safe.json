@@ -1,0 +1,289 @@
+{
+  "schema": "jhg46-fb07-v1-original-sdk-package-artifact-independent-review/v1",
+  "reviewedAt": "2026-10-19T00:41:12.473272Z",
+  "batchRequestId": "fb07e239-2cb4-4379-9581-5711d86a0f30",
+  "verdict": "PASS within the saved observer/package/artifact-byte scope; no wholeV1 or cold-recovery acceptance inferred.",
+  "mustFix": [],
+  "observer": {
+    "requests": 103,
+    "uniqueRehashedBodies": 6,
+    "pending": 0,
+    "overflow": false,
+    "allRecordedBodiesBytesShaVerified": true,
+    "allRecordedRequestsGet": true,
+    "installedAt": 1792369769582,
+    "originalPutSentAt": 1792369940931,
+    "originalPutAckAt": 1792369941659,
+    "installedBeforeOriginalPut": true,
+    "currentUiPostsField": 1,
+    "noNewWriteCountInferredFromThatField": true
+  },
+  "initialAndOpen": {
+    "closedOrTransition503Count": 26,
+    "first503": {
+      "requestIndexZeroBased": 0,
+      "method": "GET",
+      "sentAt": 1792369775129,
+      "receivedAt": 1792369776707,
+      "status": 503,
+      "bodyBytes": 36,
+      "bodySha256": "3640034ce748e394fd76c436d1adc7336392d2a7509b46dbd13a35abf4ec6f87"
+    },
+    "last503": {
+      "requestIndexZeroBased": 25,
+      "method": "GET",
+      "sentAt": 1792369940964,
+      "receivedAt": 1792369942725,
+      "status": 503,
+      "bodyBytes": 36,
+      "bodySha256": "3640034ce748e394fd76c436d1adc7336392d2a7509b46dbd13a35abf4ec6f87"
+    },
+    "last503OverlapsOriginalPut": true,
+    "firstPackage200": {
+      "requestIndexZeroBased": 26,
+      "method": "GET",
+      "sentAt": 1792369947726,
+      "receivedAt": 1792369952461,
+      "status": 200,
+      "bodyBytes": 10709,
+      "bodySha256": "2629cd68654bbf8260c1d0ff1fe6069bcda9380ec74005402c3b31f4e42225e9"
+    },
+    "firstCurrentAuthorization200": {
+      "requestIndexZeroBased": 27,
+      "method": "GET",
+      "sentAt": 1792369953165,
+      "receivedAt": 1792369956491,
+      "status": 200,
+      "bodyBytes": 16,
+      "bodySha256": "f545a98e0da5be43269811ad121f0238b983af383459b02d345d41f6624e2000"
+    },
+    "firstArtifactList200": {
+      "requestIndexZeroBased": 31,
+      "method": "GET",
+      "sentAt": 1792369963238,
+      "receivedAt": 1792369967946,
+      "status": 200,
+      "bodyBytes": 377,
+      "bodySha256": "abd737c838b5e75d4537753cbbef1113efbecfe6688d209dd97e00348947f7f3"
+    },
+    "actualChunkResponses": [
+      {
+        "requestIndexZeroBased": 89,
+        "method": "GET",
+        "sentAt": 1792370226150,
+        "receivedAt": 1792370230989,
+        "status": 200,
+        "bodyBytes": 22172,
+        "bodySha256": "691a6a7aa48081cfde0bd70d7e03a96504e3c2bb1ae9438def0d2347948b5aab"
+      },
+      {
+        "requestIndexZeroBased": 94,
+        "method": "GET",
+        "sentAt": 1792370237944,
+        "receivedAt": 1792370243044,
+        "status": 200,
+        "bodyBytes": 1907,
+        "bodySha256": "115c57cefdd8c62e34e21076cdfe9ad06f746026c4e3422752b3caa4d97231c5"
+      }
+    ],
+    "laterPoll200NotSubstitutedForInitial503": true
+  },
+  "package": {
+    "revisionId": "0f8b8226017fa1100a73762a1f85fb50d6d7ac49eba40fff9eab9b3551eaa6ac",
+    "filesSha256": "3a9e687b445876bde56424e204410a9f30e4f79ec518d3ee0e743547d67bdd2e",
+    "packageIdentity": "5961123a28bc64d119c5beac1abd424ad1f801f59f0042810c841eaf14010a41",
+    "sameR2CanonicalIdentity": true,
+    "manifestViews": [
+      "home",
+      "report"
+    ],
+    "assets": [
+      {
+        "path": "app/home.html",
+        "bytes": 400,
+        "sha256": "3c95c291062f7a1cbfb3b4932a06fd89875f3d78a784d678c5358400fb04b452",
+        "assetSourceAndR2EffectAllMatch": true
+      },
+      {
+        "path": "app/report.html",
+        "bytes": 394,
+        "sha256": "efc5141a2d4175dc77119ea2e7b8a9347a526e345cb1d40065f557f3eb87ea13",
+        "assetSourceAndR2EffectAllMatch": true
+      },
+      {
+        "path": "app/main.mjs",
+        "bytes": 4951,
+        "sha256": "27e1559e3f913100d2bf8b5ae65d8575f49b872a1f42678af4e3584338b70a7f",
+        "assetSourceAndR2EffectAllMatch": true
+      },
+      {
+        "path": "app/style.css",
+        "bytes": 513,
+        "sha256": "cf48af4346dd100fbb36c93f05827d9fe643decc1633ae7437aa18e54daed78f",
+        "assetSourceAndR2EffectAllMatch": true
+      },
+      {
+        "path": "docs/series.json",
+        "bytes": 119,
+        "sha256": "8d4782409be1eb0233f8b0ed6a430b0267d93ac06e12adae2476ec6adf598c89",
+        "assetSourceAndR2EffectAllMatch": true
+      }
+    ],
+    "delivery": {
+      "execution": "browser-local",
+      "transport": "native-dom/v1",
+      "frameSha256": "63ebcd050b0ccf5019265070890bee69d99902120f2252c376678aff299d374b"
+    }
+  },
+  "helper": {
+    "bytes": 3228,
+    "sha256": "5a1811e1203d1bea93247ff8d238f5647b884b05aea7f5574ba5cf330fa27946",
+    "entireReferenceFileVerbatimOnceInDeliveredMainAndFrozenSkill": true,
+    "frozenSkillBytes": 6056,
+    "frozenSkillSha256": "8ef3375d58464b2a74cc57031771f5f7bad21b15f09991fb3838620e9f3ae6d7",
+    "frozenSkillMatchesActualR1WriteReceipt": true,
+    "noSeparateDownloadedR1BodyOrHelperExecutionClaim": true
+  },
+  "sdkEvidenceBoundary": {
+    "actualDocsAssetBytes": 119,
+    "actualDocsAssetSha256": "8d4782409be1eb0233f8b0ed6a430b0267d93ac06e12adae2476ec6adf598c89",
+    "actualV1SeriesAndNewArtifactIdMatch": true,
+    "deliveredMainContainsReadFileDocsSeries": true,
+    "directMessagePortReadFileReplyCapturedByFetchObserver": false,
+    "currentTrueIsAuthorizationReplyNotReadFileBytes": true,
+    "listAndChunkQueryIdentityMatchesPackage": true,
+    "artifactListVersion": "eb036850ca9b9956c04263b2184746575d1c21e22ad09ab5c6e09490d09fa72e",
+    "artifactListVersionIsNotPackageIdentity": true,
+    "listContainsSameOriginalReceipt": true,
+    "listNextCursor": null,
+    "interpretation": "Actual package data bytes and delivered initialization source, original API current/list/chunk trace and root observed UI form the product evidence chain. This fetch-only observer does not independently expose a raw MessagePort readFile reply or attribute every current/list poll to one SDK call."
+  },
+  "artifact": {
+    "receipt": {
+      "schemaVersion": 1,
+      "artifactId": "artifact-9b81b5b01b1e416f75b718dc8890d00213d01cd9203820d744c5604bcee1",
+      "operation": "read",
+      "mediaType": "application/json",
+      "bytes": 17567,
+      "sha256": "1f1934a77952256ed99aa9cedcd923bea033cfb6239d81aa141d677faa4ab35a",
+      "createdAt": 1792369087439
+    },
+    "chunks": [
+      {
+        "offset": 0,
+        "bytes": 16384,
+        "nextOffset": 16384,
+        "responseSha256": "691a6a7aa48081cfde0bd70d7e03a96504e3c2bb1ae9438def0d2347948b5aab"
+      },
+      {
+        "offset": 16384,
+        "bytes": 1183,
+        "nextOffset": null,
+        "responseSha256": "115c57cefdd8c62e34e21076cdfe9ad06f746026c4e3422752b3caa4d97231c5"
+      }
+    ],
+    "joinedBytes": 17567,
+    "joinedSha256": "1f1934a77952256ed99aa9cedcd923bea033cfb6239d81aa141d677faa4ab35a",
+    "hashVerifiedBeforeStrictUtf8JsonParsing": true,
+    "envelopeKind": "read",
+    "envelopePath": "docs/native-artifact-probe.txt",
+    "sourceContentBytes": 17408,
+    "sourceContentSha256": "e53ccf19262ebd3aac472bbb50f409ac020ee189dd60de6910b3a038e73496c9",
+    "sourceShaMatchesEnvelopeField": true,
+    "contentPrefixVerified": true,
+    "expectedPrefix": "native-artifact-probe-v1\\n",
+    "jsonBodyHashDistinctFromSourceContent": true
+  },
+  "ui": {
+    "rootReportsActualContentPrefixVerifiedTrueChunks2Bytes17567": true,
+    "offlineReassemblyAgrees": true,
+    "independentUiReadByReviewer": false,
+    "savedManualStepsIsNull": true
+  },
+  "evidence": [
+    {
+      "file": ".local/jhg46-native-sdk-publication-acceptance-execution-20261019/ordinary/browser-v1/initial-and-artifact-observer.original.private.json",
+      "bytes": 75503,
+      "sha256": "e605e04ecbdb10b21b582a5c706d03e1237f1acdfde50c242fc67d0b65f76dd0",
+      "purpose": "Original103-request observer",
+      "bodyCopied": false
+    },
+    {
+      "file": ".local/jhg46-native-sdk-publication-acceptance-execution-20261019/ordinary/browser-v1/first-package-original.raw.private.json",
+      "bytes": 10709,
+      "sha256": "2629cd68654bbf8260c1d0ff1fe6069bcda9380ec74005402c3b31f4e42225e9",
+      "purpose": "First open package body",
+      "bodyCopied": false
+    },
+    {
+      "file": ".local/jhg46-native-sdk-publication-acceptance-execution-20261019/ordinary/browser-v1/artifact-original-15.raw.private.json",
+      "bytes": 22172,
+      "sha256": "691a6a7aa48081cfde0bd70d7e03a96504e3c2bb1ae9438def0d2347948b5aab",
+      "purpose": "Original actual artifact response body",
+      "bodyCopied": false
+    },
+    {
+      "file": ".local/jhg46-native-sdk-publication-acceptance-execution-20261019/ordinary/browser-v1/artifact-original-16.raw.private.json",
+      "bytes": 1907,
+      "sha256": "115c57cefdd8c62e34e21076cdfe9ad06f746026c4e3422752b3caa4d97231c5",
+      "purpose": "Original actual artifact response body",
+      "bodyCopied": false
+    },
+    {
+      "file": ".local/jhg46-native-sdk-publication-acceptance-execution-20261019/reviews/t2-saved-effects-review.safe.json",
+      "bytes": 13601,
+      "sha256": "61b11a359b4b5a28bb01e9dda518ed5996bea3c288451b57ec4d430b197a936a",
+      "purpose": "R2 effect/receipt identity authority",
+      "bodyCopied": false
+    },
+    {
+      "file": ".local/jhg46-native-sdk-publication-acceptance-execution-20261019/ordinary/turn-1-once/tools-canonical-original.private.json",
+      "bytes": 5220,
+      "sha256": "d874be6bb217d08c54554e23c57b506d153a89ce51cf5826dcbb05730089e8dd",
+      "purpose": "Original R1 skill write hash",
+      "bodyCopied": false
+    },
+    {
+      "file": ".local/jhg46-native-sdk-acceptance-preparation-20261019/content-candidate-v1/read-checked-artifact.mjs",
+      "bytes": 3228,
+      "sha256": "5a1811e1203d1bea93247ff8d238f5647b884b05aea7f5574ba5cf330fa27946",
+      "purpose": "Frozen reference helper",
+      "bodyCopied": false
+    },
+    {
+      "file": ".local/jhg46-native-sdk-acceptance-preparation-20261019/content-candidate-v1/SKILL.md",
+      "bytes": 6056,
+      "sha256": "8ef3375d58464b2a74cc57031771f5f7bad21b15f09991fb3838620e9f3ae6d7",
+      "purpose": "Frozen R1 expected skill",
+      "bodyCopied": false
+    },
+    {
+      "file": ".local/jhg46-native-sdk-publication-acceptance-execution-20261019/gate/open-once/original-ack.tool-result.private.json",
+      "bytes": 706,
+      "sha256": "5b5d062d65a8dfa6c3397fb87532ae6681af3213d841a8e490407dc216429a93",
+      "purpose": "Original uniquePUT201 timing",
+      "bodyCopied": false
+    }
+  ],
+  "limits": [
+    "All103 is the saved observer scope/time, not every browser/frame/network request or global activity.",
+    "Initial and transition503 remain preserved, including the last request overlapping PUT; postACK200 is separately identified.",
+    "The earliest list reply is an actual observed API response; helper click and MessagePort call attribution are not independently logged here.",
+    "Artifact list.version is its own cursor/journal version, not packageIdentity. Actual query identity and receipt bind the list/chunks to this package. A draft local checker briefly assumed equality; no product/evidence change or live action resulted.",
+    "Root reported actual UI matches computed artifact values; this reviewer did not inspect UI. Report, parameters, Pause/Resume, subscriptions, refresh, coldV2, cleanup and wholeGoal remain separately verified stages.",
+    "No raw private stop/lease, zero-fee, no-egress or full network capture claim."
+  ],
+  "actions": {
+    "localSavedEvidenceReadAndNewSafeReviewWriteOnly": true,
+    "network": 0,
+    "api": 0,
+    "ui": 0,
+    "modelCalls": 0,
+    "gateCalls": 0,
+    "sourceChanges": 0,
+    "tests": 0
+  },
+  "privacy": {
+    "actualActorTenantWorkspaceUrlEmailHostCredentialPromptOrRawBodyCopied": false
+  }
+}

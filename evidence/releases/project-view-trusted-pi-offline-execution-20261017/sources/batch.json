@@ -1,0 +1,22 @@
+{
+  "schema": "jhg46-pi-authorized-offline-batch/v1",
+  "requestId": "57a70587-2b21-4a56-aed1-09c8a32d868a",
+  "recordedAt": "2026-10-17T11:45:05.974170+00:00",
+  "authority": "direct-human-instruction-recorded-by-root",
+  "humanReply": "授权这一批离线构建与验证",
+  "packetCommit": "f74de9912c0970c1880cc6e2e35bee13cb670659",
+  "archiveSha256": "c92e672ca39d10d61467801f457147e3ee9cf2cfbbbe8b96d00a618a6a208bae",
+  "archiveBytes": 30515,
+  "operationsManifestSha256": "05100f4a7c8aa2448b289d1525498dbd10542612873630e6b1cfd980dbb87512",
+  "recipient": "AMD128",
+  "remoteDirectory": "/tmp/riffoid-jhg46-image-20261017.AU613w/pi-resource-compat-v1",
+  "scope": "exact packet transfer; one task-owned loopback reverse route; local same-account OAuth one 15min pull-only credential POST and protected SSH stdin; one fixed-base pull; one network-none build and one original-CID network-none mock probe with cleanup",
+  "excluded": [
+    "registry push",
+    "Cloudflare app/gate update",
+    "real provider/model/Turn/Run",
+    "new subscription",
+    "OAuth export",
+    "automatic retry or new identity after unknown"
+  ]
+}

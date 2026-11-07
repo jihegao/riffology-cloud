@@ -1,0 +1,74 @@
+{
+  "files": {
+    "README.md": {
+      "bytes": 3266,
+      "sha256": "46a483abaea2df9a6f6e270a7324dcee7b2e647a477a54c6bb827493579b0c37"
+    },
+    "result.json": {
+      "bytes": 13718,
+      "sha256": "a76a0b42e1d6d5cdf8feaf3a2dd861de63de334c94650fee9a48b244975fc74b"
+    },
+    "review/actual-result-review-b093.json": {
+      "bytes": 6286,
+      "sha256": "f30bfb7bb05ec8d165ca4c2cbb1507a7cfcc1664f63b108c29ba3f3cb6122870"
+    },
+    "sources/authorization-receipt.json": {
+      "bytes": 970,
+      "sha256": "1f9f0efcfa526193a32623d5eb48ddf56b33c1d20be29c0f15234184f2b6b959"
+    },
+    "sources/independent-readback-once/intent.json": {
+      "bytes": 302,
+      "sha256": "ac60d5c8fec0d6c57e05d64f93643776caeb16e4d3c96a678ec4e6fe9f187f90"
+    },
+    "sources/independent-readback-once/original-ssh.json": {
+      "bytes": 96,
+      "sha256": "e72c89ea50b52a60d4200eb9780f3c80eea47b218cde1ea6c595f3448ed36dad"
+    },
+    "sources/independent-readback-once/result.json": {
+      "bytes": 30964,
+      "sha256": "e77565f415c62963bd6b86d4926ea2ed135764152a7ee4979d095bf247c432a7"
+    },
+    "sources/independent-readback-once/ssh-terminal.json": {
+      "bytes": 655,
+      "sha256": "bb0eafebc0ed9303e48f678711fc3d459808f15d7299743133702e0a4204109c"
+    },
+    "sources/operations/mock-launch-once/intent.json": {
+      "bytes": 693,
+      "sha256": "ff12af44edf445f4c51e5104558c30807d6de0866bfa76c2406f08996088582b"
+    },
+    "sources/operations/mock-launch-once/original-ssh.json": {
+      "bytes": 96,
+      "sha256": "5a6a2014169b9ff22d9cf742614a356165e6d01434c61bedccdb2dc85094b8db"
+    },
+    "sources/operations/mock-launch-once/result.json": {
+      "bytes": 1418,
+      "sha256": "7d28f747ba0ba86573516f3ed13f882d4a15d5ca5b7d1721d795fbb9654c0760"
+    },
+    "sources/operations/mock-launch-once/ssh-terminal.json": {
+      "bytes": 655,
+      "sha256": "586307d9162702a754210efad14b1f88f7429b216aaaa8caa9d3f77e6f9650fb"
+    },
+    "sources/operations/transfer-once/intent.json": {
+      "bytes": 621,
+      "sha256": "4170db97c56e7f67c49f1189a5e17cc998ad51778a4d839aa967d8506ba39806"
+    },
+    "sources/operations/transfer-once/original-ssh.json": {
+      "bytes": 96,
+      "sha256": "1fcd1d903e8afbb37eaf30b53b37871f67eefc448f1e14977ee91024afaa607c"
+    },
+    "sources/operations/transfer-once/result.json": {
+      "bytes": 823,
+      "sha256": "abf0d02db33aa764f98b76203a8dc567fab2e08345fb4fd6efbf4eb777fbfd09"
+    },
+    "sources/operations/transfer-once/ssh-terminal.json": {
+      "bytes": 654,
+      "sha256": "ef3738ecd3b340e60e08b601c589a82ce838e171e9faefd7bd1d1e9488f3d895"
+    },
+    "sources/run-independent-readback-once.py": {
+      "bytes": 2517,
+      "sha256": "1623358ad7e6e0c8e778f5146da21c2a6aea278f9c670c5f3272bcc389bb3feb"
+    }
+  },
+  "requestId": "b0933502-20df-480a-9a91-d833f5c4358c",
+  "schema": "trusted-pi-probe-readable-actual-evidence-inventory/v1"
+}

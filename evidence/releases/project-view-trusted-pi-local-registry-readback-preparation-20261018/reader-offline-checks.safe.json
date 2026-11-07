@@ -1,0 +1,38 @@
+{
+  "schema": "jhg46-independent-local-registry-reader-offline-checks/v1",
+  "recordedAt": "2026-10-18T13:42:39.550456+00:00",
+  "passed": 15,
+  "failed": 0,
+  "files": [
+    {
+      "file": "independent-local-readback-readonly.py",
+      "bytes": 44755,
+      "sha256": "d73b1624476eb3c7fa929bff3fd6d3d99fc4a062fa9a7229c8d09aac15be6be5"
+    },
+    {
+      "file": "test_independent_local_readback.py",
+      "bytes": 11841,
+      "sha256": "f2e90d289f7fd3fbeeea2ff09343f64890961f696d5f2f78409bbce62d5beb72"
+    }
+  ],
+  "log": {
+    "bytes": 1718,
+    "sha256": "e83d152fd4d82920a4d9bd1f465b30b795a5c13e884cb216ce83149d114f532f"
+  },
+  "scope": "Synthetic local safe record files and mocked process observations only. No real ps/SSH/Registry/OAuth/HTTP/Docker/provider call.",
+  "checks": [
+    "All52 per-slot intent/terminal/proof and aggregate complete-file SHA bindings.",
+    "Source SSH actual raw stdout SHA+full parsed equality to normalized proof, exact original archive verification and14 prior stopped-source records binding.",
+    "Local final-ack exact terminal/readback/source object hashes; no reliance on author uniqueFlag.",
+    "Original supervisor/OAuthNode/sourceSSH pid absence queried without argv/env; PID reuse fails closed.",
+    "Nonzero source SSH and nonzero OAuth Node may independently prove cleanup while publication remains false.",
+    "Before-source missing lifecycle records remain unknown/cleanupfalse, not noactivity.",
+    "Partial/badproof/hash/private mode/symlink/unsafe error diagnostics rejected or held as appropriate."
+  ],
+  "publicationClaim": "Reader always publicationVerified=false and executionTransportOriginalAckStillRequired=true. Root must combine actual unique transport ACK with full52/recordACK/cleanup.",
+  "limits": [
+    "No credential-bearing token streams/intents, environment or process argv read.",
+    "No new SSH, route, Registry or archive content read by independent reader.",
+    "Actual new local execution/52GETs/ACK/source proof remain unexecuted and require specific new approval."
+  ]
+}

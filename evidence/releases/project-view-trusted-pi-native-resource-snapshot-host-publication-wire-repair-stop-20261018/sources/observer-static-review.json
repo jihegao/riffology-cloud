@@ -1,0 +1,30 @@
+{
+  "schema": "jhg46-c263-stopped-observer-static-review-v1",
+  "reviewedAt": "2026-10-18T12:51:53.562619+00:00",
+  "verdict": "no-must-fix-for-readonly-stopped-observation",
+  "source": {
+    "file": "read-stopped-publication-once.py",
+    "bytes": 25412,
+    "sha256": "91445d56c0c6940b04adbcf0ea1c0cf8d7bc3214b2ad01948403caa6a8eb22a4"
+  },
+  "originalLocalTerminalSha256Verified": "1ee80fd0b6ed6eb8700463e5d91eff06ba93914d00cfe1ecde935ab8528367b2",
+  "findings": [
+    "Fixed original c263/root/grant/manifest/local SSH255 stopped terminal only.",
+    "Exactly six original CLI identities; closed safe JSON field validation before returning bytes.",
+    "Per-file64KiB/total256KiB bounds; push streams hash and exact public digest-line projection only.",
+    "No raw config/Env/credential/CLI streams returned; archive stat only, no archive content read.",
+    "Remote proc/route/auth existence read only; no Docker/Registry/API/write/retry/publication operation.",
+    "publicationVerified/mergeAllowed remain false regardless diagnostic push CLI line; separate once state retains original history."
+  ],
+  "actions": {
+    "sourceAndRecordedLocalTerminalReadOnly": true,
+    "outerAndEmbeddedAstParsed": true,
+    "testsRerun": false,
+    "observerExecuted": false,
+    "networkAuthSshDockerRegistry": false
+  },
+  "limits": [
+    "Missing/changed/unbounded remote records may stop observation.",
+    "A completed diagnostic observation never supplies publication success or merge authorization."
+  ]
+}

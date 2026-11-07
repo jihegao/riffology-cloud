@@ -1,0 +1,170 @@
+{
+  "schema": "jhg46-composed-gateway-offline-candidate/v2",
+  "preparedAt": "2026-10-18T03:22:05.388Z",
+  "reviewOnly": true,
+  "deployable": false,
+  "actualMainMergePerformed": false,
+  "baseCommit": "638a366d31a37f7bc1d7dcd124e0b5ba753d6401",
+  "sourceHeads": {
+    "pr239": "17d6545c308c6ae7647080bdde0ba55021384700",
+    "pr246": "05681cf3cf53d965784df486c25c622b74421ef0",
+    "issue248Implementation": "c669921f4796c5b35c6f2e049c92876f4faf7c5b"
+  },
+  "preparedSourceReconciliation": {
+    "file": "prepared-source-reconciliation.json",
+    "bytes": 862,
+    "sha256": "e29ba20c9c05edfb84e3860e1adbaa1e5beaf2f4e8b676b8d04334c66acfd459"
+  },
+  "sourceInputInventory": {
+    "file": "source-input-inventory.json",
+    "bytes": 160700,
+    "sha256": "a00991d336d395b2923d1b98e6f8228d1562655b7670207dcf51ca2ea2777d7e"
+  },
+  "sourceDelta": {
+    "file": "source-delta.patch",
+    "bytes": 40420,
+    "sha256": "160331d42229e8095c626a9d7b70d1ecd8655a95703f024424e0c4deff00ce46"
+  },
+  "build": {
+    "esbuildVersion": "0.28.1",
+    "nodeVersion": "v26.10.0",
+    "nodeExecPath": "/opt/homebrew/Cellar/node/26.10.0_1/bin/node",
+    "options": {
+      "bundle": true,
+      "write": false,
+      "metafile": true,
+      "format": "esm",
+      "platform": "neutral",
+      "target": "es2024",
+      "mainFields": [
+        "module",
+        "main"
+      ],
+      "conditions": [
+        "workerd",
+        "worker",
+        "browser"
+      ],
+      "tsconfig": "/Users/jihegao/apps/riffology-cloud/.local/jhg46-next-stage-preparation-20261018/content-v2/tsconfig.json",
+      "external": [
+        "cloudflare:workers",
+        "node:*"
+      ],
+      "logLevel": "silent"
+    },
+    "buildAttempts": 1,
+    "sourceBytesStableDuringAndAfterBuild": true,
+    "inputCount": 1124,
+    "gitInputs": 303,
+    "dependencyInputs": 821,
+    "changedInputsFromOldV3": [
+      "services/capacity/core.ts",
+      "services/capacity/durable.ts",
+      "services/capacity/paired.ts",
+      "services/gateway/app.ts",
+      "services/gateway/index.ts",
+      "services/model-budget/private-beta-capacity.ts",
+      "services/project-views/package.ts"
+    ],
+    "addedInputsFromOldV3": [
+      "services/model-budget/private-beta-maintenance.ts"
+    ],
+    "removedInputsFromOldV3": [],
+    "auxiliaryBeforeFile": {
+      "file": "auxiliary-inputs-before.json",
+      "bytes": 87934,
+      "sha256": "a4e48e3fe07c6fd047d15fb5a6ead3acac138bfa2d6d6b1b25053c30dbf95387"
+    },
+    "auxiliaryAfterFile": {
+      "file": "auxiliary-inputs-after.json",
+      "bytes": 87934,
+      "sha256": "a4e48e3fe07c6fd047d15fb5a6ead3acac138bfa2d6d6b1b25053c30dbf95387"
+    },
+    "explicitTsconfig": true,
+    "metafileIsModuleGraphNotAllFilesystemReads": true,
+    "playwrightInputs": 0,
+    "exports": [
+      "ContainerProxy",
+      "EntryReplayGuard",
+      "G5ControlledWindow",
+      "G5TenantModelBudget",
+      "InvitedRunCapacity",
+      "ManagedProductRuntime",
+      "ModelProxyService",
+      "ObserverExecutor",
+      "PiDeveloperBudget",
+      "PrivateBetaCapacity",
+      "ProductTurnRuntime",
+      "ProductionModelBudget",
+      "ProjectRuntime",
+      "ProjectToolSandbox",
+      "ProjectViewCapacity",
+      "ProjectViewRuntime",
+      "RevisionStore",
+      "ServiceRun",
+      "ServiceRuntime",
+      "ServiceSandbox",
+      "SimulationSandbox",
+      "TenantModelBudget",
+      "TenantQuota",
+      "ToolArtifactStore",
+      "ToolBridgeAgent",
+      "ToolBridgeService",
+      "TrustedPiCapacity",
+      "TrustedPiSandbox",
+      "WorkspaceAgent",
+      "default"
+    ]
+  },
+  "assets": {
+    "paths": 96,
+    "web": 28,
+    "immutable": 68,
+    "allByteIdenticalToFrozenV3": true,
+    "manifestByteEquivalentToFrozenV3": true,
+    "totalBytes": 53782277,
+    "noAssetSessionOrUpload": true
+  },
+  "frame": {
+    "path": "/project-views/4bd78b2cf7c06051af24d97c2fd7665eea3b96ddbffe6b23daec485ee1e3eff2/frame.html",
+    "sha256": "4bd78b2cf7c06051af24d97c2fd7665eea3b96ddbffe6b23daec485ee1e3eff2"
+  },
+  "artifacts": {
+    "bundle": {
+      "file": "gateway.mjs",
+      "bytes": 5771650,
+      "sha256": "9c8e4b6b763e9887d1624f00ed3a8efb2a8a24d984d96bc68fdb289cb4d362c3"
+    },
+    "sourceGraph": {
+      "file": "source-graph.json",
+      "bytes": 879161,
+      "sha256": "f8a9c6bdc9a5a4adc1ea51fcbc9c1c24a8219d421b86ffe29a371a50ac4591bf"
+    },
+    "metafile": {
+      "file": "esbuild-metafile.json",
+      "bytes": 1003936,
+      "sha256": "3125677be8dc94513ed2249147a7e07cef729b9a30cf6edb2783d11862035f49"
+    },
+    "assetsInventory": {
+      "file": "assets-sha256.json",
+      "bytes": 20499,
+      "sha256": "b1fd4e1fe0b538af20cfb090242fa996f75bf26f8076e259a774ee2d5338b39a"
+    },
+    "assetsManifest": {
+      "file": "assets-manifest.json",
+      "bytes": 15987,
+      "sha256": "b24e87bf762801056e447c106600e1fcee9f23e43c01830436006b5dca8ce1ad"
+    }
+  },
+  "productionSourceTreeMustMatchActualMergedSourceLater": true,
+  "repoConfigCopiedAsSourceOnlyNotActualDeploymentMetadata": true,
+  "newPublisherOrMetadataPrepared": false,
+  "freshActualBaselineStillRequired": true,
+  "cloudWrites": 0,
+  "networkCalls": 0,
+  "credentialsLoaded": false,
+  "imageBuilds": 0,
+  "registryCalls": 0,
+  "containerStarts": 0,
+  "testsRun": 0
+}

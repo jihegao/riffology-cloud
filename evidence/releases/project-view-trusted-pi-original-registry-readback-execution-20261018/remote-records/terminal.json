@@ -1,0 +1,20 @@
+{
+  "cleanupErrors": [],
+  "credentialFilesWritten": 0,
+  "credentialMemoryCleared": true,
+  "destination": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-issue165-trusted-pi:jhg46-native-resource-host-20261018-0bb9af7a",
+  "dockerCommands": 0,
+  "endedAt": "2026-10-18T13:25:05.143455+00:00",
+  "errorCode": "original-registry-readback-slot-failed-no-retry",
+  "exportsAttempted": 0,
+  "fullOriginalRegistryReadbackVerified": false,
+  "operationId": "registry-readback-recovery-v1",
+  "originalRecordsLocksArchiveAndTagUnmodified": true,
+  "pushesAttempted": 0,
+  "registryGetAttempts": 4,
+  "registryGetProofCount": 3,
+  "requestId": "c263a2f3-f445-430e-b562-2e48f1eeb637",
+  "schema": "trusted-pi-registry-readback-recovery-result/v1",
+  "sourceImageId": "sha256:0bb9af7a5909c41187cf56402a21420100c72a8de0025b0a7152f8804e85d191",
+  "status": "unknown-stopped"
+}

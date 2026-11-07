@@ -1,0 +1,58 @@
+{
+  "all52BodyProofsAndAggregateVerified": true,
+  "appImageRolledOut": false,
+  "completeRegistryPublicationProofConfirmed": true,
+  "config": {
+    "digest": "sha256:cea60e390b6726ec0147153e1318b3655c8386460e98d02e35bb571768e49da5",
+    "mediaType": "application/vnd.oci.image.config.v1+json",
+    "size": 19067
+  },
+  "credentialRevocationExpiryPhysicalErasureOrGlobalZeroFeesClaimed": false,
+  "decidedAt": "2026-10-18T14:34:32.539181+00:00",
+  "fixedPr253MergePublicationPrerequisitesSatisfied": true,
+  "freshGithubGateCheckStillRequired": true,
+  "independentOriginalProcessCleanupConfirmed": true,
+  "independentReaderOriginalStreamAndAllFileReferenceEntriesRehashed": true,
+  "mergeExecuted": false,
+  "newRuntimeAuthorizationGranted": false,
+  "oldFailuresUnknownsLocksArchiveTagAndUsageRetained": true,
+  "operationId": "registry-local-readback-v1",
+  "originalExecutionTransportUniqueAckVerified": true,
+  "platformManifest": {
+    "digest": "sha256:ec8dbe9efe229a1626ea3202b618653f82f8d29d9da8b19310c3b3838f2a2623",
+    "mediaType": "application/vnd.oci.image.manifest.v1+json",
+    "size": 9585
+  },
+  "readerDistinctFileReferenceCount": 167,
+  "readerFileReferenceEntryCount": 168,
+  "requestId": "c263a2f3-f445-430e-b562-2e48f1eeb637",
+  "sameOriginalArchiveAndPriorStoppedRecordsRevalidated": true,
+  "schema": "jhg46-local-registry-readback-root-composite-decision/v1",
+  "sourceFiles": {
+    "execution-original.stdout": {
+      "bytes": 1833,
+      "sha256": "c8fb75a1c8f2ad93b7ad733a4930f077b4b2ff08e78c2e69a7ef26bbe1ab1bbf"
+    },
+    "execution-transport-terminal.safe.json": {
+      "bytes": 442,
+      "sha256": "0cded5df3d5ecbb214a4caf9b2a9020e3022584883a76a7985482a86385c1cd3"
+    },
+    "independent-reader-once/observation.json": {
+      "bytes": 48405,
+      "sha256": "5b5df7b3e2c0f694c20db0b795f052df8ec09bd09870fc2ec525c974d38ade66"
+    },
+    "independent-reader-once/observation.stdout": {
+      "bytes": 39373,
+      "sha256": "e08f69de3f9022f5c1e319dc4c563a25d0509bac908940de81b6d573eede829a"
+    },
+    "independent-reader-once/receipt.json": {
+      "bytes": 894,
+      "sha256": "7d1937d70bd45762627fc5e67bfb0e74f5ade3f3d52ba132b2ebadb7efa9e1e7"
+    },
+    "root-original-transport-binding.safe.json": {
+      "bytes": 1540,
+      "sha256": "b7707b6a0c59000b58cb4eed28fcff5484dd84f6bff28ac1c2b5e4fd01d537e1"
+    }
+  },
+  "sourceImageId": "sha256:0bb9af7a5909c41187cf56402a21420100c72a8de0025b0a7152f8804e85d191"
+}

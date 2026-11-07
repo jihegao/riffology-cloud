@@ -1,0 +1,13 @@
+{
+  "bytes": 9585,
+  "digest": "sha256:ec8dbe9efe229a1626ea3202b618653f82f8d29d9da8b19310c3b3838f2a2623",
+  "headerMatches": true,
+  "operationId": "registry-readback-recovery-v1",
+  "path": "manifests/sha256:ec8dbe9efe229a1626ea3202b618653f82f8d29d9da8b19310c3b3838f2a2623",
+  "requestId": "c263a2f3-f445-430e-b562-2e48f1eeb637",
+  "schema": "trusted-pi-registry-get-proof/v1",
+  "slot": 1,
+  "smallRawEqualityPassed": true,
+  "status": 200,
+  "terminalSha256": "fdf4e522bfb27508a000f4e10951ca0494d8a8f1de2b522ee8199fcffd38517a"
+}

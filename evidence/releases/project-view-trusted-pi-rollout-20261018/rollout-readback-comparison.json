@@ -1,0 +1,29 @@
+{
+  "schema": "jhg46-rollout-readback-comparison/v1",
+  "originalRequestId": "5b3d8392-7917-493f-a705-2205b7e1b470",
+  "originalRolloutId": "f1a653cc-44c2-49b9-87f3-33bb8940a540",
+  "targetVersion": 12,
+  "actualImageMatches": true,
+  "fullNonImageConfigurationMatches": true,
+  "other15AppsAndVersionArraysMatch": true,
+  "gatewayAndControlsMatch": true,
+  "oldVersionIds": [
+    "11",
+    "10"
+  ],
+  "currentVersionIds": [
+    "12",
+    "11"
+  ],
+  "missingOldVersionIds": [
+    "10"
+  ],
+  "historyRetentionUnverified": true,
+  "holdRetained": true,
+  "endSent": false,
+  "projectCreates": 0,
+  "modelTurns": 0,
+  "browserGateWrites": 0,
+  "automaticRetryOrRollback": false,
+  "note": "Observed-two count is read-only inventory shape only; it does not satisfy the frozen old-version retention criterion. Earlier expected-three guard and output-limit held observations retained."
+}

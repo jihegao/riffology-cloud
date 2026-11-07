@@ -1,0 +1,247 @@
+{
+  "schema": "jhg46-fb07-report-first-failure-source-diagnosis/v1",
+  "reviewedAt": "2026-10-19T00:45:34.327948Z",
+  "batchRequestId": "fb07e239-2cb4-4379-9581-5711d86a0f30",
+  "mode": "Offline saved-original evidence and frozen-source review; no live request, page retry, service, source edit or test run",
+  "verdict": "The actual host reload() failure branch is identified by its unique UI text. A concrete stale-poll/old-broker cancellation ownership defect is present in the frozen code and fits the actual AbortError plus latched frame0 trace. Its unique causal role in this live failure is not proven without the missing promise/abort/click trace; deterministic local regression remains to be run before a repair is certified.",
+  "actualFailure": {
+    "capturedAt": 1792370453309,
+    "failedUiObservationAt": 1792370439197,
+    "selectedView": "Report",
+    "hostStatus": "已保存页面暂不可用",
+    "frameCount": 0,
+    "stageFailedStop": true,
+    "retryClicked": false,
+    "session2Created": false,
+    "turn3Sent": false,
+    "earlierDashboardAndArtifactObservationsPreserved": true
+  },
+  "actualObserver": {
+    "requests": 133,
+    "responded200": 105,
+    "responded503": 26,
+    "recordedAbortError": 1,
+    "pendingAtCapture": 1,
+    "overflow": false,
+    "allStoredResponseBodiesRehashed": true,
+    "recordedAbort": {
+      "indexZeroBased": 122,
+      "sentAt": 1792370367296,
+      "receivedAt": null,
+      "status": null,
+      "bodyBytes": null,
+      "bodySha256": null,
+      "error": "AbortError: Fetch is aborted",
+      "errorSha256": "05011f3d855bf48b70a01c92a0af1c2f7781170de5de4c7e561f08bfc701cbd1",
+      "errorOccurrenceTimestampRecorded": false
+    },
+    "nextPackageRequest": {
+      "indexZeroBased": 123,
+      "sentAt": 1792370374908,
+      "receivedAt": 1792370378406,
+      "status": 200,
+      "bodyBytes": 10709,
+      "bodySha256": "2629cd68654bbf8260c1d0ff1fe6069bcda9380ec74005402c3b31f4e42225e9"
+    },
+    "nextPackageSentAfterAbortRequestMs": 7612,
+    "allSubsequentCompletedRequestsSamePackage200": true,
+    "lastPendingRequest": {
+      "indexZeroBased": 132,
+      "sentAt": 1792370450174,
+      "receivedAt": null,
+      "status": null,
+      "bodyBytes": null,
+      "bodySha256": null
+    },
+    "pendingIsNotASecondRecordedError": true,
+    "no401Or403ObservedInThisCapture": true,
+    "last503IsHistoricalGateTransitionNotReportFailure": true
+  },
+  "provenSourceFindings": [
+    {
+      "finding": "The captured Chinese text corresponds to projectViews.savedUnavailable, set in this panel only by reload() catch. choose() catch uses projectViews.unavailable and frame/script failures use loadFailed.",
+      "source": "services/web/i18n.js:40-42; services/web/project-views.js:159-168,184-186",
+      "classification": "source-bound branch identification, not an exception-stack capture"
+    },
+    {
+      "finding": "choose() increments generation and closes old broker/frame; broker.close() aborts every pending withinBudget controller. That abort rejects the pending promise race, including publish().",
+      "source": "services/web/project-views.js:23-43,110,126-143",
+      "classification": "direct code mechanism"
+    },
+    {
+      "finding": "reload() can await broker.publish() for the prior frame. Its catch checks only active/context/requestEpoch, not the captured frame generation or broker owner. choose() changes generation but not requestEpoch. Therefore a close-induced old publish rejection can mark the current package failed, increment generation and dispose or invalidate the newly selected Report.",
+      "source": "services/web/project-views.js:138-140,171-186",
+      "classification": "specific reachable async-ownership defect; no runtime reproduction performed here"
+    },
+    {
+      "finding": "The same-package failure latch then returns early on each later successful package poll, so the frame stays absent until explicit retry. Later package200 cannot repair or invalidate the original failure.",
+      "source": "services/web/project-views.js:181,185-190",
+      "classification": "direct code mechanism matching saved later polling"
+    }
+  ],
+  "causalAssessment": {
+    "leadingCandidate": "Old subscribed Dashboard broker publish is pending during Report selection; intentional old-frame disposal aborts that publish; stale reload catch treats expected disposal as a failure of the current selected view.",
+    "supportedBy": [
+      "Observed current-authority fetch records AbortError; then only unchanged full-package200 polls remain.",
+      "Host status is savedUnavailable, Report is selected and frame count is0, matching the global reload catch and same-package failure latch.",
+      "Source lacks generation/broker ownership fencing in this async error branch while route choice necessarily closes old broker."
+    ],
+    "notProven": [
+      "Exact Report click time, which promise rejected, its stack and the abort origin were not recorded.",
+      "readApi HTTP10s also calls AbortController.abort and may surface the same Safari AbortError. Error text alone cannot exclude this or another abort source.",
+      "The next package request starts7612ms after the aborted request began; this supports early cancellation under the observed single polling loop but is not a recorded abort timestamp.",
+      "No direct evidence establishes that the new Report frame/module ever began execution."
+    ],
+    "doNotClaimUniqueOnlineRootCause": true
+  },
+  "actualSavedContentChecks": {
+    "revisionId": "0f8b8226017fa1100a73762a1f85fb50d6d7ac49eba40fff9eab9b3551eaa6ac",
+    "packageIdentity": "5961123a28bc64d119c5beac1abd424ad1f801f59f0042810c841eaf14010a41",
+    "allDeliveredAssetsMatchR2": [
+      {
+        "path": "app/home.html",
+        "bytes": 400,
+        "sha256": "3c95c291062f7a1cbfb3b4932a06fd89875f3d78a784d678c5358400fb04b452",
+        "matchesR2Effect": true
+      },
+      {
+        "path": "app/report.html",
+        "bytes": 394,
+        "sha256": "efc5141a2d4175dc77119ea2e7b8a9347a526e345cb1d40065f557f3eb87ea13",
+        "matchesR2Effect": true
+      },
+      {
+        "path": "app/main.mjs",
+        "bytes": 4951,
+        "sha256": "27e1559e3f913100d2bf8b5ae65d8575f49b872a1f42678af4e3584338b70a7f",
+        "matchesR2Effect": true
+      },
+      {
+        "path": "app/style.css",
+        "bytes": 513,
+        "sha256": "cf48af4346dd100fbb36c93f05827d9fe643decc1633ae7437aa18e54daed78f",
+        "matchesR2Effect": true
+      },
+      {
+        "path": "docs/series.json",
+        "bytes": 119,
+        "sha256": "8d4782409be1eb0233f8b0ed6a430b0267d93ac06e12adae2476ec6adf598c89",
+        "matchesR2Effect": true
+      }
+    ],
+    "reportEntrypointPresent": true,
+    "dashboardAndReportShareDeclaredMainModuleAndAppContainer": true,
+    "noMissingAssetOrDigestFailureObserved": true,
+    "reportJavascriptExecutedOrAcceptedByThisReview": false,
+    "priorArtifactByteReviewPreserved": {
+      "file": ".local/jhg46-native-sdk-publication-acceptance-execution-20261019/reviews/v1-original-sdk-artifact-review.safe.json",
+      "bytes": 11787,
+      "sha256": "39017ab9a7f8d7353e748a81f1a2d7bd018a6c1a6ae9c0a3cfbb97f1a63cf6b6",
+      "purpose": "Earlier independently reassembled artifact and exact helper; not wholeReport proof",
+      "rawBodyCopied": false
+    }
+  },
+  "minimumRegressionScenario": {
+    "status": "Proposed deterministic local-only test; not executed",
+    "existingHarness": "tests/m3/project-views-browser.test.mjs (actual native panel route/refresh fixture); tests/m3/project-view-sdk-deadlines-browser.test.mjs (controlled slow authority/abort fixture)",
+    "steps": [
+      "Load a two-view canonical package into the real panel and finish Dashboard SDK subscription; establish one live old broker, not merely an iframe DOM node.",
+      "Start one normal poll against the same package and hold the old broker publish authority/read promise at a controlled deferred response. Wait on that explicit request marker, with no arbitrary sleep.",
+      "Click the host Report tab once while that old publish is pending. Observe intentional close aborting only its original request/port.",
+      "Allow or release the old response/rejection after the switch. Assert Report remains selected and reaches ready with its new original frame; stale old completion cannot set failedPackageIdentity, savedUnavailable or dispose the new frame.",
+      "Keep a genuine current-generation authority403/timeout control: it must still fail closed, close the original frame and latch the same failed package until explicit retry. Also retain leave/scope-change cleanup and late-result suppression."
+    ],
+    "sourceOwnershipExplanation": "Existing quick Report route/refresh coverage does not force a pending subscribed publish during selection; source alone is insufficient to certify a fixed implementation."
+  },
+  "suggestedMinimalRepair": {
+    "productionFiles": [
+      "services/web/project-views.js"
+    ],
+    "testScope": "One deterministic panel navigation-vs-poll regression plus current-owner failure/cleanup control in the existing local browser fixtures. No new backend route or test framework.",
+    "behavior": "Capture and recheck the async poll frame generation/broker owner at delivery and error side-effect boundaries. Intentional disposal of an obsolete frame must not fail or clean the successor. Preserve the real current-owner failure latch. If request epochs are invalidated by a user route choice, keep a single correctly owned polling continuation rather than silently stopping polling.",
+    "preserve": [
+      "10s HTTP,30s broker,35s SDK,40s module,45s startup budgets",
+      "Before/after authorization, actor/scope/package/nonce and one-port checks",
+      "No retry/provider fallback/automatic reexecution of a truly failed package",
+      "Original owner/frame/port/abort cleanup and default-closed gates"
+    ],
+    "notSuggested": [
+      "Raising timeouts again",
+      "Changing generated Report/model content without a proven content defect",
+      "Rewriting broker/gateway or adding a new namespace/route",
+      "Reopening this failed batch or retrying Report, creatingSession2 or sendingT3"
+    ]
+  },
+  "provenance": [
+    {
+      "file": ".local/jhg46-native-sdk-publication-acceptance-execution-20261019/ordinary/browser-v1/report-first-failure.original.private.json",
+      "bytes": 90867,
+      "sha256": "6630e6401b1c2ac6ab4de55d75b293baa635b6db83b13e28700461ac55c66147",
+      "purpose": "Original first Report failure trace/UI observation",
+      "rawBodyCopied": false
+    },
+    {
+      "file": ".local/jhg46-native-sdk-publication-acceptance-execution-20261019/ordinary/browser-v1/first-package-original.raw.private.json",
+      "bytes": 10709,
+      "sha256": "2629cd68654bbf8260c1d0ff1fe6069bcda9380ec74005402c3b31f4e42225e9",
+      "purpose": "Actual unchanged R2 package",
+      "rawBodyCopied": false
+    },
+    {
+      "file": ".local/jhg46-native-sdk-publication-acceptance-execution-20261019/reviews/t2-saved-effects-review.safe.json",
+      "bytes": 13601,
+      "sha256": "61b11a359b4b5a28bb01e9dda518ed5996bea3c288451b57ec4d430b197a936a",
+      "purpose": "Original canonical effects",
+      "rawBodyCopied": false
+    },
+    {
+      "file": ".local/jhg46-native-sdk-acceptance-preparation-20261019/build-candidate-v2/output/assets-sha256.json",
+      "bytes": 20499,
+      "sha256": "43fb4a80fe591acaae7dcf7a8ae144f50ce83a123ffd832e6f91da49baa4aa47",
+      "purpose": "Fixed source asset closure",
+      "rawBodyCopied": false
+    }
+  ],
+  "sourceBindings": [
+    {
+      "workspace": "/Users/jihegao/.codex/worktrees/jhg46-package-response-budget/riffology-cloud",
+      "file": "services/web/project-views.js",
+      "bytes": 17054,
+      "sha256": "e420e10e0196a9b9ce5f8c6959f8c8551ee0eeae3a2f0a317d9eac8f986ea47c",
+      "reviewedLines": "23-43,110,126-143,159-168,171-190",
+      "sameFca66AndMerged004eAndFrozenAssetInventory": true
+    },
+    {
+      "workspace": "/Users/jihegao/.codex/worktrees/jhg46-package-response-budget/riffology-cloud",
+      "file": "services/web/project-view-local.js",
+      "bytes": 4396,
+      "sha256": "9edc6ef02b7d8bb50c51ef27e5a7d18d700f3a9013239ffb55c89baf07b6b987",
+      "reviewedLines": "19-43",
+      "sameFca66AndMerged004eAndFrozenAssetInventory": true
+    },
+    {
+      "workspace": "/Users/jihegao/.codex/worktrees/jhg46-package-response-budget/riffology-cloud",
+      "file": "services/web/i18n.js",
+      "bytes": 150342,
+      "sha256": "8aa92fc5d74de0ce7fb4e294957b21b294fda607516ccb8a8da684aa40a4c869",
+      "reviewedLines": "40-42",
+      "sameFca66AndMerged004eAndFrozenAssetInventory": true
+    }
+  ],
+  "actions": {
+    "localSavedEvidenceAndImmutableGitReadsOnly": true,
+    "newSafeDiagnosisWriteOnly": true,
+    "network": 0,
+    "api": 0,
+    "ui": 0,
+    "pageRetry": 0,
+    "modelCalls": 0,
+    "serviceStarts": 0,
+    "testsRun": 0,
+    "sourceChanges": 0,
+    "gateCalls": 0
+  },
+  "privacy": {
+    "actualActorTenantWorkspaceUrlEmailHostCredentialPromptOrRawUiBodyCopied": false
+  }
+}

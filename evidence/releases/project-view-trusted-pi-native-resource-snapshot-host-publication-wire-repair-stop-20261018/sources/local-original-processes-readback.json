@@ -1,0 +1,30 @@
+{
+  "allOriginalPidsAbsent": true,
+  "at": "2026-10-18T12:49:39.329298+00:00",
+  "earlierSandboxPsProbe": "denied before any output file or remote action",
+  "observations": [
+    {
+      "argvOrEnvironmentRead": false,
+      "outputBytes": 0,
+      "outputSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "pid": 35240,
+      "pidAbsent": true,
+      "psReturnCode": 1,
+      "record": "oauth-token-once-original-cli.json",
+      "recordedStartedAt": "2026-10-18T12:35:59.722212+00:00"
+    },
+    {
+      "argvOrEnvironmentRead": false,
+      "outputBytes": 0,
+      "outputSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "pid": 35359,
+      "pidAbsent": true,
+      "psReturnCode": 1,
+      "record": "original-ssh.json",
+      "recordedStartedAt": "2026-10-18T12:36:03.113333+00:00"
+    }
+  ],
+  "originalPreRepairStateBytePreserved": true,
+  "remoteOrRegistryCalls": 0,
+  "schema": "jhg46-c263-wire-repair-local-original-processes/v1"
+}

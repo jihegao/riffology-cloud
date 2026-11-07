@@ -1,0 +1,39 @@
+{
+  "schema": "jhg46-consent-cli-intent-safe-projection/v1",
+  "requestId": "9ec39434-0856-4ee7-af30-adf3dd5b5df4",
+  "originalRecord": {
+    "name": "oauth-consent-once-intent.json",
+    "bytes": 549,
+    "sha256": "baef84b33daf857a9c603402550ce31b3d68408401ad90fbec679a2813b4f162"
+  },
+  "projectionChanges": [
+    "argv[0] local executable path replaced by a placeholder",
+    "argv[2] repository absolute prefix replaced by <repository>"
+  ],
+  "intent": {
+    "argv": [
+      "<local-node-executable>",
+      "--no-warnings",
+      "<repository>/node_modules/wrangler/wrangler-dist/cli.js",
+      "--env-file",
+      "/dev/null",
+      "login",
+      "--scopes",
+      "user:read",
+      "account:read",
+      "workers:write",
+      "workers_scripts:write",
+      "containers:write",
+      "--browser",
+      "--callback-host",
+      "localhost",
+      "--callback-port",
+      "8976"
+    ],
+    "at": "2026-10-18T01:34:19.313325+00:00",
+    "diskLogs": false,
+    "stdoutAndStderr": "memory-only",
+    "timeoutSeconds": 300
+  },
+  "rawStdoutOrStderrIncluded": false
+}

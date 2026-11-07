@@ -1,0 +1,136 @@
+{
+  "schema": "jhg46-new-sdk-closed-gateway-publication-fresh-three-turn-contract/v1",
+  "batchRequestId": "fb07e239-2cb4-4379-9581-5711d86a0f30",
+  "preparedAt": "2026-10-18T17:33:00.835039+00:00",
+  "reviewOnly": true,
+  "ready": false,
+  "executionAuthorized": false,
+  "executed": false,
+  "newCloudWriteCeilings": {
+    "normalMergeFixedPr257": 1,
+    "existingWorkerScriptPut": 1,
+    "assetStaging": "only the future sealed exact asset manifest protocol; exact batches pending build",
+    "browserSecretPut": 1,
+    "ownedBrowserSecretDelete": 1,
+    "maintenanceBegin": 0,
+    "maintenanceEnd": 0,
+    "imageRollout": 0,
+    "registryExportPushReadbackOrCredential": 0,
+    "amdSshDockerOrProxy": 0,
+    "newAppNamespaceOrSubscription": 0
+  },
+  "ordinaryProductCeilings": {
+    "freshBlankProjects": 1,
+    "sessions": 2,
+    "explicitTurns": 3,
+    "extraRepairTurns": 0,
+    "serverRunOrSimulation": 0
+  },
+  "operations": [
+    {
+      "id": "fresh-old-owner-terminal-and-resource-preservation",
+      "method": "GET + existing single read-only identity SELECT as needed",
+      "guard": "fresh-read-contract.json; old a25f original completed/saved/release stays trusted; preserve all original history; no new project to bypass unknown"
+    },
+    {
+      "id": "normal-merge-fixed257",
+      "method": "GitHub normal merge",
+      "pullRequest": 257,
+      "fixedHead": "fca66cb0e1024b4e86bbbeb9a6d955b137599efa",
+      "attempts": 1,
+      "actualProof": null,
+      "guard": "only fixed reviewed head; existing protections/review and approved CI-quota exemption, no force/bypass or calling technical failures quota; merge proof/tree identity required, not Issue Done"
+    },
+    {
+      "id": "seal-fixed-sdk-build-and-original-baseline",
+      "method": "local exact-input verification",
+      "inputs": "publication/inputs.pending.json",
+      "guard": "new bundle/assets/graph/build/sender/body must be concrete reviewed hashes and match actual normal merged tree; all null/unsealed reject before auth. No original input/source modification."
+    },
+    {
+      "id": "one-existing-gateway-assets-default-closed-publication",
+      "method": "fixed assets protocol + Worker PUT",
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/scripts/riffology-m1-gateway-staging",
+      "attempts": 1,
+      "body": null,
+      "guard": "known original baseline; exact fixed build assets only, existing106 bindings/25 exports/6associations/50ns/16apps+versions/config/secrets preserved; browser/remote admission closed; no app/rollout/hold/provider"
+    },
+    {
+      "id": "original-gateway-ack-and-preservation-readback",
+      "method": "GET + approved fixed static asset verification",
+      "guard": "trusted original ACK/sole new version/source/assets exact; preserve full resources and closed gates; unknown keeps original lock and only read-only reconciliation, no resend"
+    },
+    {
+      "id": "ordinary-fresh-same-approved-identity",
+      "method": "normal existing Safari session + GET bracket + reviewed read-only SELECT",
+      "guard": "same approved ordinary invited personal owner/authVersion2/nonoperator; no new login account/scope/cookie export; current pins/review ceiling apply"
+    },
+    {
+      "id": "one-new-blank-original-ui-create",
+      "method": "product UI POST",
+      "attempts": 1,
+      "body": null,
+      "guard": "new original UI key/body; returned scope/generation; actual ready bootstrap/fence/quotaReleased product projection+initial journal/capacity; keep actual auto-created Session1 if present"
+    },
+    {
+      "id": "T1-newSession1-mkdir-and-new-fixed-skill",
+      "method": "product UI POST",
+      "turnOrdinal": 1,
+      "prompt": "../content-candidate-v1/prompts/turn-1-create-skill.md",
+      "guard": "once normal UI; mkdir timeout30000 must succeed, then exact6056B/8ef3375d skill; canonicalR1/head and original runtime/tool/capacity release before T2"
+    },
+    {
+      "id": "T2-sameSession1-native-skill-and-V1",
+      "method": "product UI POST",
+      "turnOrdinal": 2,
+      "prompt": "../content-candidate-v1/prompts/turn-2-build-v1.md",
+      "guard": "real R1 slash load; fixed manifest/two pages/moduleCSS/data; one17408 synthetic output and real dynamic JSON artifact receipt; helper exact in saved main; canonicalR2/head + original product resource release before gate"
+    },
+    {
+      "id": "one-new-finite-owned-browser-open",
+      "method": "PUT",
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/scripts/riffology-m1-gateway-staging/secrets",
+      "attempts": 1,
+      "plan": "browser-gate/plan.pending.json",
+      "body": null,
+      "guard": "actual newcreate/R2/me/identity scope-owner-generation receipt quartet, finite new window, full fresh default-closed/current source/resource witness, existing pure factory; no old gate/request/version reuse"
+    },
+    {
+      "id": "V1-two-pages-and-actual-artifact",
+      "method": "GET + local native DOM",
+      "path": "/api/workspaces/{actualNewWorkspaceId}/project-views and original broker artifact routes",
+      "guard": "actual saved package/assets/SDK/local DOM V1/20and50/PauseResume/subscription; helper joins original chunks/body SHA then JSON envelope.content; refresh/leave/re-entry. Any first-stage failure stops all later acceptance, no page retry/repair Turn"
+    },
+    {
+      "id": "only-after-V1-newSession2-and-T3",
+      "method": "product UI POST",
+      "turnOrdinal": 3,
+      "prompt": "../content-candidate-v1/prompts/turn-3-cold-edit-v2.md",
+      "guard": "V1 passed and original R2 release; one Session2 only, cold original R2 skill, modify docs series only, same original actual artifactId and unrelated bytes; canonicalR3/head + resource release. No old unexecuted T3 authorization reused"
+    },
+    {
+      "id": "V2-cold-browser-restoration",
+      "method": "GET + local native DOM",
+      "guard": "two pagesV2 series[2,3,7] factors24/60 from actual R3 saved bytes/new browser context; preserve actual artifact id; no old JS memory or fourth Turn"
+    },
+    {
+      "id": "original-owned-finite-close-on-success-or-first-failure",
+      "method": "DELETE",
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/scripts/riffology-m1-gateway-staging/secrets/PROJECT_VIEW_BROWSER_POLICY_JSON",
+      "attempts": 1,
+      "guard": "same trusted original new open ACK/request/version/actor/bodySHA, actual fresh source/full resource witness and exact documented metadata differences only; failure does not authorize replay or unknown-owner deletion"
+    },
+    {
+      "id": "final-original-gate-product-physical-and-ui-exit",
+      "method": "GET + current UI close/leave",
+      "guard": "original close ACK and default closed/source/assets preserved, last same-owner canonical/holds/capacity and full physical inventory, original frame/port/listeners removed, history/usage retained; not globalzero/allpastVM/zerocost"
+    }
+  ],
+  "removedCompletedSteps": [
+    "Registry/JWT/export/push/readback and AMD/SSH/Docker/proxy",
+    "maintenance begin/end and ec8 image rollout",
+    "merges239/246/250/253 and any a25f replay/oldproject T3"
+  ],
+  "window": "window.pending.json",
+  "unknownPolicy": "Preserve original intent/ACK/lock/identity and stop; only same-original read-only reconciliation. No retry/provider fallback/new project/key/window/secret owner as bypass."
+}

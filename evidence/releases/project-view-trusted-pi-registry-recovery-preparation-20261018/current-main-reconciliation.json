@@ -1,0 +1,93 @@
+{
+  "currentMain": "638a366d31a37f7bc1d7dcd124e0b5ba753d6401",
+  "duplicateIssue244ShouldBeNotPlanned": true,
+  "fixedPr239Head": "0d23a12d869abccb9515a8e7f8196b0266258226",
+  "limits": [
+    "No actual merge, branch update or worktree-file change; merge-tree only writes Git objects.",
+    "Success is on the recorded243 and237 heads, not a new CI run on239 or on the merge preview.",
+    "Image publication, new six-scope auth and future protected merge require their explicit grant and fresh final gates."
+  ],
+  "mainContainsMergedPr237": {
+    "ci": {
+      "conclusion": "success",
+      "head": "d278f3a14bda0c2e13cb1e0f2d1660114e3fddce",
+      "runAttempt": 1,
+      "runId": 39046248134,
+      "status": "completed",
+      "url": "https://github.com/jihegao/riffology-cloud/actions/runs/39046248134"
+    },
+    "head": "d278f3a14bda0c2e13cb1e0f2d1660114e3fddce",
+    "merge": "638a366d31a37f7bc1d7dcd124e0b5ba753d6401",
+    "mergedAt": "2026-10-17T16:04:07Z"
+  },
+  "mainContainsMergedPr243": {
+    "ci": {
+      "conclusion": "success",
+      "head": "d6fd53c44f57bc2c7c3b561ad8e030aacca055aa",
+      "runAttempt": 1,
+      "runId": 39043240194,
+      "status": "completed",
+      "url": "https://github.com/jihegao/riffology-cloud/actions/runs/39043240194"
+    },
+    "head": "d6fd53c44f57bc2c7c3b561ad8e030aacca055aa",
+    "merge": "ee9f8d9e2fb919143c2a36e1da34c21ff95a7cec",
+    "mergedAt": "2026-10-17T15:38:07Z"
+  },
+  "mergePreviewChangesExactlyOriginalTwoDockerfiles": [
+    {
+      "baseBlob": "fb6752c7fea72dcc3c66c37098499bb2f6c9d139",
+      "fixedHeadAndMergePreviewBlob": "713fc20f993437789979051f88558eb03961ee67",
+      "path": "Dockerfile.trusted-pi.cloud"
+    },
+    {
+      "baseBlob": "c0df41147334c8e89ecc09352a3e73171cbc94cf",
+      "fixedHeadAndMergePreviewBlob": "369e3fb223835676c044d09f722d7eb03589f223",
+      "path": "Dockerfile.trusted-pi.vertical"
+    }
+  ],
+  "mergePreviewConflictFree": true,
+  "mergePreviewTree": "3b22c10683ad7e0ef75d25b6034e2bcc173ec014",
+  "newHelpersOrImplementationRequired": false,
+  "observedAt": "2026-10-17T16:12:57.086510+00:00",
+  "oldDiagnosticBase": "29da0349719dba23d5c9ce95b4b83b97ebf7091a",
+  "oldHeadFailureRecordRetained": true,
+  "schema": "jhg46-current-main-ci-fix-reconciliation/v1",
+  "sideEffects": {
+    "ciReruns": 0,
+    "cloudflareOrCredentialCalls": 0,
+    "githubMutations": 0,
+    "localGitObjectWriteOnly": true,
+    "sshDockerProvider": 0,
+    "trackedFileChanges": 0
+  },
+  "testRuntimeWorkflowAndPackageBlobsEqualPassedCiHead": [
+    {
+      "currentMainMergePreviewAndPassedCiHeadBlob": "86fc1a9f5594ceab4c4ec4524d196a084ffc9991",
+      "path": "tests/m3/project-view-runtime-native-gate.test.mjs"
+    },
+    {
+      "currentMainMergePreviewAndPassedCiHeadBlob": "d36fb047939ac228da884bfac4a4acbd3c5f7af2",
+      "path": "tests/m3/project-view-runtime.test.ts"
+    },
+    {
+      "currentMainMergePreviewAndPassedCiHeadBlob": "cf8af311eb53385608f139be58b6f3b6fd8d739c",
+      "path": "services/project-views/runtime-durable.ts"
+    },
+    {
+      "currentMainMergePreviewAndPassedCiHeadBlob": "65f9d5faff3d6d7ae866736ea16012d423da7627",
+      "path": "services/project-views/runtime-core.ts"
+    },
+    {
+      "currentMainMergePreviewAndPassedCiHeadBlob": "a656d48c868cf95509f5cb04ec68ac7edf2a95fa",
+      "path": "services/project-views/runtime-protocol.ts"
+    },
+    {
+      "currentMainMergePreviewAndPassedCiHeadBlob": "97fc0e4fe859fe21eff4afe7ce68b0e4d39ebad9",
+      "path": ".github/workflows/check.yml"
+    },
+    {
+      "currentMainMergePreviewAndPassedCiHeadBlob": "fadee0785fe0412aaa71ca06cff6c18a76ee41d6",
+      "path": "package.json"
+    }
+  ]
+}

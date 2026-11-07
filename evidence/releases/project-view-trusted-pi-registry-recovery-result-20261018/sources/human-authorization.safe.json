@@ -1,0 +1,20 @@
+{
+  "schema": "jhg46-registry-recovery-human-authorization-safe-projection/v1",
+  "requestId": "9ec39434-0856-4ee7-af30-adf3dd5b5df4",
+  "operationsManifestSha256": "3779af353a82fa334fc805a54ff02fe91a2f905d2cc9daf4733b1fd92189589c",
+  "actualHumanAuthorizationRecorded": true,
+  "grantDerivedOnlyAfterActualHumanReply": true,
+  "grantSha256": "2910dca428285c9f3dd95a83171fcf0700f6994ee50a64d7da822c5b370418f8",
+  "grantBytes": 4269,
+  "humanReplySha256": "78bdcb26c16a8ff070ed2bc8d5c6509b04468aced1467ae7a07b9456a29ff0a0",
+  "approvedAtRecorded": "2026-10-18T01:33:21.206214+00:00",
+  "expiresAt": "2026-10-18T02:33:21.206214+00:00",
+  "originalMessageTimestampUnavailable": true,
+  "sourceBindingReceipt": {
+    "name": "grant-binding-safe.json",
+    "bytes": 674,
+    "sha256": "67d259056647f4bed7013835400759a66c402ee9b8615b8d64e87ddfe0221d69"
+  },
+  "timingNote": "Authorization binding was recorded before the actual attempt; its newExecutionStarted=false field describes that earlier moment.",
+  "privateGrantOrHumanReplyIncluded": false
+}

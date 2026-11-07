@@ -1,0 +1,168 @@
+{
+  "allReturnedRecordsOriginalByteHashVerified": true,
+  "allSixOriginalCliTerminalAndAbsent": true,
+  "archiveContentsRead": false,
+  "cleanupConfirmed": true,
+  "commandLifecycles": [
+    {
+      "archiveBytesWritten": 0,
+      "currentState": "absent",
+      "endedAt": "2026-10-18T12:36:01.912161+00:00",
+      "errorCode": null,
+      "exitCode": 0,
+      "linuxStartTicks": "173368709",
+      "name": "source-before",
+      "originalCliRecordPresent": true,
+      "originalProcessAbsent": true,
+      "pid": 3104446,
+      "reaped": true,
+      "stopErrors": [],
+      "terminalRecordPresent": true
+    },
+    {
+      "archiveBytesWritten": 407961600,
+      "currentState": "absent",
+      "endedAt": "2026-10-18T12:36:08.544952+00:00",
+      "errorCode": null,
+      "exitCode": 0,
+      "linuxStartTicks": "173368721",
+      "name": "export-once",
+      "originalCliRecordPresent": true,
+      "originalProcessAbsent": true,
+      "pid": 3104487,
+      "reaped": true,
+      "stopErrors": [],
+      "terminalRecordPresent": true
+    },
+    {
+      "archiveBytesWritten": 0,
+      "currentState": "absent",
+      "endedAt": "2026-10-18T12:36:14.369384+00:00",
+      "errorCode": null,
+      "exitCode": 0,
+      "linuxStartTicks": "173369954",
+      "name": "source-after",
+      "originalCliRecordPresent": true,
+      "originalProcessAbsent": true,
+      "pid": 3106495,
+      "reaped": true,
+      "stopErrors": [],
+      "terminalRecordPresent": true
+    },
+    {
+      "archiveBytesWritten": 0,
+      "currentState": "absent",
+      "endedAt": "2026-10-18T12:36:19.770418+00:00",
+      "errorCode": null,
+      "exitCode": 1,
+      "linuxStartTicks": "173370500",
+      "name": "new-local-tag-before",
+      "originalCliRecordPresent": true,
+      "originalProcessAbsent": true,
+      "pid": 3107361,
+      "reaped": true,
+      "stopErrors": [],
+      "terminalRecordPresent": true
+    },
+    {
+      "archiveBytesWritten": 0,
+      "currentState": "absent",
+      "endedAt": "2026-10-18T12:36:19.870367+00:00",
+      "errorCode": null,
+      "exitCode": 0,
+      "linuxStartTicks": "173370506",
+      "name": "tag-original-once",
+      "originalCliRecordPresent": true,
+      "originalProcessAbsent": true,
+      "pid": 3107440,
+      "reaped": true,
+      "stopErrors": [],
+      "terminalRecordPresent": true
+    },
+    {
+      "archiveBytesWritten": 0,
+      "currentState": "absent",
+      "endedAt": "2026-10-18T12:36:38.892650+00:00",
+      "errorCode": null,
+      "exitCode": 0,
+      "linuxStartTicks": "173370517",
+      "name": "push-once",
+      "originalCliRecordPresent": true,
+      "originalProcessAbsent": true,
+      "pid": 3107480,
+      "reaped": true,
+      "stopErrors": [],
+      "terminalRecordPresent": true
+    }
+  ],
+  "credentialDirectoryAndConfigAbsent": true,
+  "credentialFilesRead": false,
+  "credentialRevocationOrExpiryProved": false,
+  "dockerOrRegistryCalls": 0,
+  "fileCount": 18,
+  "humanGrantSha256": "0b63246cfc0dda411a3405f401aaf9bfd2887483b2067242ca945741d7dac911",
+  "mergeAllowed": false,
+  "observedAt": "2026-10-18T12:52:22.784525+00:00",
+  "operationsManifestSha256": "76dfb4606c75424c01a00220805f6efb5b32afbf474fd003fe540641bb97c309",
+  "optionalRecordsPresent": {
+    "export-once-intent.json": true,
+    "export-once.terminal.json": true,
+    "push-once-intent.json": true,
+    "registry-readback.json": false,
+    "remote-tag-absence.json": true
+  },
+  "originalArchive": {
+    "expectedVerifiedBytes": 407961600,
+    "independentlyRehashed": false,
+    "statBytes": 407961600,
+    "statMatched": true
+  },
+  "publicationVerified": false,
+  "pushCompletionDigestLines": [
+    {
+      "digest": "sha256:ec8dbe9efe229a1626ea3202b618653f82f8d29d9da8b19310c3b3838f2a2623",
+      "matchesOriginalManifest": true,
+      "size": 9585,
+      "stream": "stdout"
+    }
+  ],
+  "pushCompletionLineUniqueAndMatches": true,
+  "pushExitOrDigestLineDoesNotEstablishRegistryState": true,
+  "pushStreams": [
+    {
+      "bytes": 15371,
+      "matchesRecordedBytesAndSha256": true,
+      "name": "push-once.stdout",
+      "present": true,
+      "sha256": "4ce0f090f032fb91b05fda54acc314fa78e9cb8b7f90ca00d9e4e9d7fa560009"
+    },
+    {
+      "bytes": 0,
+      "matchesRecordedBytesAndSha256": true,
+      "name": "push-once.stderr",
+      "present": true,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rawConfigEnvOrCliStreamsReturned": false,
+  "recordedPublicationErrorCode": "publication-local-error",
+  "recordedPublicationStatus": "unknown-stopped",
+  "registryCurrentStateNotQueried": true,
+  "remoteWrites": 0,
+  "requestId": "c263a2f3-f445-430e-b562-2e48f1eeb637",
+  "route7897": {
+    "absent": true,
+    "connectErrno": 111,
+    "listenerCount": 0
+  },
+  "schema": "jhg46-c263-independent-stopped-publication-observation/v1",
+  "sourceImageId": "sha256:0bb9af7a5909c41187cf56402a21420100c72a8de0025b0a7152f8804e85d191",
+  "status": "stopped-original-records-observed",
+  "supervisor": {
+    "currentState": "absent",
+    "linuxStartTicks": "173368644",
+    "originalProcessAbsent": true,
+    "pid": 3104327
+  },
+  "totalReadBytesIncludingPushStreams": 30828
+}

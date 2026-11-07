@@ -1,0 +1,122 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-10-18T03:15:14.882007+00:00",
+  "issue": 248,
+  "repository": "jihegao/riffology-cloud",
+  "branch": "codex/jhg46-pi-maintenance-admission-20261018",
+  "base": "638a366d31a37f7bc1d7dcd124e0b5ba753d6401",
+  "parent": "a610dee8e4acad24c7a39ca3faedda3c1211e842",
+  "head": "c669921f4796c5b35c6f2e049c92876f4faf7c5b",
+  "tree": "ba4c79018263b4cb2a1ad20fc5ed7f53d754ff26",
+  "historyPreserved": true,
+  "priorAuthorReceipt": "../receipt.json",
+  "incrementalDiff": {
+    "files": 7,
+    "insertions": 124,
+    "deletions": 7
+  },
+  "node": "v26.10.0",
+  "ciNode": "25.3.0; no CI run started or read for this increment",
+  "checks": [
+    {
+      "command": "/opt/homebrew/bin/node --test --test-concurrency=2 tests/m2/private-beta-maintenance-workerd.test.mjs tests/m1/private-beta-admin.test.ts",
+      "tests": 8,
+      "pass": 8,
+      "fail": 0,
+      "skipped": 0,
+      "exitCode": 0,
+      "output": "targeted-tests.log"
+    },
+    {
+      "command": "npm run typecheck",
+      "exitCode": 0
+    },
+    {
+      "command": "git diff --cached --check",
+      "exitCode": 0
+    }
+  ],
+  "old45SuiteRepeated": false,
+  "source": [
+    {
+      "path": "docs/pi-maintenance-admission.md",
+      "beforeSha256": "13dcd4180aff709b2272603dd1afedbeb125e3a09c1736fc479ae9434015dd4a",
+      "afterSha256": "a207fbf382fbb201c6e08bc857a384481c0349611f57c13e55e3151cb851de1b"
+    },
+    {
+      "path": "services/gateway/app.ts",
+      "beforeSha256": "d5cc52d06ca3787649d088e1b1262ac8fd974965988b5285b29b7149299fb6fc",
+      "afterSha256": "8d1e4c75a69c5ec14ca951d500c3092076a2865226f53b68fb73dba3b36feedf"
+    },
+    {
+      "path": "services/gateway/index.ts",
+      "beforeSha256": "6022d0cd915d12ae44215cfcc26ae68c23c80d90723bf0a5433aa4d9a0f3e508",
+      "afterSha256": "c936f287efa16db1b5919b22586205cb317b903d90b685f25a36c63b3dc4f5fa"
+    },
+    {
+      "path": "services/model-budget/private-beta-capacity.ts",
+      "beforeSha256": "5ac3fb60931a09fffa8ac40c90f04ab29de9d2eeb81f6b0ca02f30636a887950",
+      "afterSha256": "fc36f4de0ce6e79804b080e47a9b696c41c0627464bf4d373249ea7997bec74d"
+    },
+    {
+      "path": "services/model-budget/private-beta-maintenance.ts",
+      "beforeSha256": "80eb4bb65f1a56dedce72f5990f8fdc380884bd420b3a5aa29ee15bc6be0047a",
+      "afterSha256": "e4f6ba59521d0fad90fc619390b89f928e66c573a2500e286c2a8b055ab17c67"
+    },
+    {
+      "path": "tests/m1/private-beta-admin.test.ts",
+      "beforeSha256": "e975468819a64904076526d9c6a20db7bc6381375de546bd85d80504a0daa6fc",
+      "afterSha256": "55bba1b3b3a73e654a5fb38bee0d6e0cc54cc2610ca21a75c124ec6cb6aa893c"
+    },
+    {
+      "path": "tests/m2/private-beta-maintenance-workerd.test.mjs",
+      "beforeSha256": "3977b1a13e62f27b761550baf94f376cbd897c00f80836d8e64486406c7c62b6",
+      "afterSha256": "4595fe62cfbf2dfb827ee592d11cdb9cfff87932cd0b3684b6da7487ac3e35ba"
+    }
+  ],
+  "trackedClean": true,
+  "remainingUntracked": [
+    "?? node_modules"
+  ],
+  "httpContract": {
+    "path": "/api/admin/private-beta/maintenance/quiescence",
+    "method": "GET",
+    "query": "exactly one requestId matching current original hold",
+    "positiveStatus": 200,
+    "nonQuiescentValidProofStatus": 409,
+    "proofRetainedOnNonQuiescence": true,
+    "alwaysActualContainerReleaseVerified": false,
+    "originalReceiptGetNativeRpc": false
+  },
+  "coverage": [
+    "current operator/anonymous/normal/revoked permissions and strict method/query",
+    "original hold/request/actor/authVersion/policy/pin/enabled/pause/control-revision match",
+    "current hold/controls plus Beta ledger checked before and after bounded native RPC",
+    "active Beta/unknown call/cold occupancy/idle or partial pair release yield no positive proof",
+    "missing native binding/uninitialized ledger/unknown shape refuse positive proof",
+    "pause occurring while actual native RPC is awaiting is caught by the second control check",
+    "positive, negative and unknown proof reads preserve persisted original tables/KV/alarm",
+    "original receipt/status GET still makes zero native RPCs"
+  ],
+  "scope": {
+    "sourceAndLocalCommitOnly": true,
+    "realLocalWorkerdSQLiteD1": true,
+    "syntheticWorkspaceModelReleaseAuthorities": true,
+    "workerOutboundDenied": true,
+    "accountApiCalls": false,
+    "credentialRead": false,
+    "providerOrContainerExecution": false,
+    "build": false,
+    "deploy": false,
+    "push": false,
+    "prOrMetadataWrite": false,
+    "readinessOrConfigOrReviewAtChange": false
+  },
+  "limits": [
+    "This is fresh original logical ledger evidence before or after a future separately authorized rollout while the same barrier remains held.",
+    "It never ends/reopens the barrier and is not a substitute for physical Cloudflare application/instance/configuration readback.",
+    "Cross-DO read is not a lock on every other writer; future runner must freeze/check all deployment and execution-gate identities.",
+    "Existing enabled boolean has no independent deployment epoch; unobserved off/on history cannot be inferred.",
+    "No automatic retry/resume or source build/cloud execution was performed."
+  ]
+}

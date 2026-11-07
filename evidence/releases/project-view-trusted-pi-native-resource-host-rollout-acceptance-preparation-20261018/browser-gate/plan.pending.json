@@ -1,0 +1,46 @@
+{
+  "actualPlan": null,
+  "bodyTemplateMayNotBeSent": true,
+  "deriveOnlyAfterR2AndOriginalRelease": [
+    "one actual create scope == R2 scope == same personal owner SELECT scope including workspace generation",
+    "fresh me actor == SQL actor == policy actor; authVersion2 accepted invitation and no active platform role",
+    "actual create/R2/me/SQL receiptSHA quartet and bracketed checkedAt",
+    "one project-view-browser-policy/v1 grant dataEgress accepted, actual start/end<=same4h/humanOct20 ceiling",
+    "current latest == sole100%active; default gate absent; stable metadata/controlPlane full hashes",
+    "gate PUT original sent body/ACK/newversion and full resource preservation",
+    "gate DELETE only original owned open key/version/bodySHA/actor under same writer and actual readback"
+  ],
+  "executionAuthorized": false,
+  "factorySource": {
+    "closeExport": "closeRequest",
+    "file": ".local/jhg46-next-stage-preparation-20261018/browser-gate-ops-v1/requests.mjs",
+    "openExport": "openRequest",
+    "sha256": "8920716d09899d924f5226afd4d50c4fbbb66e8d8d3fbfd98a175132940ba752",
+    "sourceUnchanged": true
+  },
+  "fixedAccountId": "8b0d70250211aa10d89e20605a1c7e5e",
+  "fixedWorker": "riffology-m1-gateway-staging",
+  "grantIsWriteOnly": "GET names/types cannot independently prove secret text; original sent body+ACK+newversion+source/resource/project admission evidence required",
+  "mutations": {
+    "deleteCount": 1,
+    "putCount": 1,
+    "secretsWritesDeployNewWorkerVersions": true,
+    "workerAssetsPutCount": 0
+  },
+  "planShape": [
+    "requestId",
+    "accountId",
+    "worker",
+    "sourceSha256",
+    "expectedVersionId",
+    "stableMetadataSha256",
+    "controlPlaneSha256",
+    "humanGrant",
+    "policy",
+    "identity"
+  ],
+  "ready": false,
+  "requestId": "db65c5b8-799b-5dc7-ab0a-6eb56b7927ae",
+  "schema": "jhg46-next-runtime-browser-gate-derivation-pending/v1",
+  "sourceSha256": "9c8e4b6b763e9887d1624f00ed3a8efb2a8a24d984d96bc68fdb289cb4d362c3"
+}

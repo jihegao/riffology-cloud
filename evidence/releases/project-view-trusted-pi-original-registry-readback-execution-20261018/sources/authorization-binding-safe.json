@@ -1,0 +1,25 @@
+{
+  "schema": "jhg46-public-safe-projection/v1",
+  "originalFile": "authorization-receipt.json",
+  "originalBytes": 3998,
+  "originalSHA256": "c23260a44908e29689e9df2801afe607cf72ab44d822f0116050f0215d323120",
+  "projectionNote": "Whitelist projection; no human reply/grant body or old-state path map. newRealExecutionStarted=false describes this pre-execution authorization snapshot only; subsequent actual execution is recorded separately.",
+  "data": {
+    "schema": "jhg46-c263-original-registry-readback-human-authorization/v1",
+    "approvalObservedAt": "2026-10-18T13:10:39+00:00",
+    "approvalTimestampBasis": "first root clock observation after direct user reply; message had no separate timestamp",
+    "completeSourceBindingSha256": "1dc5e1dbadd9c7496a2f6ac0ed609240df1f9fc48f486c2d4e43445eb76488ab",
+    "extraNormalTokenPullOnlyCredentialAndOwnedRouteAttempts": 1,
+    "grantExpiresAt": "2026-10-18T14:10:39+00:00",
+    "humanGrantBytes": 4549,
+    "humanGrantSha256": "eb6294d0b9dd1344e8717f5a8dd6ac879e7a41ed9455c0c2cb703f0ffbb2f97f",
+    "humanReplySha256": "71a0b8e166f339eb98d354cb5084ff9d535fa68b966b6aecb5a2fb7c6e9364d5",
+    "newRealExecutionStarted": false,
+    "oldRuntimeWindowExtended": false,
+    "operationId": "registry-readback-recovery-v1",
+    "operationsManifestSha256": "59fd2dd0f464e38b50b56e7c1d65229b6d81d86b12c935a822d5eeefead74342",
+    "preparedAt": "2026-10-18T13:11:08.760344+00:00",
+    "publicationCommit": "3fd5a29a1acfb198788b53688ed02130edebfeb5",
+    "requestId": "c263a2f3-f445-430e-b562-2e48f1eeb637"
+  }
+}

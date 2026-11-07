@@ -1,0 +1,39 @@
+{
+  "files": {
+    "AUTHORIZATION.md": {
+      "bytes": 4784,
+      "sha256": "927dbf5fa58f22785f0fa93f6dff04480bc07fd6d95ee12d88133bb8123aa4f6"
+    },
+    "EXECUTION.md": {
+      "bytes": 5380,
+      "sha256": "32c4bd44b98a2649c6b7a29426d62ced7ff0ffdba953dd1bf7aaa7bdc81ed3d9"
+    },
+    "local-recovery.py": {
+      "bytes": 19225,
+      "sha256": "c6923da17446f0b3b2473c554c149963636f632b950b26fa5b1ff553b891a600"
+    },
+    "oci_verify.py": {
+      "bytes": 5748,
+      "sha256": "0a23618e34b9a2acf608acc86d281ebd68f60a62ba2b102ecda92502c294acea"
+    },
+    "pub_common.py": {
+      "bytes": 3291,
+      "sha256": "43e5e41b0953da9deac52fe8533d9190172f0309fd163f44fec6c5ed6250eadc"
+    },
+    "remote-recovery.py": {
+      "bytes": 13818,
+      "sha256": "339aa74fd246024886ca243526bd097d39be16150719a3b117474a7fcad6a178"
+    },
+    "scope.json": {
+      "bytes": 5086,
+      "sha256": "33cc5a4e5124f36eef9656073404e9b8e779233c859867ae8d985edf46cc9e51"
+    },
+    "test_recovery.py": {
+      "bytes": 16307,
+      "sha256": "08832bab64eb8048588a5c124ad64713da0c3c17ee58e0f1b256fabaf162a1b0"
+    }
+  },
+  "requestId": "fb99c7e4-21a7-4215-8261-c17dd7c148aa",
+  "schema": "trusted-pi-registry-recovery-operations/v1",
+  "sourceImageId": "sha256:a946b164d10d074fcc9859f6c54c3b65d1901b41696c5ee8d8e31e275ddd1593"
+}

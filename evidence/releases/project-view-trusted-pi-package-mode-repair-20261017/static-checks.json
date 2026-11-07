@@ -1,0 +1,29 @@
+{
+  "schema": "trusted-pi-package-mode-repair-static-checks/v1",
+  "recordPreparedAt": "2026-10-17T12:45:14.331723+00:00",
+  "archive": {
+    "path": "pi-package-mode-repair-v1/jhg46-pi-package-mode-repair-v1-20261017.tar.gz",
+    "bytes": 61519,
+    "sha256": "4ae32cf711d7500d4b0cd893757ee5a625d9b275518b86e3680146c0b7f7dcd2"
+  },
+  "checks": {
+    "completeInventoryAndArchiveSha": true,
+    "all12TarMembersRegularExactNamesAndBytes": true,
+    "tarUidGidZeroMode0644MtimeZero": true,
+    "noEscapeOrLinks": true,
+    "originalFiveSourcesUnchanged": true,
+    "originalProbeAndF27ManifestUnchanged": true,
+    "twoNewPackagesEqualCurrentFrozenSha": true,
+    "fixedBaseAndRootSupervisorContractRetained": true,
+    "runtime6PlusPermission2EqualsTotal8": true,
+    "noNpmOrDependencyUpgrade": true,
+    "canonicalTwoLineProposalGitApplyCheck": true
+  },
+  "testsNotRun": [
+    "new image build",
+    "new image mock",
+    "source-mode provider mock already preserved in original historical receipt"
+  ],
+  "realTransferDockerSshApiOrCredentialRead": false,
+  "futureNewExecutionGrantRequired": true
+}

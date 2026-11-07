@@ -1,0 +1,62 @@
+{
+  "schema": "jhg46-safe-evidence-inventory/v1",
+  "files": [
+    {
+      "file": "README.md",
+      "bytes": 3061,
+      "sha256": "d7806d34cd130f61c6174e80a98532e1b03212c1c31c89748811a83a0874ba80"
+    },
+    {
+      "file": "beta-available.safe.json",
+      "bytes": 745,
+      "sha256": "f2a86ce8053832a69656d17afc061331a905384dbeb74d046f1b2c413e1b2b6a"
+    },
+    {
+      "file": "canonical-head.safe.json",
+      "bytes": 692,
+      "sha256": "8ba1be15c663c7c185b6b24d22519c8f613612cfcc81c34e90efd384910b442c"
+    },
+    {
+      "file": "failure-release-cleared.safe.json",
+      "bytes": 1289,
+      "sha256": "6ccfaa6946b036b390efa1ff7f87eac03c51ccac6fd52dee153af36cadd6b98a"
+    },
+    {
+      "file": "failure-release-pending.safe.json",
+      "bytes": 1325,
+      "sha256": "a432ccc994d6f7d2c2346452d1ad056dd1db760958e2a051b879bbdb8dad4176"
+    },
+    {
+      "file": "identity-and-initialization.safe.json",
+      "bytes": 1417,
+      "sha256": "53c2f8c7e026569cb5f5e66c00e9e9aa4f4fd7afe07d3db846fc061b07214aa1"
+    },
+    {
+      "file": "invalid-tool-receipt-read.safe.json",
+      "bytes": 789,
+      "sha256": "b5e1c87338c309cb14cfd8485c4170d69a7416eb21a168f1c791dcd16b5fd99e"
+    },
+    {
+      "file": "original-ui-request.safe.json",
+      "bytes": 1164,
+      "sha256": "35f5e4e3bcdba8f93c921260006920b660b8eae7ddf5b44fc3b58fc20dd34f73"
+    },
+    {
+      "file": "result.json",
+      "bytes": 5030,
+      "sha256": "a18bc9a6c73d3d4e17af6811f337a6eae4264bb4178afa720d62e25376a34762"
+    },
+    {
+      "file": "selected-failure-events.safe.json",
+      "bytes": 2451,
+      "sha256": "11e05bb31abfc9fe7638fe12dd2645583763552ef9d3ae5edca272516468c80b"
+    },
+    {
+      "file": "source-observation-bindings.json",
+      "bytes": 4180,
+      "sha256": "2d893a9b5555a54cbf3b52de653f76fd0e836f03d3596abba930c00537467f79"
+    }
+  ],
+  "selfExcluded": true,
+  "privateOriginalsCopied": false
+}

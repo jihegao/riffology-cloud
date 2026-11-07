@@ -1,0 +1,41 @@
+{
+  "schema": "jhg46-future-sdk-publication-new-project-fresh-read-contract/v1",
+  "reviewOnly": true,
+  "lastActualIsNotFresh": {
+    "closedWorker": "4f887d24-7874-4fb3-b3ac-caf6d74ab461",
+    "source": "9c8e4b6b763e9887d1624f00ed3a8efb2a8a24d984d96bc68fdb289cb4d362c3",
+    "targetAppVersion": 13,
+    "targetImage": "sha256:ec8dbe9efe229a1626ea3202b618653f82f8d29d9da8b19310c3b3838f2a2623",
+    "containerVersions": [
+      13,
+      12
+    ],
+    "deploymentId": "d03b8c4d-8cc2-475e-ba96-6e46d062983c",
+    "placementId": "8ef5d3a1-a30c-47c6-8608-b557b6bbc23a",
+    "knownIdleVmCount": 1,
+    "vmHealth": "running",
+    "containerStatus": "stopped",
+    "maxInstances": 1,
+    "profile": "default/basic",
+    "logicalInactive": 9,
+    "dashInstances": 0,
+    "dashDo": 9
+  },
+  "beforeMutation": [
+    "same original ordinary owner /api/me bracket, old a25f original T1/T2 receipts/snapshot/capacity: completed/saved exact R1/R2, all active/release/recovery/resourceWait clear; no old retry/T3",
+    "correct existing Personal same account/user identity; original worker sole-active/source/bindings/settings/exports/assets/associations/namespaces/routes/domains/secrets metadata plus all16 apps/full version records",
+    "full unfiltered target app/config/versions/logical/scheduler/exact current deployment/Dash families, including original known idle identity; a stale scalar/hash alone cannot silently absorb drift",
+    "actual fixed257 normal merge proof + source tree equals frozen build input; bundle/asset manifest/source graph and guarded sender/metadata sealed before auth/write"
+  ],
+  "afterGatewayPublication": "Original known ACK/current sole version, exact new sealed bundle/assets, both browser/remote closed; all original controls/resources/secrets/apps/versions unchanged except specifically approved source/assets/upload/version/deployment metadata. No maintenance/rollout or policy widening.",
+  "perTurn": "Original canonical Turn/key/runtime generation/checkpoint/Session head and successful tool event receipts plus product release authority, same actor/scope, all holds clear/capacity available, fresh complete bounded physical scope; unknown stops before next stage.",
+  "preservationTransport": "Reuse reviewed complete-pagination/actual credential-value guard/hash-only projection semantics with new actual source/version pins. Do not execute old hardcoded b62/5a840/9c8/v12/held/open sources as a new ready getter. Actual query source/response/receipt hashes must be bound first.",
+  "metadataDifferenceRule": "Preserve raw hashes. Prior c36 exact annotation/upload→secret bridge is a dated closed9c8/version-pair proof, not a blanket normalization for future metadata. Any allowed new publisher/secret metadata difference must be exact and reconstructible; no secret plaintext claim.",
+  "twoExistingPlatformDifferences": {
+    "rollingContainerVersions": "Retain actual current [13,12] representation and original older-version history. No runtime rollout here; unapproved version drift is not accepted by this clause.",
+    "idleVm": "At most the one already known d03b/8ef5 v13/ec8 basic/max1 idle VM may stay running with container stopped and may still cost. This is not permission to create a new idle placement, ignore an unknown identity or delete old resources. Ordinary new Turns still require their own original resource/release authority; no new placement is silently added to this baseline exception."
+  },
+  "afterOwnedClose": "Original acknowledged owned DELETE; fresh actual sole-current Worker with browser binding absent/default closed, exact new source/assets and all controls/resources preserved; original user snapshot/beta and full physical inventory, frame/port/listeners closed, no all-history/zero-fee extrapolation.",
+  "missingOrMalformedUnknown": "Stop along original identity. No new project/window/provider/credential/key as bypass; no runtime writes or direct SQL patch.",
+  "noNewLiveReaderImplementedByThisContract": true
+}

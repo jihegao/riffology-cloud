@@ -1,0 +1,29 @@
+{
+  "allOriginalPidsAbsent": true,
+  "at": "2026-10-18T13:26:14.965436+00:00",
+  "observations": [
+    {
+      "argvOrEnvRead": false,
+      "originalPidAbsent": true,
+      "outputBytes": 0,
+      "outputSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "pid": 87569,
+      "psExitCode": 1,
+      "record": "oauth-token-once-original-cli.json",
+      "recordedStartedAt": "2026-10-18T13:12:53.976610+00:00"
+    },
+    {
+      "argvOrEnvRead": false,
+      "originalPidAbsent": true,
+      "outputBytes": 0,
+      "outputSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "pid": 87657,
+      "psExitCode": 1,
+      "record": "original-ssh.json",
+      "recordedStartedAt": "2026-10-18T13:12:58.571740+00:00"
+    }
+  ],
+  "oldTwoStateFilesBytePreserved": true,
+  "remoteOrRegistryCalls": 0,
+  "schema": "jhg46-c263-readback-local-original-processes/v1"
+}

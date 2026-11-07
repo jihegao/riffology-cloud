@@ -1,0 +1,42 @@
+{
+  "schema": "jhg46-observed-state-pre-end-target-safe-projection/v1",
+  "source": {
+    "originalFile": "pre-end-target.private.json",
+    "bytes": 16347,
+    "sha256": "8baf38cb6c9c3b0648b4a46b0fc809616c30b6df45e5ba4ca7274aed58550761"
+  },
+  "observedAt": "2026-10-18T09:52:34.760Z",
+  "onlyGet": true,
+  "applicationId": "a03628c4-f032-461f-a65b-612ccac11a06",
+  "applicationVersion": 12,
+  "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-issue165-trusted-pi@sha256:f18a826d40b2fd60e2cf8c49d7f7b8f595fa609fe2be4c28593479ae846960ea",
+  "schedulingPolicy": "default",
+  "maxInstances": 1,
+  "rolloutId": "f1a653cc-44c2-49b9-87f3-33bb8940a540",
+  "rolloutStatus": "completed",
+  "versionsList": [
+    12,
+    11
+  ],
+  "deploymentListCount": 1,
+  "exactDeploymentId": "d030d0a3-5a0c-4aa3-a4f2-f2bc156ca905",
+  "exactAppVersion": 12,
+  "placementId": "758d8e05-8835-dacf-6b77-0b8cfda700ca",
+  "terminate": false,
+  "vmHealth": "running",
+  "containerStatus": "stopped",
+  "dashInstancesArrayCount": 0,
+  "dashHistoricalRowsCount": 6,
+  "logicalRowsCount": 6,
+  "statusByRead": {
+    "app": 200,
+    "versions": 200,
+    "rollout": 200,
+    "deployments": 200,
+    "exactDeployment": 200,
+    "logical": 200,
+    "dash": 200
+  },
+  "idleVmAcceptedNotReleased": true,
+  "actorConfigurationHostLocationEventsOrCredentialBodiesIncluded": false
+}

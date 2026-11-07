@@ -1,0 +1,36 @@
+{
+  "schema": "jhg46-native-host-image-publication-reader-offline-checks/v1",
+  "recordedAt": "2026-10-18T11:53:28.781930+00:00",
+  "passed": 11,
+  "failed": 0,
+  "scope": "Synthetic local files/process/socket mocks only. No AMD/Docker/OAuth/SSH/API/provider operation.",
+  "files": [
+    {
+      "file": "independent-cleanup-readonly.py",
+      "bytes": 10731,
+      "sha256": "b3ef15d9aefea3bbaf8d7e7c68e3c51a9c4cedeff16b8837b970330a742f4d26"
+    },
+    {
+      "file": "test_independent_reader.py",
+      "bytes": 7676,
+      "sha256": "4c5914379229436d8599208272dfaf9a502147ce8acbdf2636791d954be99830"
+    }
+  ],
+  "log": {
+    "bytes": 1051,
+    "sha256": "5495003ff9d5614b4211fb7633371d580f0cbfad39b5d16685e43e2dd46acb74"
+  },
+  "base": "Exact previous fb99 reader, adapted fixed c263 request/new directory/0bb index/49layer/one export without old archive reuse.",
+  "delta": [
+    "6 CLI lifecycles including export-once; precredential stop checks first3 and rejects later records.",
+    "Unknown child manifest/config derived from original new verification; no prefilled digest.",
+    "Original new archive stat/owner600/size and exporter archiveBytesWritten match; reader does not independently rehash full archive.",
+    "3 small original raw metadata hashes/descriptor chain and config49diffIDs verified; before/after Engine index/platform/RootFS and same Config compared.",
+    "Full Registry tag/digest manifest/config/all49 layer slots descriptor readback required for success.",
+    "Same credential-copy/process/route terminal cleanup, zero writes and no automatic retry/merge."
+  ],
+  "limitations": [
+    "Original full archive/blob/diffID verification occurs in publisher; reader independently checks original records and small metadata only.",
+    "Actual new export, platform/config digests, Registry publication and remote cleanup remain unexecuted and unauthorized."
+  ]
+}

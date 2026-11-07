@@ -1,0 +1,66 @@
+{
+  "schema": "jhg46-trusted-pi-existing-proxy-readonly/v1",
+  "recordedAt": "2026-10-17T11:20:18.066Z",
+  "timeBoundary": "Safe projection recorded after completed tool results; exact command start/end UTC were not separately captured.",
+  "authority": "root read-only SSH on existing AMD128 and permitted local TCP-listener check",
+  "remote": {
+    "docker": "/usr/bin/docker",
+    "socket": "unix:///var/run/docker.sock",
+    "defaultContextEndpointMatches": true,
+    "socketIsUnixSocket": true,
+    "actualInfoFields": {
+      "HttpProxy": {
+        "scheme": "http",
+        "host": "127.0.0.1",
+        "port": 7897,
+        "hasEmbeddedCredentials": false,
+        "connectResult": "ECONNREFUSED",
+        "errno": 111
+      },
+      "HttpsProxy": {
+        "scheme": "http",
+        "host": "127.0.0.1",
+        "port": 7897,
+        "hasEmbeddedCredentials": false,
+        "connectResult": "ECONNREFUSED",
+        "errno": 111
+      }
+    }
+  },
+  "local": {
+    "existingHttpsProxy": {
+      "scheme": "http",
+      "host": "127.0.0.1",
+      "port": 7892,
+      "hasEmbeddedCredentials": false
+    },
+    "tcpListenerReachable": true,
+    "checkedWithPermittedNetwork": true,
+    "externalProxyRequestSent": false
+  },
+  "diagnostics": {
+    "earlierUppercaseOnlyDockerFieldLookupNotAuthoritative": true,
+    "earlierSandboxLocalFalseResultNotUsed": true
+  },
+  "operationsPerformed": {
+    "dockerInfoRead": true,
+    "contextInspectRead": true,
+    "loopbackTcpConnectivityOnly": true,
+    "daemonOrRouteMutation": false,
+    "newRelay": false,
+    "projectPackageOrCredentialTransfer": false,
+    "pullBuildOrContainerStart": false,
+    "registryOrProviderCall": false
+  },
+  "nextProposedRoute": {
+    "kind": "single task-owned temporary SSH reverse forward",
+    "recipient": "AMD128",
+    "remoteBind": "127.0.0.1:7897",
+    "localDestination": "127.0.0.1:7892",
+    "requiresNewExactOfflineGrant": true,
+    "upstreamRegistryConnectivityNotYetProven": true,
+    "noDaemonProxyConfigChange": true,
+    "cleanupExactOwnedProcessOnly": true
+  },
+  "archiveSha256Unchanged": "c92e672ca39d10d61467801f457147e3ee9cf2cfbbbe8b96d00a618a6a208bae"
+}

@@ -1,0 +1,26 @@
+{
+  "capturedBytes": 9585,
+  "capturedSha256": "ec8dbe9efe229a1626ea3202b618653f82f8d29d9da8b19310c3b3838f2a2623",
+  "endedAt": "2026-10-18T13:13:08.369506+00:00",
+  "errorCode": null,
+  "exceptionClass": null,
+  "expectedDescriptor": {
+    "digest": "sha256:ec8dbe9efe229a1626ea3202b618653f82f8d29d9da8b19310c3b3838f2a2623",
+    "mediaType": "application/vnd.oci.image.manifest.v1+json",
+    "size": 9585
+  },
+  "httpStatus": 200,
+  "manifestOrBlobHeaderMatches": true,
+  "operationId": "registry-readback-recovery-v1",
+  "path": "manifests/jhg46-native-resource-host-20261018-0bb9af7a",
+  "phase": "complete",
+  "proofAccepted": true,
+  "rawBodyHeadersErrorTextOrAuthPersisted": false,
+  "requestId": "c263a2f3-f445-430e-b562-2e48f1eeb637",
+  "responseCaptureComplete": true,
+  "responseClosed": true,
+  "schema": "trusted-pi-registry-get-terminal/v1",
+  "slot": 0,
+  "smallRawEqualityPassed": true,
+  "startedAt": "2026-10-18T13:13:05.127874+00:00"
+}

@@ -1,0 +1,140 @@
+{
+  "checks": {
+    "actualExportAttempts": 1,
+    "actualPushAttempts": 0,
+    "boundedRemoteFileReferences": 19,
+    "fixedBootstrapAndReaderInputsMatched": true,
+    "fixedRequestSourceDestinationGrantAndOperationsCheckedByReader": true,
+    "laterOperationRecordsAbsent": 18,
+    "localCredentialCopiesAbsent": true,
+    "loopbackConnectErrno": 111,
+    "originalArchiveCurrentSizeShaMatched": true,
+    "originalCliZeroExitReapedCurrentOriginalAbsentCount": 3,
+    "originalLocalSshPidAndStartRecordMatchedCurrentlyAbsent": true,
+    "originalRemoteTerminalRemainsUnknownStopped": true,
+    "originalSupervisorAbsent": true,
+    "rawIndexPlatformConfigLayerChainMatchedByReader": true,
+    "rawStdoutEqualsPrettyResult": true,
+    "route7897Absent": true,
+    "transportExitZeroReapedNoStopErrorsNoIncompleteStreams": true,
+    "transportStreamBytesAndHashesMatched": true
+  },
+  "limits": [
+    "This batch exported and verified the original local image but did not publish or push it. No Registry digest publication, rollout, or deployed application change is established.",
+    "HTTP403 was an explicit rejection. Missing scope, billing/arrears and other response cause remain unproved; no permission expansion or automatic retry follows.",
+    "Credential issuance, revocation and natural expiry are not proved. Local temporary credential-copy absence is independently confirmed.",
+    "The one failure-reader run was remote-read-only and added zero Docker/provider/credential API calls; original publication execution necessarily wrote its own export and records.",
+    "All-blob and decompressed diffID verification is the original verifier result bound to the independently current archive digest. The failure reader did not rerun the OCI verifier.",
+    "Remote bounded source/config/CLI-log file bytes were checked by the pinned reader; only safe metadata/hash projections are present locally, not raw Env/config/log bodies.",
+    "Remote and local wall clocks are not proven synchronized. Their original timestamps are preserved without inferring cross-host ordering.",
+    "The original remote terminal remains unknown-stopped; independent release confirms cleanup without relabelling publication success.",
+    "GitHub current state was not re-read by this reviewer. The reviewed scripts contain no merge action, and the recorded PR239 technical CI gate remains held.",
+    "No ordinary authenticated user flow, real model/Turn/Run, account-wide zero-usage, cost settlement, or full JHG46 acceptance is established."
+  ],
+  "mustFix": [],
+  "originalExport": {
+    "allRawBlobHashesSizesReachable": true,
+    "allRunnableDiffIdsMatched": true,
+    "archiveBytes": 407955456,
+    "archiveSha256": "83b81e553a9c4e885299650c31cd179e126168c4da50b2dfd3ed1d8ffe5e0b51",
+    "blobCount": 52,
+    "config": {
+      "digest": "sha256:07c199e17490cc4fdf3e8027770f8a7413090d4e7c3a1f44aa9064e115641059",
+      "mediaType": "application/vnd.oci.image.config.v1+json",
+      "size": 18775
+    },
+    "linuxAmd64Manifest": {
+      "digest": "sha256:f18a826d40b2fd60e2cf8c49d7f7b8f595fa609fe2be4c28593479ae846960ea",
+      "mediaType": "application/vnd.oci.image.manifest.v1+json",
+      "size": 9396
+    },
+    "originalIndex": {
+      "digest": "sha256:a946b164d10d074fcc9859f6c54c3b65d1901b41696c5ee8d8e31e275ddd1593",
+      "mediaType": "application/vnd.oci.image.index.v1+json",
+      "size": 856
+    },
+    "rootfsLayerCount": 48
+  },
+  "publication": {
+    "credentialPostHttpStatus": 403,
+    "credentialStdinSent": false,
+    "finalPublicationAckVerified": false,
+    "mergeAllowed": false,
+    "mergePerformedByReviewedScripts": false,
+    "pushPerformedInThisAttempt": false,
+    "registryReadbackPerformedInThisAttempt": false,
+    "succeeded": false
+  },
+  "requestId": "c3e04c41-72da-409b-a2b1-f924e6cc67fa",
+  "reviewedAt": "2026-10-17T15:43:03.676499+00:00",
+  "schema": "jhg46-pi-publication-failed-actual-result-independent-review/v1",
+  "sideEffects": {
+    "originalRecordsModified": 0,
+    "reviewerOAuthOrCredentialFilesRead": 0,
+    "reviewerRemoteCalls": 0,
+    "reviewerTestsOrTargetScriptsExecuted": 0
+  },
+  "sourceRefs": [
+    {
+      "bytes": 515,
+      "path": "failure-independent-readback-once/intent.json",
+      "sha256": "9fc31fa521a0598cd51fa16a577522d015c455d69000959e46b9801d6e65676d"
+    },
+    {
+      "bytes": 434,
+      "path": "failure-independent-readback-once/terminal.json",
+      "sha256": "6e1760e0b686dd5dfd02b6562c71ca4c92ba1b6fb06afc2c3125f585cde6c60c"
+    },
+    {
+      "bytes": 13726,
+      "path": "failure-independent-readback-once/stdout",
+      "sha256": "fcbe43460993f6ccd72b94eb1848b3159968ecaaeb739e0ada022a60dd5bfc5b"
+    },
+    {
+      "bytes": 0,
+      "path": "failure-independent-readback-once/stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 16546,
+      "path": "failure-independent-readback-once/result.json",
+      "sha256": "04b23b22c9900746fcff7a1d298ef5016f823abf92b0181e15ecc1bf27f04a6a"
+    },
+    {
+      "bytes": 70,
+      "path": "failure-independent-readback-once/original-process.json",
+      "sha256": "4740ed68cc2b4dfd4e8941868c04e9739d93a488c3d8625919334e03e9ecbe0a"
+    },
+    {
+      "bytes": 390,
+      "path": "original-local-ssh-readback.json",
+      "sha256": "270fadd33196084873c2d02491fe1c11ab9e48eda0cc1018994aff47963d93ca"
+    },
+    {
+      "bytes": 148,
+      "path": "ops/publication-once/original-ssh.json",
+      "sha256": "6784de264c962ce9166933fa38d5b8d48bf35310b6738b55ff7f6cad89c535b1"
+    },
+    {
+      "bytes": 835,
+      "path": "ops/publication-once/terminal.json",
+      "sha256": "d3df3b72f5fd743df43e1b6713cb0bbec50158cee46b2c969346c546684dd6b4"
+    },
+    {
+      "bytes": 165,
+      "path": "ops/publication-once/credential-http-stop.json",
+      "sha256": "53f4e62999d75c7d975763707c026d645d07e93b9f02d7cdd4f4274a5ebeff4c"
+    },
+    {
+      "bytes": 7260,
+      "path": "failure-readonly.py",
+      "sha256": "fe4acbcdace1167d0815d23b8b0642567f3b3b01abc9fca29ef30dc12e380949"
+    },
+    {
+      "bytes": 5305,
+      "path": "run-failure-readback-once.py",
+      "sha256": "eeb940e463389d9f629f401d75dafcb006765c28f072bfab9b384bbac7d8ca06"
+    }
+  ],
+  "status": "failed-publication-original-export-and-independent-cleanup-confirmed"
+}

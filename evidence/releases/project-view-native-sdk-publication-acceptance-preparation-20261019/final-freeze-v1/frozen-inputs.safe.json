@@ -1,0 +1,248 @@
+{
+  "schema": "jhg46-native-sdk-publication-and-fresh-acceptance-frozen-inputs/v1",
+  "frozenAt": "2026-10-18T17:57:39.880022+00:00",
+  "preparationComplete": true,
+  "executionAuthorized": false,
+  "goal": "same JHG-46 goal",
+  "repository": "jihegao/riffology-cloud",
+  "deliveryIssue": 214,
+  "minimalFixIssue": 255,
+  "sourcePr": 257,
+  "evidencePr": 236,
+  "owner": "jihegao",
+  "milestone": 1,
+  "batchRequestId": "fb07e239-2cb4-4379-9581-5711d86a0f30",
+  "gatewayRequestId": "1feadf24-3eb8-58be-abd7-872c68ab45e6",
+  "browserGateRequestId": "95b9b8c6-8d52-566d-8476-dfa3e02f6b79",
+  "fixedSourceCommit": "fca66cb0e1024b4e86bbbeb9a6d955b137599efa",
+  "fixedBundle": {
+    "bytes": 5774988,
+    "sha256": "304373a50d7a9ca8a99cdfbda0dcae261aa34d53727b757dfeb099c88efb5e0b"
+  },
+  "frameSha256": "63ebcd050b0ccf5019265070890bee69d99902120f2252c376678aff299d374b",
+  "assets": {
+    "paths": 96,
+    "bodyBytes": 53784755,
+    "changedPaths": [
+      "/project-view-local.js",
+      "/project-views.js"
+    ],
+    "unchangedPaths": 94,
+    "immutableRetained": 68
+  },
+  "inputManifests": {
+    "content": {
+      "file": "content-candidate-v1/manifest.json",
+      "bytes": 4735,
+      "sha256": "0eebd2f2bd57d0ad54ba47ffec164521ea680d07fef1ea0c7a6a2127658e4ad8"
+    },
+    "contractAuthorSnapshot": {
+      "file": "contract-candidate-v1/manifest.json",
+      "bytes": 3890,
+      "sha256": "e685fd08be4bbacf4828d86a27ebad64ab7bb332f22a6ba41da1a68e260db347"
+    },
+    "gatewayOperations": {
+      "file": "gateway-ops-candidate-v1/operations-manifest.json",
+      "bytes": 4317,
+      "sha256": "1f91432d7546a7dfce12aee5345b58048314590aa2c2e0881bd8372b17419598"
+    },
+    "gateOperations": {
+      "file": "browser-gate-ops-candidate-v1/operations-manifest.json",
+      "bytes": 6616,
+      "sha256": "88ed7584237cccf6c7ae2a61993622a9655e7446551f9740d5f411c282b3210f"
+    },
+    "localBuildSourceBinding": {
+      "file": "build-candidate-v2/source-content-binding.json",
+      "bytes": 13060,
+      "sha256": "4f5bcd14f20e06b810405a730c3d57d8cbfe0905bbffa95f9696535243f6ce06"
+    },
+    "localBuildManifest": {
+      "file": "build-candidate-v2/output/build-manifest.json",
+      "bytes": 5651,
+      "sha256": "c4289bb276ed6ede021acd6c8d2c439aeb007ea8ca5b15b582bf4b1aa7564e20"
+    }
+  },
+  "independentReviews": {
+    "content": {
+      "file": "content-candidate-v1/reviews/independent-content-review.safe.json",
+      "bytes": 1787,
+      "sha256": "817c2aaec5423be4f1036bb317c209bc68a5ea2fa142b08a3cd6961231475968"
+    },
+    "contractAuthorSnapshot": {
+      "file": "reviews/independent-contract-draft-review.safe.json",
+      "bytes": 2191,
+      "sha256": "cc7dc162f726276a0351d2cce8154124a899fa89ef92aa0b6ff9f34c38291e1d"
+    },
+    "build": {
+      "file": "reviews/root-independent-offline-build.safe.json",
+      "bytes": 3374,
+      "sha256": "ea269a716ebdb8a14416ace61834c42a516b7dc718a741b846a5833652cd6a5e"
+    },
+    "currentDatedBaseline": {
+      "file": "reviews/independent-current-baseline-review.safe.json",
+      "bytes": 2062,
+      "sha256": "d9af54893301b989887e3e699f8d2a5de2c4f9b12cc3e8d570278c2c1aa3ed51"
+    },
+    "gatewayOperations": {
+      "file": "reviews/independent-sdk-gateway-ops-review.safe.json",
+      "bytes": 8961,
+      "sha256": "73da27cfbb2775dd38fce097c557012d5cab078e0498b2f97cd05b7c98c894bd"
+    },
+    "gateOperations": {
+      "file": "reviews/independent-sdk-browser-gate-ops-review.safe.json",
+      "bytes": 2254,
+      "sha256": "810ba6fb00ccc519c355353d660ef7264651c3a8454399ae7317de3698cd9426"
+    }
+  },
+  "ci": {
+    "head": "fca66cb0e1024b4e86bbbeb9a6d955b137599efa",
+    "run": 39149750214,
+    "job": 117740777481,
+    "conclusion": "success",
+    "completedAt": "2026-10-18T17:41:30Z",
+    "observation": {
+      "file": "reviews/ci-current-observation.safe.json",
+      "bytes": 5786,
+      "sha256": "8fc60e0c8e6df6a963a50c6f5192fd7f9ad128ea828938fcc506c43f69554bf1"
+    },
+    "historicalBillingResolutionNotEstablished": true
+  },
+  "modelPins": {
+    "gatewayId": "riffology-g5-20260916",
+    "lazyProjectEnabled": false,
+    "maxInputTokensPerCall": 262144,
+    "maxOutputTokensPerCall": 4096,
+    "model": "gpt-5.6-luna",
+    "profileSha256": "7291181d366d597b4c5ebcf365d43dd455904bfdcc4825ba7bf020aac9903341",
+    "profileVersion": "g5-openai-luna-20260916-wiring-v1",
+    "protocol": "openai-responses",
+    "provider": "openai",
+    "providerRetryOrFallback": false,
+    "trustedPiRequestDeadlineMs": 115000,
+    "workspaceRuntimeReuseEnabled": false
+  },
+  "ordinaryHardLimits": {
+    "actualTrustedPiCallDeadlineMs": 115000,
+    "bashTimeoutMaximumMs": 30000,
+    "configuredReviewDeadline": "2026-12-31T15:59:59.999Z",
+    "effectiveExpiryRule": "min(original explicit human grant/#104 authority deadline, configured reviewAt, any narrower scoped grant); config Dec31 does not extend Oct20 human authority",
+    "humanReviewDeadline": "2026-10-20T15:59:59.999Z",
+    "monitorIntervalMs": 60000,
+    "outerPolicyMaxTurnDurationMs": 900000,
+    "outerReleaseTimeoutMs": 120000,
+    "perTurnNativeExecutionDeadlineMs": 600000,
+    "perUserActiveTurns": 1,
+    "policyMaxProviderCallDurationMs": 360000,
+    "privateBetaLogicalGlobalActiveTurns": 2,
+    "toolCommandTotalDeadlineMaximumMs": 120000,
+    "trustedPiUnderlyingGlobalSlots": 1
+  },
+  "newCloudWriteCeilings": {
+    "normalMergeFixedPr257": 1,
+    "existingWorkerScriptPut": 1,
+    "assetStaging": "only the future sealed exact asset manifest protocol; exact batches pending build",
+    "browserSecretPut": 1,
+    "ownedBrowserSecretDelete": 1,
+    "maintenanceBegin": 0,
+    "maintenanceEnd": 0,
+    "imageRollout": 0,
+    "registryExportPushReadbackOrCredential": 0,
+    "amdSshDockerOrProxy": 0,
+    "newAppNamespaceOrSubscription": 0
+  },
+  "ordinaryProductCeilings": {
+    "newBlankProjects": 1,
+    "sessions": 2,
+    "plannedExplicitTurns": 3,
+    "extraRepairTurns": 0
+  },
+  "staticReadback": {
+    "assets": 96,
+    "newFrame": 1,
+    "fullBytesAndSha256": true,
+    "cookiesOrProvider": false,
+    "beforeNewTurns": true
+  },
+  "authorCheckAttribution": {
+    "source": "original57 bound earlier helper and same4 production files; final3Chromium+3WebKit; exact headCI success",
+    "artifactReference": "8 unique synthetic cases, repeated output-format run not8more",
+    "gateway": "initial13 history separated from final2 realistic GET-only fixture phases each39GET",
+    "gate": "final9 including3 realistic GET-only phases each53GET; prior5of6 fixture Buffer failure retained; repeated9 run not extra cases"
+  },
+  "runtimeInputsStillNull": {
+    "newHumanGrant": null,
+    "startsAt": null,
+    "endsAt": null,
+    "actualNormalMergeProof": null,
+    "originalPublicationAck": null,
+    "newPublishedClosedVersion": null,
+    "newProjectScopeAndGeneration": null,
+    "newOriginalTurnKeysAndCanonicalRevisions": null,
+    "gateIdentityQuartet": null,
+    "actualFiniteGatePolicyBody": null,
+    "originalGateOpenAckAndActualVersion": null,
+    "originalOwnedDeleteAckAndActualClosedVersion": null
+  },
+  "window": {
+    "maximumMilliseconds": 14400000,
+    "absoluteHumanCeiling": "2026-10-20T15:59:59.999Z",
+    "startsOnlyOnActualNewHumanAuthorization": true
+  },
+  "existingAuthorizationToReuseWithinNewGrant": {
+    "sameApprovedSixScopeOauthNormalReadOrNecessaryRefreshOnly": true,
+    "sameApprovedTwoSafariIdentitiesOnly": true,
+    "newLoginConsentScope": false,
+    "feeBudgetCap": null,
+    "explicitArrearsNotify": true,
+    "paymentSubscriptionChanges": false,
+    "nativeDomAuthorizedProjectDataEgress": "previously accepted"
+  },
+  "clarificationsForFinalContract": [
+    "This final preparation supplements the preserved non-ready author draft; actual execution is still not authorized.",
+    "Merge fixed257 under fresh ordinary protection/review/checks then once replace existing Gateway/assets with page admission closed. No image rollout, maintenance hold, AMD/SSH/Docker or Registry credential/image operations.",
+    "Required asset-session JWT stays local solely for fixed asset upload; no new proxy route. Registry/JWT wording in the older draft does not prohibit this required asset-session JWT.",
+    "Verify original ACK, fresh full resource preservation, all96 public asset bodies and newframe before any new Turn.",
+    "One new ordinary project/Session1: T1 fixedskill/R1/release; T2 slash loader/build/actualartifact/R2/release. Capture initial SDK requests before finitegate PUT.",
+    "Only after V1 actual pages20/50, full artifact raw SHA then envelope.content, subscription/pause/refresh/reentry passes: Session2 onlyT3, R3/release and V2cold24/60.",
+    "Stop first stage failure. No retry, provider fallback, fourthTurn or old-project/old-key/window reuse.",
+    "If credibly opened, once original-owned DELETE within the same grant window; use original ACK/version/bodyhash chain and derived finalclosed GET. Never blindly delete without original ownership.",
+    "The only annotation bridge accepts the full predicted exactsecret projection hash; it retains original raw and derived hashes and deletes no other fields.",
+    "All old histories, revisions, usage/fees/reservations and locks remain; browser results are local/unverified; full JHG-56 remains separate."
+  ],
+  "preservation": {
+    "bindings": 106,
+    "secretEntries": 11,
+    "configuredExports": 25,
+    "containerAssociations": 6,
+    "namespaces": 50,
+    "applicationsAndFullVersionLists": 16,
+    "piVersion": 13,
+    "piImageDigest": "ec8dbe9efe229a1626ea3202b618653f82f8d29d9da8b19310c3b3838f2a2623",
+    "acceptedKnownIdleDeployment": "d03b8c4d-8cc2-475e-ba96-6e46d062983c",
+    "acceptedKnownIdlePlacement": "8ef5d3a1-a30c-47c6-8608-b557b6bbc23a",
+    "atMostOneKnownBasicMax1VmRunningWithContainerStoppedMayBeCharged": true,
+    "unknownPlacementNotSilentlyAccepted": true
+  },
+  "datedPreparationReads": {
+    "threeCurrentFamiliesGetCount": 29,
+    "originalEvidence": {
+      "file": "baseline-current-reads-v1/safe-receipt.json",
+      "bytes": 5063,
+      "sha256": "b5444106522453ac32daa498125352568b3d1f62975dcd9dafc798413cfe8368"
+    },
+    "notFutureFreshExecutionWitness": true
+  },
+  "privateFrozenInputsRetainedLocally": {
+    "fullBaseline": {
+      "file": "gateway-ops-candidate-v1/baseline-expectation.private.json",
+      "bytes": 128639,
+      "sha256": "24a04f3d44b01788dbb3157f07b83d2614f16dbee9622ed5ec5f7906d9a61f2a"
+    },
+    "wireMetadataBeforeAssetJwt": {
+      "file": "gateway-ops-candidate-v1/metadata-without-jwt.private.json",
+      "bytes": 30437,
+      "sha256": "deaebd8cb6eefe25098b7cb3e48223e760df9b6456b287b6a4c1bd988d68f636"
+    }
+  },
+  "privacy": "Only identity hashes/resource IDs/relative provenance paths in this file; no credential, raw configuration, actual actor/email/tenant row or project body."
+}

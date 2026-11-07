@@ -1,0 +1,54 @@
+{
+  "limits": [
+    "This is static source/hash review, not execution, live remote release evidence, or publication success.",
+    "No target code or fixtures were run by the reviewer; no OAuth, credential body, SSH, Docker or API was accessed.",
+    "Archive all-blob/diffID validation remains the original verifier record bound by unchanged archive digest; this failure reader does not rerun the OCI verifier.",
+    "Local record persistence assumes writable local storage; any missing/error terminal or incomplete stream remains pending and cannot authorize replay or merge.",
+    "The current PR239 CI gate is independent and remains held pending its own evidence."
+  ],
+  "readOnlyScope": [
+    "Only fixed c3e directory, private original records, approved archive current size/hash, original PID/start-ticks state, temporary-auth path and IPv4/IPv6 port7897 release are observed.",
+    "The fixed success-only observe function is not called. Only its fixed private-read/hash/PID/route helpers are imported.",
+    "Failed original terminal must remain unknown-stopped with 1 export, 0 push, approved original request/source/destination/grant/operations hashes and one of two bounded pre-credential stop errors.",
+    "The three original source-before/export-once/source-after CLIs require zero exit, recorded reaped and original-PID absence; their bounded streams must match recorded byte hashes.",
+    "Original raw index/platform/config/layer descriptors and diffIDs are bound; original archive is current-size/hash checked without exposing config or Env.",
+    "Eighteen fixed later-operation records, temporary-auth dir/config and port7897 must be absent.",
+    "No Docker/provider/credential API, write or retry is added remotely. SSH uses no agent, no inherited forwarding, no shared master/control socket and in-memory pinned source only.",
+    "Both success and pending readback reports preserve publicationSucceeded=false and mergeAllowed=false."
+  ],
+  "requestId": "c3e04c41-72da-409b-a2b1-f924e6cc67fa",
+  "resolvedMustFixes": [
+    {
+      "issue": "Failure-reader bytes were not hard-pinned locally; SSH timeout/start failure skipped terminal and observed-stream persistence.",
+      "resolution": "Failure reader, shared reader, local stop helper/common/scope are now exact-SHA pinned. A single original SSH Popen records PID, collects bounded streams with a 180-second observation bound, invokes the already-reviewed stop_owned in finally and writes observed streams plus terminal with error/reaped/stopErrors/streamsMayBeIncomplete before reporting pending.",
+      "supersededTransportSha256": "d380a1a723fd3bc64fb3ca45d7c4f888923d086599628db8a0059ae9d234669f"
+    }
+  ],
+  "reviewedAt": "2026-10-17T15:39:41.578456+00:00",
+  "schema": "jhg46-c3e-failure-readonly-source-review/v1",
+  "sideEffects": {
+    "oauthOrCredentialFilesRead": 0,
+    "originalSourcesOrRecordsModified": 0,
+    "sshDockerOrApiCalls": 0,
+    "targetScriptsExecuted": 0,
+    "testsRun": 0
+  },
+  "sourceRefs": [
+    {
+      "bytes": 7260,
+      "path": "failure-readonly.py",
+      "sha256": "fe4acbcdace1167d0815d23b8b0642567f3b3b01abc9fca29ef30dc12e380949"
+    },
+    {
+      "bytes": 5305,
+      "path": "run-failure-readback-once.py",
+      "sha256": "eeb940e463389d9f629f401d75dafcb006765c28f072bfab9b384bbac7d8ca06"
+    },
+    {
+      "bytes": 7854,
+      "path": "ops/independent-cleanup-readonly.py",
+      "sha256": "2cf04125f41a89804ab284fe378990529b5eb9ad11b76888202b481a45a93ab9"
+    }
+  ],
+  "status": "passed-no-mustfix-fixed-readonly-once-only"
+}

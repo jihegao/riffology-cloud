@@ -1,0 +1,65 @@
+{
+  "baselineEvidenceCommit": "4478009c4671df56d36ebf7d011b79de15b5b58c",
+  "checks": [
+    "The three-file update only changes the top245 readiness section and adds README plus the exact sanitized original terminal. Later readiness history remains identical to4478009.",
+    "All eight existing workflow checks are accurately described:check:ui,typecheck,test:m0,test:m1,test:m2,test:m3,issue73:validate,test:research-quality. Accumulated nonzero status and pipefail justify complete workflow success, with conditional skips retained.",
+    "Documentation distinguishes PRhead/base CI association from the normal PR checkout merge ref; no head-only checkout proof or test/pass/skip counts are asserted.",
+    "No manual rerun/full new test run, merge/deployment, paid/cloud/ordinary-user acceptance or billing-settlement conclusion is inferred.",
+    "The original local67/final4/smallText-versus-localLimits/audit-write limitations and later hosted success remain separate.",
+    "Original PR246 source head05681 and all16 prior evidence files are unchanged; original14d packet and entire24-file recovery preparation directory are byte-identical, including manifest3779.",
+    "No production services/tests/ui/infra/package diff exists against4478009."
+  ],
+  "fileRefs": [
+    {
+      "bytes": 151162,
+      "path": "docs/release-readiness.md",
+      "sha256": "531629665b22c1c0ed3470ba826e0c9e1c68dcd080605d76d1770b49a11c9400"
+    },
+    {
+      "bytes": 3137,
+      "path": "evidence/releases/project-view-package-budget-ci-20261018/README.md",
+      "sha256": "3ddf5fdc69f5ab98371c71187dca7285598232c6f9d0fb79a0728ef8d39c3ac4"
+    },
+    {
+      "bytes": 5786,
+      "path": "evidence/releases/project-view-package-budget-ci-20261018/original-run-terminal.json",
+      "sha256": "d086a1f91b7faea76c2b707392c8dab7235ef35ba5255632dc3f1461b7de1f29"
+    }
+  ],
+  "historicalInputs": {
+    "recoveryManifestSha256": "3779af353a82fa334fc805a54ff02fe91a2f905d2cc9daf4733b1fd92189589c",
+    "recoveryPacketCommit": "14d2a2a5e03166ddba5167523127aeae0edd8832",
+    "recoveryPreparationFilesUnchanged": 24,
+    "sourcePr246EvidenceFilesUnchanged": 16,
+    "sourcePr246HeadUnchanged": "05681cf3cf53d965784df486c25c622b74421ef0"
+  },
+  "limits": [
+    "Ready/unmerged status is parent-provided current metadata; reviewer made no live GitHub requests in this documentation check.",
+    "This is a content/hash review of the three worktree files, not a commit/push/protected-merge approval or product acceptance.",
+    "Conditional skips and opt-in cloud/paid suites remain outside the demonstrated CI result.",
+    "No real auth, SSH, Registry, Docker, Cloudflare, gate/project/model/Turn/Run action was performed or authorized."
+  ],
+  "mustFix": [],
+  "originalCi": {
+    "allReturnedStepsCompletedSuccess": true,
+    "attempt": 1,
+    "base": "638a366d31a37f7bc1d7dcd124e0b5ba753d6401",
+    "head": "05681cf3cf53d965784df486c25c622b74421ef0",
+    "jobId": 117541070664,
+    "logsReadByReviewer": false,
+    "receiptExactCopy": true,
+    "returnedJobSteps": 14,
+    "runId": 39082129040,
+    "workflowSha256": "af3fe79a89b985ef22cf2a47a9e9a9a903ae5285a8b7dfca13144d0261e9f5b1"
+  },
+  "relativeLinksChecked": 2,
+  "reviewedAt": "2026-10-18T00:36:22.170582+00:00",
+  "reviewerSideEffects": {
+    "commitPushOrGithubMetadataWrites": 0,
+    "externalServiceCalls": 0,
+    "testsOrCiRerun": 0,
+    "worktreeFilesModified": 0
+  },
+  "schema": "jhg46-original-ci-documentation-independent-review/v1",
+  "status": "passed-no-mustfix"
+}

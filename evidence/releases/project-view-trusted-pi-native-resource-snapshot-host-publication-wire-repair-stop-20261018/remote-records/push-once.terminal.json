@@ -1,0 +1,20 @@
+{
+  "archiveBytesWritten": 0,
+  "endedAt": "2026-10-18T12:36:38.892650+00:00",
+  "errorCode": null,
+  "exitCode": 0,
+  "linuxStartTicks": "173370517",
+  "pid": 3107480,
+  "reaped": true,
+  "stopErrors": [],
+  "streams": {
+    "stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stdout": {
+      "bytes": 15371,
+      "sha256": "4ce0f090f032fb91b05fda54acc314fa78e9cb8b7f90ca00d9e4e9d7fa560009"
+    }
+  }
+}

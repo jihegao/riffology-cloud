@@ -1,0 +1,341 @@
+{
+  "schema": "trusted-pi-offline-build-public-packet/v1",
+  "recordedAt": "2026-10-17T11:04:02.882Z",
+  "issue": "https://github.com/jihegao/riffology-cloud/issues/214",
+  "skillIssue": "https://github.com/jihegao/riffology-cloud/issues/85",
+  "owner": "@jihegao",
+  "reviewOnly": true,
+  "sourceImplementationAlreadyMerged": true,
+  "doesNotDependOnPr235Source": true,
+  "sourceCommits": {
+    "main": "1585280c76e55cae61f3969db5545f76edce678c",
+    "implementation": "bc4c0377dd4a59c6ddf6b9de71e3f0fcbe028999",
+    "allInputsEqual": true,
+    "files": [
+      {
+        "path": "services/browser-preview/runtime/sha256.mjs",
+        "bytes": 2241,
+        "sha256": "85da435e9edaf4dca3411cf5f86fa45a95fe15c78060849d11f7eb0344b5bd24",
+        "mainEqualsImplementation": true
+      },
+      {
+        "path": "services/project-resources/text.mjs",
+        "bytes": 6700,
+        "sha256": "9f7f3266549f04a0a8214e6e725ea9d85030532364f136487833e9cc45af303e",
+        "mainEqualsImplementation": true
+      },
+      {
+        "path": "services/runtime/controlled-pi.mjs",
+        "bytes": 23072,
+        "sha256": "cf4143bff6cf049d2ab8247ef86ceb5f5391da67a86acb56ea901a119b2d6871",
+        "mainEqualsImplementation": true
+      },
+      {
+        "path": "services/trusted-pi/package-lock.json",
+        "bytes": 150262,
+        "sha256": "ad20b5c766c411c5ba42a4fc997890fe3494ab8adb96cf5d75031366b3d144fc",
+        "mainEqualsImplementation": true
+      },
+      {
+        "path": "services/trusted-pi/package.json",
+        "bytes": 244,
+        "sha256": "0dde532fe23b810bd09b978f990d48342f7378429f2b2c48f30e055993fa6ebe",
+        "mainEqualsImplementation": true
+      },
+      {
+        "path": "services/trusted-pi/product-model-transport.mjs",
+        "bytes": 7703,
+        "sha256": "c2bece021f34f0b929e796238d132a819281d172b5d8fd3a6f431ed9d46801c6",
+        "mainEqualsImplementation": true
+      },
+      {
+        "path": "services/trusted-pi/product-tool-bridge.mjs",
+        "bytes": 11657,
+        "sha256": "e536e9231a7fa41be956e3066535a62b7de460b37a4e5a40937c67d9f5981e74",
+        "mainEqualsImplementation": true
+      },
+      {
+        "path": "services/trusted-pi/release-candidate.mjs",
+        "bytes": 27185,
+        "sha256": "034cdc9df6c09e9cd7a32320e6bbfc2f9bbf5761151fe1d585d7fd64cdcd8d07",
+        "mainEqualsImplementation": true
+      },
+      {
+        "path": "services/trusted-pi/research-context.mjs",
+        "bytes": 1557,
+        "sha256": "938e89155a5d5e0c405f51db5d973a4db264e63d96e308aff8da93caaaa05076",
+        "mainEqualsImplementation": true
+      },
+      {
+        "path": "services/trusted-pi/runtime_supervisor.py",
+        "bytes": 16912,
+        "sha256": "79e2bdedaedba063364513d853eb8325f229ba55b1e51df46cbcee359807e29c",
+        "mainEqualsImplementation": true
+      },
+      {
+        "path": "services/trusted-pi/trusted-pi-turn-host.mjs",
+        "bytes": 15937,
+        "sha256": "9964e7ab863207ce9b9a911e03bfcb4f99afc61fb6508d2d6611b66931be516b",
+        "mainEqualsImplementation": true
+      }
+    ]
+  },
+  "problem": "existing serving TrustedPi image contains the old empty loader/unconditional simulation prompt; runtime launches its baked host/release, not injected current source",
+  "baseImage": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-issue165-trusted-pi@sha256:9b76ab9ee7a4f31d250957fbbeefc62d71056e6bd1eb24686ebbeaff3d65873c",
+  "freshMetadataEvidence": {
+    "observedAt": "2026-10-17T10:35:29.064Z/2026-10-17T10:35:29.705Z",
+    "gets": 3,
+    "all200": true,
+    "version11Percentage": 100,
+    "onlyHistoricalVersion10Percentage": 0,
+    "allOriginalAppAndVersionHashesUnchanged": true,
+    "safeReceiptSha256": "1381bf5450b72261d0af7bb52039b56e936a5f60d335a6436ef74e647ffdb561",
+    "notContainerInspectOrStart": true
+  },
+  "archive": {
+    "bytes": 30515,
+    "sha256": "c92e672ca39d10d61467801f457147e3ee9cf2cfbbbe8b96d00a618a6a208bae",
+    "uncompressedTarBytes": 102400,
+    "uncompressedTarSha256": "1bc5305af54b7fad81cc1ce95f545513c82a02565ca96381fede6fb3856fd52b",
+    "format": "USTAR sorted regular files uid/gid0 names empty mode0444 or probe0555 mtime0; gzip9 mtime0 filename empty"
+  },
+  "archiveFilename": "jhg46-pi-resource-compat-v1-20261017.tar.gz",
+  "files": [
+    {
+      "path": "jhg46-pi-resource-compat-v1/EXECUTION-CONTRACT.md",
+      "bytes": 9645,
+      "sha256": "d77631c31751cdbbc72ead2ce9f866db5650d64fd77109d5f994f40494afc90f",
+      "mode": "0444"
+    },
+    {
+      "path": "jhg46-pi-resource-compat-v1/context/Dockerfile",
+      "bytes": 1245,
+      "sha256": "bcdec6d274816323daa1c11b9245082efcf8132cc0d2901dab3cb13b2c9110b2",
+      "mode": "0444"
+    },
+    {
+      "path": "jhg46-pi-resource-compat-v1/context/services/browser-preview/runtime/sha256.mjs",
+      "bytes": 2241,
+      "sha256": "85da435e9edaf4dca3411cf5f86fa45a95fe15c78060849d11f7eb0344b5bd24",
+      "mode": "0444"
+    },
+    {
+      "path": "jhg46-pi-resource-compat-v1/context/services/project-resources/text.mjs",
+      "bytes": 6700,
+      "sha256": "9f7f3266549f04a0a8214e6e725ea9d85030532364f136487833e9cc45af303e",
+      "mode": "0444"
+    },
+    {
+      "path": "jhg46-pi-resource-compat-v1/context/services/runtime/controlled-pi.mjs",
+      "bytes": 23072,
+      "sha256": "cf4143bff6cf049d2ab8247ef86ceb5f5391da67a86acb56ea901a119b2d6871",
+      "mode": "0444"
+    },
+    {
+      "path": "jhg46-pi-resource-compat-v1/context/services/trusted-pi/release-candidate.mjs",
+      "bytes": 27185,
+      "sha256": "034cdc9df6c09e9cd7a32320e6bbfc2f9bbf5761151fe1d585d7fd64cdcd8d07",
+      "mode": "0444"
+    },
+    {
+      "path": "jhg46-pi-resource-compat-v1/context/services/trusted-pi/research-context.mjs",
+      "bytes": 1557,
+      "sha256": "938e89155a5d5e0c405f51db5d973a4db264e63d96e308aff8da93caaaa05076",
+      "mode": "0444"
+    },
+    {
+      "path": "jhg46-pi-resource-compat-v1/input-manifest.json",
+      "bytes": 6884,
+      "sha256": "f27b35dcbe84b58e3442018332374dbf20fa0d315528a322e56ea2a2bcfea5d4",
+      "mode": "0444"
+    },
+    {
+      "path": "jhg46-pi-resource-compat-v1/probe/compatibility-probe.mjs",
+      "bytes": 12020,
+      "sha256": "bded581766c4656b05b72c6fce39fcb43461a44cbe407c0d1e9ab4a23edf2097",
+      "mode": "0555"
+    }
+  ],
+  "manifest": {
+    "bytes": 6884,
+    "sha256": "f27b35dcbe84b58e3442018332374dbf20fa0d315528a322e56ea2a2bcfea5d4"
+  },
+  "probe": {
+    "path": "probe/compatibility-probe.mjs",
+    "bytes": 12020,
+    "sha256": "bded581766c4656b05b72c6fce39fcb43461a44cbe407c0d1e9ab4a23edf2097"
+  },
+  "sourceEquivalentValidation": {
+    "exitCode": 0,
+    "mode": "source-equivalence",
+    "nodeVersion": "26.10.0",
+    "checks": {
+      "allTargetBytes": true,
+      "activeReleaseAlias": true,
+      "actualControlledPiAndProductRelease": true,
+      "explicitSkillRevisionPathAndSha": true,
+      "unselectedBodyAbsent": true,
+      "noModelSpecFixedSimulationPrompt": true,
+      "coldRestoreNoReplay": true,
+      "sameSourceHistoricalProvenance": true,
+      "newSourceDoesNotInheritLoadedMarker": true,
+      "crossProjectRejected": true,
+      "synthetic503NoRetry": true,
+      "sdkCancelAbortedAndSettled": true,
+      "allSessionsDisposed": true,
+      "temporaryDirectoryRemoved": true,
+      "environmentOnlyPath": true
+    },
+    "syntheticRequests": {
+      "model": 3,
+      "research": 1,
+      "projectToolExecutions": 0,
+      "ambientFetchCalls": 0
+    },
+    "activeAliasActuallyInspected": false,
+    "sourceMacEncodingNormalized": true,
+    "finalPrivateLocalReceiptSha256": "9012ffc19ff765acd0c3119a01d60671188d29758bd8707d2f99ecdb26887405",
+    "firstMacEnvironmentFailureRetained": true,
+    "localProbeIsNotImageAcceptance": true
+  },
+  "independentReview": {
+    "reviewer": "source_audit",
+    "result": "no-must-fix",
+    "performed": "read-only archive/member/dualGitblob/probe/contract review; did not execute tests or Docker/API",
+    "checks": [
+      "archive30515B + rawTar102400B hashes match",
+      "nine regular members/90549 content bytes/0444 or0555/uidgid0/mtime0/no links or path escape",
+      "all11 frozen source/package/supervisor files equal main158 and bc4",
+      "fixed original base9b76 and five sources/six overlay targets",
+      "image-only uid10002/root-owned hashes/active alias/onlyPATH; source mode explicitly not image",
+      "fixed fake model/research transport plus global fetch denial; explicit skill/cold/503/cancel",
+      "no JWT/email/private-key patterns; raw private Worker config and real actor IDs excluded",
+      "future default seccomp/noNetwork/readOnly/capDrop/resource bound/originalID absence plus label cross-check; no replay"
+    ]
+  },
+  "futureAuthorizationDraft": {
+    "authorizationPresent": false,
+    "exactPayloadSha256": "c92e672ca39d10d61467801f457147e3ee9cf2cfbbbe8b96d00a618a6a208bae",
+    "payloadBytes": 30515,
+    "recipient": "AMD128",
+    "operations": [
+      "one exact small source packet transfer, no replacement of prior payload",
+      "existing-account managed Registry pull-only short credential for exact original base, proposed TTL15min; API permission is account registry scoped, operation allowlist limits original repo/digest",
+      "only explicit stdin delivery to fixed recipient; if Docker auth config needed, task0700/0600 then immediate verified deletion and exact relay/PID/listener cleanup",
+      "one fixed-base pull or verified original cached identity; unavailable route or wrong immutable identity stops",
+      "one network-none/pull-false build of only context/ with authoritative local image identity receipt",
+      "one original-ID network-none synthetic image-mode Node probe plus strict cleanup/NotFound/label verification",
+      "bounded original-ID GET-only reconciliation, no automatic replacement/retry"
+    ],
+    "requiresResolvedBeforeExecute": [
+      "actual Docker executable/socket and route;7897 listener is not assumed available",
+      "exact new task directory/intent/request identity and approved stdout/stderr/timeout limits",
+      "explicit sensitive credential transport grant; previous browser-token grant is not reused",
+      "future exact supported buildx invocation if reviewing an executable command; current generic build template contains explicit unsupported-stop guard"
+    ],
+    "notIncluded": [
+      "image push or Registry write",
+      "Cloudflare app image update/new app/namespace",
+      "Gate/policy/budget/history changes",
+      "real provider/model/Turn/Run or ProjectRuntime initialization",
+      "new subscription",
+      "ordinary user acceptance"
+    ],
+    "noFeesInferredZero": true,
+    "noNewSubscription": true,
+    "newIndependentDirectory": "/tmp/riffoid-jhg46-image-20261017.AU613w/pi-resource-compat-v1",
+    "directoryAdmission": "must be absent; create once, no overwrite or alternate directory on unknown",
+    "sshCredentialTransport": "exact AMD128 SSH stdin recipient, no argv/environment/stdout/log credential; temporary task0700/config0600 and verified removal",
+    "previouslyObservedDockerExecutable": "/usr/bin/docker",
+    "previouslyObservedDockerSocket": "unix:///var/run/docker.sock",
+    "previouslyObservedBuilder": "default",
+    "capabilityMustBeFreshlyReadOnlyChecked": true,
+    "commandOrInputSubstitutionAllowed": false,
+    "onUnsupportedCapability": "stop; prepare a new reviewable command/script/input packet before approval/execution, never silently swap current exact payload",
+    "baseResolutionUnknown": "pull/cache does not prove subsequent build metadata resolution stays offline or succeeds after auth removal; unknown/rejected resolution stops, no OCI resolver/base/auth-lifetime substitution"
+  },
+  "actualDerivedImage": null,
+  "actualImageModeProbe": null,
+  "cloudflarePublication": false,
+  "ordinaryUserAcceptance": false,
+  "notPerformed": [
+    "Docker",
+    "SSH",
+    "download/pull",
+    "build",
+    "transfer",
+    "registry or cloud request",
+    "credential creation/read",
+    "real provider/paid runtime"
+  ],
+  "scopeBoundary": "minimal existing TrustedPi image compatibility publication slice; no new runtime architecture, namespace, Managed permission or full JHG56 prerequisite",
+  "sourcePacketPublicCopies": [
+    {
+      "repositoryPath": "evidence/releases/project-view-trusted-pi-offline-build-20261017/payload/EXECUTION-CONTRACT.md",
+      "archiveMember": "jhg46-pi-resource-compat-v1/EXECUTION-CONTRACT.md",
+      "bytes": 9645,
+      "sha256": "d77631c31751cdbbc72ead2ce9f866db5650d64fd77109d5f994f40494afc90f",
+      "archiveMode": "0444"
+    },
+    {
+      "repositoryPath": "evidence/releases/project-view-trusted-pi-offline-build-20261017/payload/context/Dockerfile",
+      "archiveMember": "jhg46-pi-resource-compat-v1/context/Dockerfile",
+      "bytes": 1245,
+      "sha256": "bcdec6d274816323daa1c11b9245082efcf8132cc0d2901dab3cb13b2c9110b2",
+      "archiveMode": "0444"
+    },
+    {
+      "repositoryPath": "evidence/releases/project-view-trusted-pi-offline-build-20261017/payload/context/services/browser-preview/runtime/sha256.mjs",
+      "archiveMember": "jhg46-pi-resource-compat-v1/context/services/browser-preview/runtime/sha256.mjs",
+      "bytes": 2241,
+      "sha256": "85da435e9edaf4dca3411cf5f86fa45a95fe15c78060849d11f7eb0344b5bd24",
+      "archiveMode": "0444"
+    },
+    {
+      "repositoryPath": "evidence/releases/project-view-trusted-pi-offline-build-20261017/payload/context/services/project-resources/text.mjs",
+      "archiveMember": "jhg46-pi-resource-compat-v1/context/services/project-resources/text.mjs",
+      "bytes": 6700,
+      "sha256": "9f7f3266549f04a0a8214e6e725ea9d85030532364f136487833e9cc45af303e",
+      "archiveMode": "0444"
+    },
+    {
+      "repositoryPath": "evidence/releases/project-view-trusted-pi-offline-build-20261017/payload/context/services/runtime/controlled-pi.mjs",
+      "archiveMember": "jhg46-pi-resource-compat-v1/context/services/runtime/controlled-pi.mjs",
+      "bytes": 23072,
+      "sha256": "cf4143bff6cf049d2ab8247ef86ceb5f5391da67a86acb56ea901a119b2d6871",
+      "archiveMode": "0444"
+    },
+    {
+      "repositoryPath": "evidence/releases/project-view-trusted-pi-offline-build-20261017/payload/context/services/trusted-pi/release-candidate.mjs",
+      "archiveMember": "jhg46-pi-resource-compat-v1/context/services/trusted-pi/release-candidate.mjs",
+      "bytes": 27185,
+      "sha256": "034cdc9df6c09e9cd7a32320e6bbfc2f9bbf5761151fe1d585d7fd64cdcd8d07",
+      "archiveMode": "0444"
+    },
+    {
+      "repositoryPath": "evidence/releases/project-view-trusted-pi-offline-build-20261017/payload/context/services/trusted-pi/research-context.mjs",
+      "archiveMember": "jhg46-pi-resource-compat-v1/context/services/trusted-pi/research-context.mjs",
+      "bytes": 1557,
+      "sha256": "938e89155a5d5e0c405f51db5d973a4db264e63d96e308aff8da93caaaa05076",
+      "archiveMode": "0444"
+    },
+    {
+      "repositoryPath": "evidence/releases/project-view-trusted-pi-offline-build-20261017/payload/input-manifest.json",
+      "archiveMember": "jhg46-pi-resource-compat-v1/input-manifest.json",
+      "bytes": 6884,
+      "sha256": "f27b35dcbe84b58e3442018332374dbf20fa0d315528a322e56ea2a2bcfea5d4",
+      "archiveMode": "0444"
+    },
+    {
+      "repositoryPath": "evidence/releases/project-view-trusted-pi-offline-build-20261017/payload/probe/compatibility-probe.mjs",
+      "archiveMember": "jhg46-pi-resource-compat-v1/probe/compatibility-probe.mjs",
+      "bytes": 12020,
+      "sha256": "bded581766c4656b05b72c6fce39fcb43461a44cbe407c0d1e9ab4a23edf2097",
+      "archiveMode": "0555"
+    }
+  ],
+  "publicationScope": "next batch offline transfer/fixed original base pull/network-none build/mock-probe/original-ID cleanup only",
+  "gatewayReleaseCandidateModified": false,
+  "publicMaterialContainsTarball": false,
+  "privateActorOrRawSettingsIncluded": false
+}

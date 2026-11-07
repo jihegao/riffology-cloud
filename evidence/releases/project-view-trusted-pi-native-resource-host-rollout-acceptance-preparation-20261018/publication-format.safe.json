@@ -1,0 +1,30 @@
+{
+  "authorChecksAndPendingChoicesUnchanged": true,
+  "authorInputsCopiedByteExactly": 26,
+  "authorManifest": {
+    "bytes": 4792,
+    "sha256": "2937a30ee4f81458c48b40e31f77644435c323a86c33fa3695287be337c2b5b4"
+  },
+  "document": {
+    "bytes": 10168,
+    "file": "docs/project-view-trusted-pi-native-resource-host-rollout-acceptance-packet-20261018.md",
+    "sha256": "8ba9f4184463772734de00297cf1e3efd354a22a6e384e005da2d2d89f2d53df"
+  },
+  "documentAddedPublicManifestReviewInventoryLinks": true,
+  "executed": false,
+  "executionAuthorized": false,
+  "grantPresent": false,
+  "independentReview": {
+    "bytes": 13693,
+    "sha256": "431b7f5bf56b433e4bc2031f228b17af297bcb429b9bc22a47ac38a97adf1ebc"
+  },
+  "newRuntimeLockCreated": false,
+  "preparedAt": "2026-10-18T15:01:56.425556+00:00",
+  "publicFilesExcludeRawOwnerProjectionAndIdentityRows": true,
+  "relativeLinksRebasedOnlyInDocument": 20,
+  "schema": "jhg46-ec8-preparation-public-format/v1",
+  "sourceDraft": {
+    "bytes": 7336,
+    "sha256": "78d417b43fa4e26ea4e538c6c654235e266a582aeeb62d3fd39d7b37d128af95"
+  }
+}

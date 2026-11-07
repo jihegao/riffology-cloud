@@ -1,0 +1,83 @@
+{
+  "schema": "jhg46-after-owned-delete-original-product-physical-author-projection/v1",
+  "originalUserRead": {
+    "source": "ordinary/browser-v1/after-owned-delete-original.raw.private.json",
+    "bytes": 37794,
+    "sha256": "dd53a23b19eaf5b856ead9ed4727a7f8b0ee0a02970e43e48aa964e463f766d8",
+    "bodyCopied": false
+  },
+  "readWindow": [
+    "2026-10-18T17:04:08.165Z",
+    "2026-10-18T17:04:10.631Z"
+  ],
+  "reads": [
+    {
+      "index": 0,
+      "status": 200,
+      "bytes": 188,
+      "sha256": "aa8d093481241466c0c657acd20cd892eef45ff9414689e7dc2a9681ea5d4c01"
+    },
+    {
+      "index": 1,
+      "status": 200,
+      "bytes": 10038,
+      "sha256": "5473d40c0e2b9b01df1266ff779e5a0eedfc33813cde2363823a710b198c6bfd"
+    },
+    {
+      "index": 2,
+      "status": 200,
+      "bytes": 21,
+      "sha256": "3c1f6a77c60ba4bb35b79fbd5886f12ad2b3faee35fcd185e4dae0cc37f42e60"
+    },
+    {
+      "index": 3,
+      "status": 503,
+      "bytes": 36,
+      "sha256": "3640034ce748e394fd76c436d1adc7336392d2a7509b46dbd13a35abf4ec6f87"
+    }
+  ],
+  "sameOrdinaryMeBodySha256": "aa8d093481241466c0c657acd20cd892eef45ff9414689e7dc2a9681ea5d4c01",
+  "snapshotExactSamePostT2Body": true,
+  "sessionCount": 1,
+  "turnCount": 2,
+  "allTurnsCompletedSaved": true,
+  "activeTurnId": null,
+  "resourceWait": null,
+  "releaseHold": null,
+  "recoveryHold": null,
+  "capacity": "available",
+  "projectViewRouteStatusAfterClose": 503,
+  "remainingProjectFrames": 0,
+  "scopedUiNonGetObserverCount": 4,
+  "scopedNonGetCountIsNotGlobalExecutionProof": true,
+  "physical": {
+    "source": {
+      "source": "ordinary/browser-v1/final-physical-readback-original.tool-result.private.json",
+      "bytes": 15770,
+      "sha256": "cffa90941de33dade70a460326b95bd43e84b21ebce8d4dce797bc6b867adf4d",
+      "bodyCopied": false
+    },
+    "readWindow": [
+      "2026-10-18T17:04:28.356Z",
+      "2026-10-18T17:04:31.276Z"
+    ],
+    "allFourHttp200": true,
+    "logicalCount": 9,
+    "logicalAllInactive": true,
+    "dashInstances": 0,
+    "dashDurableObjects": 9,
+    "currentUnfilteredSchedulerDeploymentCount": 1,
+    "deploymentId": "d03b8c4d-8cc2-475e-ba96-6e46d062983c",
+    "version": 13,
+    "imageDigest": "sha256:ec8dbe9efe229a1626ea3202b618653f82f8d29d9da8b19310c3b3838f2a2623",
+    "placementId": "8ef5d3a1-a30c-47c6-8608-b557b6bbc23a",
+    "profile": "default/basic max1",
+    "vmHealth": "running",
+    "containerStatus": "stopped",
+    "historicalAllPlacementDisposalProven": false,
+    "feesMayContinue": true
+  },
+  "usageFees": "unknown; not zero or settled",
+  "rawPrivateNativeReleaseFieldsExposed": false,
+  "authorFactsNotIndependentSelfReview": true
+}

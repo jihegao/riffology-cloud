@@ -1,0 +1,178 @@
+{
+  "schema": "jhg46-gateway-publication-actual-independent-review/v1",
+  "reviewedAt": "2026-10-18T09:07:22.406484+00:00",
+  "reviewer": "result_review",
+  "mode": "local-readonly-evidence-review",
+  "mustFix": [],
+  "result": "original-single-worker-publication-and-independent-preservation-plus-96-public-assets-confirmed",
+  "requestId": "f953bc1e-3ea1-4786-821c-26ecf68916a0",
+  "actualVersionId": "5a840cbc-49c5-45cd-badc-b75553c78566",
+  "actualDeploymentId": "cf7337f5-2332-4436-b2b9-ec211def147b",
+  "acknowledgedAt": "2026-10-18T08:56:30.566Z",
+  "boundSafeSources": [
+    {
+      "file": "gateway-publication-actual-v1/after-witness.actual.json",
+      "bytes": 3564,
+      "sha256": "dbe18df9abb9da1761fc49257c9da840571a818b660fe84a4420491b7994511d"
+    },
+    {
+      "file": "gateway-publication-actual-v1/before-witness.actual.json",
+      "bytes": 3565,
+      "sha256": "1f43cc57d99dd90be97531e83650c39e61b75c4f663a984c22861a59999bb006"
+    },
+    {
+      "file": "gateway-publication-actual-v1/safe-receipt.json",
+      "bytes": 5899,
+      "sha256": "a2381e33685ce020c3226b5ef17263c1750241d63996959c94fb5110505e714e"
+    },
+    {
+      "file": "gateway-publication-actual-v1/worker-multipart-review.json",
+      "bytes": 415,
+      "sha256": "9ff62b4c13dd55787aa968e4556a1b1346dc966d1219c71e06448a65172baad3"
+    },
+    {
+      "file": "gateway-publication-actual-v1/worker-put-ack-time.json",
+      "bytes": 106,
+      "sha256": "ce454ce97d1e94ab0f97792ad6a39cc80759fa4e8b841e7e09801c49388958f5"
+    },
+    {
+      "file": "gateway-publication-actual-v1/worker-put-intent.json",
+      "bytes": 539,
+      "sha256": "4b7cc6ad82cb97b493e234f009953b338d2f1be20f537af6c540e180de7bc7f8"
+    },
+    {
+      "file": "public-assets-actual-v1.json",
+      "bytes": 48881,
+      "sha256": "d7b3b13514087484b238eeaa3f2cbd1070c13459ac7624d86641e3f2d26419bf"
+    }
+  ],
+  "originalPrivateEvidenceHashReferencesOnly": [
+    {
+      "file": "gateway-ops-execution-v1/publication-attempts/f953bc1e-3ea1-4786-821c-26ecf68916a0/before.private.json",
+      "bytes": 83451,
+      "sha256": "f503861acd1ebb1a57e4a4e6b2b9a9f15a38882ccccf306813e152d01e38e30c"
+    },
+    {
+      "file": "gateway-ops-execution-v1/publication-attempts/f953bc1e-3ea1-4786-821c-26ecf68916a0/immediate-preput.private.json",
+      "bytes": 83451,
+      "sha256": "3d2c5a000d31b318093bf7ba4c7447b9607213f0e452b50a078340c2b2970b91"
+    },
+    {
+      "file": "gateway-ops-execution-v1/publication-attempts/f953bc1e-3ea1-4786-821c-26ecf68916a0/after.private.json",
+      "bytes": 83535,
+      "sha256": "9a74070de069a05efb24dd641ceec1750d01b3f27000a5a7d6cd1722be2ee631"
+    },
+    {
+      "file": "gateway-ops-execution-v1/publication-attempts/f953bc1e-3ea1-4786-821c-26ecf68916a0/worker-put-ack.private.json",
+      "bytes": 6644,
+      "sha256": "126e2dde8105198f8e42cae0e869adbfbf8851bc1745d757e686559af1ff2c1d"
+    },
+    {
+      "file": "gateway-ops-execution-v1/publication-attempts/f953bc1e-3ea1-4786-821c-26ecf68916a0/worker-multipart.private.bin",
+      "bytes": 5798272,
+      "sha256": "b4276616d1b3cf59b2348505b57cc178bffb5f8fee0311a1fcea87c9556633d4"
+    },
+    {
+      "file": "gateway-ops-execution-v1/publication-attempts/f953bc1e-3ea1-4786-821c-26ecf68916a0/worker-readback.pending.json",
+      "bytes": 1388,
+      "sha256": "f3f6d103fb042587550908b03bfc514c5bfb1f0c94489bd470a625ecfec7bb19"
+    }
+  ],
+  "authorityBinding": {
+    "sealedSenderSha256": "4f53f3ad9830685eff339a4554e5e11d31067b2c13d7019992a627998f1ade1a",
+    "sealedPreparerSha256": "9c320a6ef0c095f95144ee518f7ba26e589abde096db8851ee92f72479b1d4a2",
+    "executionPlanSha256": "ccf2f1b6bac828842e54390568aa0dd673a8f9a0606ffe809e2e98e99f9221f6",
+    "humanSubgrantSha256": "654e1ead901d7afbe27272407c73fc9440513339d0cb4d806626756f0f5a8c14",
+    "actualMergeProofSha256": "fc8487d59dcba237ecd573cf7538fdcfc2b382c8e1da406e5e7947c029641028",
+    "priorMechanicalReviewSha256": "345f8198e9e3281ecc9b8a6fce0e065803dd03f65d7d7de5e5212b8e6d64caaa"
+  },
+  "originalWrite": {
+    "intentTargetsExactApprovedWorkerPut": true,
+    "automaticRetry": false,
+    "originalMultipartBytes": 5798272,
+    "originalMultipartSha256": "b4276616d1b3cf59b2348505b57cc178bffb5f8fee0311a1fcea87c9556633d4",
+    "intentReviewAndBodyHashesMatch": true,
+    "multipartExactlyMetadataAndIndexModule": true,
+    "moduleMatchesFrozen9c8eBytes": true,
+    "reviewedMetadataMatchesExceptExpectedAssetCompletionField": true,
+    "existingAssetsRuntimeConfigPreserved": true,
+    "rawAckHashMatchesFinalAndOriginalPending": true,
+    "rawAckNormalizedDeploymentIdMatchesNewWorkerVersion": true,
+    "ackTimeAfterIntentAndBeforeAfterWitness": true,
+    "originalRequestDirectoryAssetSessionIntentCount": 1,
+    "originalRequestDirectoryAssetUploadIntentCount": 0,
+    "originalRequestDirectoryWorkerPutIntentCount": 1,
+    "originalRequestDirectoryWorkerPutUnknownRecordCount": 0,
+    "scopeNote": "Counts describe this original request directory and reviewed one-send implementation; they are not global account action counts."
+  },
+  "servingState": {
+    "beforeVersionId": "b62db92d-693a-4043-9ad1-f126e3a70c64",
+    "beforeModule": {
+      "mainModule": "index.js",
+      "bytes": 5775036,
+      "sha256": "0475703a4ccda6d695709f6045b321431dc60b0e5369bc308bf08cee8279bd85"
+    },
+    "afterVersionId": "5a840cbc-49c5-45cd-badc-b75553c78566",
+    "afterModule": {
+      "mainModule": "index.js",
+      "bytes": 5771650,
+      "sha256": "9c8e4b6b763e9887d1624f00ed3a8efb2a8a24d984d96bc68fdb289cb4d362c3"
+    },
+    "newDeploymentDifferentFromBefore": true,
+    "newVersionActiveAt100Percent": true,
+    "beforeAndImmediatePreputSemanticallyEqual": true,
+    "allOriginalSnapshotAndAckHashesBound": true
+  },
+  "preservation": {
+    "all106SettingsBindingsExact": true,
+    "allWorkerResourceBindingsExact": true,
+    "allScriptRuntimeExportsAssociationsAndAssetsExact": true,
+    "settingsExceptReviewedAnnotationsExact": true,
+    "reviewedAnnotationsExact": true,
+    "exports": 25,
+    "containerAssociations": 6,
+    "namespaces": 50,
+    "allOriginalNamespacesExactAndNoNewNamespace": true,
+    "schedulesSubdomainDomainsRoutesExact": true,
+    "all16AppsCanonicalHashUnchanged": true,
+    "all16AppVersionListCanonicalHashesUnchanged": true,
+    "registryCanonicalHashUnchanged": true,
+    "independentBeforeAfterCredentialValueGuardsPassed": true,
+    "originalAppInstancesListCountAtWitnesses": 0,
+    "beforeWitness": {
+      "startedAt": "2026-10-18T08:54:35.999Z",
+      "endedAt": "2026-10-18T08:54:39.449Z"
+    },
+    "afterWitness": {
+      "startedAt": "2026-10-18T08:57:03.069Z",
+      "endedAt": "2026-10-18T08:57:05.525Z"
+    },
+    "afterWitnessStartsAfterOriginalAck": true,
+    "afterWitnessControlsVersionAndModuleMatchOriginalPostSnapshot": true,
+    "sixOriginalSafeCopiesByteEqual": true
+  },
+  "publicAssets": {
+    "origin": "https://app.riffoid.com",
+    "startedAt": "2026-10-18T08:58:30.296Z",
+    "endedAt": "2026-10-18T08:58:51.761Z",
+    "inventorySha256": "b1fd4e1fe0b538af20cfb090242fa996f75bf26f8076e259a774ee2d5338b39a",
+    "manifestSha256": "b24e87bf762801056e447c106600e1fcee9f23e43c01830436006b5dca8ce1ad",
+    "uniquePaths": 96,
+    "rows": 96,
+    "allStatus200": true,
+    "allAttemptsOne": true,
+    "retries": 0,
+    "allExpectedAndObservedBytesAndSha256MatchFrozenInventory": true,
+    "totalActualBytes": 53782277,
+    "allObservationsAfterOriginalPutAck": true,
+    "historicalReceiptPendingFieldPreserved": true,
+    "pendingFieldExplanation": "The original finalize receipt intentionally predates this separate full 96-file public byte check; its pending fields are not rewritten."
+  },
+  "limits": [
+    "Reviewer performed local evidence reads, hashes, structural comparisons and multipart decoding only; no API/auth/OAuth-store/token/SSH/Docker/Registry/network/test/build/replay. Private configuration, JWT values and ACK content are not projected.",
+    "Worker publication, resource preservation and public asset byte observations are confirmed within the recorded scope; they do not establish ordinary authenticated user acceptance, model/Turn/Run execution, runtime/container release, or a global zero-execution/zero-fee claim.",
+    "Operator login and maintenance GET are separate root observations; maintenance begin, application rollout, ordinary identity validation, three Turns, browser gate lifecycle and release remain outside this review.",
+    "Parent reports original sender session32014 exit0 and finalize success. This review independently verifies its fixed local artifacts; it does not invent a separate process-terminal file.",
+    "Original request lock, private records, historical preparation and previous publication/failure evidence are retained."
+  ]
+}

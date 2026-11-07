@@ -1,0 +1,21 @@
+{
+  "schema": "jhg46-t2-canonical-sandbox-association-safe-projection/v1",
+  "source": {
+    "source": "ordinary/turn-2-once/canonical-receipt-derived-sandbox-identity.private.json",
+    "bytes": 1402,
+    "sha256": "c86e73966e51ab021b003877784d9b26aca3d01a501152bab2fbc041724c56c3",
+    "bodyCopied": false
+  },
+  "canonicalKeyPathVerified": true,
+  "exactJsonMaterialSha256": "170334f1316ad282affe76020f8a8de75f1297349f4e1e8231e395e9e58fb8b4",
+  "derivedTrustedPiNameSha256": "d7d122b64ba016dbdd6d21dd17ad77f4123d8acd3395d7a395acdeb480683394",
+  "logicalAndDashMatchingObjectIdSha256": "a1d5c8c8bbdfe115778aa929c307989e9fab775e950eea2c718ece5766edeece",
+  "matchingLogicalState": "inactive",
+  "receiptCaptureSha256": "e49fd232100042a5d2fe384534da75131fa7fe19ef2d039be9a90cd28dddbb41",
+  "physicalSourceSha256": "082b9a8cfeec145131d97d769a3866864f9e9e528f14fe60bba84d3addd36c56",
+  "notRawRuntimeReleaseReceipt": true,
+  "runtimeOperationIdNotRead": true,
+  "coldLeaseProofStillServerInternal": true,
+  "localDerivationNotTimeCorrelation": true,
+  "noApiCallsByProjectionAuthor": true
+}

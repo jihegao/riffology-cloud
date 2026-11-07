@@ -1,0 +1,29 @@
+{
+  "schema": "jhg46-sdk-public-staging-gate-review-copy-addendum/v1",
+  "recordedAt": "2026-10-18T17:56:49.298932+00:00",
+  "ready": false,
+  "executionAuthorized": false,
+  "finalOverallInventory": false,
+  "original88EvidenceFilesUnmodified": true,
+  "copiedOriginal": {
+    "originalFile": ".local/jhg46-native-sdk-acceptance-preparation-20261019/reviews/independent-sdk-browser-gate-ops-review.safe.json",
+    "publicFile": "evidence/releases/project-view-native-sdk-publication-acceptance-preparation-20261019/reviews/independent-sdk-browser-gate-ops-review.safe.json",
+    "bytes": 2254,
+    "sha256": "810ba6fb00ccc519c355353d660ef7264651c3a8454399ae7317de3698cd9426",
+    "byteEqual": true
+  },
+  "priorPublicMainDocument": {
+    "file": "docs/project-view-native-sdk-publication-acceptance-packet-20261019.md",
+    "bytes": 18399,
+    "sha256": "a07019185a4ee4cb7b6146a40ab5c8d20fad3e3eb6aa6406d6c5b13cfa71cced",
+    "localHistoryFile": "publication-staging-history/before-gate-final-review-a0701918/project-view-native-sdk-publication-acceptance-packet-20261019.md"
+  },
+  "currentPublicMainDocument": {
+    "file": "docs/project-view-native-sdk-publication-acceptance-packet-20261019.md",
+    "bytes": 19117,
+    "sha256": "793fd9e1c167a44b1544e9be30419dc85a99cb0ed590b92dc783d441f60ce903"
+  },
+  "gateFinalIndependentReviewMustFix": [],
+  "meaning": "Final gate independent static review is now present; prior incremental null/pending states remain dated original snapshots. Root will write final inputmanifest/inventory/README and public closeout; execution grant and live witnesses remain absent.",
+  "authorActions": "Local exact copy and own public-document factual update only; no fixtures, Git, auth, API, network or candidate execution."
+}

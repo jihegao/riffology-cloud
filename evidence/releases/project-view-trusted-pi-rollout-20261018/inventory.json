@@ -1,0 +1,73 @@
+{
+  "schema": "jhg46-trusted-pi-rollout-public-evidence-inventory/v1",
+  "recordedAt": "2026-10-18T09:41:16.460135+00:00",
+  "files": [
+    {
+      "file": "application-version12.safe.json",
+      "bytes": 915,
+      "sha256": "6cf857e462174783b1e6d87c098d9b95f92f4e9a50b8e94c4aac8d5306c1b7ca"
+    },
+    {
+      "file": "maintenance-hold-summary.safe.json",
+      "bytes": 2569,
+      "sha256": "b2aa8083c755815472ac198c63a9dca3d9c83b5427ab5ec936154ce91d19fb68"
+    },
+    {
+      "file": "observed-state-decision-proposal-v2.json",
+      "bytes": 3499,
+      "sha256": "b935f8781201072b61b5fbdbbc6d288eafd4c5d184df4180e61349b8140b834f"
+    },
+    {
+      "file": "observed-state-independent-review.json",
+      "bytes": 9899,
+      "sha256": "26eeb907dbb443fa14da327e367e143f914dc686268fe43bc04a50a256ec1c19"
+    },
+    {
+      "file": "old-version10-rollout-history.safe.json",
+      "bytes": 608,
+      "sha256": "9c72d021647bb523d398c03fce6f0c0d0443cfca1af7626e65a5eedcd8dde276"
+    },
+    {
+      "file": "post-rollout-preservation-compact.json",
+      "bytes": 15371,
+      "sha256": "a4698359ad99c04e862de9cab792caba4d452deb2c20027b8a3069c957bbc0b0"
+    },
+    {
+      "file": "post-rollout-preservation-size-held.json",
+      "bytes": 623,
+      "sha256": "b1f367ecb9bae5ba97e815c7b372a7805bbd2a74107934ecca1d49ba27e47e58"
+    },
+    {
+      "file": "post-rollout-preservation-strict-held.json",
+      "bytes": 7933,
+      "sha256": "2a05e0e6c7c4a80f994eb820d631e54bdff3044ec7b3e258d7c71ade0871cfeb"
+    },
+    {
+      "file": "result.json",
+      "bytes": 5773,
+      "sha256": "a4a81f68c82c1f6a2190fb8e4e08cba18bda370d93556d2f600d7a0a31103cf0"
+    },
+    {
+      "file": "rollout-ack.safe.json",
+      "bytes": 1011,
+      "sha256": "ebb5a5f9996135624295cf44f264562b2620cc210589f3b5fd7ff805e46d2e97"
+    },
+    {
+      "file": "rollout-completed.safe.json",
+      "bytes": 1053,
+      "sha256": "296192fd3292ddea883787fa7ac71c50da767b723b26060e9b764ff0c3a592f9"
+    },
+    {
+      "file": "rollout-readback-comparison.json",
+      "bytes": 885,
+      "sha256": "371f16568aeed599033e7aa10b65f9b6c4051fe1c47fb35052335be7caebb5fd"
+    },
+    {
+      "file": "scheduler-original-placement.safe.json",
+      "bytes": 2627,
+      "sha256": "89ec4e3b05c38a1bb243b59e81951de3326c29e365ef1b11d14f25d7940f308e"
+    }
+  ],
+  "safeWhitelistedProjectionsAndExplicitSafeCopiesOnly": true,
+  "privateBodiesIncluded": false
+}

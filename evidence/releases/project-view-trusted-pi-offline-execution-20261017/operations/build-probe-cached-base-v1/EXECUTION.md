@@ -1,0 +1,21 @@
+# Original57a — cached immutable base, one offline build/mock
+
+This is a new local runner variant. Original `build-probe-runner-v1/build-probe-once.py` SHA4893ec6b7b3bfe2b4155373cfb5cc702de49dcde589fe9f1893c160acedf04a5, its eight fake tests/receipt, frozen c92e archive and051 pull operator remain unchanged. No v2 archive, OAuth scope, credential or new human grant is created here. Root is the sole live executor; this preparation runs only fake tests.
+
+The original57a credential POST stays **unknown-stopped**. The original receiver terminal is stdin-eof with no credential delivered, no pullOutput/image, authConfigAbsenttrue. Root's independent cleanup confirmed its original PID/route released. This is not a successful pull and does not prove that the original API never minted a credential; those records are preserved unchanged.
+
+Source's fresh GET-only/local Docker image-inspect cache receipt `base-cache-readonly-source-audit-57a70587.json` (7075B, SHAe824ecfd46fedda0ac378e8e7d4dbae7b878699e49b42a91cc1b25bf55c584db) actually found the exact9b76 RepoDigest/Id/Descriptor, linuxamd64, Userroot and `/container-server/sandbox` entrypoint already present. No pull, Registry request, token or route was used in that cache observation. The approved build can therefore use the existing immutable base, avoiding any second mint/pull. The runner still freshly inspects the exact cache before the build; the dated receipt does not substitute for that guard.
+
+Only request `57a70587-2b21-4a56-aed1-09c8a32d868a` is accepted:
+
+```text
+/usr/bin/python3 <reviewed-cached-base-runner-path> --execute --request-id 57a70587-2b21-4a56-aed1-09c8a32d868a
+```
+
+Before any Docker/build command, validate all nine payload SHA/size/FROM and require exactly the original `pull-once-57a…` directory. Pin its intent schema/request/base/original grant+051 hashes. Require its exact unknown/stdin-eof/no-credential-delivery terminal; original receiver PID+Linux start ticks absent; no auth directory/symlink; no actual7897 listener in either Linux TCP table plus loopback connect errno111. Any mismatch stops. The local-intent unknown cannot be promoted to a pull success. A safe `cached-base-entry-guard.json` records these checks after the same fixed task-wide `build-probe-once/` wx lock is created.
+
+Then freshly require the exact immutable cached base (RepoDigest plus actual Id/Descriptor9b76, linuxamd64/Userroot/original entrypoint). All remaining build/probe/cleanup contracts are the original reviewed runner's: default Docker builder/fixed unix socket, empty auth config and fixed environment; one `--network=none --pull=false` build with iid+metadata/bounded logs and explicit config/descriptor/actual-image binding/base-layer prefix; base/derived launch configuration preserved; one created original CID/unique label,10002/networknone/readonly/capdrop/no-new-privileges/defaultseccomp/resource bounds, two frozen RO files only; internal20seconds/outer30seconds, synthetic SDK report with all12 exact targets; one original-ID removal, explicit original-ID NotFound plus empty label list. Original CLI PID/ticks/reaped and all failures/logs remain. See the preserved [original execution contract](../build-probe-runner-v1/EXECUTION.md) for full flags and limits; its successful-pull prerequisite is replaced only by the explicit original-cleanup + exact-cache gates above.
+
+This runner has no OAuth/API/SSH client, credential POST, pull or forwarding command. It does not retry the unknown pull, allocate a fresh request/policy, push an image, update Cloudflare, add subscription or invoke real provider/Turn/Run. An unavailable cache or failed metadata resolver stops without creating auth or changing resolver/base. Unknown build/create/start/cleanup retains original identities and fixed lock, with no repeat operation. Root supervisor→uid10002child remains the native design; mock's explicit10002 entrypoint verifies SDK compatibility only, not native fence/capacity/Cloudflare/user acceptance.
+
+Offline tests retain the eight previous guard cases and add original-cleanup/cache-entry cases: known original stopped/noauth positive, live PID, listener/ambiguous errno, auth leftovers, different UUID and wrong terminal. No real Docker/SSH/API/credential is used. The actual future build/mock remains root's single execution under the existing authorization.

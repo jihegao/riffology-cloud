@@ -1,0 +1,126 @@
+{
+  "authorFileCount": 26,
+  "batchRequestId": "d0b12dd5-c04e-41d9-9a05-c685431d6695",
+  "executed": false,
+  "executionAuthorized": false,
+  "files": {
+    "README.md": {
+      "bytes": 7310,
+      "sha256": "a4e623b7a0b8cc64a778f6bafb5d0414ff6ba4ec00a2edaaab232d3e0927baaa"
+    },
+    "authentication-contract.json": {
+      "bytes": 3332,
+      "sha256": "d0c8a4545955fdfd0534eb469b5a266fc59882c866c526f3e0542ddec520ad77"
+    },
+    "browser-gate/plan.pending.json": {
+      "bytes": 1998,
+      "sha256": "e2aa33c63766523bea53988d145e3455d4ec726d4a1a5e314eea5bb3de81c1ac"
+    },
+    "fresh-preservation/before-runtime-rollout.request.txt": {
+      "bytes": 16050,
+      "sha256": "c97d9193332fa9bebc28f46a2e9d7b90b5e94c925bf73bec4babc36ed55f6094"
+    },
+    "fresh-preservation/derivation.pending.json": {
+      "bytes": 3364,
+      "sha256": "f7a97e4e3e4b2298b13ba9bc0512599a8e69bf1d8fcf34ea20658dd8b47add44"
+    },
+    "fresh-preservation/make-preservation-request.mjs": {
+      "bytes": 15610,
+      "sha256": "7ed82e63941cf0c335b4231bc59b9634226a15186d938e0da659bea12caf6477"
+    },
+    "fresh-preservation/scope.json": {
+      "bytes": 2235,
+      "sha256": "7e0bb5c5652fa1fcd74c54b8338a231064243df31f064d60963e4d930a27fae6"
+    },
+    "fresh-read-contract.json": {
+      "bytes": 7684,
+      "sha256": "7b9078b58b062f97d09b1b0a9f1e406fe56e7a88e12959f33a0699f7c8b272a7"
+    },
+    "maintenance/input.pending.json": {
+      "bytes": 2392,
+      "sha256": "a46d6f4a897f4cbac740a8c06b8ba56b53275e1a66347c99572467f3684457bd"
+    },
+    "offline-input-checks.safe.json": {
+      "bytes": 5350,
+      "sha256": "46ad527e4ed2609886a89bafede747a4f196f1ab903b975dc74c0507cd605209"
+    },
+    "operations.json": {
+      "bytes": 8895,
+      "sha256": "2e6416cd2bd1f2ce55b551f674b638735412c9c230a550453eacab89fe3065ea"
+    },
+    "ordinary-input.json": {
+      "bytes": 4283,
+      "sha256": "199559eac9295536c42124c2b01aec7a35f1eca9a84a9b22cc35a7b12c0affcb"
+    },
+    "post-source-syntax-check.safe.json": {
+      "bytes": 604,
+      "sha256": "42391152cb018755e3b92812b0805f430add4e9e52e6c6e6460ad030a2ec5d04"
+    },
+    "preparation.json": {
+      "bytes": 1648,
+      "sha256": "e764ab85a44165a8f19113e74f35626ad7deb2f5c3abe7cb477614e8d5f5ddd7"
+    },
+    "prior-owner/fresh-owner-summary.safe.json": {
+      "bytes": 2876,
+      "sha256": "c8d6efa4b26badc85543806f8508368fc065fdd08b8616ffcd70cadbac3a7547"
+    },
+    "prior-owner/independent-fresh-owner-review.safe.json": {
+      "bytes": 2383,
+      "sha256": "5056ff6fb3b9672704bed13c4876a5b7e70e34a861ee9a26fd8f0a93a7d73cd1"
+    },
+    "prompts/turn-1-create-skill.md": {
+      "bytes": 3833,
+      "sha256": "a179caed905f3f484a94fea0088de7ad92a72bb5b739e2fd2940bdfdd3c0dcf2"
+    },
+    "prompts/turn-2-build-v1.md": {
+      "bytes": 2101,
+      "sha256": "1e59966637fec33c3d2d5728ed1c4b9c8c00c30dee990fdeb2866ddf99afe6df"
+    },
+    "prompts/turn-3-cold-edit-v2.md": {
+      "bytes": 962,
+      "sha256": "c8c858c602fbc2c923c4b9c2e400696fc45527faaa25b54287eaf59434cea149"
+    },
+    "publication-packet.draft.md": {
+      "bytes": 7336,
+      "sha256": "78d417b43fa4e26ea4e538c6c654235e266a582aeeb62d3fd39d7b37d128af95"
+    },
+    "rollout/body.canonical.json": {
+      "bytes": 455,
+      "sha256": "d02b6f60f2aecbc09cf0be8bf011770ddd5b6e7e429b78aed3bd46b776a90891"
+    },
+    "rollout/body.wire.json": {
+      "bytes": 455,
+      "sha256": "d02b6f60f2aecbc09cf0be8bf011770ddd5b6e7e429b78aed3bd46b776a90891"
+    },
+    "rollout/input.json": {
+      "bytes": 2387,
+      "sha256": "f3a04bdea81b24be01860545028bd2e1c6a71be6e245186401ddc9bbb9456b39"
+    },
+    "skill/SKILL.md": {
+      "bytes": 2698,
+      "sha256": "f05062374fccbffa83a7e6da5505a3229bd975ff8d5aaf30e832c8f0a3c3d294"
+    },
+    "source-bindings.json": {
+      "bytes": 9633,
+      "sha256": "c800fef2ea7a2c6429f88d800d3a179bd9bd08e799b731ec81d04088e6f15ab4"
+    },
+    "window-and-choices.pending.json": {
+      "bytes": 2283,
+      "sha256": "f15dd9e02bc81f7241a5cdf82787b3d063731513025a45a7929317b2789fa2c5"
+    }
+  },
+  "grantPresent": false,
+  "independentReviewRequired": true,
+  "preparedAt": "2026-10-18T14:57:22.218312+00:00",
+  "reviewOnly": true,
+  "runtimeLockPresent": false,
+  "schema": "jhg46-ec8-next-runtime-review-input-manifest/v1",
+  "sourceAuthorityNotAReadyFlag": true,
+  "stillPending": [
+    "new explicit <=4h window and two platform-difference choices",
+    "fresh original operator/state.revision/policy/control/role and full preservation/physical baselines",
+    "originalACK target/rolloutID and after-witness source/actual response binding",
+    "new ordinary me/SELECT identity and solecreate/session/turn/checkpoint/resource proofs",
+    "R2-derived gate actual scope/actor/generation/window/currentWorker/witness/open-closeACKs"
+  ]
+}

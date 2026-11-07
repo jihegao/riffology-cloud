@@ -1,0 +1,13 @@
+{
+  "startedAt": "2026-10-17T11:48:42.950991+00:00",
+  "endedAt": "2026-10-17T11:48:44.724729+00:00",
+  "exitCode": 0,
+  "requestId": "57a70587-2b21-4a56-aed1-09c8a32d868a",
+  "fileCount": 9,
+  "archiveSha256": "c92e672ca39d10d61467801f457147e3ee9cf2cfbbbe8b96d00a618a6a208bae",
+  "originalArchiveReused": true,
+  "secondPackageTransfer": false,
+  "stdoutSha256": "92930f3f6b18ec0ce51ebf3a0e4e4f0e5c2386bc0bb2a71b5b813aaa24e298b1",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "credentialsOrDocker": false
+}

@@ -1,0 +1,75 @@
+{
+  "schema": "jhg46-original57a-readonly-auth-transport-diagnostic/v1",
+  "originalRequestId": "57a70587-2b21-4a56-aed1-09c8a32d868a",
+  "scope": "Fresh GET observations only; do not establish the original POST status or whether a credential was minted.",
+  "credentialPostCount": 0,
+  "oauthRenewalCount": 0,
+  "credentialTransferred": false,
+  "rows": [
+    {
+      "method": "GET",
+      "path": "/user",
+      "transport": "Python-urllib-via-existing-loopback-7892",
+      "userAgent": "Python-default",
+      "startedAt": "2026-10-17T11:58:01.246857+00:00",
+      "status": 200,
+      "responseBytesObserved": 3010,
+      "bodyCompleteWithinBound": true,
+      "bodySha256": "b93b13b6c1615f34066dae98bc0cf8a00cc92c1aba2a12d7e6903bdf070b1821",
+      "headers": {
+        "content-type": "application/json",
+        "server": "cloudflare",
+        "cf-ray": "a4bf2115fe3d0d15-SLC"
+      },
+      "jsonObject": true,
+      "success": true,
+      "errorCodes": [],
+      "resultKind": "dict",
+      "endedAt": "2026-10-17T11:58:03.554561+00:00"
+    },
+    {
+      "method": "GET",
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/registries",
+      "transport": "Python-urllib-via-existing-loopback-7892",
+      "userAgent": "Python-default",
+      "startedAt": "2026-10-17T11:58:03.554577+00:00",
+      "status": 403,
+      "responseBytesObserved": 105,
+      "bodyCompleteWithinBound": true,
+      "bodySha256": "6979949596e21188252f2394e828a8d535daec89ca894ea4aa85179c83e27e00",
+      "headers": {
+        "content-type": "application/json",
+        "server": "cloudflare",
+        "cf-ray": "a4bf213048eab73f-SLC"
+      },
+      "jsonObject": true,
+      "success": false,
+      "errorCodes": [
+        10000
+      ],
+      "resultKind": "NoneType",
+      "endedAt": "2026-10-17T11:58:07.606117+00:00"
+    },
+    {
+      "method": "GET",
+      "path": "/user",
+      "transport": "Python-urllib-via-existing-loopback-7892",
+      "userAgent": "wrangler/4.129.0",
+      "startedAt": "2026-10-17T11:58:07.606132+00:00",
+      "status": 200,
+      "responseBytesObserved": 3010,
+      "bodyCompleteWithinBound": true,
+      "bodySha256": "b93b13b6c1615f34066dae98bc0cf8a00cc92c1aba2a12d7e6903bdf070b1821",
+      "headers": {
+        "content-type": "application/json",
+        "server": "cloudflare",
+        "cf-ray": "a4bf21380ad2b73f-SLC"
+      },
+      "jsonObject": true,
+      "success": true,
+      "errorCodes": [],
+      "resultKind": "dict",
+      "endedAt": "2026-10-17T11:58:08.876630+00:00"
+    }
+  ]
+}

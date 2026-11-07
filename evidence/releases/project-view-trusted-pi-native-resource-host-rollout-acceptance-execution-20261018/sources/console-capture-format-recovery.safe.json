@@ -1,0 +1,11 @@
+{
+  "schema": "jhg46-d0-t2-console-capture-format-recovery/v1",
+  "at": "2026-10-18T16:35:53.858327+00:00",
+  "originalLargeReadCompleted": true,
+  "noHttpReplayed": true,
+  "problem": "AX console virtualization omitted early chunks of a 76767-byte original record; local JSON parse rejected incomplete visible prefix",
+  "recovery": "original in-page cached raw strings exported once through local Blob download; archive and both original bodies independently byte/SHA verified in task evidence",
+  "originalHistoryRetained": true,
+  "productMutationOrTurnRetry": false,
+  "originalDownloadedCopyRetained": true
+}

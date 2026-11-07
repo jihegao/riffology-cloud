@@ -1,0 +1,50 @@
+{
+  "schema": "jhg46-sdk-gateway-fresh-witness-scope/v1",
+  "accountId": "8b0d70250211aa10d89e20605a1c7e5e",
+  "worker": "riffology-m1-gateway-staging",
+  "requestId": "1feadf24-3eb8-58be-abd7-872c68ab45e6",
+  "phases": [
+    "before-worker-put",
+    "after-worker-put"
+  ],
+  "beforeWorkerVersionId": "4f887d24-7874-4fb3-b3ac-caf6d74ab461",
+  "beforeModule": {
+    "mainModule": "index.js",
+    "bytes": 5771650,
+    "sha256": "9c8e4b6b763e9887d1624f00ed3a8efb2a8a24d984d96bc68fdb289cb4d362c3"
+  },
+  "afterModule": {
+    "mainModule": "index.js",
+    "bytes": 5774988,
+    "sha256": "304373a50d7a9ca8a99cdfbda0dcae261aa34d53727b757dfeb099c88efb5e0b"
+  },
+  "appVersionCountsById": {
+    "a03156a6-9bf5-43fb-8b7f-a1f5b8d1a650": 2,
+    "a031ae38-f967-483f-ae2e-3dbed3d35268": 1,
+    "a0321718-f17e-4ccf-974a-fd447dde5920": 1,
+    "a03313e4-fa9d-4de2-ac2c-d2cc69efd875": 1,
+    "a0332851-f795-46df-9f8e-ee0ddc220095": 1,
+    "a035c941-2207-406e-97aa-a42ab6e9d249": 2,
+    "a03628c4-f032-461f-a65b-612ccac11a06": 2,
+    "a03693b8-f5be-4247-9280-f0c38435d911": 1,
+    "a036b418-dcce-4d2f-bd3d-6debf982ea6f": 1,
+    "a03836ca-d275-4f7d-898f-bc16d0875089": 2,
+    "a039ed42-159d-43db-be13-69315bce5189": 1,
+    "a03a6e91-25cb-4a8d-89a8-be522368dde4": 1,
+    "a03c0a4c-7533-4190-ba2b-ff4fecaabb48": 1,
+    "a03c0d4b-d529-4d81-a2b6-bfb901222a18": 1,
+    "a03ddc7e-1c6e-4cea-93ec-ac03d7b0073a": 1,
+    "a03ea65b-b039-4f56-8422-36c719b87b72": 1
+  },
+  "expectedLists": {
+    "apps": 16,
+    "domains": 3,
+    "namespaces": 50,
+    "registries": 1,
+    "routes": 5,
+    "schedules": 1,
+    "instances": 0
+  },
+  "projectViewApplicationId": "a031ae38-f967-483f-ae2e-3dbed3d35268",
+  "noBaselineExport": true
+}

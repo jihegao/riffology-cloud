@@ -1,0 +1,30 @@
+{
+  "allRawBlobHashesSizesReachable": true,
+  "allRunnableDiffIdsMatched": true,
+  "archiveBytes": 407961600,
+  "archiveReadVerifications": 1,
+  "archiveSha256": "deddc21059715d3d63fc9c652e84e510be7117cda315102c3b1fd0f0bcf2f6d8",
+  "blobCount": 53,
+  "config": {
+    "digest": "sha256:cea60e390b6726ec0147153e1318b3655c8386460e98d02e35bb571768e49da5",
+    "mediaType": "application/vnd.oci.image.config.v1+json",
+    "size": 19067
+  },
+  "exportsAttempted": 0,
+  "operationId": "registry-readback-recovery-v1",
+  "originalIndex": {
+    "digest": "sha256:0bb9af7a5909c41187cf56402a21420100c72a8de0025b0a7152f8804e85d191",
+    "mediaType": "application/vnd.oci.image.index.v1+json",
+    "size": 856
+  },
+  "originalRecordsUnmodified": true,
+  "originalVerificationSha256": "76a53be45c5cd33a5b322bd5dd3dabc6b49f64aa53b739b38a6331cbe998beca",
+  "platformManifest": {
+    "digest": "sha256:ec8dbe9efe229a1626ea3202b618653f82f8d29d9da8b19310c3b3838f2a2623",
+    "mediaType": "application/vnd.oci.image.manifest.v1+json",
+    "size": 9585
+  },
+  "requestId": "c263a2f3-f445-430e-b562-2e48f1eeb637",
+  "rootfsLayerCount": 49,
+  "schema": "trusted-pi-original-readback-archive-revalidation/v1"
+}

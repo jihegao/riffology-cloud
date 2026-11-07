@@ -1,0 +1,127 @@
+{
+  "independentReader": {
+    "bytes": 9057,
+    "outsideTransferredEightSources": true,
+    "path": "independent-cleanup-readonly.py",
+    "sha256": "3fe998b9a38a48f445e03ea16431fc0b71cfa98973707d1819427ddd1929e70d"
+  },
+  "installedWranglerContract": {
+    "authTokenJsonShape": {
+      "token": "memory-only-redacted",
+      "type": "oauth"
+    },
+    "cliBytes": 14390953,
+    "cliSha256": "0a7bc2107ca92b2cc6db58b6a36d38d44b549eebd7db7ec34c36db9da7a91264",
+    "diskLogDisableSupportedByPinnedSource": true,
+    "lineReferences": {
+      "defaultDotenvLoading": 351246,
+      "diskLoggingFlag": 62739,
+      "offlineAccessUrlBuilder": 125602,
+      "scopeLoginValidationAndDefaultProfile": 342038,
+      "tokenJsonAndOauthSource": 342214
+    },
+    "loginFunctionalScopes": [
+      "user:read",
+      "account:read",
+      "workers:write",
+      "workers_scripts:write",
+      "containers:write"
+    ],
+    "offlineAccessAppendedByPinnedOauthUrlBuilder": true,
+    "scopeAndDefaultProfileArgsSupported": true,
+    "version": "4.129.0"
+  },
+  "limitations": [
+    "Preparation/static review and local fake results do not establish live OAuth scope/identity, Registry permissions, tag absence, successful publication or remote cleanup.",
+    "No actual OAuth file or credential was read; no Wrangler/auth command, SSH, Docker, network API or target test script was executed by this reviewer.",
+    "HTTP200HTML versus201resolved-schema sources remain distinct; both are now an explicit proposed contract, not a reinterpretation of the old201-only403 attempt.",
+    "Exact REST minimum OAuth permission mapping and original403 reason remain unproved; CLI containers:write is a selected client contract, not server-side cause proof.",
+    "Normal consent changes persistent local OAuth before subsequent identity checks; if a later check fails, execution stops and does not silently revoke or restore that grant.",
+    "CredentialStdinSent is a completion flag; an exception during writing cannot alone prove that no bytes reached the peer. Unknown execution retains original identity for readback.",
+    "One Docker CLI push does not assert control over daemon internal HTTP retries. No credential issuance/revocation/natural-expiry or global zero-fee claim follows from local cleanup.",
+    "Independent reader checks original saved archive verification/metadata and release records; it does not rerun archive verification or repeat live Registry readbacks.",
+    "Latest main243/237 state was supplied by parent and is documented without reviewer GitHub requests. Any later239 merge still needs its own current-main preview and scope.",
+    "No JHG46/JHG56 completion or authenticated ordinary-user/real execution acceptance is established."
+  ],
+  "localFixtureReceipts": [
+    {
+      "bytes": 848,
+      "fixtureChecks": 16,
+      "notRerunByReviewer": true,
+      "path": "checks.json",
+      "sha256": "7d05dc9f3d145aa755b0fff72d810754b73be63016c8519604611bce3d521f31"
+    },
+    {
+      "bytes": 857,
+      "fixtureChecks": 7,
+      "notRerunByReviewer": true,
+      "path": "independent-reader-checks.json",
+      "sha256": "78a87886ae5c4755c81b384f1e3830446ff8a990adeb4f2d521a567c17d14190"
+    }
+  ],
+  "mustFix": [],
+  "operationsManifest": {
+    "bytes": 1313,
+    "fixedSourceCount": 8,
+    "path": "operations-manifest.json",
+    "sha256": "3779af353a82fa334fc805a54ff02fe91a2f905d2cc9daf4733b1fd92189589c"
+  },
+  "parentRequestId": "c3e04c41-72da-409b-a2b1-f924e6cc67fa",
+  "requestId": "9ec39434-0856-4ee7-af30-adf3dd5b5df4",
+  "resolvedIssues": [
+    {
+      "issue": "Pinned Wrangler reloads default cwd .env/.env.local even when subprocess inherited environment is allowlisted.",
+      "resolution": "Both normal CLI invocations now prefix explicit --env-file /dev/null; exact Popen argv and excluded inherited API token are checked by a local fake. Scope and authorization document this empty input. No dotenv file was read by reviewer.",
+      "sourceEvidence": "cli.js351246-351251 with getDefaultEnvFiles176589 and loadDotEnv176597."
+    },
+    {
+      "issue": "First version preserved HTTP metadata only for HTTPError or accepted success, losing actual status for202/bad JSON/success=false.",
+      "resolution": "New api captures bounded status/byte-count/hash/completeness/closed plus whitelisted integer codes before accepting or rejecting every obtained response. Read failures retain safe incomplete capture without a response body/message. No retry or fallback is introduced."
+    },
+    {
+      "issue": "Initial execution/authorization text could treat old239head CI failure or test repair as the current main state.",
+      "resolution": "Final documents preserve old0d23 failure and acknowledge merged243/237 with successful CI as parent-provided current facts. This recovery still excludes239merge and any CI action."
+    }
+  ],
+  "retiredSnapshots": [
+    {
+      "limits": "Superseded first draft; not execution-ready or a grant.",
+      "location": "candidate-v1/local-history/first-1e3d5c34",
+      "operationsManifestSha256": "1e3d5c34091726271aca8ce23edf11f49d1b49dc8f207f63e078d74fd68f340a"
+    },
+    {
+      "limits": "HTTP metadata corrected but default dotenv still required final fix.",
+      "location": "candidate-v1/local-history/second-f95a29e0",
+      "operationsManifestSha256": "f95a29e0f7198391346f4fa6b4d083dc960bea04c6da918ecdf1de92ecb8d930"
+    }
+  ],
+  "reviewMethod": {
+    "fixtureScriptsExecutedByReviewer": false,
+    "fixtureSourceAndSavedStreamHashesMatched": true,
+    "installedPublicCliSourceBytesAndHashMatched": true,
+    "manifestAllEightBytesAndHashesMatched": true,
+    "sourceAstParsedWithoutExecution": true,
+    "staticSourceAndDocumentationRead": true
+  },
+  "reviewedAt": "2026-10-17T16:15:18.357238+00:00",
+  "reviewerSideEffects": {
+    "authorOrTrackedSourcesModified": 0,
+    "oauthOrCredentialFileReads": 0,
+    "realAuthSshDockerApiCalls": 0,
+    "testsOrTargetScriptsRun": 0
+  },
+  "schema": "jhg46-pi-registry-recovery-independent-preparation-review/v1",
+  "scopeChecks": [
+    "New exact grant/manifest must validate before OAuth metadata read, login, SSH or account API. No grant is supplied by preparation.",
+    "One explicit normal same-user consent proposes adding persistent containers:write to prior five scopes; exact six-scope metadata plus fresh user hash/account checks precede SSH/credential mint. Normal same-six-scope renewal is within proposed scope.",
+    "Normal OAuth request has no explicit account/repository resource filter; task pins recipient/user/account/repository and discloses persistent authority. Temporary Docker cleanup does not revoke OAuth or restore five scopes.",
+    "Original c3e archive407955456B/SHA83b81e55 is read-only reused, stable identity checked, unchanged OCI verifier rehashes all52 blobs/48diffIDs and binds a946856 to f18a9396 and07c18775; no save/export/build/pull/load/container action is called.",
+    "Ready evidence is appended and exclusively persisted before one new credential POST. Only200/201 plus success=true and exact account/host/four result fields is accepted; username/password only cross SSH stdin.",
+    "Credential is account-level push/pull requested15min, not single-repository authorization; executor fixes destination. Prior403 cause remains unknown and adding scope does not guarantee success.",
+    "One owned loopback7897 route has no agent/inherited forward/shared master. One fixed image-tag/push CLI invocation follows authoritative Registry/local tag absence; raw tag/digest manifest, config and all layer readbacks must match original.",
+    "Unique complete ready/final ACK binds archive/graph/counters/cleanup; missing/conflicting/truncated final state is unknown, retained under original identity with no automatic retry.",
+    "Independent reader has success and exact pre-credential EOF-stop branches. It checks fixed private records, original PID/start-ticks absence, metadata/readback chain, auth-directory absence and7897 release with zero Docker/provider commands or remote writes. EOF branch never claims publication; arbitrary unknowns remain pending.",
+    "PR239 merge, application rollout/Gateway/assets/bindings/policy/gates, project save and real model/Turn/Run are excluded even if push succeeds. Original c3e/earlier records/locks/resources/fees remain."
+  ],
+  "status": "passed-no-mustfix-preparation-only-new-human-grant-required"
+}

@@ -1,0 +1,54 @@
+{
+  "cliBytes": 14390953,
+  "cliExecuted": false,
+  "cliSha256": "0a7bc2107ca92b2cc6db58b6a36d38d44b549eebd7db7ec34c36db9da7a91264",
+  "fragments": {
+    "refreshExchange": {
+      "bytes": 1887,
+      "endByteExclusive": 5323117,
+      "endMarkerExclusive": "async function exchangeAuthCodeForAccessToken(",
+      "sha256": "9871220af2217f6591ca4b92442984869b78c3ccb4a7940114b566889e925fd3",
+      "startByte": 5321230,
+      "startMarker": "async function exchangeRefreshTokenForAccessToken("
+    },
+    "refreshToken": {
+      "bytes": 750,
+      "endByteExclusive": 5348410,
+      "endMarkerExclusive": "  __name(refreshToken,",
+      "sha256": "9216c10641e255cbdecc2a2294c17377e0bfbfd59b84a1b1e3c268c2e952566f",
+      "startByte": 5347660,
+      "startMarker": "  async function refreshToken(profile) {"
+    },
+    "tokenHandler": {
+      "bytes": 2168,
+      "endByteExclusive": 13692231,
+      "endMarkerExclusive": "    authKeyringCommand = createCommand({",
+      "sha256": "87c811745564ffb0094dbcdc4bbb8e7c748bae1e61576e141d3ffc16ca4d5884",
+      "startByte": 13690063,
+      "startMarker": "    authTokenCommand = createCommand({"
+    },
+    "tokenLocalState": {
+      "bytes": 607,
+      "endByteExclusive": 5351545,
+      "endMarkerExclusive": "  __name(getOAuthTokenFromLocalState2,",
+      "sha256": "1df8c0b406de968809ef463d3535847d501ec3b38b51cb4eded3fadda826535b",
+      "startByte": 5350938,
+      "startMarker": "  async function getOAuthTokenFromLocalState2() {"
+    }
+  },
+  "limits": [
+    "Installed source contract only; future authentication/refresh/network outcome is not observed.",
+    "Official current docs describe the command; fixed installed CLI hash controls actual future behavior."
+  ],
+  "oauthFilesRead": false,
+  "officialDocumentation": "https://developers.cloudflare.com/workers/wrangler/commands/general/#auth-token",
+  "schema": "trusted-pi-existing-scope-normal-token-source-contract/v1",
+  "verifiedSourceBehavior": [
+    "auth-token handler calls local-state token helper; no login fallback in that helper",
+    "missing token returns undefined; expired token refreshes once; failure returns undefined",
+    "refresh writes normal local stored token/expiry/scopes; no explicit new scope request",
+    "new driver validates existing scopes before command and exact scopes/expiry plus user/account after command",
+    "token output remains bounded memory only, normal command args fixed; no full CLI/help was run"
+  ],
+  "wranglerVersion": "4.129.0"
+}

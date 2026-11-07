@@ -1,0 +1,85 @@
+{
+  "schema": "trusted-pi-local-registry-readback-independent-format-delta-review/v1",
+  "reviewedAt": "2026-10-18T13:55:38.307358+00:00",
+  "decision": "pass-static-mechanical-delta-only",
+  "mustFix": [],
+  "reviewOnly": true,
+  "candidateExecutedByReviewer": false,
+  "testsOrFixturesRunByReviewer": false,
+  "externalActionsByReviewer": false,
+  "priorSourceReview": {
+    "path": "local-readback-independent-review/final-source-review.json",
+    "bytes": 7234,
+    "sha256": "842b63032bd28fa3a846208420692e5f112d3e1cc981bbb14863bdbe6c0e441e"
+  },
+  "previousPreparationCloseout": {
+    "path": "local-readback-independent-review/public-preparation-pre-format-closeout.json",
+    "bytes": 7024,
+    "sha256": "cb5e256d3749c4c9426a307044f435ffc31a2aa9c268099386fa6f6fe89c0bdb"
+  },
+  "finalBindings": {
+    "operations-manifest.json": {
+      "bytes": 2062,
+      "sha256": "16313c7193782acce5cd88de7c0e2caf97c76e59c807b581b8b58ef54642eafa"
+    },
+    "complete-source-binding.json": {
+      "bytes": 2717,
+      "sha256": "919648f9e77ea0a77033e9aaa1fd3aefda24510ae5dd7a55ba19ba2723571572"
+    },
+    "local-recovery.py": {
+      "bytes": 27877,
+      "sha256": "2565c433a9c2d5364a3a77aad3aa8ef14254a234f7a74d6df6c930f0d2d4ce8c"
+    },
+    "formatting-correction.safe.json": {
+      "bytes": 2177,
+      "sha256": "0c0a6f521cfdd3a059728fba680b57cb3aa8762d2c1192b0971c211a47f15fed"
+    },
+    "author-validation/final-formatted-complete15.receipt.json": {
+      "bytes": 3381,
+      "sha256": "ae8ffd1d5d60a654c5d0bc01bf75809a8069ff4810468b9e0121df2329b646aa"
+    },
+    "author-validation/final-formatted-complete15.stdout": {
+      "bytes": 1595,
+      "sha256": "6d7e8ab090355628854c3390efc9582ffdb1bb07bb1b3b7c73ead7e28f54af52"
+    }
+  },
+  "historicalBindings": {
+    "operations-manifest.json": {
+      "bytes": 2062,
+      "sha256": "f4c663dd0c7d9808144348df8a46dbc71b5f931b76429f5f2567619915d17ed3"
+    },
+    "complete-source-binding.json": {
+      "bytes": 2717,
+      "sha256": "d77eada0d066040161b5daa4d23415eeaff593fdd5802da0c6e79cf30996b1c4"
+    },
+    "local-recovery.py": {
+      "bytes": 27878,
+      "sha256": "a2689933297ccb314e75b6c5a667b9000da2b5c285967d352fef72d8984a0080"
+    }
+  },
+  "findings": {
+    "exactDriverDelta": "Removed one ASCII space from otherwise blank line153; all other bytes equal",
+    "astWithoutAttributesEqual": true,
+    "astWithoutAttributesSha256": "9b28228a4798b03f06e6fe3ad9f98d6b1c836fb9f941eab31e063dd1998d7df8",
+    "all16CurrentAndHistoricalFilesMatchTheirBindings": true,
+    "changedBoundFiles": [
+      "local-recovery.py",
+      "operations-manifest.json"
+    ],
+    "unchangedReuseFunctions": 12,
+    "unchangedReuseFiles": 3,
+    "allBoundFilesNoTrailingWhitespace": true,
+    "operationsManifestAllEntriesMatch": true,
+    "newActualAuthor15ReceiptAndLogMatchExactFinal16SourceBindings": true,
+    "authorUniqueTests": 15,
+    "reader15NotRerun": true,
+    "old15AndDocumentationCorrectionRetainedAndBound": true
+  },
+  "limits": [
+    "This review did not execute source, tests, auth, SSH, APIs, Registry or Docker.",
+    "Author synthetic 15-test result is reviewed recorded evidence, not a new execution by the reviewer.",
+    "Existing logical source review remains applicable because AST and all non-format program bytes are unchanged.",
+    "Final public staging still requires mechanical source/hash/document refresh to these final bindings.",
+    "No new human execution grant or actual local Registry readback is established by this preparation review; prior executed remote batch remains partial and unknown."
+  ]
+}

@@ -1,0 +1,9 @@
+# c263单行修复批次：push CLI报告成功，完整发布未验证 — 2026-10-18
+
+用户明确授权[原e521修复包](project-view-trusted-pi-native-resource-snapshot-host-publication-wire-repair-packet-20261018.md) 后，同c263/原0bb源/目录/tag实际执行一次export、完整raw图+49diffID验证及一次push。归档407,961,600B/SHA deddc210…，53blobs；从0bb/index856派生runnable **ec8dbe9e…/9,585B** 与config **cea60e39…/19,067B**。唯一Registry credential POST201被接受并通过stdin发送。[完整结果与原安全证据](../evidence/releases/project-view-trusted-pi-native-resource-snapshot-host-publication-wire-repair-stop-20261018/README.md) · [机器结果](../evidence/releases/project-view-trusted-pi-native-resource-snapshot-host-publication-wire-repair-stop-20261018/result.json) · [独审](../evidence/releases/project-view-trusted-pi-native-resource-snapshot-host-publication-wire-repair-stop-20261018/sources/actual-stop-independent-review.json)。
+
+原push CLI于12:36:38.892650Z exit0/reaped，白名单唯一digest行匹配ec8d/9585。随后remote publisher于12:45:16.036354Z终态unknown-stopped / publication-local-error；local SSH于12:48:39.599189Z exit255/reaped、final ACK=false。**命令报告成功不等于当前Registry完整发布证明。** `registry-readback.json`缺席，完整52槽位记录未成立，部分GET是否曾成功及具体失败原因仍未知；没有查询当前Registry，也不推断欠费或权限原因。
+
+原身份独立停止观察12:52:22.784525Z核18件/15,457B安全原件、六CLI与supervisor原PID/ticks均absent，临时auth目录/config与7897均清理。本机两原PID在12:49:39另核absent；observer transport稍后exit0。采回remote terminal与本地原remoteFinal、raw verification与原Ready.verification均全JSON等值。归档只stat，不冒称独立全blob重读；停止后未运行成功reader、重推、再生成凭据或新route。
+
+条件PR253合并不满足，未merge/部署应用或Gateway/gate，也没有真实Turn/项目或原12:42:46Z验收窗口延长。服务端JWT撤销/过期未证，OAuth持续权限保留；usage/费用仍待核，不记0。前次[c263 wire失败](project-view-trusted-pi-native-resource-snapshot-host-publication-stop-result-20261018.md)、[695e成功mock](project-view-trusted-pi-native-resource-snapshot-host-offline-result-20261018.md)、[原T1失败/释放](project-view-trusted-pi-ordinary-t1-result-20261018.md)与旧锁/归档/预留全部保留。后续readback-only固定提案与新授权/执行另列，当前未执行。JHG-46仍未完成。

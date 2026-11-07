@@ -1,0 +1,36 @@
+{
+  "allFrozenSourceBindingsMatched": 26,
+  "credentialsOrRawAuthOutputRead": false,
+  "finalAckCompleteAndUniqueVerified": true,
+  "frozenOperationsFilesMatched": 8,
+  "globalActivityOrFeesProvedZero": false,
+  "localTerminalBytes": 13982,
+  "localTerminalSha256": "22b360150dfbcd30e7d49c6933d8637367fc509dda3b784ccfc58656bb3c80f8",
+  "newAuthCredentialOrPushAttempts": 0,
+  "observedOriginalSessionExitCode": 0,
+  "originalExecSessionId": 88202,
+  "originalLocalProcessChecks": [
+    {
+      "currentAbsent": true,
+      "name": "oauth-consent-once",
+      "observationMethod": "kill(pid,0) raised ProcessLookupError; no signal sent",
+      "pid": 30182
+    },
+    {
+      "currentAbsent": true,
+      "name": "oauth-token-once",
+      "observationMethod": "kill(pid,0) raised ProcessLookupError; no signal sent",
+      "pid": 30207
+    },
+    {
+      "currentAbsent": true,
+      "name": "original-ssh",
+      "observationMethod": "kill(pid,0) raised ProcessLookupError; no signal sent",
+      "pid": 30219
+    }
+  ],
+  "recordedAt": "2026-10-18T02:08:01.321160+00:00",
+  "requestId": "fb99c7e4-21a7-4215-8261-c17dd7c148aa",
+  "schema": "jhg46-fb99-root-terminal-and-input-review/v1",
+  "sourceFilesModified": false
+}
